@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.configuracion.impuestos.FxImpuestoProcesoController">
+   <children>
+      <VBox layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-border-color: #3c8dbc; -fx-border-width: 0px 0px 1px 0px;">
+               <children>
+                  <Label styleClass="labelRobotoBold15" text="Impuesto" textFill="#020203">
+                     <graphic>
+                        <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/impuestos.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Label>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.6666666666666666em 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox style="-fx-spacing: 0.5em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Nombre de Operación" textFill="#020203" />
+                        <ComboBox fx:id="cbOperaciones" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="240.0" />
+                     </children>
+                  </VBox>
+                  <VBox style="-fx-spacing: 0.5em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Nombre del impuesto" textFill="#020203" />
+                        <TextField fx:id="txtNombreImpuesto" onAction="#onActionGuardar" prefHeight="30.0" prefWidth="240.0" promptText="Igv, Iva" styleClass="text-field-normal" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.6666666666666666em 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox style="-fx-spacing: 0.5em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Valor" textFill="#020203" />
+                        <TextField fx:id="txtValor" onAction="#onActionGuardar" onKeyTyped="#onKeyTypedValor" prefHeight="30.0" prefWidth="240.0" promptText="18, 15, 20" styleClass="text-field-normal" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+                  <VBox style="-fx-spacing: 0.5em;">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Código" textFill="#020203" />
+                        <TextField fx:id="txtCodigoAlterno" onAction="#onActionGuardar" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.6666666666666666em 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox style="-fx-spacing: 0.5em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Numero" textFill="#020203" />
+                        <TextField fx:id="txtNumero" onAction="#onActionGuardar" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+                  <VBox style="-fx-spacing: 0.5em;">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Nombre" textFill="#020203" />
+                        <TextField fx:id="txtNombre" onAction="#onActionGuardar" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.6666666666666666em 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox style="-fx-spacing: 0.5em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Letra" textFill="#020203" />
+                        <TextField fx:id="txtLetra" onAction="#onActionGuardar" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+                  <VBox style="-fx-spacing: 0.5em;">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Categoria" textFill="#020203" />
+                        <TextField fx:id="txtCategoria" onAction="#onActionGuardar" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 1px 0px 0px 0px;">
+               <children>
+                  <Button fx:id="btnGuardar" mnemonicParsing="false" onAction="#onActionGuardar" onKeyPressed="#onKeyPressedGuardar" styleClass="buttonLightDefault" text="Guardar">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionCancelar" onKeyPressed="#onKeyCancelar" styleClass="buttonLight" text="Cancelar">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/error.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

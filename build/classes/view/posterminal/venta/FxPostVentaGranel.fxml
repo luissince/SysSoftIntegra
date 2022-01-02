@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.posterminal.venta.FxPostVentaGranelController">
+   <children>
+      <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox>
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Label fx:id="lblTitle" alignment="BASELINE_LEFT" contentDisplay="TOP" styleClass="labelRobotoBold17" text="Cambiar precio al Artículo" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="96.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/information_large.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Label>
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label fx:id="lblArticulo" alignment="CENTER" maxWidth="1.7976931348623157E308" prefWidth="500.0" styleClass="labelOpenSansRegular17" text="Artículo" textFill="#037c09" wrapText="true" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <Separator />
+                  <HBox>
+                     <children>
+                        <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;">
+                                 <children>
+                                    <Label styleClass="labelOpenSansRegular15" text="Importe actual" textFill="#020203">
+                                       <graphic>
+                                          <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/billetes.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic></Label>
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="txtImporte" onAction="#onActionAceptar" onKeyTyped="#onKeyTypedImporte" prefHeight="30.0" prefWidth="400.0" promptText="0.00" styleClass="text-field-normal" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Separator />
+                  <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onActionAceptar" onKeyPressed="#onKeyPressedAceptar" styleClass="buttonLightWarning" text="Aceptar">
+                           <graphic>
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/plus.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onActionCancelar" onKeyPressed="#onKeyPressedCancelar" styleClass="buttonLight" text="Cancelar">
+                           <graphic>
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/error.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

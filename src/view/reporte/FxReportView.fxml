@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane fx:id="bpWindow" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.reporte.FxReportViewController">
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="500.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+         <content>
+            <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #dadce0;">
+               <children>
+                  <Group>
+                     <children>
+                        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                     <effect>
+                        <DropShadow />
+                     </effect>
+                     <StackPane.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </StackPane.margin>
+                  </Group>
+               </children>
+            </StackPane>
+         </content>
+      </ScrollPane>
+   </center>
+   <right>
+   </right>
+   <top>
+      <HBox alignment="CENTER" spacing="10.0" style="-fx-background-color: white; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+         <children>
+            <Button mnemonicParsing="false" onAction="#onActionPdf" prefHeight="30.0" styleClass="buttonLight">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../image/pdf.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#onActionPrint" prefHeight="30.0" styleClass="buttonLight">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../image/print.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="btnFirstPage" mnemonicParsing="false" onAction="#onActionFirstPage" prefHeight="30.0" styleClass="buttonLight">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" scaleZ="2.0">
+                     <image>
+                        <Image url="@../image/firstimg.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D height="24.0" minX="-4.0" minY="-4.0" width="24.0" />
+                     </viewport>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="btnBackPage" mnemonicParsing="false" onAction="#onActionBackPage" prefHeight="30.0" styleClass="buttonLight">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../image/backimg.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <TextField fx:id="txtPage" alignment="CENTER" onAction="#onActionPage" onKeyTyped="#onKeyTypedPage" prefHeight="30.0" prefWidth="40.0" styleClass="text-field-normal" text="1" />
+            <Label fx:id="lblReportPages" styleClass="labelRoboto13" text="/ 0" textFill="#020203" />
+            <Button fx:id="btnNextPage" mnemonicParsing="false" onAction="#onActionNextPage" prefHeight="30.0" styleClass="buttonLight">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../image/nextimg.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="btnLastPage" mnemonicParsing="false" onAction="#onActionLastPage" prefHeight="30.0" styleClass="buttonLight">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../image/lastimg.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D height="24.0" minX="-4.0" minY="-4.0" width="24.0" />
+                     </viewport>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <HBox alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="28.0" fitWidth="28.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true">
+                     <image>
+                        <Image url="@../image/zoomout.png" />
+                     </image>
+                  </ImageView>
+                    <Slider fx:id="zoomLevel" blockIncrement="20.0" majorTickUnit="80.0" max="180.0" min="20.0" minorTickCount="2" value="100.0" />
+                  <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../image/zoomin.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+   </top>
+</BorderPane>

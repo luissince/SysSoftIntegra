@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="window" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.contactos.clientes.FxClienteProcesoController">
+   <children>
+      <VBox style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox>
+               <children>
+                  <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-background-color: #020203;">
+                     <children>
+                        <Label styleClass="labelRobotoBold15" text="Datos del cliente" textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/client.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </HBox>
+                  <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                    <tabs>
+                      <Tab text="Datos básicos">
+                        <content>
+                          <AnchorPane style="-fx-background-color: #e7e6e6;">
+                                 <children>
+                                    <VBox style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: #CCCCCC; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Tipo documento" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                         <graphic>
+                                                            <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/asterisk.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Label>
+                                                      <HBox VBox.vgrow="ALWAYS">
+                                                         <children>
+                                                            <ComboBox fx:id="cbDocumentType" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="260.0" HBox.hgrow="ALWAYS" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="N° Documento" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                         <graphic>
+                                                            <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/asterisk.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Label>
+                                                      <HBox VBox.vgrow="ALWAYS">
+                                                         <children>
+                                                            <TextField fx:id="txtDocumentNumber" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="188.0" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
+                                                            <Button fx:id="btnBuscarSunat" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionSunat" onKeyPressed="#onKeyPressedSunat" prefHeight="30.0" styleClass="buttonLight">
+                                                               <graphic>
+                                                                  <ImageView fitHeight="20.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../../image/sunat_logo.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                            </Button>
+                                                            <Button fx:id="btnBuscarReniec" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionReniec" onKeyPressed="#onKeyPressedReniec" prefHeight="30.0" styleClass="buttonLight">
+                                                               <graphic>
+                                                                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../../image/reniec.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Razón social/Datos de la persona" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                         <graphic>
+                                                            <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/asterisk.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Label>
+                                                      <TextField fx:id="txtInformacion" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Teléfono" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtTelefono" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Celular" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtCelular" onAction="#onActionToRegister" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Email" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtEmail" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Dirección" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtDireccion" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                        <Tab text="Datos de contacto">
+                           <content>
+                              <AnchorPane minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #e7e6e6;">
+                                 <children>
+                                    <VBox style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: #CCCCCC; -fx-padding: 1.6666666666666667em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="paddinContainer105">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Representante" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtRepresentante" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="paddinContainer105">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Estado" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <HBox style="-fx-spacing: 0.8333333333333334em;">
+                                                         <children>
+                                                            <RadioButton fx:id="rbActivo" mnemonicParsing="false" selected="true" text="Activo" />
+                                                            <RadioButton fx:id="rbInactivo" mnemonicParsing="false" text="Inactivo" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </VBox>
+            <VBox>
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Text fill="#ab0000" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular11" text="Los campos marcados con * son obligatorios" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                     <children>
+                        <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#onActionToRegister" onKeyPressed="#onKeyPressedToRegister" styleClass="buttonLightDefault" text="Registrar">
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/save.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onActionToCancel" onKeyPressed="#onKeyPressedToCancel" styleClass="buttonLight" text="Cancelar">
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/error.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

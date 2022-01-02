@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<HBox style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.menus.FxInventarioController">
+   <children>
+      <VBox HBox.hgrow="ALWAYS">
+         <children>
+            <HBox alignment="CENTER" prefHeight="66.0" style="-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-width: 0  0 1px 0; -fx-padding: 0.8333333333333334em;">
+               <children>
+                  <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto19" text="Seleccione un módulo de inventario">
+                     <font>
+                        <Font name="Roboto" size="22.0" />
+                     </font>
+                  </Text>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;">
+               <children>
+                  <VBox alignment="CENTER" style="-fx-spacing: 1.25em;">
+                     <children>
+                        <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular17" text="Ingrese la opción a buscar">
+                           <font>
+                              <Font name="Roboto" size="16.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="txtSearch" prefHeight="30.0" prefWidth="302.0" promptText="Buscar..." styleClass="text-field-normal" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox fx:id="hbOperacionesUno" alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox fx:id="btnProducto" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionSuministros" onKeyPressed="#onKeyPressedSuministros" styleClass="buttonTransparent" text="Productos" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/producto.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Inventario">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnKardex" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionKardex" onKeyPressed="#onKeyPressedKardex" styleClass="buttonTransparent" text="Kardex Val." textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/kardex.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Inventario">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnValorInventario" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionInventario" onKeyPressed="#onKeyPressedInventario" styleClass="buttonTransparent" text="Inventario Gral." textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/inventario.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Inventario">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnInventarioInicial" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionInventarioInicial" onKeyPressed="#onKeyPressedInventarioInicial" styleClass="buttonTransparent" text="Inventario Inicial" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/inicial.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Inventario">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnMovimiento" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionMovimientos" onKeyPressed="#onKeyPressedMovimientos" styleClass="buttonTransparent" text="Ajuste de Inv." textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/ajuste-inventario.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Inventario">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnLote" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionLotes" onKeyPressed="#onKeyPressedLotes" styleClass="buttonTransparent" text="Lotes" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/lote-box.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Inventario">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox fx:id="hbOperacionesDos" alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox fx:id="btnTraslado" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionMovimiento" onKeyPressed="#onKeyPressedMovimiento" styleClass="buttonTransparent" text="Traslado" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/traslado.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Inventario">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</HBox>

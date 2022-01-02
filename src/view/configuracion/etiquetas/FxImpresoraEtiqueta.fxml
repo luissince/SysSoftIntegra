@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.configuracion.etiquetas.FxImpresoraEtiquetaController">
+   <children>
+      <VBox layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox>
+               <children>
+                  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER" style="-fx-background-color: #34495e; -fx-padding: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
+                           <children>
+                              <ImageView fitHeight="96.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/brochure-96.png" />
+                                 </image></ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;">
+                           <children>
+                              <Label styleClass="labelRobotoBold15" text="Ventana de impresión" textFill="#020203" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;">
+                           <children>
+                              <Label prefWidth="478.0" styleClass="labelRobotoBold13" text="Para que funcione correctamente la impresora debe estar conectado siempre al mismo puesto USB." textFill="#f80000" wrapText="true" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <VBox style="-fx-spacing: 0.8333333333333334em;">
+                     <children>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label styleClass="labelOpenSansRegular13" text="Impresoras disponibles:" textFill="#020203" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+                           <children>
+                              <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="labelOpenSansRegular13" text="Nombre:" textFill="#020203" />
+                                    <ComboBox fx:id="cbImpresoras" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="260.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="labelOpenSansRegular13" text="Copias:" textFill="#020203" />
+                                    <TextField fx:id="txtCopias" onKeyPressed="#onKeyPressedCopias" onKeyTyped="#onKeyTypedCopias" prefHeight="30.0" prefWidth="260.0" promptText="1" styleClass="text-field-normal" text="1" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onActionImprimir" onKeyPressed="#onKeyPressedImprimir" styleClass="buttonLight" text="Imprimir">
+                                 <graphic>
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/print.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

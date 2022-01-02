@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5f8062a3-2568-49ea-a90c-78479ed05e8b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="claveAlterna" class="java.lang.String"/>
+	<field name="nombreMarca" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="20" width="550" height="30" uuid="df1dbb6a-2b9c-4944-8fc0-d24d59addb89"/>
+				<textElement verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TITLE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="25">
+			<staticText>
+				<reportElement x="0" y="0" width="160" height="25" uuid="501f3865-0bb5-4c8a-9f0c-741da3eebb37"/>
+				<textElement>
+					<font size="14"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Clave Alterna]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="0" width="390" height="25" uuid="1a8b5ae4-a732-4764-ac52-c62e678e6b6d"/>
+				<textElement>
+					<font size="14"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="40">
+			<textField>
+				<reportElement x="0" y="5" width="160" height="30" uuid="a24f7921-1954-4266-9d09-b7680a3b577f"/>
+				<textElement>
+					<font size="14"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{claveAlterna}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="160" y="5" width="390" height="30" uuid="83825736-dd10-43f7-9f2e-17480b7d8ff0"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombreMarca}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

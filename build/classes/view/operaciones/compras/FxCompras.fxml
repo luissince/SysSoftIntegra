@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fx:id="spWindow" fitToHeight="true" fitToWidth="true" onKeyReleased="#onKeyReleasedWindow" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.compras.FxComprasController">
+   <content>
+      <VBox style="-fx-background-color: white;">
+         <children>
+            <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 2px 0; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF; -fx-padding: 0.8333333333333334em;" styleClass="paddinContainer">
+               <children>
+                  <Label styleClass="labelRobotoBold15" text="Nueva compra" textFill="#020203">
+                     <graphic>
+                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/purchases.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox fx:id="hbBotones" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 0px 0px 1px 0px;">
+               <children>
+                  <Button fx:id="btnRegistrar" mnemonicParsing="false" onAction="#onActionRegister" onKeyPressed="#onKeyPressedRegister" styleClass="buttonLightDefault" text="Registrar(F1)">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnArticulo" mnemonicParsing="false" onAction="#onActionAdd" onKeyPressed="#onKeyPressedAdd" styleClass="buttonLight" text="Productos(F2)">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/producto.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnEditar" mnemonicParsing="false" onAction="#onActionEdit" onKeyPressed="#onKeyPressedEdit" styleClass="buttonLight" text="Editar(F3)">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/edit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnQuitar" mnemonicParsing="false" onAction="#onActionRemover" onKeyPressed="#onKeyPressedRemover" styleClass="buttonLight" text="Quitar(F4)">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/remove.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionRecargar" onKeyPressed="#onKeyPressedRecargar" styleClass="buttonLight" text="Limpiar(F5)">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/escoba.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnProveedor" mnemonicParsing="false" onAction="#onActionProviders" onKeyPressed="#onKeyPressedProviders" styleClass="buttonLight" text="Proveedor(F6)">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/providers.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox style="-fx-background-color: #e7e6e6; -fx-padding: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
+               <children>
+                  <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-background-color: white; -fx-border-color: #cccccc;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox style="-fx-spacing: 0.8333333333333334em;">
+                           <children>
+                              <GridPane hgap="10.0" vgap="10.0" HBox.hgrow="ALWAYS">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                 </rowConstraints>
+                                 <children>
+
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Proveedor(F7):" textFill="#020203">
+                                       <graphic>
+                                          <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/providers.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic></Label>
+                                    <ComboBox fx:id="cbProveedor" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="- Buscar -" GridPane.columnIndex="1" />
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Proveedor(F8):" textFill="#020203" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/inventario.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Label>
+                                    <ComboBox fx:id="cbAlmacen" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="ALMACEN PRINCIPAL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                 </children>
+                              </GridPane>
+                              <GridPane hgap="10.0" vgap="10.0" HBox.hgrow="ALWAYS">
+                                 <columnConstraints>
+                                    <ColumnConstraints minWidth="10.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" />
+                                    <RowConstraints minHeight="10.0" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Fecha:" textFill="#020203">
+                                       <graphic>
+                                          <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/calendar.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic></Label>
+                                    <DatePicker fx:id="tpFechaCompra" editable="false" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" GridPane.columnIndex="1" />
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Serie y Numeración:" textFill="#020203" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/tipodocumento.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic></Label>
+                                    <HBox style="-fx-spacing: 0.8333333333333334em;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <TextField fx:id="cbSerie" onKeyTyped="#onKeyTypedNumeracion" prefHeight="30.0" prefWidth="110.0" promptText="Ingrese la serie" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
+                                          <TextField fx:id="cbNumeracion" onKeyTyped="#onKeyTypedNumeracion" prefHeight="30.0" prefWidth="110.0" promptText="Ingrese la numeración" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </HBox>
+                        <HBox style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
+                           <children>
+                              <TableView fx:id="tvList" fixedCellSize="-0.0" onMouseClicked="#onMouseClickedList" prefHeight="280.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
+                                 <columns>
+                                    <TableColumn fx:id="tcAccion" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Acción" />
+                                    <TableColumn fx:id="tcCantidad" prefWidth="110.0" style="-fx-alignment: CENTER;" text="Cantidad" />
+                                    <TableColumn fx:id="tcArticulo" prefWidth="379.0" style="-fx-alignment: CENTER-LEFT;" text="Clave/Descripción" />
+                                    <TableColumn fx:id="tcCosto" prefWidth="110.0" style="-fx-alignment: CENTER;" text="Costo Unitario" />
+                                    <TableColumn fx:id="tcImpuesto" prefWidth="110.0" style="-fx-alignment: CENTER;" text="Impuesto %" />
+                                    <TableColumn fx:id="tcImporte" prefWidth="148.0" style="-fx-alignment: CENTER;" text="Importe" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </HBox>
+                        <HBox style="-fx-spacing: 1.6666666666666667em;">
+                           <children>
+                              <HBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <VBox>
+                                       <children>
+                                          <VBox>
+                                             <children>
+                                                <Label alignment="CENTER_RIGHT" styleClass="labelRoboto13" text="Notas:" textFill="#020203" wrapText="true" />
+                                                <Label alignment="CENTER_RIGHT" prefHeight="35.0" styleClass="labelRoboto12" text="(Visibles en el documento impreso)" textFill="#020203" wrapText="true" />
+                                             </children>
+                                          </VBox>
+                                          <TextArea fx:id="txtNotas" prefHeight="50.0" prefWidth="200.0" wrapText="true" />
+                                       </children>
+                                    </VBox>
+                                    <VBox>
+                                       <children>
+                                          <VBox>
+                                             <children>
+                                                <Label alignment="CENTER_RIGHT" styleClass="labelRoboto13" text="Observaciones:" textFill="#020203" wrapText="true" />
+                                                <Label alignment="CENTER_RIGHT" prefHeight="35.0" styleClass="labelRoboto12" text="(No visibles en el documento impreso)" textFill="#020203" wrapText="true" />
+                                             </children>
+                                          </VBox>
+                                          <TextArea fx:id="txtObservaciones" prefHeight="50.0" prefWidth="206.0" wrapText="true" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <VBox>
+                                 <children>
+                                    <GridPane style="-fx-hgap: 0.8333333333333334em;">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                          <ColumnConstraints hgrow="ALWAYS" minWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="SUB IMPORTE:" textFill="#020203" />
+                                          <Label fx:id="lblImpuesto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPUESTO:" textFill="#020203" GridPane.rowIndex="1" />
+                                          <Label fx:id="lblImporteNeto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPORTE NETO:" textFill="#020203" GridPane.rowIndex="2" />
+                                          <Label fx:id="lblSubImporteNeto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" />
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

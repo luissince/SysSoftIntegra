@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0ee8a66d-c27a-4aae-a7d5-aa62565a998f">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="TIPO_MERMA" class="java.lang.String"/>
+	<parameter name="PRODUCTO" class="java.lang.String"/>
+	<parameter name="CANTIDAD_MERMA" class="java.lang.String"/>
+	<parameter name="COSTO_PROMEDIO" class="java.lang.String"/>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="productoReporte" class="java.lang.String"/>
+	<field name="tipoMermaReporte" class="java.lang.String"/>
+	<field name="costoReporte" class="java.lang.Double"/>
+	<field name="cantidadReporte" class="java.lang.Double"/>
+	<field name="unidadReporte" class="java.lang.String"/>
+	<background>
+		<band height="802">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="802" forecolor="#1A2226" uuid="ab0ece88-21d8-46a0-8848-a750b1a80374"/>
+				<box>
+					<topPen lineWidth="1.0" lineColor="#020203"/>
+					<leftPen lineWidth="1.0" lineColor="#020203"/>
+					<bottomPen lineWidth="1.0" lineColor="#020203"/>
+					<rightPen lineWidth="1.0" lineColor="#020203"/>
+				</box>
+			</frame>
+		</band>
+	</background>
+	<title>
+		<band height="75" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="204" height="30" forecolor="#020203" uuid="0666de07-fbff-4223-be1c-df52b270a45f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Merma Generada]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="30" width="555" height="1" forecolor="#000000" uuid="f4a6e0f2-e000-41b0-bae8-c2f6620a627e"/>
+				<graphicElement>
+					<pen lineColor="#575555"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="52" width="104" height="22" forecolor="#020203" uuid="f2049ffa-162d-48b6-866b-b74e086171d7"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Merma:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="104" y="52" width="162" height="22" forecolor="#020203" uuid="73191b0c-f155-49b5-bce1-519616fb4d96"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TIPO_MERMA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="31" width="104" height="22" forecolor="#020203" uuid="1c260b6f-97c1-4116-8e5f-358a22fc08e4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Producto:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="104" y="30" width="162" height="22" forecolor="#020203" uuid="f776a3a5-8ce8-4204-90f7-fe787994f7f7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{PRODUCTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="21">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="21" backcolor="#000000" uuid="f66c753b-6234-4b34-a491-b81e5e79c9e7"/>
+				<staticText>
+					<reportElement x="0" y="0" width="50" height="21" forecolor="#FFFFFF" uuid="e1e2a60a-cfe8-491a-81f7-94f2cda11d7b">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7cd9bfa0-5099-4320-ae37-eefc621745e9"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[#]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="50" y="0" width="205" height="21" forecolor="#FFFFFF" uuid="98aedaa4-8af2-45a9-8a70-c24c42abd6d0">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1973efa0-6044-4fc5-9f36-c2e00d30a561"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Producto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="355" y="0" width="100" height="21" forecolor="#FFFFFF" uuid="e3d23e37-ff5a-49c9-93fe-efe1df6649e7">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c9cc3d7f-eba0-4c8d-993e-836791845a3c"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Costo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="455" y="0" width="100" height="21" forecolor="#FFFFFF" uuid="3fc8d537-2791-4b59-8fe1-28c9ad3fe7e3">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c9cc3d7f-eba0-4c8d-993e-836791845a3c"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cantidad]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="255" y="0" width="100" height="21" forecolor="#FFFFFF" uuid="057e5a81-e385-458b-8dca-1fc1e9dd488a">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c9cc3d7f-eba0-4c8d-993e-836791845a3c"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tipo Merma]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="50" height="23" uuid="defd7f36-51d4-468d-90ca-6a1e8adb713a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="0" width="205" height="23" uuid="16ccd1a3-fc96-4b35-8d8c-0b608077d047"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{productoReporte}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="255" y="0" width="100" height="23" uuid="03b38793-fb94-4b56-9146-d92b4471a945"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipoMermaReporte}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="355" y="0" width="100" height="23" uuid="6f76b492-035a-4edf-ab60-26c844de3d38"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new BigDecimal(new Double($F{costoReporte})).setScale(2, RoundingMode.HALF_UP)]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="0" width="100" height="23" uuid="a29e6970-35e4-4e5e-9efb-d6fb9337b806"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new BigDecimal(new Double($F{cantidadReporte})).setScale(2, RoundingMode.HALF_UP)]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="160" y="0" width="234" height="21" forecolor="#FFFFFF" backcolor="#020203" uuid="9fa0afde-cf67-48c6-b7b4-8ca958720e84"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Generado por SYS SOFT INTEGRA]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h:mm a">
+				<reportElement mode="Opaque" x="394" y="0" width="161" height="21" forecolor="#FFFFFF" backcolor="#020203" uuid="4c849196-0930-4249-8db5-ae5edaeda808"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="false"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="0" y="0" width="160" height="21" forecolor="#FFFFFF" backcolor="#020203" uuid="5a9817ff-b9b4-4dd3-8d42-e65883b23fa2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="7"/>
+					<paragraph lineSpacing="AtLeast"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}+" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="52">
+			<staticText>
+				<reportElement x="455" y="0" width="100" height="17" forecolor="#020203" uuid="0a8d8601-c8b7-4087-a3e8-21558b7323ab"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD DE MERMA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="455" y="17" width="101" height="17" forecolor="#020203" uuid="2d298485-96c1-4adf-aeab-442fe4a6e226"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CANTIDAD_MERMA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="355" y="0" width="100" height="17" forecolor="#020203" uuid="32b82069-7f21-4955-90d7-00004455b076"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[COSTO PROMEDIO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="354" y="17" width="101" height="17" forecolor="#020203" uuid="d0ed4080-4cef-4d22-bcf7-866fd30a8d5f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{COSTO_PROMEDIO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

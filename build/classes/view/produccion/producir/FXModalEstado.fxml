@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.produccion.producir.FXModalEstadoController">
+   <children>
+      <VBox prefWidth="500.0">
+         <children>
+            <HBox style="-fx-padding: 0.8333333333333334em; -fx-background-color: white; -fx-border-color: #3c8dbc; -fx-border-width: 0 0 1px 0;">
+               <children>
+                  <Label styleClass="labelRobotoBold15" text="Confirmacion" textFill="#020203" HBox.hgrow="ALWAYS">
+                     <graphic>
+                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/checked.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.8333333333333334em; -fx-background-color: white;">
+               <children>
+                  <Label styleClass="labelRobotoBold15" text="¿Que acción desea realizar?" textFill="#020203" />
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 1.25em; -fx-background-color: white;">
+               <children>
+                  <VBox style="-fx-spacing: 1.1666666666666667em;">
+                     <children>
+                        <RadioButton fx:id="rbSaveOden" mnemonicParsing="false" selected="true" styleClass="labelRoboto13" text="¿Guardar orden?" />
+                        <RadioButton fx:id="rbSaveAndEnd" mnemonicParsing="false" styleClass="labelRoboto13" text="¿Guardar orden y finalizar produccion?" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 1px 0px 0px 0px;">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onActionToRegister" onKeyPressed="#onKeyPressedRegister" styleClass="buttonLightDefault" text="Registrar">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionToCancel" onKeyPressed="#onKeyPressedCancel" styleClass="buttonLight" text="Cancelar">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/error.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

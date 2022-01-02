@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.login.FxValidarAccesoController">
+   <children>
+      <VBox layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 2px 0; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF;">
+               <children>
+                  <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../image/consultas.png" />
+                     </image>
+                  </ImageView>
+                  <Text fx:id="lblComprobante" fill="#1a2226" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold15" text="Validar" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <VBox HBox.hgrow="ALWAYS">
+                     <children>
+                        <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <Label styleClass="labelRoboto13" text="Ingrese la clave única para continuar con el proceso" textFill="#1a2226" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;">
+                                 <children>
+                                    <TextField fx:id="txtClave" onAction="#onActionAceptar" promptText="clave" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <Separator prefWidth="200.0" />
+                        <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onActionAceptar" onKeyPressed="#onKeyPressedAceptar" styleClass="buttonLightDefault" text="Aceptar">
+                                 <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/accept.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

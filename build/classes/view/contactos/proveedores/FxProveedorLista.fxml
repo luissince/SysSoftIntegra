@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.contactos.proveedores.FxProveedorListaController">
+   <children>
+      <VBox layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" style="-fx-border-color: #cccccc; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <Label styleClass="labelRoboto13" text="Buscar(F1):" textFill="#020203">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/search.png" />
+                           </image></ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Roboto" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtSearch" maxHeight="1.7976931348623157E308" onKeyPressed="#onKeyPressedToSearh" onKeyReleased="#onKeyReleasedToSearch" prefHeight="30.0" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#onActionToRegister" onKeyPressed="#onKeyPressedToRegister" styleClass="buttonLight" text="Agregar(F2)">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/plus.png" />
+                           </image></ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionToReload" onKeyPressed="#onKeyPressedToReload" styleClass="buttonLight" text="Recargar(F3)">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/reload.png" />
+                           </image></ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
+               <children>
+                  <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <TableView fx:id="tvList" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="340.0" styleClass="table-view-principal" VBox.vgrow="ALWAYS">
+                           <columns>
+                              <TableColumn fx:id="tcId" prefWidth="50.0" style="-fx-alignment: CENTER;" text="N°" />
+                              <TableColumn fx:id="tcDocument" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Documento" />
+                              <TableColumn fx:id="tcRepresentative" prefWidth="340.0" style="-fx-alignment: CENTER-LEFT;" text="Datos personales/Razón social " />
+                              <TableColumn fx:id="tcMovil" prefWidth="200.0" style="-fx-alignment: CENTER-LEFT;" text="Tel/Cel" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" style="-fx-border-color: #cccccc; -fx-padding: 0.8333333333333334em;">
+               <children>
+                  <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER" style="-fx-background-color: #cccccc;">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onActionAnterior" onKeyPressed="#onKeyPressedAnterior" styleClass="buttonLight" text="Anterior">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/left.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Label fx:id="lblPaginaActual" styleClass="labelBorder" text="0" textFill="#020203" />
+                              <Label styleClass="labelForm" text="de" textFill="#020203" />
+                              <Label fx:id="lblPaginaSiguiente" styleClass="labelBorder" text="0" textFill="#020203" />
+                              <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onActionSiguiente" onKeyPressed="#onKeyPressedSiguiente" styleClass="buttonLight" text="Siguiente">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/right.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onActionAceptar" onKeyPressed="#onKeyPressedAceptar" styleClass="buttonLightDefault" text="Aceptar">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/accept.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

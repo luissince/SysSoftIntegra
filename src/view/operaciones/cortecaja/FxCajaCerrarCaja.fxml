@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.cortecaja.FxCajaCerrarCajaController">
+   <children>
+      <VBox>
+         <children>
+            <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 1px 0; -fx-padding: 0.8333333333333334em; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF;">
+               <children>
+                  <Label styleClass="labelRobotoBold15" text="Realizar corte" textFill="#020203">
+                     <graphic>
+                        <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/choose_movement.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" minHeight="-Infinity" style="-fx-border-width: 0  0 1px 0; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-background-color: #FFFF;">
+               <children>
+                  <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold15" text="Cerrar Turno" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Text fx:id="lblFechaCierre" fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold15" text="Cierre de turno: 00/00/0000 0:00" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <VBox HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                           <children>
+                              <GridPane style="-fx-hgap: 0.8333333333333334em; -fx-vgap: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="labelRoboto13" text="VALOR REAL EN TARJETA:" textFill="#020203" GridPane.rowIndex="1" />
+                                    <Label styleClass="labelRoboto13" text="VALOR REAL EN CAJA:" textFill="#020203" />
+                                    <TextField fx:id="txtEfectivo" alignment="CENTER_RIGHT" onAction="#onActionAceptar" onKeyTyped="#onKeyTypedEfectivo" prefWidth="220.0" promptText="0.00" styleClass="text-field-normal" GridPane.columnIndex="1" />
+                                    <Label fx:id="lblValorTarjeta" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRobotoBold15" text="0.00" textFill="#020203" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                           <children>
+                              <Label styleClass="labelRoboto13" text="Realizar movimiento a las siguientes cuentas:" textFill="#020203" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                           <children>
+                              <GridPane style="-fx-hgap: 0.8333333333333334em; -fx-vgap: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                  <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="labelRoboto13" text="Cuenta efectivo:" textFill="#020203" />
+                                    <Label styleClass="labelRoboto13" text="Cuenta bancaria:" textFill="#020203" GridPane.rowIndex="1" />
+                                    <ComboBox fx:id="cbCuentasEfectivo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+                                    <ComboBox fx:id="cbCuentasTarjeta" maxWidth="1.7976931348623157E308" prefWidth="240.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onActionAceptar" onKeyPressed="#onKeyPressedAceptar" styleClass="buttonLightDefault" text="Cerrar turno">
+                                 <graphic>
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/save.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

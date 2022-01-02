@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.valorinventario.FxReporteOpcionesInventarioController">
+   <children>
+      <VBox>
+         <children>
+            <HBox style="-fx-padding: 0.8333333333333334em; -fx-border-color: #3c8dbc; -fx-border-width: 0px 0px 1px 0px;">
+               <children>
+                  <Label styleClass="labelRobotoBold15" text="Formato del reporte" textFill="#020203">
+                     <graphic>
+                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/reports.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 1.25em;">
+               <children>
+                  <RadioButton fx:id="rbOpcionUno" mnemonicParsing="false" selected="true" styleClass="labelRoboto13" text="Reporte Inventario General">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/plazos.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </RadioButton>
+                  <RadioButton fx:id="rbOpcionDos" mnemonicParsing="false" styleClass="labelRoboto13" text="Reporte Inventario para Ajuste">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/rows.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </RadioButton>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em; -fx-border-width: 1px 0px 0px 0px; -fx-border-color: #cccccc;">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onActionGenerar" onKeyPressed="#onKeyPressedGenerar" styleClass="buttonLightDefault" text="Generar">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/accept.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionCerrar" onKeyPressed="#onKeyPressedCerrar" styleClass="buttonLight" text="Cancelar">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/error.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

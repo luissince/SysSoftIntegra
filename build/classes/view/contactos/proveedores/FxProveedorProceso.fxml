@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" fx:id="window" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.contactos.proveedores.FxProveedorProcesoController">
+   <children>
+      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox>
+               <children>
+                  <HBox alignment="CENTER_LEFT" style="-fx-background-color: #020203;" styleClass="paddinContainer">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/providers.png" />
+                                 </image></ImageView>
+                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold15" text="Datos del proveedor">
+                                 <font>
+                                    <Font name="Roboto" size="18.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                     <tabs>
+                        <Tab fx:id="tab1" text="Datos básicos">
+                           <content>
+                              <AnchorPane style="-fx-background-color: #e7e6e6;">
+                                 <children>
+                                    <VBox style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: #CCCCCC; -fx-padding: 1.6666666666666667em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.4166666666666667em; -fx-spacing: 0.8333333333333334em;">
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Tipo documento" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <ComboBox fx:id="cbDocumentTypeFactura" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="260.0" styleClass="comboBox" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="N° Documento" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <HBox>
+                                                         <children>
+                                                            <TextField fx:id="txtDocumentNumberFactura" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="188.0" styleClass="text-field-normal" />
+                                                            <Button fx:id="btnBuscarSunat" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionSunat" onKeyPressed="#onKeyPressedSunat" prefHeight="30.0" styleClass="buttonLight">
+                                                               <graphic>
+                                                                  <ImageView fitHeight="20.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../../image/sunat_logo.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                            </Button>
+                                                            <Button fx:id="btnBuscarReniec" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionReniec" onKeyPressed="#onKeyPressedReniec" prefHeight="30.0" styleClass="buttonLight">
+                                                               <graphic>
+                                                                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../../image/reniec.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.4166666666666667em; -fx-spacing: 0.8333333333333334em;">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Razón social/Datos de la persona" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtBusinessName" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Representante" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtRepresentante" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.4166666666666667em; -fx-spacing: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Teléfono" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtTelefono" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Celular" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtCelular" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.4166666666666667em; -fx-spacing: 0.8333333333333334em;">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Email" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtEmail" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Pagina web" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtPaginaWeb" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.4166666666666667em; -fx-spacing: 0.8333333333333334em;">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Dirección" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtDireccion" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="tab2" disable="true" text="Datos de contacto">
+                           <content>
+                              <AnchorPane style="-fx-background-color: #e7e6e6;">
+                                 <children>
+                                    <VBox style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: #CCCCCC; -fx-padding: 1.6666666666666667em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.4166666666666667em; -fx-spacing: 0.8333333333333334em;">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label prefHeight="18.0" styleClass="labelRoboto13" text="Ámbito" textFill="#23283a">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <ComboBox fx:id="cbAmbito" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="260.0" styleClass="comboBox" VBox.vgrow="ALWAYS" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.4166666666666667em; -fx-spacing: 0.8333333333333334em;">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Nombre comercial" textFill="#23283a">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtTradename" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="260.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Estado" textFill="#23283a">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <ComboBox fx:id="cbEstado" prefHeight="30.0" prefWidth="260.0" styleClass="comboBox" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" style="-fx-border-width: 1 0 0 0; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #CCCCCC; -fx-background-color: white;">
+               <children>
+                  <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#onActionToRegister" onKeyPressed="#onKeyPressedToRegister" styleClass="buttonLightDefault" text="Registrar">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/save.png" />
+                           </image></ImageView>
+                     </graphic></Button>
+                  <Button mnemonicParsing="false" onAction="#onActionToCancel" onKeyPressed="#onKeyPressedToCancel" styleClass="buttonLight" text="Cancelar">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/error.png" />
+                           </image></ImageView>
+                     </graphic></Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

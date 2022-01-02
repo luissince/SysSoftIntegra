@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.produccion.producir.FxProducirAgregarController">
+   <children>
+      <VBox fx:id="vbBody" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 2px 0; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <ImageView fitHeight="28.0" fitWidth="28.0" onMouseClicked="#onMouseClickedBehind" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+                     <image>
+                        <Image url="@../../image/left.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../image/produce.png" />
+                     </image>
+                  </ImageView>
+                  <Text fill="#030202" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold15" text="Agregar Orden de Producción" />
+               </children>
+            </HBox>
+            <ScrollPane fitToWidth="true" prefHeight="420.0" styleClass="scroll-pane-primary" VBox.vgrow="ALWAYS">
+               <content>
+                  <AnchorPane>
+                     <children>
+                        <VBox fx:id="vbPrimero" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <GridPane style="-fx-hgap: 0.8333333333333334em; -fx-vgap: 0.8333333333333334em;">
+                                <columnConstraints>
+                                  <ColumnConstraints minWidth="10.0" />
+                                  <ColumnConstraints minWidth="10.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="labelRoboto13" text="Formula:" textFill="#020203">
+                                       <font>
+                                          <Font name="Calibri" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <ComboBox fx:id="cbFormula" prefHeight="30.0" prefWidth="240.0" GridPane.columnIndex="1" />
+                                    <Label styleClass="labelRoboto13" text="Producto:" textFill="#020203" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font name="Calibri" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <ComboBox fx:id="cbProducto" prefHeight="30.0" prefWidth="240.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <HBox style="-fx-spacing: 0.8333333333333334em;" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <children>
+                                          <TextField fx:id="txtCantidad" onKeyTyped="#onKeyTypedCantidad" prefHeight="30.0" prefWidth="240.0" promptText="0" styleClass="text-field-normal" />
+                                          <CheckBox fx:id="cbCantidadVariable" mnemonicParsing="false" onAction="#onActionCantidadVariable" styleClass="check-box-contenido" text="Cantidad Variable" />
+                                       </children>
+                                    </HBox>
+                                    <Label styleClass="labelRoboto13" text="Cantidad:" textFill="#020203" GridPane.rowIndex="2">
+                                       <font>
+                                          <Font name="Calibri" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Persona Encargada:" textFill="#020203" GridPane.rowIndex="3">
+                                       <font>
+                                          <Font name="Calibri" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <ComboBox fx:id="cbPersonaEncargada" prefHeight="30.0" prefWidth="240.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Tipo de Orden:" textFill="#020203" GridPane.rowIndex="4">
+                                       <font>
+                                          <Font name="Calibri" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                       <children>
+                                          <RadioButton fx:id="cbInterno" mnemonicParsing="false" selected="true" text="Interno" />
+                                          <RadioButton fx:id="cbExterno" mnemonicParsing="false" text="Externo" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </GridPane>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#onActionSiguiente" onKeyPressed="#onKeyPressedSiguiente" styleClass="buttonLightDefault" text="Siguiente">
+                                       <graphic>
+                                          <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/right.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox fx:id="vbSegundo" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 0px 0px 1px 0px;">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#onActionGuardar" onKeyPressed="#onKeyPressedGuardar" styleClass="buttonLightDefault" text="Guardar(F1)">
+                                       <graphic>
+                                          <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/save.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button mnemonicParsing="false" onAction="#onActionCancelar" onKeyPressed="#onKeyPressedCancelar" styleClass="buttonLight" text="Cancelar(F2)">
+                                       <graphic>
+                                          <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/error.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em;">
+                                 <children>
+                                    <GridPane style="-fx-hgap: 0.8333333333333334em; -fx-vgap: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                       <columnConstraints>
+                                          <ColumnConstraints minWidth="10.0" />
+                                          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                                          <ColumnConstraints minWidth="10.0" />
+                                          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="20.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Medida a Producir:" textFill="#020203" GridPane.rowIndex="1" />
+                                          <Text fx:id="lblMedidaProducir" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto14" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Producto:" textFill="#020203" />
+                                          <Text fx:id="lblProducto" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto14" text="-" GridPane.columnIndex="1" />
+                                          <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Cantidad a Producir" textFill="#020203" GridPane.columnIndex="2">
+                                             <font>
+                                                <Font name="Calibri" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="txtCantidadProducir" onKeyTyped="#onKeyTypedCantidadProducir" promptText="0" styleClass="text-field-normal" GridPane.columnIndex="3" />
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </HBox>
+                              <Separator prefWidth="200.0" />
+                              <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                                 <children>
+                                    <VBox spacing="10.0">
+                                       <children>
+                                          <Label styleClass="labelRoboto13" text="Fecha de Término:" textFill="#020203">
+                                             <font>
+                                                <Font name="Calibri" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <DatePicker fx:id="dtFechaTermino" editable="false" prefHeight="30.0" prefWidth="240.0" promptText="00/00/0000" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="10.0">
+                                       <children>
+                                          <Label styleClass="labelRoboto13" text="Duración" textFill="#020203">
+                                             <font>
+                                                <Font name="Calibri" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox>
+                                             <children>
+                                                <TextField fx:id="txtDias" onKeyTyped="#onKeyTypedDias" prefHeight="30.0" prefWidth="100.0" promptText="Días" styleClass="text-field-normal" />
+                                                <TextField fx:id="txtHoras" onKeyTyped="#onKeyTypedHoras" prefHeight="30.0" prefWidth="100.0" promptText="Horas" styleClass="text-field-normal" />
+                                                <TextField fx:id="txtMinutos" onKeyTyped="#onKeyTypedMinutos" prefHeight="30.0" prefWidth="100.0" promptText="Minutos" styleClass="text-field-normal" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="10.0">
+                                       <children>
+                                          <Label styleClass="labelRoboto13" text="Costo Adicional" textFill="#020203">
+                                             <font>
+                                                <Font name="Calibri" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox>
+                                             <children>
+                                                <TextField fx:id="txtCostoAdicional" onKeyTyped="#onKeyTypedDias" prefHeight="30.0" prefWidth="240.0" promptText="0.00" styleClass="text-field-normal" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox spacing="10.0" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                                 <children>
+                                    <VBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;">
+                                       <children>
+                                          <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Lista de Materia Prima:" textFill="#020203">
+                                             <font>
+                                                <Font name="Calibri" size="15.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER_RIGHT" style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Button fx:id="btnAgregar" mnemonicParsing="false" onAction="#onActonAgregar" onKeyPressed="#onKeyPressedAgregar" styleClass="buttonLightWarning" text="Insumo">
+                                             <graphic>
+                                                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../image/plus.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em;">
+                                 <children>
+                                    <GridPane fx:id="gpListInsumo" style="-fx-vgap: 1em; -fx-hgap: 0.5em;" HBox.hgrow="ALWAYS">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="340.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints />
+                                       </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                              </HBox>
+                              <Separator prefWidth="200.0" />
+                              <HBox spacing="10.0" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                                 <children>
+                                    <VBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;">
+                                       <children>
+                                          <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Merma:" textFill="#020203">
+                                             <font>
+                                                <Font name="Calibri" size="15.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER_RIGHT" style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <HBox alignment="CENTER_RIGHT" style="-fx-spacing: 0.8333333333333334em;">
+                                             <children>
+                                                <Button mnemonicParsing="false" onAction="#onActonMerma" onKeyPressed="#onKeyPressedMerma" styleClass="buttonLight" text="Merma">
+                                                   <graphic>
+                                                      <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/plus.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em;">
+                                 <children>
+                                    <GridPane fx:id="gpListMerma" style="-fx-vgap: 1em; -fx-hgap: 0.5em;" HBox.hgrow="ALWAYS">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="340.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints />
+                                       </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                              </HBox>
+                              <Separator prefWidth="200.0" />
+                              <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                                 <children>
+                                    <VBox alignment="CENTER_LEFT" spacing="10.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Glosa Descriptiva de la Orden:" textFill="#020203">
+                                             <font>
+                                                <Font name="Calibri" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <TextArea fx:id="txtDescripcion" maxHeight="80.0" prefHeight="80.0" promptText="Ingrese una descripción..." HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+      <HBox fx:id="hbLoad" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.8);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <Label fx:id="lblMessageLoad" alignment="CENTER" contentDisplay="TOP" prefWidth="400.0" styleClass="labelRobotoBold17" text="Cargando datos..." textFill="WHITE" wrapText="true" VBox.vgrow="ALWAYS">
+                     <graphic>
+                        <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/load.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <Button fx:id="btnAceptarLoad" mnemonicParsing="false" styleClass="buttonLight" text="Aceptar" visible="false">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/accept.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

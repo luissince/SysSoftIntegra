@@ -1,0 +1,184 @@
+/*ROBOTO FONT*/
+@font-face {
+    font-family: 'Roboto Medium', sans-serif; 
+    src: url('Roboto-Medium.ttf'); 
+} 
+@font-face { 
+    font-family: 'Roboto Bold', sans-serif; 
+    src: url('Roboto-Bold.ttf'); 
+} 
+@font-face { 
+    font-family: 'Roboto', sans-serif; 
+    src: url('Roboto-Regular.ttf'); 
+} 
+
+
+/*******************************************************************************
+ *                                                                             *
+ * Alert and Dialog                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.dialog-pane{
+    -fx-border-color:white;
+    -fx-border-width:1px;
+    -fx-background-color:white;
+    -fx-font-size:1.0833333333333333em;/*13px*/
+    -fx-font-family:"Roboto";
+    -fx-text-fill:#111;
+    -fx-font-smoothing-type: lcd;
+}
+
+.dialog-pane .text-field{
+    BORDER: #999999;
+    BORDER_HOVER: #666666;
+
+    BACKGROUND: white;
+    BACKGROUND_FOCUSED: #00aff0;
+    BACKGROUND_HOVER: white;
+
+    TEXT_COLOR: #111;
+
+    -fx-background-radius: 0, 0;
+
+    -fx-background-color: BORDER, BACKGROUND;
+    -fx-border-width:1;
+    -fx-border-color: #999999;
+
+    -fx-font-size:1.0833333333333333em;/*13px*/ 
+    -fx-font-family:"Roboto"; 
+    -fx-font-smoothing-type: lcd;
+}
+
+.dialog-pane .text-field:hover{
+    -fx-background-color: BORDER_HOVER, BACKGROUND_HOVER;
+    -fx-border-color: #7a7a7a;
+}
+
+.dialog-pane .text-field:focused{
+    -fx-border-width:1;
+    -fx-border-color: #00aff0;
+}
+
+
+/**Costumization of The Bar where the buttons are located**/
+.dialog-pane > .button-bar > .container {
+    -fx-background-color:white;
+}
+
+.dialog-pane > .content.label {
+    -fx-font-family:"Roboto";
+    -fx-background-color: white;
+    -fx-text-fill:#111;
+    -fx-font-size:1.0833333333333333em;/*13px*/
+    -fx-font-smoothing-type: lcd;
+}
+
+/**Costumization of DialogPane Header**/
+.dialog-pane:header .header-panel {
+    -fx-background-color: white;
+}
+
+.dialog-pane:header .header-panel .label{
+    -fx-background-color: white;
+    -fx-background-radius:10px;
+    -fx-text-fill:black;
+    -fx-font-size:1.1666666666666667em;
+    -fx-font-smoothing-type: lcd;
+}
+
+/**Costumization of Buttons**/
+.dialog-pane .button{
+
+    -shrink-animate-on-press: true;
+
+     -fx-padding: 0.4166666666666667em 0.75em 0.4166666666666667em 0.75em; /*5px 9px 5px 9px*/
+
+    -fx-border-color: transparent;
+    -fx-border-width: 1;
+
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-background-color: #cccccc;
+
+    -fx-font-family:"Roboto";
+    -fx-font-size: 1.0833333333333333em;/*13px*/
+    -fx-text-fill: #111;
+    -fx-font-smoothing-type: lcd;
+}
+
+.dialog-pane .button:hover{     
+    -fx-border-color: #7a7a7a;
+    -fx-border-width: 1px;
+}
+
+.dialog-pane .button:pressed{
+    -fx-border-color: #999999;
+    -fx-background-color: #999999;
+    -fx-border-width: 1px;
+}
+.dialog-pane .button:focused{
+    -fx-border-color: transparent, #00aff0;
+    -fx-border-radius: 0, 0;
+    -fx-border-width: 1px;
+}
+
+.alert.confirmation.dialog-pane,
+.text-input-dialog.dialog-pane,
+.choice-dialog.dialog-pane {
+    -fx-graphic: url("/view/image/confirmation.png");
+}
+
+.alert.information.dialog-pane {
+    -fx-graphic: url("/view/image/accept.png");
+}
+
+.alert.error.dialog-pane {
+    -fx-graphic: url("/view/image/error.png");
+}
+
+.alert.warning.dialog-pane {
+    -fx-graphic: url("/view/image/warning.png");
+}
+
+alert.none.dialog-pane{
+    -fx-graphic: url("/view/image/accept.png");
+}
+
+
+/*******************************************************************************
+*                                                                              *
+*Text Area                                                                     *
+*                                                                              *
+*******************************************************************************/
+.text-area{
+    BORDER: #999999;
+    BORDER_HOVER: #666666;
+
+    BACKGROUND: white;
+    BACKGROUND_FOCUSED: #00aff0;
+    BACKGROUND_HOVER: white;
+}
+.text-area{
+    -fx-background-radius: 0, 0;
+
+    -fx-font-size:1.0833333333333333em;/*13px*/
+    -fx-font-family:"Roboto";
+
+    -fx-background-color: BORDER, BACKGROUND;
+    -fx-border-width:1;
+    -fx-border-color: #999999;
+}
+.text-area .content{
+    -fx-background-color: BACKGROUND_HOVER;
+}
+
+.text-area:hover{
+    -fx-background-color: BORDER_HOVER, BACKGROUND_HOVER;
+    -fx-border-color: #7a7a7a;
+}
+
+.text-area:focused{
+    -fx-border-width:1;
+    -fx-border-color: #00aff0;
+}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.configuracion.tablasbasicas.FxDetalleListaController">
+   <children>
+      <VBox layoutX="20.0" layoutY="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" style="-fx-border-color: #cccccc; -fx-border-width: 0 0 1px 0; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <Label styleClass="labelRoboto14" text="Buscar:" textFill="#020203">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/search.png" />
+                           </image></ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Roboto" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtSearch" maxHeight="1.7976931348623157E308" onKeyPressed="#onKeyPressedToSearh" onKeyReleased="#onKeyReleasedToSearch" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#onActionProceso" onKeyPressed="#onKeyPressedProceso" styleClass="buttonLight">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/plus.png" />
+                           </image></ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionEditar" onKeyPressed="#onKeyPressedEditar" styleClass="buttonLight">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/edit.png" />
+                           </image></ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
+               <children>
+                  <ListView fx:id="lvList" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="280.0" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" style="-fx-border-color: #cccccc; -fx-padding: 0.8333333333333334em;">
+               <children>
+                  <HBox alignment="CENTER" spacing="10.0">
+                     <children>
+                        <Label styleClass="labelOpenSansRegular15" text="Seleccione un elemento de la lista con doble click o enter." textFill="#020203" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

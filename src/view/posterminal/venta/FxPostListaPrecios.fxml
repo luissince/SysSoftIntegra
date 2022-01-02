@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.posterminal.venta.FxPostListaPreciosController">
+   <children>
+      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <Label contentDisplay="TOP" styleClass="labelRobotoBold15" text="Seleccionar Precio" textFill="#020203">
+                     <graphic>
+                        <ImageView fitHeight="96.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/prices.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <Label fx:id="lblNombreArticulo" alignment="CENTER" prefWidth="550.0" styleClass="labelOpenSansRegular15" text="Articulo" textAlignment="CENTER" textFill="#037c09" wrapText="true" />
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+            <HBox style="-fx-padding: 0.8333333333333334em;">
+               <children>
+                  <TableView fx:id="tvList" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="240.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
+                    <columns>
+                      <TableColumn fx:id="tcNumero" prefWidth="50.0" text="N°" />
+                      <TableColumn fx:id="tcNombre" prefWidth="230.0" text="Nombre" />
+                        <TableColumn fx:id="tcValor" prefWidth="130.0" text="Precio del Monto" />
+                        <TableColumn fx:id="tcFactor" prefWidth="130.0" text="Cantidad del Monto" />
+                    </columns>
+                  </TableView>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

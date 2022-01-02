@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<HBox fx:id="hbWindow" style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.menus.FxConfiguracionController">
+   <children>
+      <VBox HBox.hgrow="ALWAYS">
+         <children>
+            <HBox alignment="CENTER" prefHeight="66.0" style="-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-width: 0  0 1px 0; -fx-padding: 0.8333333333333334em;">
+               <children>
+                  <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto19" text="Seleccione la configuración a realizar">
+                     <font>
+                        <Font name="Roboto" size="20.0" />
+                     </font>
+                  </Text>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;">
+               <children>
+                  <VBox alignment="CENTER" style="-fx-spacing: 1.25em;">
+                     <children>
+                        <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular17" text="Ingrese la opción a buscar">
+                           <font>
+                              <Font name="Roboto" size="16.0" />
+                           </font>
+                        </Text>
+                        <TextField prefHeight="30.0" prefWidth="302.0" promptText="Buscar..." styleClass="text-field-normal" />
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <HBox fx:id="hbOperacionesUno" alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox fx:id="btnEmpresa" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionCompany" onKeyPressed="#onKeyPressedCompany" styleClass="buttonTransparent" text="Mi empresa" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/company.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Datos">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnTablasBasicas" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionTablasBasicas" onKeyPressed="#onKeyPressedTablasBasicas" styleClass="buttonTransparent" text="Tablas básicas" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/table.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Ajustes">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnRoles" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionPrivileges" onKeyPressed="#onKeyPressedPrivileges" styleClass="buttonTransparent" text="Roles" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/privileges.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Acesos">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnEmpleados" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionEmployes" onKeyPressed="#onKeyPressedEmployes" styleClass="buttonTransparent" text="Empleados" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/employees.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Accesos">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnMoneda" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionMoney" onKeyPressed="#onKeyPressedMoney" styleClass="buttonTransparent" text="Moneda" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/cantidad.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Documentos">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnComprobante" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionVoucher" onKeyPressed="#onKeyPressedVoucher" styleClass="buttonTransparent" text="Comprobante" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/tipodocumento.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Documentos">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox fx:id="hbOperacionesDos" alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox fx:id="btnImpuesto" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionTax" onKeyPressed="#onKeyPressedTax" styleClass="buttonTransparent" text="Impuestos" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/impuestos.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Árticulos">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnTickets" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionTickets" onKeyPressed="#onKeyPressedTickets" styleClass="buttonTransparent" text="Tickets" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/ticket.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Documentos">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnEtiqueta" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionEtiquetas" onKeyPressed="#onKeyPressedEtiquetas" styleClass="buttonTransparent" text="Etiquetas" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/etiquetas.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Documentos">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnImpresora" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionImpresora" onKeyPressed="#onKeyPressedImpresora" styleClass="buttonTransparent" text="Impresora" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/print.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Documentos">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btnAlmacen" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionAlmacen" onKeyPressed="#onKeyPressedAlmacen" styleClass="buttonTransparent" text="Almacén" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/inventario.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Inventario">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</HBox>

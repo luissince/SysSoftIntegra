@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.configuracion.moneda.FxMonedaProcesoController">
+   <children>
+      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #3c8dbc; -fx-border-width: 0px 0px 1px 0px;" VBox.vgrow="ALWAYS">
+               <children>
+                  <Label styleClass="labelRobotoBold15" text="Moneda" textFill="#020203">
+                     <graphic>
+                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/moneda.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Label>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox style="-fx-spacing: 0.6666666666666666em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Nombre" textFill="#020203" />
+                        <TextField fx:id="txtNombre" onAction="#onActionGuardar" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+                  <VBox style="-fx-spacing: 0.6666666666666666em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Abreviatura" textFill="#020203" />
+                        <TextField fx:id="txtAbreviatura" onAction="#onActionGuardar" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox style="-fx-spacing: 0.6666666666666666em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Simbolo" textFill="#020203" />
+                        <TextField fx:id="txtSimbolo" onAction="#onActionGuardar" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+                  <VBox style="-fx-spacing: 0.6666666666666666em;">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Tipo de cambio" textFill="#020203" />
+                        <TextField fx:id="txtTipoCambio" onAction="#onActionGuardar" onKeyTyped="#onKeyTypedTipoCambio" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 1px 0px 0px 0px;">
+               <children>
+                  <Button fx:id="btnGuardar" mnemonicParsing="false" onAction="#onActionGuardar" onKeyPressed="#onKeyPressedGuardar" styleClass="buttonLightDefault" text="Guardar">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/save.png" />
+                           </image></ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionCancelar" onKeyPressed="#onKeyCancelar" styleClass="buttonLight" text="Cancelar">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/error.png" />
+                           </image></ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.configuracion.impresoras.FxImprimirController">
+   <children>
+      <VBox>
+         <children>
+            <HBox>
+               <children>
+                  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER" style="-fx-background-color: #34495e; -fx-padding: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
+                           <children>
+                              <ImageView fitHeight="96.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/brochure-96.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;">
+                           <children>
+                              <Label styleClass="labelRobotoBold15" text="Impresión rápida" textFill="#020203" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;">
+                           <children>
+                              <Label prefWidth="478.0" styleClass="labelRobotoBold13" text="Para que funcione correctamente la impresora debe estar conectado siempre al mismo puesto USB." textFill="#f80000" wrapText="true" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <VBox style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                     <children>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label styleClass="labelOpenSansRegular13" text="Impresoras disponibles:" textFill="#020203" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+                           <children>
+                              <ComboBox fx:id="cbImpresoras" maxWidth="1.7976931348623157E308" prefWidth="240.0" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <CheckBox fx:id="cbCortarPapel" mnemonicParsing="false" selected="true" styleClass="check-box-contenido" text="Cortar papel" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionImprimir" onKeyPressed="#onKeyPressedImprimir" styleClass="buttonLight" text="Seleccionar" HBox.hgrow="ALWAYS">
+                                 <graphic>
+                                    <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/print.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

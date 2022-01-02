@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.menus.FxInicioController">
+   <children>
+      <ScrollPane fitToWidth="true" styleClass="scroll-pane-primary" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <content>
+            <VBox style="-fx-background-color: white;">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="66.0" style="-fx-border-color: #cccccc; -fx-border-width: 0  0 1px 0; -fx-background-color: white; -fx-padding: 0.8333333333333334em;">
+                     <children>
+                        <Text fx:id="lblFechaActual" fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto15" text="Jueves 12 de Enero del 2018" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="66.0" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                     <children>
+                        <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold19" text="Dashboard" />
+                        <Button mnemonicParsing="false" onAction="#onActionReload" onKeyPressed="#onKeyPressedReload" styleClass="buttonLight" text="Recargar vista" underline="true">
+                           <graphic>
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/reload.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 1.6666666666666667em;" VBox.vgrow="ALWAYS">
+                     <children>
+                        <AnchorPane style="-fx-background-color: #007bff; -fx-border-color: #007bff; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <VBox layoutX="22.0" layoutY="22.0" style="-fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Text fx:id="lblVentasTotales" fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold19" text="S/. 0.00">
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" />
+                                       </VBox.margin>
+                                    </Text>
+                                    <Text fill="WHITE" fontSmoothingType="LCD" lineSpacing="5.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="VENTAS DEL DÍA " wrappingWidth="238.0" VBox.vgrow="SOMETIMES" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </AnchorPane>
+                        <AnchorPane style="-fx-background-color: #DC143C; -fx-border-color: #DC143C; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <VBox style="-fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Text fx:id="lblComprasTotales" fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold19" text="S/. 0.00">
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" />
+                                       </VBox.margin>
+                                    </Text>
+                                    <Text fill="WHITE" fontSmoothingType="LCD" lineSpacing="5.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="COMPRAS DEL DÍA" wrappingWidth="238.0" VBox.vgrow="ALWAYS" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </AnchorPane>
+                        <AnchorPane style="-fx-background-color: #ea920d; -fx-border-color: #ea920d; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                           <children>
+                              <VBox style="-fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Text fx:id="lblVentasPagar" fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold19" text="0">
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" />
+                                       </VBox.margin>
+                                    </Text>
+                                    <Text fill="WHITE" fontSmoothingType="LCD" lineSpacing="5.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="CUENTAS POR COBRAR" wrappingWidth="238.0" VBox.vgrow="ALWAYS" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane style="-fx-background-color: #00a65a; -fx-border-color: #00a65a; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <VBox style="-fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Text fx:id="lblComprasPagar" fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold19" text="0">
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" />
+                                       </VBox.margin>
+                                    </Text>
+                                    <Text fill="WHITE" fontSmoothingType="LCD" lineSpacing="5.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="CUENTAS POR PAGAR" wrappingWidth="238.0" VBox.vgrow="ALWAYS" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+                  <HBox alignment="BASELINE_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 1.6666666666666667em;">
+                     <children>
+                        <AnchorPane prefWidth="240.0" style="-fx-background-color: #020203; -fx-border-color: #1a22#02020326; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/producto.png" />
+                                       </image>
+                                    </ImageView>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fill="#f44336" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="Negativos" />
+                                          <Text fx:id="lblNegativos" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
+                                          <Button mnemonicParsing="false" onAction="#onActionNegativos" onKeyPressed="#onKeyPressedNegativos" styleClass="buttonLight" text="Visualizar">
+                                             <graphic>
+                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../image/search_caja.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefWidth="240.0" style="-fx-background-color: #020203; -fx-border-color: #020203; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/producto.png" />
+                                       </image>
+                                    </ImageView>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fill="#fcba03" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="Intermedios" />
+                                          <Text fx:id="lblIntermedios" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
+                                          <Button mnemonicParsing="false" onAction="#onActionIntermedios" onKeyPressed="#onKeyPressedIntermedios" styleClass="buttonLight" text="Visualizar">
+                                             <graphic>
+                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../image/search_caja.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefWidth="240.0" style="-fx-background-color: #020203; -fx-border-color: #020203; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/producto.png" />
+                                       </image>
+                                    </ImageView>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fill="#4caf50" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="Necesarios" />
+                                          <Text fx:id="lblNecesarias" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
+                                          <Button mnemonicParsing="false" onAction="#onActionNecesarios" onKeyPressed="#onKeyPressedNecesarios" styleClass="buttonLight" text="Visualizar">
+                                             <graphic>
+                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../image/search_caja.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefWidth="240.0" style="-fx-background-color: #020203; -fx-border-color: #020203; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/producto.png" />
+                                       </image>
+                                    </ImageView>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fill="#03a9f4" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="Excedentes" />
+                                          <Text fx:id="lblExcentes" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
+                                          <Button mnemonicParsing="false" onAction="#onActionExcedentes" onKeyPressed="#onKeyPressedExcedentes" styleClass="buttonLight" text="Visualizar">
+                                             <graphic>
+                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../image/search_caja.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+                  <HBox alignment="BASELINE_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 1.6666666666666667em;" VBox.vgrow="ALWAYS">
+                     <children>
+                        <AnchorPane prefWidth="240.0" style="-fx-background-color: #6c757d; -fx-border-color: #6c757d; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/articles.png" />
+                                       </image>
+                                    </ImageView>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="Artículos" />
+                                          <Text fx:id="lblArticulo" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefWidth="240.0" style="-fx-background-color: #6c757d; -fx-border-color: #6c757d; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/clients.png" />
+                                       </image>
+                                    </ImageView>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="Clientes" />
+                                          <Text fx:id="lblCliente" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefWidth="240.0" style="-fx-background-color: #6c757d; -fx-border-color: #6c757d; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/providers.png" />
+                                       </image>
+                                    </ImageView>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="Proveedores" />
+                                          <Text fx:id="lblProveedor" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefWidth="240.0" style="-fx-background-color: #6c757d; -fx-border-color: #6c757d; -fx-border-radius: 4; -fx-background-radius: 4;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/employees.png" />
+                                       </image>
+                                    </ImageView>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="Trabajadores" />
+                                          <Text fx:id="lblTrabajador" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+                  <HBox style="-fx-padding: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
+                     <children>
+                        <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;">
+                                 <children>
+                                    <Label styleClass="labelRoboto15" text="Los 10 Productos Más Vendidos del Mes y Día" textFill="#020203" />
+                                 </children>
+                              </HBox>
+                              <VBox fx:id="vbProductoMasVendidos" />
+                           </children>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;">
+                                 <children>
+                                    <Label styleClass="labelRoboto15" text="Estado del Inventario" textFill="#020203" />
+                                 </children>
+                              </HBox>
+                              <PieChart fx:id="pcInventario" styleClass="labelRoboto13" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <HBox fx:id="hbLoad" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <Label contentDisplay="TOP" styleClass="labelRobotoBold17" text="Cargando datos..." textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../image/load.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
