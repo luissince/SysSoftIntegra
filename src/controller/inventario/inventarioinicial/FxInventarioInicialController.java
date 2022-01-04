@@ -213,15 +213,14 @@ public class FxInventarioInicialController implements Initializable {
                 new FileChooser.ExtensionFilter("Libro de Excel (*.xlsx)", "*.xlsx"),
                 new FileChooser.ExtensionFilter("Libro de Excel(1997-2003) (*.xls)", "*.xls")
         );
-        File file = fileChooser.showSaveDialog(apWindow.getScene().getWindow());
-        if (file != null) {
-            file = new File(file.getAbsolutePath());
-            if (file.getName().endsWith("xls") || file.getName().endsWith("xlsx")) {
-                generateExcel(file);
+        File fileExcel = fileChooser.showSaveDialog(apWindow.getScene().getWindow());
+        if (fileExcel != null) {
+            fileExcel = new File(fileExcel.getAbsolutePath());
+            if (fileExcel.getName().endsWith("xls") || fileExcel.getName().endsWith("xlsx")) {
+                generateExcel(fileExcel);
             } else {
                 Tools.AlertMessageWarning(apWindow, "Exportar", "Elija un formato valido");
             }
-
         }
     }
 
@@ -397,7 +396,7 @@ public class FxInventarioInicialController implements Initializable {
                                                 suministroTB.setStockMinimo(smi);
                                                 suministroTB.setStockMaximo(sma);
                                                 suministroTB.setCantidad(can);
-                                                suministroTB.setImpuestoId(1);
+                                                suministroTB.setIdImpuesto(1);
                                                 suministroTB.setTipoPrecio(true);
 
                                                 suministroTB.setCostoCompra(cos);

@@ -117,7 +117,7 @@ public class FxGuiaRemisionController implements Initializable {
     private TableColumn<GuiaRemisionDetalleTB, Button> tcOpcion;
 
     private FxPrincipalController fxPrincipalController;
-    
+
     private String idVenta;
 
     @Override
@@ -149,7 +149,7 @@ public class FxGuiaRemisionController implements Initializable {
         });
         searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             searchComboBoxCliente.getComboBox().getItems().clear();
-            List<ClienteTB> clienteTBs = ClienteADO.GetSearchComboBoxCliente( 4, searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().getText().trim());
+            List<ClienteTB> clienteTBs = ClienteADO.GetSearchComboBoxCliente(4, searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().getText().trim());
             clienteTBs.forEach(e -> searchComboBoxCliente.getComboBox().getItems().add(e));
         });
         searchComboBoxCliente.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
@@ -371,7 +371,18 @@ public class FxGuiaRemisionController implements Initializable {
         }
     }
 
-    public void eventAgregar(SuministroTB suministroTB) {
+    public boolean validateDuplicate(SuministroTB suministroTB) {
+        boolean ret = false;
+        for (int i = 0; i < tvList.getItems().size(); i++) {
+            if (tvList.getItems().get(i).getIdSuministro().equals(suministroTB.getIdSuministro())) {
+                ret = true;
+                break;
+            }
+        }
+        return ret;
+    }
+
+    public void addProducto(SuministroTB suministroTB) {
         GuiaRemisionDetalleTB guiaRemisionDetalleTB = new GuiaRemisionDetalleTB();
         guiaRemisionDetalleTB.setIdSuministro(suministroTB.getIdSuministro());
         guiaRemisionDetalleTB.setCodigo(suministroTB.getClave());
@@ -411,10 +422,10 @@ public class FxGuiaRemisionController implements Initializable {
         });
 
         Button btnRemover = new Button();
-        btnRemover.getStyleClass().add("buttonBorder");
-        ImageView view = new ImageView(new Image("/view/image/remove-black.png"));
-        view.setFitWidth(18);
-        view.setFitHeight(18);
+        btnRemover.getStyleClass().add("buttonDark");
+        ImageView view = new ImageView(new Image("/view/image/remove.png"));
+        view.setFitWidth(22);
+        view.setFitHeight(22);
         btnRemover.setGraphic(view);
         btnRemover.setOnAction(event -> {
             tvList.getItems().remove(guiaRemisionDetalleTB);
@@ -497,7 +508,6 @@ public class FxGuiaRemisionController implements Initializable {
         }
     }
 
-    
     private void onExecuteGuardar() {
         if (cbDocumentoGuia.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el documento guía usar.");
@@ -586,7 +596,7 @@ public class FxGuiaRemisionController implements Initializable {
                 String[] result = GuiaRemisionADO.InsertarGuiaRemision(guiaRemisionTB).split("/");
                 if (result[0].equalsIgnoreCase("register")) {
                     openModalImpresion(result[1]);
-                    reset();                    
+                    reset();
                 } else {
                     Tools.AlertMessageError(spWindow, "Guia Remisión", result[0]);
                 }
@@ -594,7 +604,7 @@ public class FxGuiaRemisionController implements Initializable {
 
         }
     }
-    
+
     private void openModalImpresion(String idGuiaRemision) {
         try {
             fxPrincipalController.openFondoModal();
@@ -615,7 +625,6 @@ public class FxGuiaRemisionController implements Initializable {
             System.out.println("Controller Modal Impresión: " + ex.getLocalizedMessage());
         }
     }
-
 
     private void reset() {
         cbCliente.getItems().clear();
@@ -643,7 +652,7 @@ public class FxGuiaRemisionController implements Initializable {
     }
 
     public void loadVentaById(String idVenta) {
-        this.idVenta=idVenta;
+        this.idVenta = idVenta;
         ExecutorService executor = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -683,9 +692,7 @@ public class FxGuiaRemisionController implements Initializable {
                 }
 
                 tvList.getItems().clear();
-                empList.forEach((suministro) -> {
-                    eventAgregar(suministro);
-                });
+                empList.forEach((suministro) -> addProducto(suministro));
                 txtNumeroBultos.setText("" + empList.size());
                 lblLoad.setVisible(false);
             } else {

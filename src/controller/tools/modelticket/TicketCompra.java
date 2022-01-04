@@ -119,6 +119,7 @@ public class TicketCompra {
                         map.put("DIRECCIONPROVEEDOR", Tools.textShow("", compraTB.getProveedorTB().getDireccion()));
                         map.put("PROVEEDORTELEFONOS", Tools.textShow("TEL.: ", compraTB.getProveedorTB().getTelefono()) + " " + Tools.textShow("CEL.: ", compraTB.getProveedorTB().getCelular()));
                         map.put("PROVEEDOREMAIL", Tools.textShow("", compraTB.getProveedorTB().getEmail()));
+                        map.put("COMPROBANTE", compraTB.getSerie().toUpperCase() + "-" + compraTB.getNumeracion());
 
                         map.put("NOTAS", compraTB.getNotas());
                         map.put("SIMBOLO", compraTB.getMonedaNombre());

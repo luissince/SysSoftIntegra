@@ -233,12 +233,12 @@ public class TicketCotizacion {
         for (SuministroTB suministroTB : arrList) {
             double descuento = suministroTB.getDescuento();
             double precioDescuento = suministroTB.getPrecioVentaGeneral() - descuento;
-            double subPrecio = Tools.calculateTaxBruto(suministroTB.getImpuestoValor(), precioDescuento);
+            double subPrecio = Tools.calculateTaxBruto(suministroTB.getImpuestoTB().getValor(), precioDescuento);
             double precioBruto = subPrecio + descuento;
             totalBruto += precioBruto * suministroTB.getCantidad();
             totalDescuento += suministroTB.getCantidad() * descuento;
             totalSubTotal += suministroTB.getCantidad() * subPrecio;
-            double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), subPrecio);
+            double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), subPrecio);
             totalImpuesto += suministroTB.getCantidad() * impuesto;
             totalNeto = totalSubTotal + totalImpuesto;
         }
@@ -363,12 +363,13 @@ public class TicketCotizacion {
         map.put("ICON", imgInputStreamIcon);
         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
         map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-        map.put("TELEFONOCELULAR", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
+        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
         map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
+        map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
 
-        map.put("DOCUMENTOEMPRESA", "R.U.C " + Session.COMPANY_NUMERO_DOCUMENTO);
+        map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
         map.put("NOMBREDOCUMENTO", "COTIZACIÓN");
-        map.put("NUMERODOCUMENTO", "N° " + cotizacionTB.getIdCotizacion());
+        map.put("NUMERODOCUMENTO", Tools.textShow("N°-", Tools.formatNumber(cotizacionTB.getIdCotizacion())));
 
         map.put("DATOSCLIENTE", cotizacionTB.getClienteTB().getInformacion());
         map.put("DOCUMENTOCLIENTE", "");
@@ -398,10 +399,10 @@ public class TicketCotizacion {
         Parent parent = fXMLLoader.load(url.openStream());
         //Controlller here
         FxReportViewController controller = fXMLLoader.getController();
-        controller.setFileName("COTIZACION N° " + cotizacionTB.getIdCotizacion());
+        controller.setFileName("COTIZACION N°-" + Tools.formatNumber(cotizacionTB.getIdCotizacion()));
         controller.setJasperPrint(jasperPrint);
         controller.show();
-        Stage stage = WindowStage.StageLoader(parent, "Cotizacion");
+        Stage stage = WindowStage.StageLoader(parent, "Cotización");
         stage.setResizable(true);
         stage.show();
         stage.requestFocus();

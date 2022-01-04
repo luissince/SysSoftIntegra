@@ -69,7 +69,7 @@ public class FxVentaDetalleProductoController implements Initializable {
                     txtCantidad.setText("" + (factor <= 1 ? Double.parseDouble(txtCantidad.getText()) : factor));
                     bbItemProducto.getSuministroTB().setCantidad(Double.parseDouble(txtCantidad.getText()));
 
-                    double valor_sin_impuesto = precio / ((bbItemProducto.getSuministroTB().getImpuestoValor() / 100.00) + 1);
+                    double valor_sin_impuesto = precio / ((bbItemProducto.getSuministroTB().getImpuestoTB().getValor()/ 100.00) + 1);
                     double descuento = Double.parseDouble(txtDescuento.getText());
                     double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
                     double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -81,7 +81,7 @@ public class FxVentaDetalleProductoController implements Initializable {
                     bbItemProducto.getSuministroTB().setPrecioVentaGeneralUnico(valor_sin_impuesto);
                     bbItemProducto.getSuministroTB().setPrecioVentaGeneralReal(preciocalculado);
 
-                    double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
+                    double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoTB().getValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
                     bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
                     bbItemProducto.getSuministroTB().setPrecioVentaGeneral(bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() + impuesto);
 
@@ -100,7 +100,7 @@ public class FxVentaDetalleProductoController implements Initializable {
         if (Tools.isNumeric(txtPrecio.getText()) && Tools.isNumeric(txtCantidad.getText()) && Tools.isNumeric(txtDescuento.getText())) {
             double precio = Double.parseDouble(txtPrecio.getText());
 
-            double valor_sin_impuesto = precio / ((bbItemProducto.getSuministroTB().getImpuestoValor() / 100.00) + 1);
+            double valor_sin_impuesto = precio / ((bbItemProducto.getSuministroTB().getImpuestoTB().getValor()/ 100.00) + 1);
             double descuento = Double.parseDouble(txtDescuento.getText());
             double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
             double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -112,7 +112,7 @@ public class FxVentaDetalleProductoController implements Initializable {
             bbItemProducto.getSuministroTB().setPrecioVentaGeneralUnico(valor_sin_impuesto);
             bbItemProducto.getSuministroTB().setPrecioVentaGeneralReal(preciocalculado);
 
-            double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
+            double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoTB().getValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
             bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
             bbItemProducto.getSuministroTB().setPrecioVentaGeneral(bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() + impuesto);
 
@@ -130,7 +130,7 @@ public class FxVentaDetalleProductoController implements Initializable {
             bbItemProducto.getSuministroTB().setBonificacion(!Tools.isNumeric(txtBonificacion.getText().trim()) ? 0 : Double.parseDouble(txtBonificacion.getText().trim()));
             bbItemProducto.getSuministroTB().setCantidad(cantidad);
 
-            double valor_sin_impuesto = precio / ((bbItemProducto.getSuministroTB().getImpuestoValor() / 100.00) + 1);
+            double valor_sin_impuesto = precio / ((bbItemProducto.getSuministroTB().getImpuestoTB().getValor()/ 100.00) + 1);
             double descuento = Double.parseDouble(txtDescuento.getText());
             double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
             double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -142,7 +142,7 @@ public class FxVentaDetalleProductoController implements Initializable {
             bbItemProducto.getSuministroTB().setPrecioVentaGeneralUnico(valor_sin_impuesto);
             bbItemProducto.getSuministroTB().setPrecioVentaGeneralReal(preciocalculado);
 
-            double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
+            double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoTB().getValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
             bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
             bbItemProducto.getSuministroTB().setPrecioVentaGeneral(bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() + impuesto);
 
@@ -188,7 +188,7 @@ public class FxVentaDetalleProductoController implements Initializable {
             bbItemProducto.getSuministroTB().setBonificacion(Double.parseDouble(txtBonificacion.getText().trim()));
             bbItemProducto.getSuministroTB().setCantidad(cantidad);
 
-            double valor_sin_impuesto = precio / ((bbItemProducto.getSuministroTB().getImpuestoValor() / 100.00) + 1);
+            double valor_sin_impuesto = precio / ((bbItemProducto.getSuministroTB().getImpuestoTB().getValor()/ 100.00) + 1);
             double descuento = Double.parseDouble(txtDescuento.getText());
             double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
             double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -200,7 +200,7 @@ public class FxVentaDetalleProductoController implements Initializable {
             bbItemProducto.getSuministroTB().setPrecioVentaGeneralUnico(valor_sin_impuesto);
             bbItemProducto.getSuministroTB().setPrecioVentaGeneralReal(preciocalculado);
 
-            double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
+            double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoTB().getValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
             bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
             bbItemProducto.getSuministroTB().setPrecioVentaGeneral(bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() + impuesto);
 

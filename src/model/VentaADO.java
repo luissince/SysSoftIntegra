@@ -225,10 +225,10 @@ public class VentaADO {
                     detalle_venta.setDouble(4, sm.getCostoCompra());
                     detalle_venta.setDouble(5, precio);
                     detalle_venta.setDouble(6, sm.getDescuento());
-                    detalle_venta.setDouble(7, sm.getImpuestoOperacion());
-                    detalle_venta.setDouble(8, sm.getImpuestoId());
-                    detalle_venta.setString(9, sm.getImpuestoNombre());
-                    detalle_venta.setDouble(10, sm.getImpuestoValor());
+                    detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
+                    detalle_venta.setDouble(8, sm.getIdImpuesto());
+                    detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                    detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
                     detalle_venta.setDouble(11, precio * sm.getCantidad());
                     detalle_venta.setDouble(12, sm.getBonificacion());
                     detalle_venta.setDouble(13, cantidad);
@@ -537,10 +537,10 @@ public class VentaADO {
                 detalle_venta.setDouble(4, sm.getCostoCompra());
                 detalle_venta.setDouble(5, precio);
                 detalle_venta.setDouble(6, sm.getDescuento());
-                detalle_venta.setDouble(7, sm.getImpuestoOperacion());
-                detalle_venta.setDouble(8, sm.getImpuestoId());
-                detalle_venta.setString(9, sm.getImpuestoNombre());
-                detalle_venta.setDouble(10, sm.getImpuestoValor());
+                detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
+                detalle_venta.setDouble(8, sm.getIdImpuesto());
+                detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
                 detalle_venta.setDouble(11, precio * sm.getCantidad());
                 detalle_venta.setDouble(12, sm.getBonificacion());
                 detalle_venta.setDouble(13, 0);
@@ -843,10 +843,10 @@ public class VentaADO {
                     detalle_venta.setDouble(4, sm.getCostoCompra());
                     detalle_venta.setDouble(5, precio);
                     detalle_venta.setDouble(6, sm.getDescuento());
-                    detalle_venta.setDouble(7, sm.getImpuestoOperacion());
-                    detalle_venta.setDouble(8, sm.getImpuestoId());
-                    detalle_venta.setString(9, sm.getImpuestoNombre());
-                    detalle_venta.setDouble(10, sm.getImpuestoValor());
+                    detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
+                    detalle_venta.setDouble(8, sm.getIdImpuesto());
+                    detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                    detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
                     detalle_venta.setDouble(11, precio * sm.getCantidad());
                     detalle_venta.setDouble(12, sm.getBonificacion());
                     detalle_venta.setDouble(13, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
@@ -1155,10 +1155,10 @@ public class VentaADO {
                     detalle_venta.setDouble(4, sm.getCostoCompra());
                     detalle_venta.setDouble(5, precio);
                     detalle_venta.setDouble(6, sm.getDescuento());
-                    detalle_venta.setDouble(7, sm.getImpuestoOperacion());
-                    detalle_venta.setDouble(8, sm.getImpuestoId());
-                    detalle_venta.setString(9, sm.getImpuestoNombre());
-                    detalle_venta.setDouble(10, sm.getImpuestoValor());
+                    detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
+                    detalle_venta.setDouble(8, sm.getIdImpuesto());
+                    detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                    detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
                     detalle_venta.setDouble(11, precio * sm.getCantidad());
                     detalle_venta.setDouble(12, sm.getBonificacion());
                     detalle_venta.setDouble(13, cantidad);
@@ -1465,10 +1465,10 @@ public class VentaADO {
                 detalle_venta.setDouble(4, sm.getCostoCompra());
                 detalle_venta.setDouble(5, precio);
                 detalle_venta.setDouble(6, sm.getDescuento());
-                detalle_venta.setDouble(7, sm.getImpuestoOperacion());
-                detalle_venta.setDouble(8, sm.getImpuestoId());
-                detalle_venta.setString(9, sm.getImpuestoNombre());
-                detalle_venta.setDouble(10, sm.getImpuestoValor());
+                detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
+                detalle_venta.setDouble(8, sm.getIdImpuesto());
+                detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
                 detalle_venta.setDouble(11, precio * sm.getCantidad());
                 detalle_venta.setDouble(12, sm.getBonificacion());
                 detalle_venta.setDouble(13, 0);
@@ -1768,10 +1768,10 @@ public class VentaADO {
                     detalle_venta.setDouble(4, sm.getCostoCompra());
                     detalle_venta.setDouble(5, precio);
                     detalle_venta.setDouble(6, sm.getDescuento());
-                    detalle_venta.setDouble(7, sm.getImpuestoOperacion());
-                    detalle_venta.setDouble(8, sm.getImpuestoId());
-                    detalle_venta.setString(9, sm.getImpuestoNombre());
-                    detalle_venta.setDouble(10, sm.getImpuestoValor());
+                    detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
+                    detalle_venta.setDouble(8, sm.getIdImpuesto());
+                    detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                    detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
                     detalle_venta.setDouble(11, precio * sm.getCantidad());
                     detalle_venta.setDouble(12, sm.getBonificacion());
                     detalle_venta.setDouble(13, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
@@ -1890,7 +1890,7 @@ public class VentaADO {
             preparedStatement.setString(3, fechaInicial);
             preparedStatement.setString(4, fechaFinal);
             preparedStatement.setInt(5, 0);
-            preparedStatement.setInt(6, estado);       
+            preparedStatement.setInt(6, estado);
             preparedStatement.setInt(7, posicionPagina);
             preparedStatement.setInt(8, filasPorPagina);
             rsEmps = preparedStatement.executeQuery();
@@ -2546,12 +2546,14 @@ public class VentaADO {
                     suministroTB.setBonificacion(resultSetLista.getDouble("Bonificacion"));
                     suministroTB.setCostoCompra(resultSetLista.getDouble("CostoVenta"));
 
-                    suministroTB.setImpuestoOperacion(resultSetLista.getInt("Operacion"));
-                    suministroTB.setImpuestoNombre(resultSetLista.getString("NombreImpuesto"));
-                    suministroTB.setImpuestoId(resultSetLista.getInt("IdImpuesto"));
-                    suministroTB.setImpuestoValor(resultSetLista.getDouble("ValorImpuesto"));
+                    ImpuestoTB impuestoTB = new ImpuestoTB();
+                    impuestoTB.setIdImpuesto(resultSetLista.getInt("IdImpuesto"));
+                    impuestoTB.setOperacion(resultSetLista.getInt("Operacion"));
+                    impuestoTB.setNombreImpuesto(resultSetLista.getString("NombreImpuesto"));
+                    impuestoTB.setValor(resultSetLista.getDouble("ValorImpuesto"));
+                    suministroTB.setImpuestoTB(impuestoTB);
 
-                    double valor_sin_impuesto = resultSetLista.getDouble("PrecioVenta") / ((suministroTB.getImpuestoValor() / 100.00) + 1);
+                    double valor_sin_impuesto = resultSetLista.getDouble("PrecioVenta") / ((suministroTB.getImpuestoTB().getValor() / 100.00) + 1);
                     double descuento = suministroTB.getDescuento();
                     double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
                     double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -2563,7 +2565,7 @@ public class VentaADO {
                     suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
                     suministroTB.setPrecioVentaGeneralReal(preciocalculado);
 
-                    double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
+                    double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
                     suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
                     suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
                     suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
@@ -2780,106 +2782,103 @@ public class VentaADO {
 //            statementValidar = DBUtil.getConnection().prepareStatement("SELECT IdCaja FROM CajaTB WHERE IdUsuario = ? AND Estado = 1");
 //            statementValidar.setString(1, Session.USER_ID);
 //            if (statementValidar.executeQuery().next()) {
+            statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ? and Estado = ?");
+            statementValidar.setString(1, idVenta);
+            statementValidar.setInt(2, 3);
+            if (statementValidar.executeQuery().next()) {
+                DBUtil.getConnection().rollback();
+                return "scrambled";
+            } else {
 
-                statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ? and Estado = ?");
+                statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaCreditoTB WHERE IdVenta = ?");
                 statementValidar.setString(1, idVenta);
-                statementValidar.setInt(2, 3);
                 if (statementValidar.executeQuery().next()) {
                     DBUtil.getConnection().rollback();
-                    return "scrambled";
+                    return "ventacredito";
                 } else {
-
-                    statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaCreditoTB WHERE IdVenta = ?");
-                    statementValidar.setString(1, idVenta);
-                    if (statementValidar.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        return "ventacredito";
-                    } else {
 //                        statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ? and FechaVenta = CAST(GETDATE() AS DATE)");
 //                        statementValidar.setString(1, idVenta);
 //                        ResultSet resultSet = statementValidar.executeQuery();
 //                        if (resultSet.next()) {
 
-                            statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = ?, Observaciones = ? WHERE IdVenta = ?");
+                    statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = ?, Observaciones = ? WHERE IdVenta = ?");
 
-                            statementVenta.setInt(1, 3);
-                            statementVenta.setString(2, Session.USER_NAME + " ANULÓ LA VENTA POR EL MOTIVO -> " + motivo);
-                            statementVenta.setString(3, idVenta);
-                            statementVenta.addBatch();
-                            statementVenta.executeBatch();
+                    statementVenta.setInt(1, 3);
+                    statementVenta.setString(2, Session.USER_NAME + " ANULÓ LA VENTA POR EL MOTIVO -> " + motivo);
+                    statementVenta.setString(3, idVenta);
+                    statementVenta.addBatch();
+                    statementVenta.executeBatch();
 
-                            statementSuministro = DBUtil.getConnection().prepareStatement("UPDATE SuministroTB "
-                                    + "SET Cantidad = Cantidad + ? "
-                                    + "WHERE IdSuministro = ?");
+                    statementSuministro = DBUtil.getConnection().prepareStatement("UPDATE SuministroTB "
+                            + "SET Cantidad = Cantidad + ? "
+                            + "WHERE IdSuministro = ?");
 
-                            statementKardex = DBUtil.getConnection().prepareStatement("INSERT INTO "
-                                    + "KardexSuministroTB("
-                                    + "IdSuministro,"
-                                    + "Fecha,"
-                                    + "Hora,"
-                                    + "Tipo,"
-                                    + "Movimiento,"
-                                    + "Detalle,"
-                                    + "Cantidad, "
-                                    + "Costo, "
-                                    + "Total,"
-                                    + "IdAlmacen) "
-                                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                    statementKardex = DBUtil.getConnection().prepareStatement("INSERT INTO "
+                            + "KardexSuministroTB("
+                            + "IdSuministro,"
+                            + "Fecha,"
+                            + "Hora,"
+                            + "Tipo,"
+                            + "Movimiento,"
+                            + "Detalle,"
+                            + "Cantidad, "
+                            + "Costo, "
+                            + "Total,"
+                            + "IdAlmacen) "
+                            + "VALUES(?,?,?,?,?,?,?,?,?,?)");
 
-                       
-                                for (SuministroTB stb : arrList) {
-                                    if (stb.isInventario() && stb.getValorInventario() == 1) {
-                                        statementSuministro.setDouble(1, stb.getCantidad() + stb.getBonificacion());
-                                        statementSuministro.setString(2, stb.getIdSuministro());
-                                        statementSuministro.addBatch();
-                                    } else if (stb.isInventario() && stb.getValorInventario() == 2) {
-                                        statementSuministro.setDouble(1, stb.getCantidad());
-                                        statementSuministro.setString(2, stb.getIdSuministro());
-                                        statementSuministro.addBatch();
-                                    } else if (stb.isInventario() && stb.getValorInventario() == 3) {
-                                        statementSuministro.setDouble(1, stb.getCantidad());
-                                        statementSuministro.setString(2, stb.getIdSuministro());
-                                        statementSuministro.addBatch();
-                                    }
+                    for (SuministroTB stb : arrList) {
+                        if (stb.isInventario() && stb.getValorInventario() == 1) {
+                            statementSuministro.setDouble(1, stb.getCantidad() + stb.getBonificacion());
+                            statementSuministro.setString(2, stb.getIdSuministro());
+                            statementSuministro.addBatch();
+                        } else if (stb.isInventario() && stb.getValorInventario() == 2) {
+                            statementSuministro.setDouble(1, stb.getCantidad());
+                            statementSuministro.setString(2, stb.getIdSuministro());
+                            statementSuministro.addBatch();
+                        } else if (stb.isInventario() && stb.getValorInventario() == 3) {
+                            statementSuministro.setDouble(1, stb.getCantidad());
+                            statementSuministro.setString(2, stb.getIdSuministro());
+                            statementSuministro.addBatch();
+                        }
 
-                                    double cantidadTotal = stb.getValorInventario() == 1
-                                            ? stb.getCantidad() + stb.getBonificacion()
-                                            : stb.getValorInventario() == 2
-                                            ? stb.getCantidad()
-                                            : stb.getCantidad();
+                        double cantidadTotal = stb.getValorInventario() == 1
+                                ? stb.getCantidad() + stb.getBonificacion()
+                                : stb.getValorInventario() == 2
+                                ? stb.getCantidad()
+                                : stb.getCantidad();
 
-                                    statementKardex.setString(1, stb.getIdSuministro());
-                                    statementKardex.setString(2, Tools.getDate());
-                                    statementKardex.setString(3, Tools.getTime());
-                                    statementKardex.setShort(4, (short) 1);
-                                    statementKardex.setInt(5, 2);
-                                    statementKardex.setString(6, "DEVOLUCIÓN DE PRODUCTO");
-                                    statementKardex.setDouble(7, cantidadTotal);
-                                    statementKardex.setDouble(8, stb.getCostoCompra());
-                                    statementKardex.setDouble(9, cantidadTotal * stb.getCostoCompra());
-                                    statementKardex.setInt(10, 0);
-                                    statementKardex.addBatch();
-                                }
-                            }
+                        statementKardex.setString(1, stb.getIdSuministro());
+                        statementKardex.setString(2, Tools.getDate());
+                        statementKardex.setString(3, Tools.getTime());
+                        statementKardex.setShort(4, (short) 1);
+                        statementKardex.setInt(5, 2);
+                        statementKardex.setString(6, "DEVOLUCIÓN DE PRODUCTO");
+                        statementKardex.setDouble(7, cantidadTotal);
+                        statementKardex.setDouble(8, stb.getCostoCompra());
+                        statementKardex.setDouble(9, cantidadTotal * stb.getCostoCompra());
+                        statementKardex.setInt(10, 0);
+                        statementKardex.addBatch();
+                    }
+                }
 
-                            statementMovimientoCaja = DBUtil.getConnection().prepareStatement("DELETE FROM MovimientoCajaTB WHERE IdProcedencia = ?");
-                            statementMovimientoCaja.setString(1, idVenta);
-                            statementMovimientoCaja.addBatch();
+                statementMovimientoCaja = DBUtil.getConnection().prepareStatement("DELETE FROM MovimientoCajaTB WHERE IdProcedencia = ?");
+                statementMovimientoCaja.setString(1, idVenta);
+                statementMovimientoCaja.addBatch();
 
-                            statementVenta.executeBatch();
-                            statementSuministro.executeBatch();
-                            statementKardex.executeBatch();
-                            statementMovimientoCaja.executeBatch();
+                statementVenta.executeBatch();
+                statementSuministro.executeBatch();
+                statementKardex.executeBatch();
+                statementMovimientoCaja.executeBatch();
 
-                            DBUtil.getConnection().commit();
-                            return "updated";
+                DBUtil.getConnection().commit();
+                return "updated";
 
 //                        } else {
 //                            DBUtil.getConnection().rollback();
 //                            return "nodate";
 //                        }
-                    
-                }
+            }
 //            } else {
 //                DBUtil.getConnection().rollback();
 //                return "nocaja";
@@ -3201,12 +3200,14 @@ public class VentaADO {
                     suministroTB.setBonificacion(resultSetLista.getDouble("Bonificacion"));
                     suministroTB.setCostoCompra(resultSetLista.getDouble("CostoVenta"));
 
-                    suministroTB.setImpuestoOperacion(resultSetLista.getInt("Operacion"));
-                    suministroTB.setImpuestoNombre(resultSetLista.getString("NombreImpuesto"));
-                    suministroTB.setImpuestoId(resultSetLista.getInt("IdImpuesto"));
-                    suministroTB.setImpuestoValor(resultSetLista.getDouble("ValorImpuesto"));
+                    ImpuestoTB impuestoTB = new ImpuestoTB();
+                    impuestoTB.setIdImpuesto(resultSetLista.getInt("IdImpuesto"));
+                    impuestoTB.setOperacion(resultSetLista.getInt("Operacion"));
+                    impuestoTB.setNombreImpuesto(resultSetLista.getString("NombreImpuesto"));
+                    impuestoTB.setValor(resultSetLista.getDouble("ValorImpuesto"));
+                    suministroTB.setImpuestoTB(impuestoTB);
 
-                    double valor_sin_impuesto = resultSetLista.getDouble("PrecioVenta") / ((suministroTB.getImpuestoValor() / 100.00) + 1);
+                    double valor_sin_impuesto = resultSetLista.getDouble("PrecioVenta") / ((suministroTB.getImpuestoTB().getValor() / 100.00) + 1);
                     double descuento = suministroTB.getDescuento();
                     double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
                     double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -3218,7 +3219,7 @@ public class VentaADO {
                     suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
                     suministroTB.setPrecioVentaGeneralReal(preciocalculado);
 
-                    double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
+                    double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
                     suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
                     suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
                     suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());

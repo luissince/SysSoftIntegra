@@ -8,6 +8,7 @@ import controller.operaciones.cortecaja.FxCajaConsultasController;
 import controller.operaciones.cotizacion.FxCotizacionRealizadasController;
 import controller.operaciones.guiaremision.FxGuiaRemisionRealizadasController;
 import controller.operaciones.notacredito.FxNotaCreditoRealizadasController;
+import controller.operaciones.ordencompra.FxOrdenCompraRealizadasController;
 import controller.operaciones.venta.FxVentaRealizadasController;
 import controller.tools.FilesRouters;
 import controller.tools.Session;
@@ -145,6 +146,15 @@ public class FxConsultasController implements Initializable {
 
     private FxNotaCreditoRealizadasController notaCreditoController;
 
+    /*
+    Controller orden de compra
+     */
+    private FXMLLoader fXMLOrdenCompra;
+
+    private VBox nodeOrdenCompra;
+
+    private FxOrdenCompraRealizadasController ordenCompraController;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -184,13 +194,17 @@ public class FxConsultasController implements Initializable {
             nodeNotaCredito = fXMLNotaCredito.load();
             notaCreditoController = fXMLNotaCredito.getController();
 
+            fXMLOrdenCompra = new FXMLLoader(getClass().getResource(FilesRouters.FX_ORDEN_COMPRA_REALZADAS));
+            nodeOrdenCompra = fXMLOrdenCompra.load();
+            ordenCompraController = fXMLOrdenCompra.getController();
+
         } catch (IOException ex) {
             System.out.println("Error en Inventario Controller:" + ex.getLocalizedMessage());
         }
     }
 
     public void loadSubMenus(ObservableList<SubMenusTB> subMenusTBs) {
-        
+
         if (subMenusTBs.get(0).getIdSubMenu() != 0 && !subMenusTBs.get(0).isEstado()) {
             hbOperacionesUno.getChildren().remove(btnVentas);
         } else {
@@ -201,11 +215,11 @@ public class FxConsultasController implements Initializable {
         if (subMenusTBs.get(1).getIdSubMenu() != 0 && !subMenusTBs.get(1).isEstado()) {
             hbOperacionesUno.getChildren().remove(btnCompras);
         }
-        
+
         if (subMenusTBs.get(2).getIdSubMenu() != 0 && !subMenusTBs.get(2).isEstado()) {
             hbOperacionesDos.getChildren().remove(btnCotizaciones);
         }
-        
+
         if (subMenusTBs.get(3).getIdSubMenu() != 0 && !subMenusTBs.get(3).isEstado()) {
             hbOperacionesUno.getChildren().remove(btnGuiaRemision);
         }
@@ -221,11 +235,11 @@ public class FxConsultasController implements Initializable {
         if (subMenusTBs.get(6).getIdSubMenu() != 0 && !subMenusTBs.get(6).isEstado()) {
             hbOperacionesUno.getChildren().remove(btnCuentasPorPagar);
         }
-        
+
         if (subMenusTBs.get(7).getIdSubMenu() != 0 && !subMenusTBs.get(7).isEstado()) {
             hbOperacionesDos.getChildren().remove(btnPedidos);
         }
-        
+
         if (subMenusTBs.get(8).getIdSubMenu() != 0 && !subMenusTBs.get(8).isEstado()) {
             hbOperacionesDos.getChildren().remove(btnNotaCredito);
         }
@@ -233,7 +247,7 @@ public class FxConsultasController implements Initializable {
         if (subMenusTBs.get(9).getIdSubMenu() != 0 && !subMenusTBs.get(9).isEstado()) {
             hbOperacionesDos.getChildren().remove(btnBancos);
         }
-         
+
     }
 
     private void openWindowVentaRealizadas() {
@@ -330,6 +344,16 @@ public class FxConsultasController implements Initializable {
         AnchorPane.setRightAnchor(nodeNotaCredito, 0d);
         AnchorPane.setBottomAnchor(nodeNotaCredito, 0d);
         fxPrincipalController.getVbContent().getChildren().add(nodeNotaCredito);
+    }
+
+    private void openWindowOrdenCompra() {
+        ordenCompraController.setContent(fxPrincipalController);
+        fxPrincipalController.getVbContent().getChildren().clear();
+        AnchorPane.setLeftAnchor(nodeOrdenCompra, 0d);
+        AnchorPane.setTopAnchor(nodeOrdenCompra, 0d);
+        AnchorPane.setRightAnchor(nodeOrdenCompra, 0d);
+        AnchorPane.setBottomAnchor(nodeOrdenCompra, 0d);
+        fxPrincipalController.getVbContent().getChildren().add(nodeOrdenCompra);
     }
 
     @FXML
@@ -440,22 +464,20 @@ public class FxConsultasController implements Initializable {
         openWindowBancos();
     }
 
-   
     @FXML
     private void onKeyPressedOrdenCompra(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            
+            openWindowOrdenCompra();
         }
     }
 
     @FXML
     private void onActionOrdenCompra(ActionEvent event) {
-        
+        openWindowOrdenCompra();
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {
         this.fxPrincipalController = fxPrincipalController;
     }
-
 
 }

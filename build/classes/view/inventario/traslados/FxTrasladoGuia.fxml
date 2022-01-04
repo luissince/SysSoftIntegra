@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="apWindow" onKeyReleased="#onKeyReleasedWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.traslados.FxTrasladoGuiaController">
+<AnchorPane id="AnchorPane" fx:id="apWindow" onKeyReleased="#onKeyReleasedWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.traslados.FxTrasladoGuiaController">
    <children>
       <VBox fx:id="vbBody" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -183,11 +183,11 @@
                                                 <TableView fx:id="tvList" editable="true" fixedCellSize="-0.0" prefHeight="280.0" styleClass="table-view-principal" VBox.vgrow="ALWAYS">
                                                    <columns>
                                                       <TableColumn fx:id="tcNumero" prefWidth="50.0" style="-fx-alignment: CENTER;" text="N°" />
+                                                      <TableColumn fx:id="tcQuitar" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Quitar" />
                                                       <TableColumn fx:id="tcProducto" prefWidth="200.0" style="-fx-alignment: CENTER-LEFT;" text="Producto " />
                                                       <TableColumn fx:id="tcCantidad" prefWidth="150.0" style="-fx-alignment: CENTER-LEFT;" text="Cantidad" />
                                                       <TableColumn fx:id="tcPeso" prefWidth="130.0" style="-fx-alignment: CENTER;" text="Peso" />
                                                       <TableColumn fx:id="tcUnidad" prefWidth="130.0" style="-fx-alignment: CENTER;" text="Unidad" />
-                                                      <TableColumn fx:id="tcQuitar" prefWidth="130.0" style="-fx-alignment: CENTER;" text="Quitar" />
                                                    </columns>
                                                 </TableView>
                                              </children>

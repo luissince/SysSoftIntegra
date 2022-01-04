@@ -65,13 +65,13 @@ public class FxPostListaPreciosController implements Initializable {
     private void onSelectPrice() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             double valor = tvList.getSelectionModel().getSelectedItem().getValor();
-            double factor = tvList.getSelectionModel().getSelectedItem().getFactor();           
-            
+            double factor = tvList.getSelectionModel().getSelectedItem().getFactor();
+
             double precio = factor <= 1 ? valor : valor / factor;
 
             suministroTB.setCantidad(factor <= 1 ? suministroTB.getCantidad() : factor);
 
-            double valor_sin_impuesto = precio / ((suministroTB.getImpuestoValor() / 100.00) + 1);
+            double valor_sin_impuesto = precio / ((suministroTB.getImpuestoTB().getValor() / 100.00) + 1);
             double descuento = suministroTB.getDescuento();
             double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
             double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -83,7 +83,7 @@ public class FxPostListaPreciosController implements Initializable {
             suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
             suministroTB.setPrecioVentaGeneralReal(preciocalculado);
 
-            double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
+            double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
             suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
             suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
 

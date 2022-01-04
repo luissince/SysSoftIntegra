@@ -397,7 +397,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         suministroTB.setCostoCompra(a.getCostoCompra());
         suministroTB.setBonificacion(0);
 
-        double valor_sin_impuesto = a.getPrecioVentaGeneral() / ((a.getImpuestoValor() / 100.00) + 1);
+        double valor_sin_impuesto = a.getPrecioVentaGeneral() / ((a.getImpuestoTB().getValor() / 100.00) + 1);
         double descuento = suministroTB.getDescuento();
         double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
         double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -409,12 +409,9 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
         suministroTB.setPrecioVentaGeneralReal(preciocalculado);
 
-        suministroTB.setImpuestoOperacion(a.getImpuestoOperacion());
-        suministroTB.setImpuestoId(a.getImpuestoId());
-        suministroTB.setImpuestoNombre(a.getImpuestoNombre());
-        suministroTB.setImpuestoValor(a.getImpuestoValor());
+        suministroTB.setImpuestoTB(a.getImpuestoTB());
 
-        double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
+        double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
         suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
         suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
         suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
@@ -439,7 +436,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
                     double porcentajeRestante = bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico() * (bbItemProducto.getSuministroTB().getDescuento() / 100.00);
 
                     bbItemProducto.getSuministroTB().setDescuentoSumado(porcentajeRestante * bbItemProducto.getSuministroTB().getCantidad());
-                    bbItemProducto.getSuministroTB().setImpuestoSumado(bbItemProducto.getSuministroTB().getCantidad() * (bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() * (bbItemProducto.getSuministroTB().getImpuestoValor() / 100.00)));
+                    bbItemProducto.getSuministroTB().setImpuestoSumado(bbItemProducto.getSuministroTB().getCantidad() * (bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() * (bbItemProducto.getSuministroTB().getImpuestoTB().getValor() / 100.00)));
 
                     bbItemProducto.getSuministroTB().setImporteBruto(bbItemProducto.getSuministroTB().getCantidad() * bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico());
                     bbItemProducto.getSuministroTB().setSubImporteNeto(bbItemProducto.getSuministroTB().getCantidad() * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());

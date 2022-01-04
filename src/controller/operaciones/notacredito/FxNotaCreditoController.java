@@ -90,7 +90,7 @@ public class FxNotaCreditoController implements Initializable {
     private FxPrincipalController principalController;
 
     private ArrayList<DetalleVentaTB> detalleVentaTBs;
-    
+
     private String idVenta;
 
     private String idCliente;
@@ -184,20 +184,21 @@ public class FxNotaCreditoController implements Initializable {
                 txtRazonsocial.setText(ventaTB.getClienteTB().getInformacion());
 
                 detalleVentaTBs.addAll((ArrayList<DetalleVentaTB>) objects[6]);
-                for (DetalleVentaTB detalleVentaTB : detalleVentaTBs) {
-                    detalleVentaTB.getBtnRemove().setOnAction(event -> {
-                        detalleVentaTBs.remove(detalleVentaTB);
+                detalleVentaTBs.forEach(e -> {
+                    e.getBtnRemove().setOnAction(event -> {
+                        detalleVentaTBs.remove(e);
                         addElementPaneHead();
                         addElementPaneBody();
                     });
-                    detalleVentaTB.getBtnRemove().setOnKeyPressed(event -> {
+                    e.getBtnRemove().setOnKeyPressed(event -> {
                         if (event.getCode() == KeyCode.ENTER) {
-                            detalleVentaTBs.remove(detalleVentaTB);
+                            detalleVentaTBs.remove(e);
                             addElementPaneHead();
                             addElementPaneBody();
                         }
                     });
-                }
+                });
+
                 addElementPaneHead();
                 addElementPaneBody();
 
@@ -265,7 +266,7 @@ public class FxNotaCreditoController implements Initializable {
 
         for (int i = 0; i < detalleVentaTBs.size(); i++) {
             double cantidad = detalleVentaTBs.get(i).getSuministroTB().getCantidad();
-            double impuesto = detalleVentaTBs.get(i).getSuministroTB().getImpuestoValor();
+            double impuesto = detalleVentaTBs.get(i).getSuministroTB().getImpuestoTB().getValor();
             double precioVenta = detalleVentaTBs.get(i).getSuministroTB().getPrecioVentaGeneral();
             double descuento = detalleVentaTBs.get(i).getSuministroTB().getDescuento();
 
@@ -393,8 +394,8 @@ public class FxNotaCreditoController implements Initializable {
                 ncdtb.setCantidad(f.getSuministroTB().getCantidad());
                 ncdtb.setPrecio(f.getSuministroTB().getPrecioVentaGeneral());
                 ncdtb.setDescuento(f.getSuministroTB().getDescuento());
-                ncdtb.setIdImpuesto(f.getSuministroTB().getImpuestoId());
-                ncdtb.setValorImpuesto(f.getSuministroTB().getImpuestoValor());
+                ncdtb.setIdImpuesto(f.getSuministroTB().getIdImpuesto());
+                ncdtb.setValorImpuesto(f.getSuministroTB().getImpuestoTB().getValor());
                 ncdtb.setSuministroTB(f.getSuministroTB());
                 creditoDetalleTBs.add(ncdtb);
             });
@@ -402,7 +403,7 @@ public class FxNotaCreditoController implements Initializable {
 
             short value = Tools.AlertMessageConfirmation(apWindow, "Nota de Crédito", "¿Está seguro de continuar?");
             if (value == 1) {
-                String result = NotaCreditoADO.Registrar_NotaCredito(notaCreditoTB,procedencia);
+                String result = NotaCreditoADO.Registrar_NotaCredito(notaCreditoTB, procedencia);
                 if (result.equalsIgnoreCase("registrado")) {
                     Tools.AlertMessageInformation(apWindow, "Nota de Crédito", "Se registró correctamente la nota de crédito.");
                     clearElements();

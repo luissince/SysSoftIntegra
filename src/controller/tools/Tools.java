@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -211,6 +212,24 @@ public class Tools {
         BigDecimal decimal = BigDecimal.valueOf(valor);
         decimal = decimal.setScale(decimals, RoundingMode.HALF_UP);
         return decimal.toPlainString();
+    }
+
+    public static String formatNumber(String numero) {
+        if (numero.length() >= 6) {
+            return numero;
+        }
+
+        Formatter formatter = new Formatter();
+        return String.valueOf(formatter.format("%06d", Integer.parseInt(numero)));
+    }
+    
+    public static String formatNumber(int numero) {
+        if (String.valueOf(numero).length() >= 6) {
+            return String.valueOf(numero);
+        }
+
+        Formatter formatter = new Formatter();
+        return String.valueOf(formatter.format("%06d", numero));
     }
 
     public static boolean isNumeric(String cadena) {
@@ -425,21 +444,6 @@ public class Tools {
         notifications.show();
     }
 
-    public static String Generador0(int value) {
-        if (value > 0 && value < 10) {
-            return "00000" + value;
-        } else if (value >= 10 && value < 100) {
-            return "0000" + value;
-        } else if (value >= 100 && value < 1000) {
-            return "000" + value;
-        } else if (value >= 1000 && value < 10000) {
-            return "00" + value;
-        } else if (value >= 10000 && value < 100000) {
-            return "0" + value;
-        } else {
-            return "" + value;
-        }
-    }
 
     public static String AddText2Guines(String value) {
         return value.trim().isEmpty() ? "--" : value;

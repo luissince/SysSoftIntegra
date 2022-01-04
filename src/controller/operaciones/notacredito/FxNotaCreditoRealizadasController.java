@@ -74,11 +74,7 @@ public class FxNotaCreditoRealizadasController implements Initializable {
         opcion = 0;
         Tools.actualDate(Tools.getDate(), txtFechaInicio);
         Tools.actualDate(Tools.getDate(), txtFechaFinal);
-        loadTableView();
-        initLoad();
-    }
 
-    private void loadTableView() {
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getId()
         ));
@@ -110,6 +106,7 @@ public class FxNotaCreditoRealizadasController implements Initializable {
         tcTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
+        initLoad();
     }
 
     public void initLoad() {

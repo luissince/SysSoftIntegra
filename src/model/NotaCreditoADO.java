@@ -140,9 +140,15 @@ public class NotaCreditoADO {
                     suministroTB.setPrecioVentaGeneral(resultSet.getDouble("PrecioVenta"));
                     suministroTB.setCostoCompra(resultSet.getDouble("CostoVenta"));
                     suministroTB.setDescuento(resultSet.getDouble("Descuento"));
-                    suministroTB.setImpuestoId(resultSet.getInt("IdImpuesto"));
-                    suministroTB.setImpuestoValor(resultSet.getDouble("ValorImpuesto"));
-                    suministroTB.setImpuestoNombre(resultSet.getString("NombreImpuesto"));
+
+                    suministroTB.setIdImpuesto(resultSet.getInt("IdImpuesto"));
+
+                    ImpuestoTB impuestoTB = new ImpuestoTB();
+                    impuestoTB.setIdImpuesto(resultSet.getInt("IdImpuesto"));
+                    impuestoTB.setNombreImpuesto(resultSet.getString("NombreImpuesto"));
+                    impuestoTB.setValor(resultSet.getDouble("ValorImpuesto"));
+                    suministroTB.setImpuestoTB(impuestoTB);
+
                     suministroTB.setInventario(resultSet.getBoolean("Inventario"));
                     suministroTB.setValorInventario(resultSet.getShort("ValorInventario"));
                     detalleVentaTB.setSuministroTB(suministroTB);
@@ -512,6 +518,9 @@ public class NotaCreditoADO {
             return ex.getLocalizedMessage();
         } finally {
             try {
+                if (statementValidate != null) {
+                    statementValidate.close();
+                }
                 if (statementNotaCredito != null) {
                     statementNotaCredito.close();
                 }

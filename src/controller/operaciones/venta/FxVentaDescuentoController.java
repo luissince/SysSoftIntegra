@@ -51,7 +51,7 @@ public class FxVentaDescuentoController implements Initializable {
             suministroTB.setPrecioVentaGeneralUnico(precio);
             suministroTB.setPrecioVentaGeneralReal(preciocalculado);
 
-            double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
+            double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
 
             suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
             suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);

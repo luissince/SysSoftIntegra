@@ -289,6 +289,15 @@ public final class FilesRouters {
     public static final String FX_COMPRA_REPORTE = "/view/reporte/FxCompraReporte.fxml";
 
     //--------------------------------------------------------------------------------------------------
+    public static final String FX_ORDEN_COMPRA = "/view/operaciones/ordencompra/FxOrdenCompra.fxml";
+
+    public static final String FX_ORDEN_COMPRA_PRODUCTO = "/view/operaciones/ordencompra/FxOrdenCompraProducto.fxml";
+
+    public static final String FX_ORDEN_COMPRA_DETALLE = "/view/operaciones/ordencompra/FxOrdenCompraDetalle.fxml";
+
+    public static final String FX_ORDEN_COMPRA_REALZADAS = "/view/operaciones/ordencompra/FxOrdenCompraRealizadas.fxml";
+
+    //--------------------------------------------------------------------------------------------------
     public static final String FX_BANCOS = "/view/banco/FxBancos.fxml";
 
     public static final String FX_BANCO_PROCESO = "/view/banco/FxBancoProceso.fxml";
@@ -404,7 +413,7 @@ public final class FilesRouters {
     public static final String FX_TRASLADO = "/view/inventario/traslados/FxTraslado.fxml";
 
     public static final String FX_TRASLADO_INVENTARIO = "/view/inventario/traslados/FxTrasladoInventario.fxml";
-    
+
     public static final String FX_TRASLADO_GUIA = "/view/inventario/traslados/FxTrasladoGuia.fxml";
 
     public static final String FX_TRASLADO_DETALLE = "/view/inventario/traslados/FxTrasladoDetalle.fxml";

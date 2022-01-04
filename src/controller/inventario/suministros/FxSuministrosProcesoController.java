@@ -500,9 +500,9 @@ public class FxSuministrosProcesoController implements Initializable {
                     }
                 }
 
-                if (suministroTB.getImpuestoId() != 0) {
+                if (suministroTB.getIdImpuesto() != 0) {
                     for (int i = 0; i < cbImpuesto.getItems().size(); i++) {
-                        if (cbImpuesto.getItems().get(i).getIdImpuesto() == suministroTB.getImpuestoId()) {
+                        if (cbImpuesto.getItems().get(i).getIdImpuesto() == suministroTB.getIdImpuesto()) {
                             cbImpuesto.getSelectionModel().select(i);
                             break;
                         }
@@ -879,7 +879,7 @@ public class FxSuministrosProcesoController implements Initializable {
                 suministroTB.setLote(cbLote.isSelected());
                 suministroTB.setInventario(cbInventario.isSelected());
                 suministroTB.setValorInventario(rbValorUnidad.isSelected() ? (short) 1 : rbValorCosto.isSelected() ? (short) 2 : (short) 3);
-                suministroTB.setImpuestoId(cbImpuesto.getSelectionModel().getSelectedIndex() >= 0 ? cbImpuesto.getSelectionModel().getSelectedItem().getIdImpuesto() : 0);
+                suministroTB.setIdImpuesto(cbImpuesto.getSelectionModel().getSelectedIndex() >= 0 ? cbImpuesto.getSelectionModel().getSelectedItem().getIdImpuesto() : 0);
                 suministroTB.setClaveSat(txtClaveSat.getText().trim());
                 suministroTB.setTipoPrecio(rbPrecioNormal.isSelected());
                 suministroTB.setDescripcion(txtDescripcion.getText().trim());

@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane fx:id="cpWindow" fitToWidth="true" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.compras.FxComprasDetalleController">
+<ScrollPane fx:id="cpWindow" fitToWidth="true" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.compras.FxComprasDetalleController">
    <content>
       <VBox style="-fx-background-color: white;">
          <children>
@@ -132,7 +132,7 @@
                                     <Label fx:id="lblTotalCompra" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                     <Label fx:id="lblNotas" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     <Label fx:id="lblObservacion" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <HBox style="-fx-spacing: 0.4166666666666667em;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.4166666666666667em;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
                                           <Label fx:id="lblTipo" styleClass="labelRoboto13" text="-" textFill="#055bd3" />
                                           <Label fx:id="lblEstado" styleClass="labelRoboto13" text="-" textFill="#055bd3" />

@@ -66,10 +66,6 @@ public class FxMovimientosProcesoController implements Initializable {
     @FXML
     private Label lblLoad;
     @FXML
-    private ComboBox<TipoMovimientoTB> cbAjuste;
-    @FXML
-    private TextField txtObservacion;
-    @FXML
     private TableView<SuministroTB> tvList;
     @FXML
     private TableColumn<SuministroTB, Button> tcAccion;
@@ -85,6 +81,10 @@ public class FxMovimientosProcesoController implements Initializable {
     private RadioButton rbIncremento;
     @FXML
     private RadioButton rbDecremento;
+    @FXML
+    private ComboBox<TipoMovimientoTB> cbAjuste;
+    @FXML
+    private TextField txtObservacion;
     @FXML
     private HBox hbBotones;
     @FXML
@@ -237,7 +237,22 @@ public class FxMovimientosProcesoController implements Initializable {
         tvList.getItems().clear();
     }
 
+    private boolean validateDuplicate(String idSuministro) {
+        boolean ret = false;
+        for (int i = 0; i < tvList.getItems().size(); i++) {
+            if (tvList.getItems().get(i).getIdSuministro().equals(idSuministro)) {
+                ret = true;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public void addSuministroLista(String idSuministro) {
+        if (validateDuplicate(idSuministro)) {
+            Tools.AlertMessageWarning(apWindow, "Movimiento", "Ya hay un producto con las mismas características.");
+            return;
+        }
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);

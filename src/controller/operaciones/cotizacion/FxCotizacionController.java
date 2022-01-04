@@ -12,7 +12,6 @@ import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -67,13 +66,11 @@ public class FxCotizacionController implements Initializable {
     @FXML
     private TableColumn<SuministroTB, String> tcCantidad;
     @FXML
-    private TableColumn<SuministroTB, String> tcArticulo;
+    private TableColumn<SuministroTB, String> tcProducto;
     @FXML
     private TableColumn<SuministroTB, String> tcImpuesto;
     @FXML
     private TableColumn<SuministroTB, String> tcPrecio;
-    @FXML
-    private TableColumn<SuministroTB, String> tcDescuento;
     @FXML
     private TableColumn<SuministroTB, String> tcImporte;
     @FXML
@@ -97,7 +94,7 @@ public class FxCotizacionController implements Initializable {
     @FXML
     private Label lblMessageLoad;
     @FXML
-    private Button btnAceptarLoad;    
+    private Button btnAceptarLoad;
 
     private FxPrincipalController fxPrincipalController;
 
@@ -138,15 +135,13 @@ public class FxCotizacionController implements Initializable {
 
     private void loadTableView() {
         tcOpcion.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
-        tcArticulo.setCellValueFactory(cellData -> Bindings.concat(
+        tcProducto.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getClave() + "\n" + cellData.getValue().getNombreMarca()));
         tcCantidad.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
         tcPrecio.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getPrecioVentaGeneral(), 2)));
-        tcDescuento.setCellValueFactory(cellData -> Bindings.concat(
-                Tools.roundingValue(cellData.getValue().getDescuento(), 2)));
-        tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoNombre()));
+        tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getNombreImpuesto()));
         tcImporte.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
 
@@ -182,29 +177,12 @@ public class FxCotizacionController implements Initializable {
             calculateTotales();
         });
 
-        tcDescuento.setCellFactory(TextFieldTableCell.forTableColumn());
-        tcDescuento.setOnEditCommit(data -> {
-            final Double newDescuento = Tools.isNumeric(data.getNewValue())
-                    ? (Double.parseDouble(data.getNewValue()) < 0 ? Double.parseDouble(data.getOldValue()) : Double.parseDouble(data.getNewValue()))
-                    : Double.parseDouble(data.getOldValue());
-
-            SuministroTB suministroTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
-            suministroTB.setDescuento(newDescuento);
-            double descuento = suministroTB.getDescuento();
-            double precioDescuento = suministroTB.getPrecioVentaGeneral() - descuento;
-            suministroTB.setImporteNeto(suministroTB.getCantidad() * precioDescuento);
-
-            tvList.refresh();
-            calculateTotales();
-        });
-
         tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.08));
-        tcArticulo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));
-        tcCantidad.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tcPrecio.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tcDescuento.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tcImpuesto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tcImporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
+        tcProducto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.34));
+        tcCantidad.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
+        tcPrecio.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
+        tcImpuesto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
+        tcImporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
     }
 
     private void loadComboBoxCliente() {
@@ -221,8 +199,7 @@ public class FxCotizacionController implements Initializable {
         });
         searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             searchComboBoxCliente.getComboBox().getItems().clear();
-            List<ClienteTB> clienteTBs = ClienteADO.GetSearchComboBoxCliente( 4, searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().getText().trim());
-            clienteTBs.forEach(e -> cbCliente.getItems().add(e));
+            cbCliente.getItems().addAll(ClienteADO.GetSearchComboBoxCliente(4, searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().getText().trim()));
         });
         searchComboBoxCliente.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             if (null == t.getCode()) {
@@ -285,7 +262,7 @@ public class FxCotizacionController implements Initializable {
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
             FxSuministrosListaController controller = fXMLLoader.getController();
-            controller.setInitCotizacionEstructuraController(this);
+            controller.setInitCotizacionController(this);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto", apWindow.getScene().getWindow());
             stage.setResizable(false);
@@ -341,7 +318,7 @@ public class FxCotizacionController implements Initializable {
     }
 
     public void getAddArticulo(SuministroTB suministro) {
-        if (validateDuplicateArticulo(suministro)) {
+        if (validateDuplicate(suministro)) {
             for (int i = 0; i < tvList.getItems().size(); i++) {
                 if (tvList.getItems().get(i).getIdSuministro().equalsIgnoreCase(suministro.getIdSuministro())) {
                     SuministroTB suministroTB = tvList.getItems().get(i);
@@ -364,7 +341,7 @@ public class FxCotizacionController implements Initializable {
         }
     }
 
-    public boolean validateDuplicateArticulo(SuministroTB suministroTB) {
+    public boolean validateDuplicate(SuministroTB suministroTB) {
         boolean ret = false;
         for (int i = 0; i < tvList.getItems().size(); i++) {
             if (tvList.getItems().get(i).getClave().equals(suministroTB.getClave())) {
@@ -380,7 +357,7 @@ public class FxCotizacionController implements Initializable {
         tvList.getItems().forEach(e -> {
             double descuento = e.getDescuento();
             double precioDescuento = e.getPrecioVentaGeneral() - descuento;
-            double subPrecio = Tools.calculateTaxBruto(e.getImpuestoValor(), precioDescuento);
+            double subPrecio = Tools.calculateTaxBruto(e.getImpuestoTB().getValor(), precioDescuento);
             double precioBruto = subPrecio + descuento;
             importeBruto += precioBruto * e.getCantidad();
         });
@@ -397,7 +374,7 @@ public class FxCotizacionController implements Initializable {
         tvList.getItems().forEach(e -> {
             double descuento = e.getDescuento();
             double precioDescuento = e.getPrecioVentaGeneral() - descuento;
-            double subPrecio = Tools.calculateTaxBruto(e.getImpuestoValor(), precioDescuento);
+            double subPrecio = Tools.calculateTaxBruto(e.getImpuestoTB().getValor(), precioDescuento);
             subImporteNeto += e.getCantidad() * subPrecio;
         });
         lblSubImporte.setText(monedaSimbolo + " " + Tools.roundingValue(subImporteNeto, 2));
@@ -406,8 +383,8 @@ public class FxCotizacionController implements Initializable {
         tvList.getItems().forEach(e -> {
             double descuento = e.getDescuento();
             double precioDescuento = e.getPrecioVentaGeneral() - descuento;
-            double subPrecio = Tools.calculateTaxBruto(e.getImpuestoValor(), precioDescuento);
-            double impuesto = Tools.calculateTax(e.getImpuestoValor(), subPrecio);
+            double subPrecio = Tools.calculateTaxBruto(e.getImpuestoTB().getValor(), precioDescuento);
+            double impuesto = Tools.calculateTax(e.getImpuestoTB().getValor(), subPrecio);
             impuestoNeto += e.getCantidad() * impuesto;
         });
 
@@ -498,10 +475,9 @@ public class FxCotizacionController implements Initializable {
                 cbCliente.getItems().clear();
                 cbCliente.getItems().add(new ClienteTB(cotizacionTB.getClienteTB().getIdCliente(), cotizacionTB.getClienteTB().getNumeroDocumento(), cotizacionTB.getClienteTB().getInformacion(), cotizacionTB.getClienteTB().getCelular(), cotizacionTB.getClienteTB().getEmail(), cotizacionTB.getClienteTB().getDireccion()));
                 cbCliente.getSelectionModel().select(0);
-                
+
 //                dtFechaEmision.setValue(LocalDate.parse(cotizacionTB.getFechaCotizacion()));
 //                dtFechaVencimiento.setValue(LocalDate.parse(cotizacionTB.getFechaVencimiento()));
-
                 lblProceso.setText("Cotización en proceso de actualizar");
                 lblProceso.setTextFill(Color.web("#c52700"));
 
@@ -517,10 +493,10 @@ public class FxCotizacionController implements Initializable {
                             tvList.getItems().remove(suministroTB);
                             calculateTotales();
                         }
-                    });                    
+                    });
                 }
                 tvList.setItems(cotizacionTBs);
-                
+
                 calculateTotales();
                 hbBody.setDisable(false);
                 hbLoad.setVisible(false);
@@ -585,7 +561,7 @@ public class FxCotizacionController implements Initializable {
                         cotizacionTB.setHoraCotizacion(Tools.getTime());
                         cotizacionTB.setHoraVencimiento(Tools.getTime());
                         cotizacionTB.setEstado((short) 1);
-                        cotizacionTB.setObservaciones(txtObservacion.getText().trim());                        
+                        cotizacionTB.setObservaciones(txtObservacion.getText().trim());
 
                         ArrayList<DetalleCotizacionTB> detalleCotizacionTBs = new ArrayList();
                         tvList.getItems().stream().map((suministroTB) -> {
@@ -594,7 +570,7 @@ public class FxCotizacionController implements Initializable {
                             detalleCotizacionTB.setCantidad(suministroTB.getCantidad());
                             detalleCotizacionTB.setPrecio(suministroTB.getPrecioVentaGeneral());
                             detalleCotizacionTB.setDescuento(suministroTB.getDescuento());
-                            detalleCotizacionTB.setIdImpuesto(suministroTB.getImpuestoId());
+                            detalleCotizacionTB.setIdImpuesto(suministroTB.getIdImpuesto());
                             return detalleCotizacionTB;
                         }).forEachOrdered((detalleCotizacionTB) -> {
                             detalleCotizacionTBs.add(detalleCotizacionTB);

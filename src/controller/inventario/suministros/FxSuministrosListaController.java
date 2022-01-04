@@ -10,6 +10,8 @@ import controller.inventario.traslados.FxTrasladoInventarioController;
 import controller.operaciones.cotizacion.FxCotizacionController;
 import controller.operaciones.cotizacion.FxCotizacionModalController;
 import controller.operaciones.guiaremision.FxGuiaRemisionController;
+import controller.operaciones.ordencompra.FxOrdenCompraController;
+import controller.operaciones.ordencompra.FxOrdenCompraProductoController;
 import controller.posterminal.venta.FxPostVentaEstructuraController;
 import controller.reporte.FxProduccionReporteController;
 import controller.tools.FilesRouters;
@@ -43,7 +45,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import model.GuiaRemisionDetalleTB;
 import model.SuministroADO;
 import model.SuministroTB;
 
@@ -97,6 +98,8 @@ public class FxSuministrosListaController implements Initializable {
     private FxVentaUtilidadesController ventaUtilidadesController;
 
     private FxCotizacionController cotizacionController;
+
+    private FxOrdenCompraController ordenCompraController;
 
     private FxGuiaRemisionController guiaRemisionController;
 
@@ -162,7 +165,7 @@ public class FxSuministrosListaController implements Initializable {
         tcCantidad.setCellValueFactory(new PropertyValueFactory<>("lblCantidad"));
         tcCategoriaMarca.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getCategoriaName() + "\n" + cellData.getValue().getMarcaName()));
         tcTipoProducto.setCellValueFactory(new PropertyValueFactory<>("imageValorInventario"));
-        tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoNombre()));
+        tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getNombreImpuesto()));
         tcPrecio.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getPrecioVentaGeneral(), 2)));
         tvList.setPlaceholder(Tools.placeHolderTableView("Ingrese datos para iniciar la busqueda.", "-fx-text-fill:#020203;", false));
 
@@ -291,10 +294,8 @@ public class FxSuministrosListaController implements Initializable {
                     lblPaginaActual.setText("0");
                     lblPaginaSiguiente.setText("0");
                 }
-            } else if (object instanceof String) {
-                tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
             } else {
-                tvList.setPlaceholder(Tools.placeHolderTableView("Error en traer los datos, intente nuevamente.", "-fx-text-fill:#a70820;", false));
+                tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
             }
             status = false;
         });
@@ -337,155 +338,6 @@ public class FxSuministrosListaController implements Initializable {
         }
     }
 
-    private void openWindowCompra() {
-        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            if (tvList.getSelectionModel().getSelectedItem().isInventario()) {
-                try {
-                    URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_SUMINISTROS_COMPRA);
-                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                    Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
-                    FxSuministrosCompraController controller = fXMLLoader.getController();
-                    controller.setInitComprasController(comprasController);
-                    controller.setLoadData(tvList.getSelectionModel().getSelectedItem().getIdSuministro(), false);
-                    //
-                    Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
-                    stage.setResizable(false);
-                    stage.setOnShown(e -> controller.getTxtCantidad().requestFocus());
-                    stage.sizeToScene();
-                    stage.show();
-                } catch (IOException ix) {
-                    System.out.println("Error Producto Lista Controller:" + ix.getLocalizedMessage());
-                }
-            } else {
-                Tools.AlertMessageWarning(apWindow, "Compra", "El producto no es inventariado, actualize sus campos.");
-            }
-        }
-    }
-
-    private void addCotizacion() {
-        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            if (cotizacionController.validateDuplicateArticulo(tvList.getSelectionModel().getSelectedItem())) {
-                for (int i = 0; i < cotizacionController.getTvList().getItems().size(); i++) {
-                    if (cotizacionController.getTvList().getItems().get(i).getIdSuministro().equalsIgnoreCase(tvList.getSelectionModel().getSelectedItem().getIdSuministro())) {
-                        openWindowCotizacion(cotizacionController.getTvList().getItems().get(i), true);
-                        break;
-                    }
-                }
-            } else {
-                openWindowCotizacion(tvList.getSelectionModel().getSelectedItem(), false);
-            }
-        }
-    }
-
-    private void openWindowCotizacion(SuministroTB suministroTB, boolean exists) {
-        try {
-            URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_COTIZACION_MODAL);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
-            FxCotizacionModalController controller = fXMLLoader.getController();
-            controller.setInitCotizacionController(cotizacionController);
-            controller.initComponents(suministroTB, exists);
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Cambiar datos", apWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnShown(w -> controller.getTxtCantidad().requestFocus());
-            stage.show();
-        } catch (IOException ix) {
-            System.out.println("Error Producto Lista Controller:" + ix.getLocalizedMessage());
-        }
-    }
-
-    private void executeEvent() {
-        if (ventaEstructuraController != null) {
-            addVentaToList();
-        } else if (postVentaEstructuraController != null) {
-            addPostVentaToList();
-        } else if (cotizacionController != null) {
-            addCotizacion();
-            txtSearch.requestFocus();
-        } else if (guiaRemisionController != null) {
-            if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-                if (!validateDuplicateGuiaRemision(guiaRemisionController.getTvList(), tvList.getSelectionModel().getSelectedItem())) {
-                    guiaRemisionController.eventAgregar(tvList.getSelectionModel().getSelectedItem());
-                    Tools.Dispose(apWindow);
-                } else {
-                    Tools.AlertMessageWarning(apWindow, "Guía de remisión", "Ya hay un producto con las mismas características.");
-                }
-            }
-        } else if (movimientosProcesoController != null) {
-            if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-                if (!validateDuplicate(movimientosProcesoController.getTvList(), tvList.getSelectionModel().getSelectedItem())) {
-                    movimientosProcesoController.addSuministroLista(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
-                    Tools.Dispose(apWindow);
-                } else {
-                    Tools.AlertMessageWarning(apWindow, "Movimiento", "Ya hay un producto con las mismas características.");
-                }
-            }
-        } else if (comprasController != null) {
-            openWindowCompra();
-            txtSearch.requestFocus();
-        } else if (suministrosKardexController != null) {
-            if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-                if (suministrosKardexController.getCbAlmacen().getSelectionModel().getSelectedIndex() >= 0) {
-                    suministrosKardexController.setLoadProducto(tvList.getSelectionModel().getSelectedItem().getClave() + " " + tvList.getSelectionModel().getSelectedItem().getNombreMarca());
-                    suministrosKardexController.fillKardexTable(0, tvList.getSelectionModel().getSelectedItem().getIdSuministro(), suministrosKardexController.getCbAlmacen().getSelectionModel().getSelectedItem().getIdAlmacen());
-                    Tools.Dispose(apWindow);
-                } else {
-                    Tools.AlertMessageWarning(apWindow, "Kardex", "Seleccione un almacen para continuar.");
-                }
-            }
-        } else if (ventaUtilidadesController != null) {
-            if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-                ventaUtilidadesController.setIdSuministro(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
-                ventaUtilidadesController.getTxtProducto().setText(tvList.getSelectionModel().getSelectedItem().getNombreMarca());
-                Tools.Dispose(apWindow);
-            }
-        } else if (loteCambiarController != null) {
-            loteCambiarController.getTxtArticulo().setText(tvList.getSelectionModel().getSelectedItem().getNombreMarca());
-            loteCambiarController.getTxtCantidad().setText("" + tvList.getSelectionModel().getSelectedItem().getCantidad());
-            Tools.Dispose(apWindow);
-        } else if (trasladoController != null) {
-            Tools.Dispose(apWindow);
-        } else if (trasladoInventarioController != null) {
-            if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-                if (!validateDuplicate(trasladoInventarioController.getTvList(), tvList.getSelectionModel().getSelectedItem())) {
-                    trasladoInventarioController.addSuministroLista(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
-                    txtSearch.requestFocus();
-                } else {
-                    Tools.AlertMessageWarning(apWindow, "Traslado", "Ya hay un producto con las mismas características.");
-                }
-            }
-        } else if (produccionReporteController != null) {
-            produccionReporteController.setLoadDataProductoMerma(tvList.getSelectionModel().getSelectedItem().getIdSuministro(), tvList.getSelectionModel().getSelectedItem().getNombreMarca());
-            Tools.Dispose(apWindow);
-        }
-    }
-
-    private boolean validateDuplicate(TableView<SuministroTB> view, SuministroTB suministroTB) {
-        boolean ret = false;
-        for (int i = 0; i < view.getItems().size(); i++) {
-            if (view.getItems().get(i).getIdSuministro().equals(suministroTB.getIdSuministro())) {
-                ret = true;
-                break;
-            }
-        }
-        return ret;
-    }
-
-    private boolean validateDuplicateGuiaRemision(TableView<GuiaRemisionDetalleTB> view, SuministroTB suministroTB) {
-        boolean ret = false;
-        for (int i = 0; i < view.getItems().size(); i++) {
-            if (view.getItems().get(i).getIdSuministro().equals(suministroTB.getIdSuministro())) {
-                ret = true;
-                break;
-            }
-        }
-        return ret;
-    }
-
     private void addVentaToList() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             if (ventaEstructuraController.isVender_con_cantidades_negativas() && tvList.getSelectionModel().getSelectedItem().getCantidad() <= 0) {
@@ -500,7 +352,9 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setCostoCompra(tvList.getSelectionModel().getSelectedItem().getCostoCompra());
             suministroTB.setBonificacion(0);
 
-            double valor_sin_impuesto = tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral() / ((tvList.getSelectionModel().getSelectedItem().getImpuestoValor() / 100.00) + 1);
+//            double valor_sin_impuesto = tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral() / ((tvList.getSelectionModel().getSelectedItem().getImpuestoValor() / 100.00) + 1);
+            double valor_sin_impuesto = 0;
+
             double descuento = suministroTB.getDescuento();
             double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
             double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -512,16 +366,15 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
             suministroTB.setPrecioVentaGeneralReal(preciocalculado);
 
-            suministroTB.setImpuestoOperacion(tvList.getSelectionModel().getSelectedItem().getImpuestoOperacion());
-            suministroTB.setImpuestoId(tvList.getSelectionModel().getSelectedItem().getImpuestoId());
-            suministroTB.setImpuestoNombre(tvList.getSelectionModel().getSelectedItem().getImpuestoNombre());
-            suministroTB.setImpuestoValor(tvList.getSelectionModel().getSelectedItem().getImpuestoValor());
-
-            double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
-            suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-            suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
-            suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
-
+//            suministroTB.setImpuestoOperacion(tvList.getSelectionModel().getSelectedItem().getImpuestoOperacion());
+//            suministroTB.setImpuestoId(tvList.getSelectionModel().getSelectedItem().getImpuestoId());
+//            suministroTB.setImpuestoNombre(tvList.getSelectionModel().getSelectedItem().getImpuestoNombre());
+//            suministroTB.setImpuestoValor(tvList.getSelectionModel().getSelectedItem().getImpuestoValor());
+//
+//            double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
+//            suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
+//            suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
+//            suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
             suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
             suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
             suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
@@ -569,7 +422,8 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setCostoCompra(tvList.getSelectionModel().getSelectedItem().getCostoCompra());
             suministroTB.setBonificacion(0);
 
-            double valor_sin_impuesto = tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral() / ((tvList.getSelectionModel().getSelectedItem().getImpuestoValor() / 100.00) + 1);
+//            double valor_sin_impuesto = tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral() / ((tvList.getSelectionModel().getSelectedItem().getImpuestoValor() / 100.00) + 1);
+            double valor_sin_impuesto = 0;
             double descuento = suministroTB.getDescuento();
             double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
             double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -581,16 +435,15 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
             suministroTB.setPrecioVentaGeneralReal(preciocalculado);
 
-            suministroTB.setImpuestoOperacion(tvList.getSelectionModel().getSelectedItem().getImpuestoOperacion());
-            suministroTB.setImpuestoId(tvList.getSelectionModel().getSelectedItem().getImpuestoId());
-            suministroTB.setImpuestoNombre(tvList.getSelectionModel().getSelectedItem().getImpuestoNombre());
-            suministroTB.setImpuestoValor(tvList.getSelectionModel().getSelectedItem().getImpuestoValor());
-
-            double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
-            suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-            suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
-            suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
-
+//            suministroTB.setImpuestoOperacion(tvList.getSelectionModel().getSelectedItem().getImpuestoOperacion());
+//            suministroTB.setImpuestoId(tvList.getSelectionModel().getSelectedItem().getImpuestoId());
+//            suministroTB.setImpuestoNombre(tvList.getSelectionModel().getSelectedItem().getImpuestoNombre());
+//            suministroTB.setImpuestoValor(tvList.getSelectionModel().getSelectedItem().getImpuestoValor());
+//
+//            double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
+//            suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
+//            suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
+//            suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
             suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
             suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
             suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
@@ -624,6 +477,161 @@ public class FxSuministrosListaController implements Initializable {
         }
     }
 
+    private void addCotizacion() {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            if (cotizacionController.validateDuplicate(tvList.getSelectionModel().getSelectedItem())) {
+                for (int i = 0; i < cotizacionController.getTvList().getItems().size(); i++) {
+                    if (cotizacionController.getTvList().getItems().get(i).getIdSuministro().equalsIgnoreCase(tvList.getSelectionModel().getSelectedItem().getIdSuministro())) {
+                        openWindowCotizacion(cotizacionController.getTvList().getItems().get(i), true);
+                        break;
+                    }
+                }
+            } else {
+                openWindowCotizacion(tvList.getSelectionModel().getSelectedItem(), false);
+            }
+        }
+    }
+
+    private void addGuiaRemision() {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            if (guiaRemisionController.validateDuplicate(tvList.getSelectionModel().getSelectedItem())) {
+                Tools.AlertMessageWarning(apWindow, "Kardex", "Hay un producto con las mismas caracteristicas.");
+                return;
+            }
+            guiaRemisionController.addProducto(tvList.getSelectionModel().getSelectedItem());
+            Tools.Dispose(apWindow);
+        }
+    }
+
+    private void addMovimiento() {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            movimientosProcesoController.addSuministroLista(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
+            txtSearch.requestFocus();
+        }
+    }
+
+    private void addSuministroKardex() {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            if (suministrosKardexController.getCbAlmacen().getSelectionModel().getSelectedIndex() >= 0) {
+                suministrosKardexController.setLoadProducto(tvList.getSelectionModel().getSelectedItem().getClave() + " " + tvList.getSelectionModel().getSelectedItem().getNombreMarca());
+                suministrosKardexController.fillKardexTable(0, tvList.getSelectionModel().getSelectedItem().getIdSuministro(), suministrosKardexController.getCbAlmacen().getSelectionModel().getSelectedItem().getIdAlmacen());
+                Tools.Dispose(apWindow);
+            } else {
+                Tools.AlertMessageWarning(apWindow, "Kardex", "Seleccione un almacen para continuar.");
+            }
+        }
+    }
+
+    private void addVentaUtilidad() {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            ventaUtilidadesController.setIdSuministro(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
+            ventaUtilidadesController.getTxtProducto().setText(tvList.getSelectionModel().getSelectedItem().getNombreMarca());
+            Tools.Dispose(apWindow);
+        }
+    }
+
+    private void addLote() {
+        loteCambiarController.getTxtArticulo().setText(tvList.getSelectionModel().getSelectedItem().getNombreMarca());
+        loteCambiarController.getTxtCantidad().setText("" + tvList.getSelectionModel().getSelectedItem().getCantidad());
+        Tools.Dispose(apWindow);
+    }
+
+    private void addTrasladoInventario() {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            trasladoInventarioController.addSuministroLista(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
+            txtSearch.requestFocus();
+        }
+    }
+
+    private void addOrdenCompra() {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            if (!ordenCompraController.validateDuplicate(tvList.getSelectionModel().getSelectedItem().getIdSuministro())) {
+                openWindowOrdenCompraSuministro(tvList.getSelectionModel().getSelectedItem());
+            } else {
+                Tools.AlertMessageWarning(apWindow, "Orden de Compra", "Hay en la lista un producto con los mismos datos.");
+            }
+        }
+    }
+
+    private void executeEvent() {
+        if (ventaEstructuraController != null) {
+            addVentaToList();
+        } else if (postVentaEstructuraController != null) {
+            addPostVentaToList();
+        } else if (cotizacionController != null) {
+            addCotizacion();
+            txtSearch.requestFocus();
+        } else if (guiaRemisionController != null) {
+            addGuiaRemision();
+        } else if (movimientosProcesoController != null) {
+            addMovimiento();
+        } else if (comprasController != null) {
+            openWindowCompra();
+            txtSearch.requestFocus();
+        } else if (suministrosKardexController != null) {
+            addSuministroKardex();
+        } else if (ventaUtilidadesController != null) {
+            addVentaUtilidad();
+        } else if (loteCambiarController != null) {
+            addLote();
+        } else if (trasladoController != null) {
+            Tools.Dispose(apWindow);
+        } else if (trasladoInventarioController != null) {
+            addTrasladoInventario();
+        } else if (produccionReporteController != null) {
+            produccionReporteController.setLoadDataProductoMerma(tvList.getSelectionModel().getSelectedItem().getIdSuministro(), tvList.getSelectionModel().getSelectedItem().getNombreMarca());
+            Tools.Dispose(apWindow);
+        } else if (ordenCompraController != null) {
+            addOrdenCompra();
+        }
+    }
+
+    private void openWindowCompra() {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            if (tvList.getSelectionModel().getSelectedItem().isInventario()) {
+                try {
+                    URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_SUMINISTROS_COMPRA);
+                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                    Parent parent = fXMLLoader.load(url.openStream());
+                    //Controlller here
+                    FxSuministrosCompraController controller = fXMLLoader.getController();
+                    controller.setInitComprasController(comprasController);
+                    controller.setLoadData(tvList.getSelectionModel().getSelectedItem().getIdSuministro(), false);
+                    //
+                    Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
+                    stage.setResizable(false);
+                    stage.setOnShown(e -> controller.getTxtCantidad().requestFocus());
+                    stage.sizeToScene();
+                    stage.show();
+                } catch (IOException ix) {
+                    System.out.println("Error Producto Lista Controller:" + ix.getLocalizedMessage());
+                }
+            } else {
+                Tools.AlertMessageWarning(apWindow, "Compra", "El producto no es inventariado, actualize sus campos.");
+            }
+        }
+    }
+
+    private void openWindowCotizacion(SuministroTB suministroTB, boolean exists) {
+        try {
+            URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_COTIZACION_MODAL);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            //Controlller here
+            FxCotizacionModalController controller = fXMLLoader.getController();
+            controller.setInitCotizacionController(cotizacionController);
+            controller.initComponents(suministroTB, exists);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnShown(w -> controller.getTxtCantidad().requestFocus());
+            stage.show();
+        } catch (IOException ix) {
+            System.out.println("Error Producto Lista Controller:" + ix.getLocalizedMessage());
+        }
+    }
+
     private void openWindowAddSuministro() {
         try {
             URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_PROCESO_MODAL);
@@ -632,13 +640,32 @@ public class FxSuministrosListaController implements Initializable {
             //Controlller here
             FxSuministrosProcesoModalController controller = fXMLLoader.getController();
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Suministro", apWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.show();
             controller.setInitArticulo();
         } catch (IOException ex) {
             System.out.println("Error en suministro lista:" + ex.getLocalizedMessage());
+        }
+    }
+
+    private void openWindowOrdenCompraSuministro(SuministroTB suministroTB) {
+        try {
+            URL url = getClass().getResource(FilesRouters.FX_ORDEN_COMPRA_PRODUCTO);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            //Controlller here
+            FxOrdenCompraProductoController controller = fXMLLoader.getController();
+            controller.setInitOrdenCompraController(ordenCompraController);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnShown(e -> controller.loadComponents(suministroTB));
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println("Error en suministro orden de compra:" + ex.getLocalizedMessage());
         }
     }
 
@@ -660,7 +687,6 @@ public class FxSuministrosListaController implements Initializable {
             } else {
                 ivPrincipal.setImage(new Image(new ByteArrayInputStream(tvList.getSelectionModel().getSelectedItem().getNuevaImagen())));
             }
-
         }
     }
 
@@ -843,8 +869,12 @@ public class FxSuministrosListaController implements Initializable {
         this.ventaUtilidadesController = ventaUtilidadesController;
     }
 
-    public void setInitCotizacionEstructuraController(FxCotizacionController cotizacionController) {
+    public void setInitCotizacionController(FxCotizacionController cotizacionController) {
         this.cotizacionController = cotizacionController;
+    }
+
+    public void setInitOrdenCompraController(FxOrdenCompraController ordenCompraController) {
+        this.ordenCompraController = ordenCompraController;
     }
 
     public void setInitGuiaRemisionController(FxGuiaRemisionController guiaRemisionController) {

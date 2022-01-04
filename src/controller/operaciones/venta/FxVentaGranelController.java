@@ -47,14 +47,14 @@ public class FxVentaGranelController implements Initializable {
 
     private void executeEventAceptar() {
         double importe = opcion
-                ? Tools.isNumeric(txtImporte.getText()) ? (Double.parseDouble(txtImporte.getText()) <= 0 ? oldPrecio 
+                ? Tools.isNumeric(txtImporte.getText()) ? (Double.parseDouble(txtImporte.getText()) <= 0 ? oldPrecio
                 : oldPrecio + Double.parseDouble(txtImporte.getText())) : oldPrecio
                 : Tools.isNumeric(txtImporte.getText())
-                ? (Double.parseDouble(txtImporte.getText()) <= 0 
+                ? (Double.parseDouble(txtImporte.getText()) <= 0
                 ? oldPrecio : Double.parseDouble(txtImporte.getText()))
                 : oldPrecio;
 
-        double valor_sin_impuesto = importe / ((suministroTB.getImpuestoValor() / 100.00) + 1);
+        double valor_sin_impuesto = importe / ((suministroTB.getImpuestoTB().getValor() / 100.00) + 1);
         double descuento = suministroTB.getDescuento();
         double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
         double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -65,11 +65,11 @@ public class FxVentaGranelController implements Initializable {
         suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
         suministroTB.setPrecioVentaGeneralReal(preciocalculado);
 
-        double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
+        double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
         suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
         suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
 
-        suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico() );
+        suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
         suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
         suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
 

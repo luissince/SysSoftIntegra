@@ -150,14 +150,14 @@ public class FxSuministrosCompraController implements Initializable {
 
 //        loteSuministro = lote;
         for (ImpuestoTB impuestoTB : cbImpuestoCompra.getItems()) {
-            if (suministroTB.getImpuestoId() == impuestoTB.getIdImpuesto()) {
+            if (suministroTB.getIdImpuesto()== impuestoTB.getIdImpuesto()) {
                 cbImpuestoCompra.getSelectionModel().select(impuestoTB);
                 break;
             }
         }
 
         for (ImpuestoTB impuestoTB : cbImpuesto.getItems()) {
-            if (suministroTB.getImpuestoId() == impuestoTB.getIdImpuesto()) {
+            if (suministroTB.getIdImpuesto() == impuestoTB.getIdImpuesto()) {
                 cbImpuesto.getSelectionModel().select(impuestoTB);
                 break;
             }
@@ -222,7 +222,7 @@ public class FxSuministrosCompraController implements Initializable {
         }
 
         for (ImpuestoTB impuestoTB : cbImpuesto.getItems()) {
-            if (detalleCompraTB.getSuministroTB().getImpuestoId() == impuestoTB.getIdImpuesto()) {
+            if (detalleCompraTB.getSuministroTB().getIdImpuesto() == impuestoTB.getIdImpuesto()) {
                 cbImpuesto.getSelectionModel().select(impuestoTB);
                 break;
             }
@@ -344,7 +344,7 @@ public class FxSuministrosCompraController implements Initializable {
                 ? Tools.isNumeric(txtPrecio1.getText()) ? Double.parseDouble(txtPrecio1.getText()) : 0
                 : Tools.isNumeric(txtPrecioVentaNetoPersonalizado.getText()) ? Double.parseDouble(txtPrecioVentaNetoPersonalizado.getText()) : 0;
         suministrosTB.setPrecioVentaGeneral(precioValidado);
-        suministrosTB.setImpuestoId(cbImpuesto.getSelectionModel().getSelectedItem().getIdImpuesto());
+        suministrosTB.setIdImpuesto(cbImpuesto.getSelectionModel().getSelectedItem().getIdImpuesto());
         suministrosTB.setTipoPrecio(rbPrecioNormal.isSelected());
         tvPreciosNormal.add(new PreciosTB(0, "Precio de Venta 1", !Tools.isNumeric(txtPrecio2.getText()) ? 0 : Double.parseDouble(txtPrecio2.getText()), 1));
         tvPreciosNormal.add(new PreciosTB(0, "Precio de Venta 2", !Tools.isNumeric(txtPrecio3.getText()) ? 0 : Double.parseDouble(txtPrecio3.getText()), 1));

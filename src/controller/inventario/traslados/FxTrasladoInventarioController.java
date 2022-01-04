@@ -172,7 +172,22 @@ public class FxTrasladoInventarioController implements Initializable {
         }
     }
 
+    private boolean validateDuplicate(String idSuministro) {
+        boolean ret = false;
+        for (int i = 0; i < tvList.getItems().size(); i++) {
+            if (tvList.getItems().get(i).getIdSuministro().equals(idSuministro)) {
+                ret = true;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public void addSuministroLista(String idSuministro) {
+        if (validateDuplicate(idSuministro)) {
+            Tools.AlertMessageWarning(apWindow, "Traslado", "Ya hay un producto con las mismas características.");
+            return;
+        }
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);

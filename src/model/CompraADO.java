@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import java.time.format.FormatStyle; 
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -253,7 +253,7 @@ public class CompraADO extends DBUtil {
                     }
 
                     if (!dc.isCambiarPrecio()) {
-                        suministro_precio.setInt(1, dc.getSuministroTB().getImpuestoId());
+                        suministro_precio.setInt(1, dc.getSuministroTB().getIdImpuesto());
                         suministro_precio.setDouble(2, dc.getSuministroTB().getPrecioVentaGeneral());
                         suministro_precio.setBoolean(3, dc.getSuministroTB().isTipoPrecio());
                         suministro_precio.setString(4, dc.getIdSuministro());
@@ -555,7 +555,7 @@ public class CompraADO extends DBUtil {
                     }
 
                     if (!dc.isCambiarPrecio()) {
-                        suministro_precio.setInt(1, dc.getSuministroTB().getImpuestoId());
+                        suministro_precio.setInt(1, dc.getSuministroTB().getIdImpuesto());
                         suministro_precio.setDouble(2, dc.getSuministroTB().getPrecioVentaGeneral());
                         suministro_precio.setBoolean(3, dc.getSuministroTB().isTipoPrecio());
                         suministro_precio.setString(4, dc.getIdSuministro());
@@ -656,7 +656,6 @@ public class CompraADO extends DBUtil {
     public static Object ListComprasRealizadas(short opcion, String value, String fechaInicial, String fechaFinal, int estadoCompra, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
-
         try {
             dbConnect();
             Object[] objects = new Object[2];
@@ -1522,6 +1521,45 @@ public class CompraADO extends DBUtil {
             try {
                 if (preparedStatement != null) {
                     preparedStatement.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
+    }
+
+    public static Object Listar_Detalle_Compra_ByIdSuministro(String idSuministro) {
+        PreparedStatement statementDetalle = null;
+        ResultSet resultSet = null;
+        try {
+            DBUtil.dbConnect();
+            ObservableList<DetalleCompraTB> detalleCompraTBs = FXCollections.observableArrayList();
+
+            statementDetalle = DBUtil.getConnection().prepareStatement("{call Sp_Obtener_Historial_Costo_ByIdSuministro(?)}");
+            statementDetalle.setString(1, idSuministro);
+            resultSet = statementDetalle.executeQuery();
+            while (resultSet.next()) {
+                DetalleCompraTB detalleCompraTB = new DetalleCompraTB();
+                detalleCompraTB.setId(resultSet.getRow());
+                detalleCompraTB.setDescripcion(resultSet.getString("NumeroDocumento") + "\n" + resultSet.getString("RazonSocial"));
+                detalleCompraTB.setPrecioCompra(resultSet.getDouble("PrecioCompra"));
+                detalleCompraTB.setFechaRegistro(resultSet.getDate("FechaCompra").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                detalleCompraTB.setHoraRegistro(resultSet.getTime("HoraCompra").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                detalleCompraTB.setObservacion(resultSet.getString("Serie").toUpperCase() + "-" + resultSet.getString("Numeracion"));
+                detalleCompraTBs.add(detalleCompraTB);
+            }
+
+            return detalleCompraTBs;
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementDetalle != null) {
+                    statementDetalle.close();
                 }
                 if (resultSet != null) {
                     resultSet.close();

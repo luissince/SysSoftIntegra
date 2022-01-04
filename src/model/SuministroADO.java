@@ -79,7 +79,7 @@ public class SuministroADO {
                             //------------------------------------------------------------
                             preparedSuministro.setBytes(18, suministroTB.getNuevaImagen());
                             //
-                            preparedSuministro.setInt(19, suministroTB.getImpuestoId());
+                            preparedSuministro.setInt(19, suministroTB.getIdImpuesto());
                             preparedSuministro.setShort(20, suministroTB.getValorInventario());
                             preparedSuministro.setString(21, suministroTB.getClaveSat());
                             preparedSuministro.setBoolean(22, suministroTB.isTipoPrecio());
@@ -187,7 +187,7 @@ public class SuministroADO {
 //                                    : selectFileImage("./img/" + idSuministro + "." + Tools.getFileExtension(new File(suministroTB.getImagenTB())), new File(suministroTB.getImagenTB())))
 //                            );
                             //
-                            preparedSuministro.setInt(21, suministroTB.getImpuestoId());
+                            preparedSuministro.setInt(21, suministroTB.getIdImpuesto());
                             preparedSuministro.setShort(22, suministroTB.getValorInventario());
                             preparedSuministro.setString(23, "");
                             preparedSuministro.setString(24, suministroTB.getClaveSat());
@@ -352,7 +352,7 @@ public class SuministroADO {
                         preparedSuministro.setBoolean(19, suministroTB.isInventario());
                         preparedSuministro.setBytes(20, suministroTB.getNuevaImagen());
 
-                        preparedSuministro.setInt(21, suministroTB.getImpuestoId());
+                        preparedSuministro.setInt(21, suministroTB.getIdImpuesto());
                         preparedSuministro.setShort(22, suministroTB.getValorInventario());
                         preparedSuministro.setString(23, "");
                         preparedSuministro.setString(24, suministroTB.getClaveSat());
@@ -612,10 +612,16 @@ public class SuministroADO {
                 suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
                 suministroTB.setUnidadVenta(rsEmps.getInt("UnidadVenta"));
                 suministroTB.setInventario(rsEmps.getBoolean("Inventario"));
-                suministroTB.setImpuestoOperacion(rsEmps.getInt("Operacion"));
-                suministroTB.setImpuestoId(rsEmps.getInt("Impuesto"));
-                suministroTB.setImpuestoNombre(rsEmps.getString("ImpuestoNombre"));
-                suministroTB.setImpuestoValor(rsEmps.getDouble("Valor"));
+
+                suministroTB.setIdImpuesto(rsEmps.getInt("Impuesto"));
+
+                ImpuestoTB impuestoTB = new ImpuestoTB();
+                impuestoTB.setIdImpuesto(rsEmps.getInt("Impuesto"));
+                impuestoTB.setOperacion(rsEmps.getInt("Operacion"));
+                impuestoTB.setNombreImpuesto(rsEmps.getString("ImpuestoNombre"));
+                impuestoTB.setValor(rsEmps.getDouble("Valor"));
+                suministroTB.setImpuestoTB(impuestoTB);
+
                 suministroTB.setLote(rsEmps.getBoolean("Lote"));
                 suministroTB.setValorInventario(rsEmps.getShort("ValorInventario"));
                 ImageView image = new ImageView(new Image(suministroTB.getValorInventario() == 1 ? "/view/image/unidad.png" : "/view/image/balanza.png"));
@@ -624,7 +630,7 @@ public class SuministroADO {
                 suministroTB.setImageValorInventario(image);
                 suministroTB.setNuevaImagen(rsEmps.getBytes("NuevaImagen"));
 
-                Label label = new Label(Tools.roundingValue(suministroTB.getCantidad(), 2)+" "+suministroTB.getUnidadCompraName());
+                Label label = new Label(Tools.roundingValue(suministroTB.getCantidad(), 2) + " " + suministroTB.getUnidadCompraName());
                 label.getStyleClass().add("labelRoboto13");
                 label.setStyle(suministroTB.getCantidad() > 0 ? "-fx-text-fill:#020203;" : "-fx-text-fill:red;");
                 suministroTB.setLblCantidad(label);
@@ -787,11 +793,15 @@ public class SuministroADO {
                 suministroTB.setInventario(rsEmps.getBoolean("Inventario"));
                 suministroTB.setValorInventario(rsEmps.getShort("ValorInventario"));
                 suministroTB.setNuevaImagen(rsEmps.getBytes("NuevaImagen"));
-                suministroTB.setImpuestoId(rsEmps.getInt("Impuesto"));
-                suministroTB.setImpuestoNombre(rsEmps.getString("ImpuestoNombre"));
+
+                suministroTB.setIdImpuesto(rsEmps.getInt("Impuesto"));
+                ImpuestoTB impuestoTB = new ImpuestoTB();
+                impuestoTB.setIdImpuesto(rsEmps.getInt("Impuesto"));
+                impuestoTB.setNombreImpuesto(rsEmps.getString("ImpuestoNombre"));
+
                 suministroTB.setClaveSat(rsEmps.getString("ClaveSat"));
                 suministroTB.setTipoPrecio(rsEmps.getBoolean("TipoPrecio"));
-                suministroTB.setDescripcion(rsEmps.getString("Descripcion")); 
+                suministroTB.setDescripcion(rsEmps.getString("Descripcion"));
             }
         } catch (SQLException e) {
             System.out.println("La operación de selección de SQL ha fallado: " + e);
@@ -885,7 +895,7 @@ public class SuministroADO {
                             preparedSuministro.setString(1, idSuministro);
                             preparedSuministro.addBatch();
                             preparedSuministro.executeBatch();
-                            
+
                             preparedSuministro = DBUtil.getConnection().prepareStatement("DELETE FROM CantidadTB WHERE IdSuministro = ?");
                             preparedSuministro.setString(1, idSuministro);
                             preparedSuministro.addBatch();
@@ -989,10 +999,16 @@ public class SuministroADO {
                 suministroTB.setUnidadVenta(rsEmps.getInt("UnidadVenta"));
                 suministroTB.setLote(rsEmps.getBoolean("Lote"));
                 suministroTB.setInventario(rsEmps.getBoolean("Inventario"));
-                suministroTB.setImpuestoOperacion(rsEmps.getInt("Operacion"));
-                suministroTB.setImpuestoId(rsEmps.getInt("Impuesto"));
-                suministroTB.setImpuestoNombre(rsEmps.getString("ImpuestoNombre"));
-                suministroTB.setImpuestoValor(rsEmps.getDouble("Valor"));
+
+                suministroTB.setIdImpuesto(rsEmps.getInt("Impuesto"));
+
+                ImpuestoTB impuestoTB = new ImpuestoTB();
+                impuestoTB.setIdImpuesto(rsEmps.getInt("Impuesto"));
+                impuestoTB.setOperacion(rsEmps.getInt("Operacion"));
+                impuestoTB.setNombreImpuesto(rsEmps.getString("ImpuestoNombre"));
+                impuestoTB.setValor(rsEmps.getDouble("Valor"));
+                suministroTB.setImpuestoTB(impuestoTB);
+
                 suministroTB.setValorInventario(rsEmps.getShort("ValorInventario"));
                 suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
             }
@@ -1021,7 +1037,7 @@ public class SuministroADO {
                 + "s.NombreMarca,\n"
                 + "d.Nombre AS Unidad\n"
                 + "FROM SuministroTB AS s INNER JOIN DetalleTB AS d ON d.IdDetalle = s.UnidadCompra AND d.IdMantenimiento = '0013'\n"
-                + "WHERE s.IdSuministro = ?" 
+                + "WHERE s.IdSuministro = ?"
                 : "SELECT\n"
                 + "s.IdSuministro,\n"
                 + "s.Clave,\n"
@@ -1174,8 +1190,8 @@ public class SuministroADO {
                 Button button = new Button();
                 button.getStyleClass().add("buttonDark");
                 ImageView view = new ImageView(new Image("/view/image/remove.png"));
-                view.setFitWidth(24);
-                view.setFitHeight(24);
+                view.setFitWidth(22);
+                view.setFitHeight(22);
                 button.setGraphic(view);
                 suministroTB.setBtnRemove(button);
 

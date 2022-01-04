@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.notacredito.FxNotaCreditoController">
+<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.notacredito.FxNotaCreditoController">
    <children>
       <ScrollPane fx:id="spBody" fitToWidth="true" styleClass="scroll-pane-primary" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <content>
@@ -72,19 +72,19 @@
                            <children>
                               <HBox VBox.vgrow="ALWAYS">
                                  <children>
-                                    <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
+                                    <VBox prefWidth="320.0" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label styleClass="labelRoboto13" text="Documento Nota de Crédito" textFill="#020203" />
                                           <ComboBox fx:id="cbNotaCredito" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" />
                                        </children>
                                     </VBox>
-                                    <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
+                                    <VBox prefWidth="320.0" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label styleClass="labelRoboto13" text="Moneda" textFill="#020203" />
                                           <ComboBox fx:id="cbMoneda" disable="true" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" />
                                        </children>
                                     </VBox>
-                                    <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
+                                    <VBox prefWidth="320.0" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label styleClass="labelRoboto13" text="Fecha de Registro" textFill="#020203" />
                                           <DatePicker fx:id="txtFechaRegistro" editable="false" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" />
@@ -99,13 +99,13 @@
                               </HBox>
                               <HBox>
                                  <children>
-                                    <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
+                                    <VBox prefWidth="320.0" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label styleClass="labelRoboto13" text="Tipo de Comprobante" textFill="#020203" />
                                           <ComboBox fx:id="cbComprobante" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" />
                                        </children>
                                     </VBox>
-                                    <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
+                                    <VBox prefWidth="320.0" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label styleClass="labelRoboto13" text="Serie y Número del Comprobante(B001-1)" textFill="#020203" />
                                           <HBox VBox.vgrow="ALWAYS">
@@ -124,7 +124,7 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                    <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
+                                    <VBox prefWidth="320.0" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label styleClass="labelRoboto13" text="Motivo" textFill="#020203" />
                                           <ComboBox fx:id="cbMotivo" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" />
@@ -134,19 +134,19 @@
                               </HBox>
                               <HBox>
                                  <children>
-                                    <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
+                                    <VBox prefWidth="320.0" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label styleClass="labelRoboto13" text="Tipo Documento Ident." textFill="#020203" />
                                           <ComboBox fx:id="cbTipoDocumento" disable="true" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" />
                                        </children>
                                     </VBox>
-                                    <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
+                                    <VBox prefWidth="320.0" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label styleClass="labelRoboto13" text="N° de Documento" textFill="#020203" />
                                           <TextField fx:id="txtNumeroDocumento" disable="true" prefHeight="30.0" prefWidth="220.0" styleClass="text-field-normal" />
                                        </children>
                                     </VBox>
-                                    <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
+                                    <VBox prefWidth="320.0" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label styleClass="labelRoboto13" text="Nombre/Razón Social" textFill="#020203" />
                                           <TextField fx:id="txtRazonsocial" disable="true" prefHeight="30.0" prefWidth="220.0" styleClass="text-field-normal" />

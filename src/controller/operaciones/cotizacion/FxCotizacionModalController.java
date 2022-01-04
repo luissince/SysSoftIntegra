@@ -56,7 +56,6 @@ public class FxCotizacionModalController implements Initializable {
                 ? (Double.parseDouble(txtPrecio.getText()) <= 0 ? oldPrecio : Double.parseDouble(txtPrecio.getText()))
                 : oldPrecio;
 
-
         SuministroTB newSuministro = new SuministroTB();
         newSuministro.setIdSuministro(suministroTB.getIdSuministro());
         newSuministro.setClave(suministroTB.getClave());
@@ -65,12 +64,10 @@ public class FxCotizacionModalController implements Initializable {
         newSuministro.setCostoCompra(0);
         newSuministro.setDescuento(0);
         newSuministro.setPrecioVentaGeneral(precioActual);
-        newSuministro.setImporteNeto(newSuministro.getCantidad() * 1);
+        newSuministro.setImporteNeto(cantidadActual * precioActual);
 
-        newSuministro.setImpuestoOperacion(suministroTB.getImpuestoOperacion());
-        newSuministro.setImpuestoId(suministroTB.getImpuestoId());
-        newSuministro.setImpuestoNombre(suministroTB.getImpuestoNombre());
-        newSuministro.setImpuestoValor(suministroTB.getImpuestoValor());
+        newSuministro.setIdImpuesto(suministroTB.getIdImpuesto());
+        newSuministro.setImpuestoTB(suministroTB.getImpuestoTB());
 
         newSuministro.setInventario(suministroTB.isInventario());
         newSuministro.setUnidadVenta(suministroTB.getUnidadVenta());

@@ -38,7 +38,8 @@ public class SuministroTB {
     private double costoCompra;
     private double costoCompraReal;
     private double porLlevar;
-
+    
+    private double impuestoSumado;
     private double precioVentaGeneral;
     private double precioVentaGeneralReal;
     private double precioVentaGeneralUnico;
@@ -69,11 +70,8 @@ public class SuministroTB {
     private boolean tipoPrecio;
     private byte[] nuevaImagen;
 
-    private int impuestoOperacion;
-    private int impuestoId;
-    private String impuestoNombre;
-    private double impuestoSumado;
-    private double impuestoValor;
+    private int idImpuesto;
+    private ImpuestoTB impuestoTB;
 
     private double peso;
 
@@ -88,7 +86,6 @@ public class SuministroTB {
     private Label estadoAsignacion;
     private Button btnRemove;
     private boolean cambios;
-    private ImpuestoTB impuestoTB;
     private double bonificacion;
     private TextField txtMerma;
     private ComboBox<SuministroTB> cbSuministro;
@@ -322,6 +319,14 @@ public class SuministroTB {
         this.preciosTB = preciosTB;
     }
 
+    public double getImpuestoSumado() {
+        return impuestoSumado;
+    }
+
+    public void setImpuestoSumado(double impuestoSumado) {
+        this.impuestoSumado = impuestoSumado;
+    }
+
     public double getPrecioVentaGeneral() {
         return precioVentaGeneral;
     }
@@ -490,46 +495,6 @@ public class SuministroTB {
         this.unidadVentaName = unidadVentaName;
     }
 
-    public int getImpuestoOperacion() {
-        return impuestoOperacion;
-    }
-
-    public void setImpuestoOperacion(int impuestoOperacion) {
-        this.impuestoOperacion = impuestoOperacion;
-    }
-
-    public int getImpuestoId() {
-        return impuestoId;
-    }
-
-    public void setImpuestoId(int impuestoId) {
-        this.impuestoId = impuestoId;
-    }
-
-    public String getImpuestoNombre() {
-        return impuestoNombre;
-    }
-
-    public void setImpuestoNombre(String impuestoNombre) {
-        this.impuestoNombre = impuestoNombre == null ? "" : impuestoNombre;
-    }
-
-    public double getImpuestoSumado() {
-        return impuestoSumado;
-    }
-
-    public void setImpuestoSumado(double impuestoSumado) {
-        this.impuestoSumado = impuestoSumado;
-    }
-
-    public double getImpuestoValor() {
-        return impuestoValor;
-    }
-
-    public void setImpuestoValor(double impuestoValor) {
-        this.impuestoValor = impuestoValor;
-    }
-
     public double getPeso() {
         return peso;
     }
@@ -648,6 +613,14 @@ public class SuministroTB {
 
     public void setNuevaImagen(byte[] nuevaImagen) {
         this.nuevaImagen = nuevaImagen;
+    }
+
+    public int getIdImpuesto() {
+        return idImpuesto;
+    }
+
+    public void setIdImpuesto(int idImpuesto) {
+        this.idImpuesto = idImpuesto;
     }
 
     public ImpuestoTB getImpuestoTB() {

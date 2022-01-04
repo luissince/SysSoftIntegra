@@ -6,25 +6,51 @@ import javafx.scene.control.Button;
 public class DetalleCompraTB {
 
     private int id;
+    
     private String idCompra;
+    
     private String idSuministro;
+    
+    private String observacion;
+    
     private String descripcion;
+    
     private String medida;
+    
     private double cantidad;
+    
     private double precioCompra;
+    
     private double descuento;
+    
     private double importeBruto;
+    
     private double descuentoBruto;
+    
     private double subImporteNeto;
+    
     private double impuestoGenerado;
+    
     private double importeNeto;
+    
     private int idImpuesto;
+    
     private String nombreImpuesto;
+    
     private double valorImpuesto;
+    
     private boolean lote;
+    
     private boolean cambiarPrecio;
+    
+    private String fechaRegistro;
+    
+    private String horaRegistro;
+    
     private ArrayList<LoteTB> listLote;
+    
     private SuministroTB suministroTB;
+    
     private Button remove;
 
     public DetalleCompraTB() {
@@ -52,6 +78,14 @@ public class DetalleCompraTB {
 
     public void setIdSuministro(String idSuministro) {
         this.idSuministro = idSuministro;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
 
     public double getCantidad() {
@@ -156,6 +190,22 @@ public class DetalleCompraTB {
 
     public void setCambiarPrecio(boolean cambiarPrecio) {
         this.cambiarPrecio = cambiarPrecio;
+    }
+
+    public String getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(String fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public String getHoraRegistro() {
+        return horaRegistro;
+    }
+
+    public void setHoraRegistro(String horaRegistro) {
+        this.horaRegistro = horaRegistro;
     }
 
     public String getDescripcion() {

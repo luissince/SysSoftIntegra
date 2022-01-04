@@ -4,6 +4,7 @@ import controller.operaciones.compras.FxComprasController;
 import controller.operaciones.cotizacion.FxCotizacionController;
 import controller.operaciones.guiaremision.FxGuiaRemisionController;
 import controller.operaciones.notacredito.FxNotaCreditoController;
+import controller.operaciones.ordencompra.FxOrdenCompraController;
 import controller.operaciones.venta.FxVentaController;
 import controller.tools.FilesRouters;
 import controller.tools.Session;
@@ -107,6 +108,15 @@ public class FxOperacionesController implements Initializable {
 
     private FxNotaCreditoController controllerNotaCredito;
 
+    /*
+    Controller orden de compra
+     */
+    private FXMLLoader fXMLOrdenCompra;
+
+    private AnchorPane nodeOrdenCompra;
+
+    private FxOrdenCompraController controllerOrdenCompra;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -138,6 +148,9 @@ public class FxOperacionesController implements Initializable {
             nodeNotaCredito = fXMLNotaCredito.load();
             controllerNotaCredito = fXMLNotaCredito.getController();
 
+            fXMLOrdenCompra = new FXMLLoader(getClass().getResource(FilesRouters.FX_ORDEN_COMPRA));
+            nodeOrdenCompra = fXMLOrdenCompra.load();
+            controllerOrdenCompra = fXMLOrdenCompra.getController();
         } catch (IOException ex) {
             System.out.println("Error en Ingresos Controller:" + ex.getLocalizedMessage());
         }
@@ -244,6 +257,16 @@ public class FxOperacionesController implements Initializable {
         fxPrincipalController.getVbContent().getChildren().add(nodeNotaCredito);
     }
 
+    private void openWindowOrdenCompra() {
+        controllerOrdenCompra.setContent(fxPrincipalController);
+        fxPrincipalController.getVbContent().getChildren().clear();
+        AnchorPane.setLeftAnchor(nodeOrdenCompra, 0d);
+        AnchorPane.setTopAnchor(nodeOrdenCompra, 0d);
+        AnchorPane.setRightAnchor(nodeOrdenCompra, 0d);
+        AnchorPane.setBottomAnchor(nodeOrdenCompra, 0d);
+        fxPrincipalController.getVbContent().getChildren().add(nodeOrdenCompra);
+    }
+
     @FXML
     private void onKeyPressedVentas(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
@@ -319,13 +342,13 @@ public class FxOperacionesController implements Initializable {
     @FXML
     private void onKeyPressedOrdenCompra(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-
+            openWindowOrdenCompra();
         }
     }
 
     @FXML
     private void onActioOrdenCompra(ActionEvent event) {
-
+        openWindowOrdenCompra();
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

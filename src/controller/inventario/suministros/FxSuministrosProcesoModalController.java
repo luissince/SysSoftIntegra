@@ -148,9 +148,9 @@ public class FxSuministrosProcesoModalController implements Initializable {
     private RadioButton rbModuloVentas;
     @FXML
     private RadioButton rbModuloProduccion;
-   @FXML
+    @FXML
     private TextArea txtDescripcion;
-   
+
     private String idSuministro;
 
     private File selectFile;
@@ -171,7 +171,7 @@ public class FxSuministrosProcesoModalController implements Initializable {
 
     private ObservableList<PreciosTB> tvPreciosNormal;
 
-    private SingleSelectionModel<Tab> selectionModel = null; 
+    private SingleSelectionModel<Tab> selectionModel = null;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -555,10 +555,10 @@ public class FxSuministrosProcesoModalController implements Initializable {
             suministroTB.setLote(cbLote.isSelected());
             suministroTB.setInventario(cbInventario.isSelected());
             suministroTB.setValorInventario(rbValorUnidad.isSelected() ? (short) 1 : rbValorCosto.isSelected() ? (short) 2 : (short) 3);
-            suministroTB.setImpuestoId(cbImpuesto.getSelectionModel().getSelectedIndex() >= 0 ? cbImpuesto.getSelectionModel().getSelectedItem().getIdImpuesto() : 0);
+            suministroTB.setIdImpuesto(cbImpuesto.getSelectionModel().getSelectedIndex() >= 0 ? cbImpuesto.getSelectionModel().getSelectedItem().getIdImpuesto() : 0);
             suministroTB.setClaveSat(txtClaveSat.getText().trim());
             suministroTB.setTipoPrecio(rbPrecioNormal.isSelected());
-             suministroTB.setDescripcion(txtDescripcion.getText().trim());
+            suministroTB.setDescripcion(txtDescripcion.getText().trim());
 
             tvPreciosNormal.add(new PreciosTB(Integer.parseInt(txtPrecioVentaNeto2.getId()), "Precio de Venta 1", !Tools.isNumeric(txtPrecioVentaNeto2.getText()) ? 0 : Double.parseDouble(txtPrecioVentaNeto2.getText()), 1));
             tvPreciosNormal.add(new PreciosTB(Integer.parseInt(txtPrecioVentaNeto3.getId()), "Pricio de Venta 2", !Tools.isNumeric(txtPrecioVentaNeto3.getText()) ? 0 : Double.parseDouble(txtPrecioVentaNeto3.getText()), 1));
@@ -929,20 +929,20 @@ public class FxSuministrosProcesoModalController implements Initializable {
     private void onActionAdd(ActionEvent event) {
         addElementsTablePrecios();
     }
-    
-      @FXML
+
+    @FXML
     private void OnKeyPressedDescripcion(KeyEvent event) {
-         if (event.getCode().equals(KeyCode.TAB)) {
+        if (event.getCode().equals(KeyCode.TAB)) {
             Node node = (Node) event.getSource();
             if (node instanceof TextArea) {
-                TextAreaSkin skin = (TextAreaSkin) ((TextArea)node).getSkin();
-                if (!event.isControlDown()) {                   
+                TextAreaSkin skin = (TextAreaSkin) ((TextArea) node).getSkin();
+                if (!event.isControlDown()) {
                     if (event.isShiftDown()) {
                         skin.getBehavior().traversePrevious();
                     } else {
                         skin.getBehavior().traverseNext();
                     }
-                } else {                    
+                } else {
                     TextArea textArea = (TextArea) node;
                     textArea.replaceSelection("\t");
                 }
@@ -986,7 +986,5 @@ public class FxSuministrosProcesoModalController implements Initializable {
     public TextField getTxtMedida() {
         return txtMedida;
     }
-
-  
 
 }

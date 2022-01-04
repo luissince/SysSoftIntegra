@@ -71,6 +71,10 @@ public class FxComprasController implements Initializable {
     @FXML
     private TableColumn<DetalleCompraTB, String> tcImporte;
     @FXML
+    private Label lblImporteBruto;
+    @FXML
+    private Label lblDescuento;
+    @FXML
     private Label lblSubImporteNeto;
     @FXML
     private Label lblImpuesto;
@@ -102,6 +106,10 @@ public class FxComprasController implements Initializable {
     private ObservableList<LoteTB> loteTBs;
 
     private SearchComboBox<AlmacenTB> searchComboBoxAlmacen;
+
+    private double importeBruto;
+
+    private double descuento;
 
     private double subImporteNeto;
 
@@ -414,7 +422,7 @@ public class FxComprasController implements Initializable {
                     suministrosTB.setPrecioVentaGeneral(e.getSuministroTB().getPrecioVentaGeneral());
                     suministrosTB.setPrecioMargenGeneral(e.getSuministroTB().getPrecioMargenGeneral());
                     suministrosTB.setPrecioUtilidadGeneral(e.getSuministroTB().getPrecioUtilidadGeneral());
-                    suministrosTB.setImpuestoId(e.getSuministroTB().getImpuestoId());
+                    suministrosTB.setIdImpuesto(e.getSuministroTB().getIdImpuesto());
                     suministrosTB.setTipoPrecio(e.getSuministroTB().isTipoPrecio());
                     suministrosTB.setPreciosTBs(e.getSuministroTB().getPreciosTBs());
                     detalleCompraTB.setSuministroTB(suministrosTB);
@@ -512,6 +520,14 @@ public class FxComprasController implements Initializable {
     }
 
     public void calculateTotals() {
+        importeBruto = 0;
+        tvList.getItems().forEach(e -> importeBruto += e.getImporteBruto() * e.getCantidad());
+        lblImporteBruto.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(importeBruto, 2));
+
+        descuento = 0;
+        tvList.getItems().forEach(e -> descuento += e.getDescuentoBruto() * e.getCantidad());
+        lblDescuento.setText(Session.MONEDA_SIMBOLO + " " + (Tools.roundingValue(descuento * (-1), 2)));
+
         subImporteNeto = 0;
         tvList.getItems().forEach(e -> subImporteNeto += e.getSubImporteNeto() * e.getCantidad());
         lblSubImporteNeto.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(subImporteNeto, 2));

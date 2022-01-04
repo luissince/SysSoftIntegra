@@ -282,12 +282,15 @@ public class CotizacionADO {
                     suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
                     suministroTB.setPrecioVentaGeneralReal(preciocalculado);
 
-                    suministroTB.setImpuestoOperacion(result.getInt("Operacion"));
-                    suministroTB.setImpuestoId(result.getInt("Impuesto"));
-                    suministroTB.setImpuestoNombre(result.getString("ImpuestoNombre"));
-                    suministroTB.setImpuestoValor(result.getDouble("Valor"));
+                    suministroTB.setIdImpuesto(result.getInt("Impuesto"));
+                    ImpuestoTB impuestoTB = new ImpuestoTB();
+                    impuestoTB.setIdImpuesto(result.getInt("Impuesto"));
+                    impuestoTB.setOperacion(result.getInt("Operacion"));
+                    impuestoTB.setNombreImpuesto(result.getString("ImpuestoNombre"));
+                    impuestoTB.setValor(result.getDouble("Valor"));
+                    suministroTB.setImpuestoTB(impuestoTB);
 
-                    double impuesto = Tools.calculateTax(suministroTB.getImpuestoValor(), suministroTB.getPrecioVentaGeneralReal());
+                    double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
                     suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
                     suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
                     suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
@@ -373,10 +376,13 @@ public class CotizacionADO {
                     double precioDescuento = suministroTB.getPrecioVentaGeneral() - descuento;
                     suministroTB.setImporteNeto(suministroTB.getCantidad() * precioDescuento);
 
-                    suministroTB.setImpuestoOperacion(result.getInt("Operacion"));
-                    suministroTB.setImpuestoId(result.getInt("Impuesto"));
-                    suministroTB.setImpuestoNombre(result.getString("ImpuestoNombre"));
-                    suministroTB.setImpuestoValor(result.getDouble("Valor"));
+                    suministroTB.setIdImpuesto(result.getInt("Impuesto"));
+                    ImpuestoTB impuestoTB = new ImpuestoTB();
+                    impuestoTB.setIdImpuesto(result.getInt("Impuesto"));
+                    impuestoTB.setOperacion(result.getInt("Operacion"));
+                    impuestoTB.setNombreImpuesto(result.getString("ImpuestoNombre"));
+                    impuestoTB.setValor(result.getDouble("Valor"));
+                    suministroTB.setImpuestoTB(impuestoTB);
 
                     suministroTB.setInventario(result.getBoolean("Inventario"));
                     suministroTB.setUnidadVenta(result.getInt("UnidadVenta"));
@@ -455,7 +461,11 @@ public class CotizacionADO {
                     suministroTB.setCantidad(result.getDouble("Cantidad"));
                     suministroTB.setPrecioVentaGeneral(result.getDouble("Precio"));
                     suministroTB.setDescuento(result.getDouble("Descuento"));
-                    suministroTB.setImpuestoValor(result.getDouble("Valor"));
+
+                    ImpuestoTB impuestoTB = new ImpuestoTB();
+                    impuestoTB.setValor(result.getDouble("Valor"));
+                    suministroTB.setImpuestoTB(impuestoTB);
+
                     double descuento = suministroTB.getDescuento();
                     double precioDescuento = suministroTB.getPrecioVentaGeneral() - descuento;
                     suministroTB.setImporteNeto(suministroTB.getCantidad() * precioDescuento);
@@ -534,6 +544,12 @@ public class CotizacionADO {
             try {
                 if (statementValidate != null) {
                     statementValidate.close();
+                }
+                if (statementCotizacion != null) {
+                    statementCotizacion.close();
+                }
+                if (statementCotizacionDetalle != null) {
+                    statementCotizacionDetalle.close();
                 }
             } catch (SQLException ex) {
                 return ex.getLocalizedMessage();

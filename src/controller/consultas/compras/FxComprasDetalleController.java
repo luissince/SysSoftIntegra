@@ -186,6 +186,7 @@ public class FxComprasDetalleController implements Initializable {
                         break;
                 }
 
+                vbCondicion.getChildren().clear();
                 if (!listComprasCredito.isEmpty()) {
                     lblMetodoPago.setText("Método de pago al crédito");
                     for (int i = 0; i < listComprasCredito.size(); i++) {

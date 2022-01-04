@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.movimientos.FxMovimientosProcesoController">
+<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.movimientos.FxMovimientosProcesoController">
    <children>
       <HBox fx:id="hbBody" onKeyReleased="#onKeyReleasedWindow" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -53,25 +53,25 @@
                   </HBox>
                   <HBox fx:id="hbBotones" alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 0 0 1px 0;">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#onActionRelizarMovimiento" styleClass="buttonLightDefault" text="Realizar proceso (F1)">
+                        <Button mnemonicParsing="false" onAction="#onActionRelizarMovimiento" styleClass="buttonLightDefault" text="Guardar (F1)">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../image/accept.png" />
+                                    <Image url="@../../image/save.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#onActionSuministro" onKeyPressed="#onKeyPressedSuministros" styleClass="buttonLight" text="Buscar productos (F2)">
+                        <Button mnemonicParsing="false" onAction="#onActionSuministro" onKeyPressed="#onKeyPressedSuministros" styleClass="buttonLight" text="Productos (F2)">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../image/search.png" />
+                                    <Image url="@../../image/producto.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#onActionGenerarReporte" onKeyPressed="#onKeyPressedGenerarReport" styleClass="buttonLight" text="Generar reporte (F3)">
+                        <Button mnemonicParsing="false" onAction="#onActionGenerarReporte" onKeyPressed="#onKeyPressedGenerarReport" styleClass="buttonLight" text="Reporte (F3)">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -114,7 +114,7 @@
                                           <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelOpenSansRegular13" text="Observación:" textFill="#020203" GridPane.columnIndex="2" />
                                           <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;" GridPane.columnIndex="1">
                                              <children>
-                                                <RadioButton fx:id="rbIncremento" mnemonicParsing="false" onAction="#onActionTipo" onKeyPressed="#onKeyPressedTipo" prefHeight="30.0" styleClass="labelOpenSansRegular13" text="Incremento" textFill="#1a2226">
+                                                <RadioButton fx:id="rbIncremento" mnemonicParsing="false" onAction="#onActionTipo" onKeyPressed="#onKeyPressedTipo" prefHeight="30.0" selected="true" styleClass="labelOpenSansRegular13" text="Incremento" textFill="#1a2226">
                                                    <graphic>
                                                       <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
@@ -123,7 +123,7 @@
                                                       </ImageView>
                                                    </graphic>
                                                 </RadioButton>
-                                                <RadioButton fx:id="rbDecremento" mnemonicParsing="false" onAction="#onActionTipo" onKeyPressed="#onKeyPressedTipo" prefHeight="30.0" selected="true" styleClass="labelOpenSansRegular13" text="Decremento" textFill="#1a2226">
+                                                <RadioButton fx:id="rbDecremento" mnemonicParsing="false" onAction="#onActionTipo" onKeyPressed="#onKeyPressedTipo" prefHeight="30.0" styleClass="labelOpenSansRegular13" text="Decremento" textFill="#1a2226">
                                                    <graphic>
                                                       <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
@@ -149,7 +149,7 @@
                                        <children>
                                           <TableView fx:id="tvList" editable="true" fixedCellSize="-0.0" onKeyPressed="#onKeyPressedList" prefHeight="320.0" styleClass="table-view-principal" VBox.vgrow="ALWAYS">
                                              <columns>
-                                                <TableColumn fx:id="tcAccion" prefWidth="105.99996948242188" style="-fx-alignment: CENTER;" text="Acción" />
+                                                <TableColumn fx:id="tcAccion" prefWidth="105.99996948242188" style="-fx-alignment: CENTER;" text="Quitar" />
                                                 <TableColumn fx:id="tcClave" prefWidth="229.0" style="-fx-alignment: CENTER-LEFT;" text="Clave/Nombre" />
                                                 <TableColumn fx:id="tcNuevaExistencia" prefWidth="169.0" style="-fx-alignment: CENTER;" text="Nueva Existencia" />
                                                 <TableColumn fx:id="tcExistenciaActual" prefWidth="169.0" style="-fx-alignment: CENTER;" text="Existencia Actual" />
