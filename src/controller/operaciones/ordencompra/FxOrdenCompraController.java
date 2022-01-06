@@ -10,8 +10,12 @@ import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javafx.beans.binding.Bindings;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,9 +33,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.ClienteTB;
+import model.OrdenCompraADO;
 import model.OrdenCompraDetalleTB;
+import model.OrdenCompraTB;
 import model.ProveedorADO;
 import model.ProveedorTB;
 
@@ -40,11 +47,15 @@ public class FxOrdenCompraController implements Initializable {
     @FXML
     private AnchorPane apWindow;
     @FXML
+    private HBox hbBody;
+    @FXML
     private ComboBox<ProveedorTB> cbProveedor;
     @FXML
     private DatePicker dtFechaEmision;
     @FXML
     private DatePicker dtFechaVencimiento;
+    @FXML
+    private Label lblProceso;
     @FXML
     private TableView<OrdenCompraDetalleTB> tvList;
     @FXML
@@ -74,13 +85,13 @@ public class FxOrdenCompraController implements Initializable {
     @FXML
     private Label lblImporteTotal;
     @FXML
+    private Button btnProducto;
+    @FXML
     private HBox hbLoad;
     @FXML
     private Label lblMessageLoad;
     @FXML
     private Button btnAceptarLoad;
-    @FXML
-    private Label lblProceso;
 
     private FxPrincipalController principalController;
 
@@ -235,8 +246,8 @@ public class FxOrdenCompraController implements Initializable {
         impuestoTotal = 0;
         importeNetoTotal = 0;
 
-        for (OrdenCompraDetalleTB ocdtb : tvList.getItems()) {
-            double importeBruto = ocdtb.getCosto();
+        tvList.getItems().forEach(ocdtb -> {
+            double importeBruto = ocdtb.getCosto() * ocdtb.getCantidad();
             double descuento = ocdtb.getDescuento();
             double subImporteBruto = importeBruto - descuento;
             double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
@@ -248,7 +259,7 @@ public class FxOrdenCompraController implements Initializable {
             subImporteNetoTotal += subImporteNeto;
             impuestoTotal += impuesto;
             importeNetoTotal += importeNeto;
-        }
+        });
 
         lblValorVenta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(importeBrutoTotal, 2));
         lblDescuento.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(descuentoTotal, 2));
@@ -266,6 +277,170 @@ public class FxOrdenCompraController implements Initializable {
             }
         }
         return ret;
+    }
+
+    private void onEventGuardarOrdenCompra() {
+        if (cbProveedor.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(apWindow, "Orden de Compra", "Seleccione su provedor.");
+            cbProveedor.requestFocus();
+        } else if (dtFechaVencimiento.getValue() == null) {
+            Tools.AlertMessageWarning(apWindow, "Orden de Compra", "Ingrese la fecha de vencimiento");
+            dtFechaVencimiento.requestFocus();
+        } else if (tvList.getItems().isEmpty()) {
+            Tools.AlertMessageWarning(apWindow, "Orden de Compra", "No hay productos en la lista.");
+            btnProducto.requestFocus();
+        } else {
+            short value = Tools.AlertMessageConfirmation(apWindow, "Orden de Compra", "¿Está seguro de continuar?");
+            if (value == 1) {
+                ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+                    Thread t = new Thread(runnable);
+                    t.setDaemon(true);
+                    return t;
+                });
+
+                Task<String> task = new Task<String>() {
+                    @Override
+                    protected String call() {
+                        OrdenCompraTB compraTB = new OrdenCompraTB();
+                        compraTB.setIdOrdenCompra("");
+                        compraTB.setNumeracion(0);
+                        compraTB.setIdEmpleado(Session.USER_ID);
+                        compraTB.setIdProveedor(cbProveedor.getSelectionModel().getSelectedItem().getIdProveedor());
+                        compraTB.setFechaRegistro(Tools.getDatePicker(dtFechaEmision));
+                        compraTB.setHoraRegistro(Tools.getTime());
+                        compraTB.setFechaVencimiento(Tools.getDatePicker(dtFechaVencimiento));
+                        compraTB.setHoraVencimiento(Tools.getTime());
+                        compraTB.setObservacion(txtObservacion.getText().trim());
+                        compraTB.setOrdenCompraDetalleTBs(new ArrayList<>(tvList.getItems()));
+
+                        return OrdenCompraADO.InsertarOrdenCompra(compraTB);
+                    }
+                };
+
+                task.setOnScheduled(w -> {
+                    hbBody.setDisable(true);
+                    hbLoad.setVisible(true);
+                    btnAceptarLoad.setVisible(false);
+                    lblMessageLoad.setText("Procesando información...");
+                    lblMessageLoad.setTextFill(Color.web("#ffffff"));
+                });
+                task.setOnFailed(w -> {
+                    btnAceptarLoad.setVisible(true);
+                    btnAceptarLoad.setOnAction(event -> {
+                        hbBody.setDisable(false);
+                        hbLoad.setVisible(false);
+                        resetVenta();
+                    });
+                    btnAceptarLoad.setOnKeyPressed(event -> {
+                        if (event.getCode() == KeyCode.ENTER) {
+                            hbBody.setDisable(false);
+                            hbLoad.setVisible(false);
+                            resetVenta();
+                        }
+                    });
+                    lblMessageLoad.setText(task.getException().getLocalizedMessage());
+                    lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+                });
+                task.setOnSucceeded(w -> {
+                    String result = task.getValue();
+                    if (result.equalsIgnoreCase("inserted")) {
+                        lblMessageLoad.setText("Registro correctamente la orden de compra.");
+                        lblMessageLoad.setTextFill(Color.web("#ffffff"));
+                        btnAceptarLoad.setOnAction(event -> {
+                            hbBody.setDisable(false);
+                            hbLoad.setVisible(false);
+                            resetVenta();
+                        });
+                        btnAceptarLoad.setOnKeyPressed(event -> {
+                            if (event.getCode() == KeyCode.ENTER) {
+                                hbBody.setDisable(false);
+                                hbLoad.setVisible(false);
+                                resetVenta();
+                            }
+                        });
+                    } else {
+                        lblMessageLoad.setText(result);
+                        lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+                        btnAceptarLoad.setVisible(true);
+                        btnAceptarLoad.setOnAction(event -> {
+                            hbBody.setDisable(false);
+                            hbLoad.setVisible(false);
+                            resetVenta();
+                        });
+                        btnAceptarLoad.setOnKeyPressed(event -> {
+                            if (event.getCode() == KeyCode.ENTER) {
+                                hbBody.setDisable(false);
+                                hbLoad.setVisible(false);
+                                resetVenta();
+                            }
+                        });
+                    }
+
+//                    Object object = task.getValue();
+//                    if (object instanceof String[]) {
+//                        String result[] = (String[]) object;
+//                        if (result[0].equalsIgnoreCase("1")) {
+//                            lblMessageLoad.setText("Registro correctamente la orden de compra.");
+//                            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+//                            hbBody.setDisable(false);
+//                            hbLoad.setVisible(false);
+//                            resetVenta();
+//                        } else {
+//                            lblMessageLoad.setText("Se registro corectamente la cotización.");
+//                            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+//                            hbBody.setDisable(false);
+//                            hbLoad.setVisible(false);
+//                            resetVenta();
+//                        }
+//                    } else {
+//                        lblMessageLoad.setText((String) object);
+//                        lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+//                        btnAceptarLoad.setVisible(true);
+//                        btnAceptarLoad.setOnAction(event -> {
+//                            hbBody.setDisable(false);
+//                            hbLoad.setVisible(false);
+//                            resetVenta();
+//                        });
+//                        btnAceptarLoad.setOnKeyPressed(event -> {
+//                            if (event.getCode() == KeyCode.ENTER) {
+//                                hbBody.setDisable(false);
+//                                hbLoad.setVisible(false);
+//                                resetVenta();
+//                            }
+//                        });
+//                    }
+                });
+
+                exec.execute(task);
+
+                if (!exec.isShutdown()) {
+                    exec.shutdown();
+                }
+            }
+        }
+    }
+
+    private void resetVenta() {
+        cbProveedor.getItems().clear();
+        Tools.actualDate(Tools.getDate(), dtFechaEmision);
+        Tools.actualDate(Tools.getDate(), dtFechaVencimiento);
+        tvList.getItems().clear();
+        lblProceso.setText("Orden de compra en proceso de registrar");
+        lblProceso.setTextFill(Color.web("#0060e8"));
+        txtObservacion.clear();
+        calculateTotales();
+    }
+
+    @FXML
+    private void onKeyPressedGuardar(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            onEventGuardarOrdenCompra();
+        }
+    }
+
+    @FXML
+    private void onActionGuardar(ActionEvent event) {
+        onEventGuardarOrdenCompra();
     }
 
     @FXML

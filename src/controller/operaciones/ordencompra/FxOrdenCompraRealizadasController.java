@@ -1,8 +1,10 @@
 package controller.operaciones.ordencompra;
 
 import controller.menus.FxPrincipalController;
+import controller.tools.FilesRouters;
 import controller.tools.Session;
 import controller.tools.Tools;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
@@ -12,13 +14,17 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import model.OrdenCompraADO;
 import model.OrdenCompraTB;
@@ -33,6 +39,8 @@ public class FxOrdenCompraRealizadasController implements Initializable {
     private DatePicker txtFechaInicio;
     @FXML
     private DatePicker txtFechaFinal;
+    @FXML
+    private TextField txtSearch;
     @FXML
     private TableView<OrdenCompraTB> tvList;
     @FXML
@@ -79,7 +87,7 @@ public class FxOrdenCompraRealizadasController implements Initializable {
                 + cellData.getValue().getProveedorTB().getRazonSocial()
         ));
         tcOrdenCompra.setCellValueFactory(cellData -> Bindings.concat(
-                "N°-" + Tools.formatNumber(cellData.getValue().getNumeracion())
+                "N° - " + Tools.formatNumber(cellData.getValue().getNumeracion())
         ));
         tcObservacion.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getObservacion().toUpperCase()
@@ -159,14 +167,50 @@ public class FxOrdenCompraRealizadasController implements Initializable {
         }
     }
 
-    @FXML
-    private void onKeyPressedMostrar(KeyEvent event) {
-        
+    private void openWindowDetalleOrdenCompra() throws IOException {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            FXMLLoader fXMLLoader = new FXMLLoader(getClass().getResource(FilesRouters.FX_ORDEN_COMPRA_DETALLE));
+            AnchorPane node = fXMLLoader.load();
+            //Controlller here
+            FxOrdenCompraDetalleController controller = fXMLLoader.getController();
+            controller.setInitOrdenCompraRealizadasController(this, fxPrincipalController);
+            //
+            fxPrincipalController.getVbContent().getChildren().clear();
+            AnchorPane.setLeftAnchor(node, 0d);
+            AnchorPane.setTopAnchor(node, 0d);
+            AnchorPane.setRightAnchor(node, 0d);
+            AnchorPane.setBottomAnchor(node, 0d);
+            fxPrincipalController.getVbContent().getChildren().add(node);
+            controller.setInitComponents(tvList.getSelectionModel().getSelectedItem().getIdOrdenCompra());
+        } else {
+            Tools.AlertMessageWarning(vbWindow, "Orden de Compra", "Debe seleccionar una orden de compra de la lista");
+        }
+    }
+
+    private void onEventPaginacion() {
+        switch (opcion) {
+            case 0:
+                fillOrdenCompraTable(0, "", "", "");
+                break;
+            case 1:
+                fillOrdenCompraTable(1, "", Tools.getDatePicker(txtFechaInicio), Tools.getDatePicker(txtFechaFinal));
+                break;
+            case 2:
+                fillOrdenCompraTable(2, txtSearch.getText().trim(), "", "");
+                break;
+        }
     }
 
     @FXML
-    private void onActionMostrar(ActionEvent event) {
-        
+    private void onKeyPressedMostrar(KeyEvent event) throws IOException {
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowDetalleOrdenCompra();
+        }
+    }
+
+    @FXML
+    private void onActionMostrar(ActionEvent event) throws IOException {
+        openWindowDetalleOrdenCompra();
     }
 
     @FXML
@@ -182,33 +226,107 @@ public class FxOrdenCompraRealizadasController implements Initializable {
     }
 
     @FXML
+    private void onActionFechaInicio(ActionEvent event) {
+        if (txtFechaInicio.getValue() != null && txtFechaFinal.getValue() != null) {
+            if (!lblLoad.isVisible()) {
+                paginacion = 1;
+                fillOrdenCompraTable(1, "", Tools.getDatePicker(txtFechaInicio), Tools.getDatePicker(txtFechaFinal));
+                opcion = 1;
+            }
+        }
+    }
+
+    @FXML
+    private void onActionFechaFinal(ActionEvent event) {
+        if (txtFechaInicio.getValue() != null && txtFechaFinal.getValue() != null) {
+            if (!lblLoad.isVisible()) {
+                paginacion = 1;
+                fillOrdenCompraTable(1, "", Tools.getDatePicker(txtFechaInicio), Tools.getDatePicker(txtFechaFinal));
+                opcion = 1;
+            }
+        }
+    }
+
+    @FXML
     private void onKeyPressedSearch(KeyEvent event) {
-        
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!tvList.getItems().isEmpty()) {
+                tvList.requestFocus();
+                tvList.getSelectionModel().select(0);
+            }
+        }
+
     }
 
     @FXML
     private void onKeyReleasedSearch(KeyEvent event) {
-        
+        if (!lblLoad.isVisible()) {
+            paginacion = 1;
+            fillOrdenCompraTable(2, txtSearch.getText().trim(), "", "");
+            opcion = 2;
+        }
+    }
+
+    @FXML
+    private void onKeyPressedTvList(KeyEvent event) throws IOException {
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowDetalleOrdenCompra();
+        }
+    }
+
+    @FXML
+    private void onMouseClickedTvList(MouseEvent event) throws IOException {
+        if (event.getClickCount() == 2) {
+            openWindowDetalleOrdenCompra();
+        }
     }
 
     @FXML
     private void onKeyPressedAnterior(KeyEvent event) {
-        
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion > 1) {
+                    paginacion--;
+                    onEventPaginacion();
+                }
+            }
+        }
     }
 
     @FXML
     private void onActionAnterior(ActionEvent event) {
-        
+        if (!lblLoad.isVisible()) {
+            if (paginacion > 1) {
+                paginacion--;
+                onEventPaginacion();
+            }
+        }
     }
 
     @FXML
     private void onKeyPressedSiguiente(KeyEvent event) {
-        
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion < totalPaginacion) {
+                    paginacion++;
+                    onEventPaginacion();
+                }
+            }
+        }
     }
 
     @FXML
     private void onActionSiguiente(ActionEvent event) {
-        
+        if (!lblLoad.isVisible()) {
+            if (paginacion < totalPaginacion) {
+                paginacion++;
+                onEventPaginacion();
+            }
+        }
+    }
+
+    public VBox getVbWindow() {
+        return vbWindow;
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

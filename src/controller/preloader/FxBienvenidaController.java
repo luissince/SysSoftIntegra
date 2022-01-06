@@ -33,6 +33,7 @@ import model.EmpresaTB;
 import model.GlobalADO;
 import model.ImpuestoTB;
 import model.MonedaTB;
+import model.ProveedorTB;
 import model.TipoDocumentoTB;
 import model.UbigeoADO;
 import model.UbigeoTB;
@@ -479,7 +480,7 @@ public class FxBienvenidaController implements Initializable {
             tipoDocumentoTicket.setNumeroCampo(0);
 
             ClienteTB clienteTB = new ClienteTB();
-            clienteTB.setTipoDocumento(1);
+            clienteTB.setTipoDocumento(1351);
             clienteTB.setNumeroDocumento("00000000");
             clienteTB.setInformacion("PUBLICO GENERAL");
             clienteTB.setTelefono("");
@@ -490,6 +491,20 @@ public class FxBienvenidaController implements Initializable {
             clienteTB.setEstado(1);
             clienteTB.setPredeterminado(true);
             clienteTB.setSistema(true);
+
+            ProveedorTB proveedorTB = new ProveedorTB();
+            proveedorTB.setTipoDocumento(1351);
+            proveedorTB.setNumeroDocumento("00000000");
+            proveedorTB.setRazonSocial("PROVEEDOR GENERAL");
+            proveedorTB.setNombreComercial("");
+            proveedorTB.setAmbito(0);
+            proveedorTB.setEstado(1);
+            proveedorTB.setTelefono("");
+            proveedorTB.setCelular("");
+            proveedorTB.setEmail("");
+            proveedorTB.setPaginaWeb("");
+            proveedorTB.setDireccion("");
+            proveedorTB.setRepresentante("");
 
             AlmacenTB almacenTB = new AlmacenTB();
             almacenTB.setIdUbigeo(cbUbigeoAlmacen.getSelectionModel().getSelectedItem().getIdUbigeo());
@@ -507,7 +522,7 @@ public class FxBienvenidaController implements Initializable {
             Task<String> task = new Task<String>() {
                 @Override
                 public String call() {
-                    return GlobalADO.RegistrarInicioPrograma(empresaTB, monedaTB, empleadoTB, impuestoTB, tipoDocumentoTicket, clienteTB, almacenTB);
+                    return GlobalADO.RegistrarInicioPrograma(empresaTB, monedaTB, empleadoTB, impuestoTB, tipoDocumentoTicket, clienteTB, almacenTB, proveedorTB);
                 }
             };
             task.setOnScheduled(w -> {

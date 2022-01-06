@@ -251,7 +251,6 @@ public class TicketCotizacion {
                     Tools.roundingValue(totalDescuento, 2),
                     Tools.roundingValue(totalSubTotal, 2),
                     Tools.roundingValue(totalImpuesto, 2),
-                    Tools.roundingValue(totalSubTotal, 2),
                     Tools.roundingValue(totalNeto, 2),
                     "TARJETA",
                     "EFECTIVO",

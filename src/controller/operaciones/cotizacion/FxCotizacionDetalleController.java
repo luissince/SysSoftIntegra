@@ -80,8 +80,6 @@ public class FxCotizacionDetalleController implements Initializable {
 
     private CotizacionTB cotizacionTB;
 
-    private ObservableList<SuministroTB> arrList = null;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         fxOpcionesImprimirController = new FxOpcionesImprimirController();
@@ -147,17 +145,16 @@ public class FxCotizacionDetalleController implements Initializable {
         }
     }
 
-    private void fillVentasDetalleTable(ObservableList<SuministroTB> empList, String simbolo) {
-        arrList = empList;
-        for (int i = 0; i < arrList.size(); i++) {
-            gpList.add(addElementGridPane("l1" + (i + 1), arrList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
-            gpList.add(addElementGridPane("l2" + (i + 1), arrList.get(i).getClave() + "\n" + arrList.get(i).getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
-            gpList.add(addElementGridPane("l3" + (i + 1), Tools.roundingValue(arrList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpList.add(addElementGridPane("l4" + (i + 1), arrList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
-            gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(arrList.get(i).getImpuestoTB().getValor(), 2) + "%", Pos.CENTER_RIGHT), 4, (i + 1));
-            gpList.add(addElementGridPane("l6" + (i + 1), simbolo + "" + Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpList.add(addElementGridPane("l7" + (i + 1), "-" + Tools.roundingValue(arrList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPane("l8" + (i + 1), simbolo + "" + Tools.roundingValue(arrList.get(i).getImporteNeto(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+    private void fillVentasDetalleTable(ObservableList<SuministroTB> empList, String simbolo) {       
+        for (int i = 0; i < empList.size(); i++) {
+            gpList.add(addElementGridPane("l1" + (i + 1), empList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
+            gpList.add(addElementGridPane("l2" + (i + 1), empList.get(i).getClave() + "\n" + empList.get(i).getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
+            gpList.add(addElementGridPane("l3" + (i + 1), Tools.roundingValue(empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
+            gpList.add(addElementGridPane("l4" + (i + 1), empList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
+            gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(empList.get(i).getImpuestoTB().getValor(), 2) + "%", Pos.CENTER_RIGHT), 4, (i + 1));
+            gpList.add(addElementGridPane("l6" + (i + 1), simbolo + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
+            gpList.add(addElementGridPane("l7" + (i + 1), "-" + Tools.roundingValue(empList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
+            gpList.add(addElementGridPane("l8" + (i + 1), simbolo + "" + Tools.roundingValue(empList.get(i).getImporteNeto(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
         }
         calculateTotales(simbolo);
     }
@@ -173,34 +170,6 @@ public class FxCotizacionDetalleController implements Initializable {
         label.setPrefHeight(Control.USE_COMPUTED_SIZE);
         label.setMaxWidth(Double.MAX_VALUE);
         label.setMaxHeight(Double.MAX_VALUE);
-        return label;
-    }
-
-    private Label addLabelTitle(String nombre, Pos pos) {
-        Label label = new Label(nombre);
-        label.setStyle("-fx-text-fill: #020203;-fx-padding:  0.4166666666666667em 0em  0.4166666666666667em 0em;");
-        label.getStyleClass().add("labelRoboto13");
-        label.setAlignment(pos);
-        label.setMinWidth(Control.USE_COMPUTED_SIZE);
-        label.setMinHeight(Control.USE_COMPUTED_SIZE);
-        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
-        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
-        label.setMaxWidth(Double.MAX_VALUE);
-        label.setMaxHeight(Control.USE_COMPUTED_SIZE);
-        return label;
-    }
-
-    private Label addLabelTotal(String nombre, Pos pos) {
-        Label label = new Label(nombre);
-        label.setStyle("-fx-text-fill:#0771d3;");
-        label.getStyleClass().add("labelRoboto15");
-        label.setAlignment(pos);
-        label.setMinWidth(Control.USE_COMPUTED_SIZE);
-        label.setMinHeight(Control.USE_COMPUTED_SIZE);
-        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
-        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
-        label.setMaxWidth(Double.MAX_VALUE);
-        label.setMaxHeight(Control.USE_COMPUTED_SIZE);
         return label;
     }
 

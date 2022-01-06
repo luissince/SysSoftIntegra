@@ -18,7 +18,7 @@
 
 <AnchorPane fx:id="apWindow" style="-fx-background-image: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.ordencompra.FxOrdenCompraController">
    <children>
-      <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox fx:id="hbBody" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <VBox HBox.hgrow="ALWAYS">
                <children>
@@ -41,7 +41,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 0px 0px 1px 0px;">
                      <children>
-                        <Button mnemonicParsing="false" styleClass="buttonLightDefault" text="Guardar (F1)">
+                        <Button mnemonicParsing="false" onAction="#onActionGuardar" onKeyPressed="#onKeyPressedGuardar" styleClass="buttonLightDefault" text="Guardar (F1)">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -50,7 +50,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#onActionProducto" onKeyPressed="#onKeyPressedProducto" styleClass="buttonLight" text="Productos (F2)">
+                        <Button fx:id="btnProducto" mnemonicParsing="false" onAction="#onActionProducto" onKeyPressed="#onKeyPressedProducto" styleClass="buttonLight" text="Productos (F2)">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

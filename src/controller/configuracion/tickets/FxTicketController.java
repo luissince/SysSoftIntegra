@@ -128,7 +128,7 @@ public class FxTicketController implements Initializable {
             this.idTicket = idTicket;
             this.tipoTicket = tipoTicket;
             this.ruta = ruta;
-            hboxReference=null;
+            hboxReference = null;
             JSONObject jSONObject = Json.obtenerObjetoJSON(ruta);
             apEncabezado.getChildren().clear();
             apDetalleCabecera.getChildren().clear();
@@ -488,33 +488,49 @@ public class FxTicketController implements Initializable {
                     } else if (result.equalsIgnoreCase("updated")) {
                         Tools.AlertMessageInformation(vbWindow, "Ticket", "Se actualizo correctamente el formato.");
                         if (cbPredeterminado.isSelected()) {
-                            if (tipoTicket == 1) {
-                                Session.TICKET_VENTA_ID = idTicket;
-                                Session.TICKET_VENTA_RUTA = sampleObject.toJSONString();
-                            } else if (tipoTicket == 5) {
-                                Session.TICKET_CORTE_CAJA_ID = idTicket;
-                                Session.TICKET_CORTE_CAJA_RUTA = sampleObject.toJSONString();
-                            } else if (tipoTicket == 7) {
-                                Session.TICKET_PRE_VENTA_ID = idTicket;
-                                Session.TICKET_PRE_VENTA_RUTA = sampleObject.toJSONString();
-                            } else if (tipoTicket == 8) {
-                                Session.TICKET_COTIZACION_ID = idTicket;
-                                Session.TICKET_COTIZACION_RUTA = sampleObject.toJSONString();
-                            } else if (tipoTicket == 9) {
-                                Session.TICKET_CUENTA_POR_COBRAR_ID = idTicket;
-                                Session.TICKET_CUENTA_POR_COBRAR_RUTA = sampleObject.toJSONString();
-                            } else if (tipoTicket == 10) {
-                                Session.TICKET_CUENTA_POR_PAGAR_ID = idTicket;
-                                Session.TICKET_CUENTA_POR_PAGAR_RUTA = sampleObject.toJSONString();
-                            } else if (tipoTicket == 11) {
-                                Session.TICKET_GUIA_REMISION_ID = idTicket;
-                                Session.TICKET_GUIA_REMISION_RUTA = sampleObject.toJSONString();
-                            } else if (tipoTicket == 12) {
-                                Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = idTicket;
-                                Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = sampleObject.toJSONString();
-                            } else if (tipoTicket == 13) {
-                                Session.TICKET_PEDIDO_ID = idTicket;
-                                Session.TICKET_PEDIDO_RUTA = sampleObject.toJSONString();
+                            switch (tipoTicket) {
+                                case 1:
+                                    Session.TICKET_VENTA_ID = idTicket;
+                                    Session.TICKET_VENTA_RUTA = sampleObject.toJSONString();
+                                    break;
+                                case 5:
+                                    Session.TICKET_CORTE_CAJA_ID = idTicket;
+                                    Session.TICKET_CORTE_CAJA_RUTA = sampleObject.toJSONString();
+                                    break;
+                                case 7:
+                                    Session.TICKET_PRE_VENTA_ID = idTicket;
+                                    Session.TICKET_PRE_VENTA_RUTA = sampleObject.toJSONString();
+                                    break;
+                                case 8:
+                                    Session.TICKET_COTIZACION_ID = idTicket;
+                                    Session.TICKET_COTIZACION_RUTA = sampleObject.toJSONString();
+                                    break;
+                                case 9:
+                                    Session.TICKET_CUENTA_POR_COBRAR_ID = idTicket;
+                                    Session.TICKET_CUENTA_POR_COBRAR_RUTA = sampleObject.toJSONString();
+                                    break;
+                                case 10:
+                                    Session.TICKET_CUENTA_POR_PAGAR_ID = idTicket;
+                                    Session.TICKET_CUENTA_POR_PAGAR_RUTA = sampleObject.toJSONString();
+                                    break;
+                                case 11:
+                                    Session.TICKET_GUIA_REMISION_ID = idTicket;
+                                    Session.TICKET_GUIA_REMISION_RUTA = sampleObject.toJSONString();
+                                    break;
+                                case 12:
+                                    Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = idTicket;
+                                    Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = sampleObject.toJSONString();
+                                    break;
+                                case 13:
+                                    Session.TICKET_PEDIDO_ID = idTicket;
+                                    Session.TICKET_PEDIDO_RUTA = sampleObject.toJSONString();
+                                    break;
+                                case 14:
+                                    Session.TICKET_ORDERN_COMPRA_ID = idTicket;
+                                    Session.TICKET_ORDEN_COMPRA_RUTA = sampleObject.toJSONString();
+                                    break;
+                                default:
+                                    break;
                             }
                         }
                         clearPane();
@@ -1308,7 +1324,7 @@ public class FxTicketController implements Initializable {
         }
     }
 
-    private void moveUpHBox(AnchorPane anchorPane) {        
+    private void moveUpHBox(AnchorPane anchorPane) {
         for (int i = 0; i < anchorPane.getChildren().size(); i++) {
 
             if (((HBox) anchorPane.getChildren().get(i)).equals(hboxReference)) {
@@ -1491,33 +1507,49 @@ public class FxTicketController implements Initializable {
                     Tools.AlertMessageInformation(vbWindow, "Ticket", "Se realizó los cambios correctamente.");
                     cbPredeterminado.setSelected(true);
                     cbPredeterminado.setText("SI");
-                    if (tipoTicket == 1) {
-                        Session.TICKET_VENTA_ID = idTicket;
-                        Session.TICKET_VENTA_RUTA = ruta;
-                    } else if (tipoTicket == 5) {
-                        Session.TICKET_CORTE_CAJA_ID = idTicket;
-                        Session.TICKET_CORTE_CAJA_RUTA = ruta;
-                    } else if (tipoTicket == 7) {
-                        Session.TICKET_PRE_VENTA_ID = idTicket;
-                        Session.TICKET_PRE_VENTA_RUTA = ruta;
-                    } else if (tipoTicket == 8) {
-                        Session.TICKET_COTIZACION_ID = idTicket;
-                        Session.TICKET_COTIZACION_RUTA = ruta;
-                    } else if (tipoTicket == 9) {
-                        Session.TICKET_CUENTA_POR_COBRAR_ID = idTicket;
-                        Session.TICKET_CUENTA_POR_COBRAR_RUTA = ruta;
-                    } else if (tipoTicket == 10) {
-                        Session.TICKET_CUENTA_POR_PAGAR_ID = idTicket;
-                        Session.TICKET_CUENTA_POR_PAGAR_RUTA = ruta;
-                    } else if (tipoTicket == 11) {
-                        Session.TICKET_GUIA_REMISION_ID = idTicket;
-                        Session.TICKET_GUIA_REMISION_RUTA = ruta;
-                    } else if (tipoTicket == 12) {
-                        Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = idTicket;
-                        Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = ruta;
-                    } else if (tipoTicket == 13) {
-                        Session.TICKET_PEDIDO_ID = idTicket;
-                        Session.TICKET_PEDIDO_RUTA = ruta;
+                    switch (tipoTicket) {
+                        case 1:
+                            Session.TICKET_VENTA_ID = idTicket;
+                            Session.TICKET_VENTA_RUTA = ruta;
+                            break;
+                        case 5:
+                            Session.TICKET_CORTE_CAJA_ID = idTicket;
+                            Session.TICKET_CORTE_CAJA_RUTA = ruta;
+                            break;
+                        case 7:
+                            Session.TICKET_PRE_VENTA_ID = idTicket;
+                            Session.TICKET_PRE_VENTA_RUTA = ruta;
+                            break;
+                        case 8:
+                            Session.TICKET_COTIZACION_ID = idTicket;
+                            Session.TICKET_COTIZACION_RUTA = ruta;
+                            break;
+                        case 9:
+                            Session.TICKET_CUENTA_POR_COBRAR_ID = idTicket;
+                            Session.TICKET_CUENTA_POR_COBRAR_RUTA = ruta;
+                            break;
+                        case 10:
+                            Session.TICKET_CUENTA_POR_PAGAR_ID = idTicket;
+                            Session.TICKET_CUENTA_POR_PAGAR_RUTA = ruta;
+                            break;
+                        case 11:
+                            Session.TICKET_GUIA_REMISION_ID = idTicket;
+                            Session.TICKET_GUIA_REMISION_RUTA = ruta;
+                            break;
+                        case 12:
+                            Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = idTicket;
+                            Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = ruta;
+                            break;
+                        case 13:
+                            Session.TICKET_PEDIDO_ID = idTicket;
+                            Session.TICKET_PEDIDO_RUTA = ruta;
+                            break;
+                        case 14:
+                            Session.TICKET_ORDERN_COMPRA_ID = idTicket;
+                            Session.TICKET_ORDEN_COMPRA_RUTA = ruta;
+                            break;
+                        default:
+                            break;
                     }
                 } else {
                     Tools.AlertMessageError(vbWindow, "Ticket", result);
@@ -1536,33 +1568,49 @@ public class FxTicketController implements Initializable {
                 String result = TicketADO.DeleteTicket(idTicket);
                 if (result.equalsIgnoreCase("deleted")) {
                     Tools.AlertMessageConfirmation(vbWindow, "Ticket", "Se elemino correctamente el ticket.");
-                    if (tipoTicket == 1) {
-                        Session.TICKET_VENTA_ID = 0;
-                        Session.TICKET_VENTA_RUTA = "";
-                    } else if (tipoTicket == 5) {
-                        Session.TICKET_CORTE_CAJA_ID = 0;
-                        Session.TICKET_CORTE_CAJA_RUTA = "";
-                    } else if (tipoTicket == 7) {
-                        Session.TICKET_PRE_VENTA_ID = 0;
-                        Session.TICKET_PRE_VENTA_RUTA = "";
-                    } else if (tipoTicket == 8) {
-                        Session.TICKET_COTIZACION_ID = 0;
-                        Session.TICKET_COTIZACION_RUTA = "";
-                    } else if (tipoTicket == 9) {
-                        Session.TICKET_CUENTA_POR_COBRAR_ID = 0;
-                        Session.TICKET_CUENTA_POR_COBRAR_RUTA = "";
-                    } else if (tipoTicket == 10) {
-                        Session.TICKET_CUENTA_POR_PAGAR_ID = 0;
-                        Session.TICKET_CUENTA_POR_PAGAR_RUTA = "";
-                    } else if (tipoTicket == 11) {
-                        Session.TICKET_GUIA_REMISION_ID = 0;
-                        Session.TICKET_GUIA_REMISION_RUTA = "";
-                    } else if (tipoTicket == 12) {
-                        Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = 0;
-                        Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = "";
-                    } else if (tipoTicket == 13) {
-                        Session.TICKET_PEDIDO_ID = 0;
-                        Session.TICKET_PEDIDO_RUTA = "";
+                    switch (tipoTicket) {
+                        case 1:
+                            Session.TICKET_VENTA_ID = 0;
+                            Session.TICKET_VENTA_RUTA = "";
+                            break;
+                        case 5:
+                            Session.TICKET_CORTE_CAJA_ID = 0;
+                            Session.TICKET_CORTE_CAJA_RUTA = "";
+                            break;
+                        case 7:
+                            Session.TICKET_PRE_VENTA_ID = 0;
+                            Session.TICKET_PRE_VENTA_RUTA = "";
+                            break;
+                        case 8:
+                            Session.TICKET_COTIZACION_ID = 0;
+                            Session.TICKET_COTIZACION_RUTA = "";
+                            break;
+                        case 9:
+                            Session.TICKET_CUENTA_POR_COBRAR_ID = 0;
+                            Session.TICKET_CUENTA_POR_COBRAR_RUTA = "";
+                            break;
+                        case 10:
+                            Session.TICKET_CUENTA_POR_PAGAR_ID = 0;
+                            Session.TICKET_CUENTA_POR_PAGAR_RUTA = "";
+                            break;
+                        case 11:
+                            Session.TICKET_GUIA_REMISION_ID = 0;
+                            Session.TICKET_GUIA_REMISION_RUTA = "";
+                            break;
+                        case 12:
+                            Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = 0;
+                            Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = "";
+                            break;
+                        case 13:
+                            Session.TICKET_PEDIDO_ID = 0;
+                            Session.TICKET_PEDIDO_RUTA = "";
+                            break;
+                        case 14:
+                            Session.TICKET_ORDERN_COMPRA_ID = 0;
+                            Session.TICKET_ORDEN_COMPRA_RUTA = "";
+                            break;
+                        default:
+                            break;
                     }
                     clearPane();
                 } else if (result.equalsIgnoreCase("predeterminated")) {

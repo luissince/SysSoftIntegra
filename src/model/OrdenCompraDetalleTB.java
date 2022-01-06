@@ -8,6 +8,8 @@ public class OrdenCompraDetalleTB {
     
     private int id;
    
+    private String idOrdenCompra;
+    
     private String idSuministro;
     
     private double cantidad;
@@ -35,6 +37,14 @@ public class OrdenCompraDetalleTB {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getIdOrdenCompra() {
+        return idOrdenCompra;
+    }
+
+    public void setIdOrdenCompra(String idOrdenCompra) {
+        this.idOrdenCompra = idOrdenCompra;
     }
 
     public String getIdSuministro() {

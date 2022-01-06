@@ -73,6 +73,7 @@ public class FxOrdenCompraProductoController implements Initializable {
     public void loadComponents(SuministroTB suministroTB) {
         this.suministroTB = suministroTB;
         lblProducto.setText(suministroTB.getNombreMarca());
+        txtCosto.setText(Tools.roundingValue(suministroTB.getCostoCompra(), 2));
         for (ImpuestoTB impuestoTB : cbImpuestoCompra.getItems()) {
             if (impuestoTB.getIdImpuesto() == suministroTB.getIdImpuesto()) {
                 cbImpuestoCompra.getSelectionModel().select(impuestoTB);

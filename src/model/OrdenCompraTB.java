@@ -1,6 +1,8 @@
 
 package model;
 
+import java.util.ArrayList;
+
 public class OrdenCompraTB {
     
     private int id;
@@ -9,7 +11,7 @@ public class OrdenCompraTB {
     
     private int numeracion;
     
-    private String idCliente;
+    private String idProveedor;
     
     private String idEmpleado;
     
@@ -26,6 +28,8 @@ public class OrdenCompraTB {
     private ProveedorTB proveedorTB;
     
     private EmpleadoTB empleadoTB;
+    
+    private ArrayList<OrdenCompraDetalleTB> ordenCompraDetalleTBs;
     
     private double total;
 
@@ -57,12 +61,12 @@ public class OrdenCompraTB {
         this.numeracion = numeracion;
     }
 
-    public String getIdCliente() {
-        return idCliente;
+    public String getIdProveedor() {
+        return idProveedor;
     }
 
-    public void setIdCliente(String idCliente) {
-        this.idCliente = idCliente;
+    public void setIdProveedor(String idProveedor) {
+        this.idProveedor = idProveedor;
     }
 
     public String getIdEmpleado() {
@@ -119,6 +123,14 @@ public class OrdenCompraTB {
 
     public void setProveedorTB(ProveedorTB proveedorTB) {
         this.proveedorTB = proveedorTB;
+    }
+
+    public ArrayList<OrdenCompraDetalleTB> getOrdenCompraDetalleTBs() {
+        return ordenCompraDetalleTBs;
+    }
+
+    public void setOrdenCompraDetalleTBs(ArrayList<OrdenCompraDetalleTB> ordenCompraDetalleTBs) {
+        this.ordenCompraDetalleTBs = ordenCompraDetalleTBs;
     }
 
     public EmpleadoTB getEmpleadoTB() {

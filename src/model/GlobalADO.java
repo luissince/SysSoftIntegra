@@ -1,11 +1,14 @@
 package model;
 
+import controller.tools.Session;
 import controller.tools.Tools;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class GlobalADO {
@@ -343,19 +346,20 @@ public class GlobalADO {
         return arrayList;
     }
 
-    public static String RegistrarInicioPrograma(EmpresaTB empresaTB, MonedaTB monedaTB, EmpleadoTB empleadoTB, ImpuestoTB impuestoTB, TipoDocumentoTB tipoDocumentoTicket, ClienteTB clienteTB, AlmacenTB almacenTB) {
+    public static String RegistrarInicioPrograma(EmpresaTB empresaTB, MonedaTB monedaTB, EmpleadoTB empleadoTB, ImpuestoTB impuestoTB, TipoDocumentoTB tipoDocumentoTicket, ClienteTB clienteTB, AlmacenTB almacenTB, ProveedorTB proveedorTB) {
         PreparedStatement statementEmpresa = null;
         PreparedStatement statementMoneda = null;
         PreparedStatement statementEmpleado = null;
         PreparedStatement statementImpuesto = null;
-        PreparedStatement statementTipoDocumentoTicket = null;
+        PreparedStatement statementTipoDocumento = null;
         PreparedStatement statementCliente = null;
         PreparedStatement statementAlmacen = null;
+        PreparedStatement statementProveedor = null;
         CallableStatement codigoEmpleado = null;
         CallableStatement codigoCliente = null;
-        CallableStatement statementCodigoAlmacen = null;
+        CallableStatement codigoAlmacen = null;
+        CallableStatement codigoProveedor = null;
 
-        String result = "";
         try {
             DBUtil.dbConnect();
             DBUtil.getConnection().setAutoCommit(false);
@@ -479,20 +483,20 @@ public class GlobalADO {
             statementImpuesto.setBoolean(10, impuestoTB.isSistema());
             statementImpuesto.addBatch();
 
-            statementTipoDocumentoTicket = DBUtil.getConnection().prepareStatement("INSERT INTO TipoDocumentoTB(Nombre,Serie,Numeracion,CodigoAlterno,Facturacion,Predeterminado,Sistema,Guia,NotaCredito,Estado,Campo,NumeroCampo)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
-            statementTipoDocumentoTicket.setString(1, tipoDocumentoTicket.getNombre());
-            statementTipoDocumentoTicket.setString(2, tipoDocumentoTicket.getSerie());
-            statementTipoDocumentoTicket.setInt(3, tipoDocumentoTicket.getNumeracion());
-            statementTipoDocumentoTicket.setString(4, tipoDocumentoTicket.getCodigoAlterno());
-            statementTipoDocumentoTicket.setBoolean(5, tipoDocumentoTicket.isFactura());
-            statementTipoDocumentoTicket.setBoolean(6, tipoDocumentoTicket.isPredeterminado());
-            statementTipoDocumentoTicket.setBoolean(7, tipoDocumentoTicket.isSistema());
-            statementTipoDocumentoTicket.setBoolean(8, tipoDocumentoTicket.isGuia());
-            statementTipoDocumentoTicket.setBoolean(9, tipoDocumentoTicket.isNotaCredito());
-            statementTipoDocumentoTicket.setBoolean(10, tipoDocumentoTicket.isEstado());
-            statementTipoDocumentoTicket.setBoolean(11, tipoDocumentoTicket.isCampo());
-            statementTipoDocumentoTicket.setInt(12, tipoDocumentoTicket.getNumeroCampo());
-            statementTipoDocumentoTicket.addBatch();
+            statementTipoDocumento = DBUtil.getConnection().prepareStatement("INSERT INTO TipoDocumentoTB(Nombre,Serie,Numeracion,CodigoAlterno,Facturacion,Predeterminado,Sistema,Guia,NotaCredito,Estado,Campo,NumeroCampo)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+            statementTipoDocumento.setString(1, tipoDocumentoTicket.getNombre());
+            statementTipoDocumento.setString(2, tipoDocumentoTicket.getSerie());
+            statementTipoDocumento.setInt(3, tipoDocumentoTicket.getNumeracion());
+            statementTipoDocumento.setString(4, tipoDocumentoTicket.getCodigoAlterno());
+            statementTipoDocumento.setBoolean(5, tipoDocumentoTicket.isFactura());
+            statementTipoDocumento.setBoolean(6, tipoDocumentoTicket.isPredeterminado());
+            statementTipoDocumento.setBoolean(7, tipoDocumentoTicket.isSistema());
+            statementTipoDocumento.setBoolean(8, tipoDocumentoTicket.isGuia());
+            statementTipoDocumento.setBoolean(9, tipoDocumentoTicket.isNotaCredito());
+            statementTipoDocumento.setBoolean(10, tipoDocumentoTicket.isEstado());
+            statementTipoDocumento.setBoolean(11, tipoDocumentoTicket.isCampo());
+            statementTipoDocumento.setInt(12, tipoDocumentoTicket.getNumeroCampo());
+            statementTipoDocumento.addBatch();
 
             codigoCliente = DBUtil.getConnection().prepareCall("{? = call Fc_Cliente_Codigo_Alfanumerico()}");
             codigoCliente.registerOutParameter(1, java.sql.Types.VARCHAR);
@@ -514,10 +518,10 @@ public class GlobalADO {
             statementCliente.setBoolean(12, clienteTB.isSistema());
             statementCliente.addBatch();
 
-            statementCodigoAlmacen = DBUtil.getConnection().prepareCall("{? = call Fc_Almacen_Codigo_Numerico()}");
-            statementCodigoAlmacen.registerOutParameter(1, java.sql.Types.INTEGER);
-            statementCodigoAlmacen.execute();
-            int idAlmacen = statementCodigoAlmacen.getInt(1);
+            codigoAlmacen = DBUtil.getConnection().prepareCall("{? = call Fc_Almacen_Codigo_Numerico()}");
+            codigoAlmacen.registerOutParameter(1, java.sql.Types.INTEGER);
+            codigoAlmacen.execute();
+            int idAlmacen = codigoAlmacen.getInt(1);
 
             statementAlmacen = DBUtil.getConnection().prepareStatement("INSERT INTO AlmacenTB(IdAlmacen,Nombre,IdUbigeo,Direccion,Fecha,Hora,IdUsuario) VALUES(?,?,?,?,?,?,?)");
             statementAlmacen.setInt(1, idAlmacen);
@@ -529,22 +533,64 @@ public class GlobalADO {
             statementAlmacen.setString(7, almacenTB.getIdUsuario());
             statementAlmacen.addBatch();
 
+            codigoProveedor = DBUtil.getConnection().prepareCall("{? = call Fc_Proveedor_Codigo_Alfanumerico()}");
+            codigoProveedor.registerOutParameter(1, java.sql.Types.VARCHAR);
+            codigoProveedor.execute();
+            String idProveedor = codigoProveedor.getString(1);
+
+            statementProveedor = DBUtil.getConnection().prepareCall("INSERT INTO "
+                    + "ProveedorTB("
+                    + "IdProveedor,"
+                    + "TipoDocumento,"
+                    + "NumeroDocumento,"
+                    + "RazonSocial,"
+                    + "NombreComercial,"
+                    + "Ambito,"
+                    + "Estado,"
+                    + "Telefono,"
+                    + "Celular,"
+                    + "Email,"
+                    + "PaginaWeb,"
+                    + "Direccion,"
+                    + "UsuarioRegistro,"
+                    + "FechaRegistro,"
+                    + "Representante)"
+                    + "values(?,?,?,UPPER(?),UPPER(?),?,?,?,?,?,?,?,?,?,?)");
+            statementProveedor.setString(1, idProveedor);
+            statementProveedor.setInt(2, proveedorTB.getTipoDocumento());
+            statementProveedor.setString(3, proveedorTB.getNumeroDocumento());
+            statementProveedor.setString(4, proveedorTB.getRazonSocial());
+            statementProveedor.setString(5, proveedorTB.getNombreComercial());
+            statementProveedor.setInt(6, proveedorTB.getAmbito());
+            statementProveedor.setInt(7, proveedorTB.getEstado());
+            statementProveedor.setString(8, proveedorTB.getTelefono());
+            statementProveedor.setString(9, proveedorTB.getCelular());
+            statementProveedor.setString(10, proveedorTB.getEmail());
+            statementProveedor.setString(11, proveedorTB.getPaginaWeb());
+            statementProveedor.setString(12, proveedorTB.getDireccion());
+            statementProveedor.setString(13, "");
+            statementProveedor.setTimestamp(14, Timestamp.valueOf(LocalDateTime.now()));
+            statementProveedor.setString(15, proveedorTB.getRepresentante());
+            statementProveedor.addBatch();
+
             statementEmpresa.executeBatch();
             statementMoneda.executeBatch();
             statementEmpleado.executeBatch();
             statementImpuesto.executeBatch();
-            statementTipoDocumentoTicket.executeBatch();
+            statementTipoDocumento.executeBatch();
             statementAlmacen.executeBatch();
             statementCliente.executeBatch();
+            statementProveedor.executeBatch();
             DBUtil.getConnection().commit();
-            result = "inserted";
+
+            return "inserted";
         } catch (SQLException | ParseException ex) {
             try {
                 DBUtil.getConnection().rollback();
             } catch (SQLException e) {
 
             }
-            result = ex.getLocalizedMessage();
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (statementEmpresa != null) {
@@ -556,11 +602,14 @@ public class GlobalADO {
                 if (statementEmpleado != null) {
                     statementEmpleado.close();
                 }
+                if (statementProveedor != null) {
+                    statementProveedor.close();
+                }
                 if (statementImpuesto != null) {
                     statementImpuesto.close();
                 }
-                if (statementTipoDocumentoTicket != null) {
-                    statementTipoDocumentoTicket.close();
+                if (statementTipoDocumento != null) {
+                    statementTipoDocumento.close();
                 }
                 if (codigoEmpleado != null) {
                     codigoEmpleado.close();
@@ -571,17 +620,19 @@ public class GlobalADO {
                 if (codigoCliente != null) {
                     codigoCliente.close();
                 }
-                if (statementCodigoAlmacen != null) {
-                    statementCodigoAlmacen.close();
+                if (codigoAlmacen != null) {
+                    codigoAlmacen.close();
+                }
+                if (codigoProveedor != null) {
+                    codigoProveedor.close();
                 }
                 if (statementAlmacen != null) {
                     statementAlmacen.close();
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-
+                return ex.getLocalizedMessage();
             }
         }
-        return result;
     }
 }

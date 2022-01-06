@@ -196,7 +196,20 @@ public class SplashScreen extends Preloader {
                         } catch (IOException ex) {
                             Session.ESTADO_IMPRESORA_PEDIDO = false;
                         }
-                        
+
+                        String rutaOrdenCompra = "./archivos/ORDEN DE COMPRA.properties";
+                        try (InputStream input = new FileInputStream(rutaOrdenCompra)) {
+                            Properties prop = new Properties();
+                            prop.load(input);
+                            Session.ESTADO_IMPRESORA_ORDEN_COMPRA = true;
+                            Session.NOMBRE_IMPRESORA_ORDEN_COMPRA = prop.getProperty("printerNameOrdenCompra");
+                            Session.CORTAPAPEL_IMPRESORA_ORDEN_COMPRA = Boolean.parseBoolean(prop.getProperty("printerCutPaperOrdenCompra"));
+                            Session.FORMATO_IMPRESORA_ORDEN_COMPRA = prop.getProperty("printerTypeFormatOrdenCompra");
+                            Session.DESING_IMPRESORA_ORDEN_COMPRA = prop.getProperty("printerTypeDesingOrdenCompra");
+                        } catch (IOException ex) {
+                            Session.ESTADO_IMPRESORA_ORDEN_COMPRA = false;
+                        }
+
                         String rutaGuiaRemision = "./archivos/GUIA DE REMISION.properties";
                         try (InputStream input = new FileInputStream(rutaGuiaRemision)) {
                             Properties prop = new Properties();

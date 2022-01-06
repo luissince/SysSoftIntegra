@@ -188,10 +188,9 @@ public class TicketPreVenta {
                             HBox box = ((HBox) hbPie.getChildren().get(i));
                             billPrintable.hbPie(box, monedaSimbolo,
                                     Tools.roundingValue(importeBruto, 2),
-                                    "-" + Tools.roundingValue(descuentoBruto, 2),
+                                   Tools.roundingValue(descuentoBruto, 2),
                                     Tools.roundingValue(subImporteNeto, 2),
                                     Tools.roundingValue(impuestoNeto, 2),
-                                    Tools.roundingValue(subImporteNeto, 2),
                                     Tools.roundingValue(importeNeto, 2),
                                     "TARJETA",
                                     "EFECTIVO",
@@ -296,10 +295,9 @@ public class TicketPreVenta {
                             rows++;
                             lines += billPrintable.hbPie(box, monedaSimbolo,
                                     Tools.roundingValue(importeBruto, 2),
-                                    "-" + Tools.roundingValue(descuentoBruto, 2),
+                                    Tools.roundingValue(descuentoBruto, 2),
                                     Tools.roundingValue(subImporteNeto, 2),
                                     Tools.roundingValue(impuestoNeto, 2),
-                                    Tools.roundingValue(subImporteNeto, 2),
                                     Tools.roundingValue(importeNeto, 2),
                                     "TARJETA",
                                     "EFECTIVO",

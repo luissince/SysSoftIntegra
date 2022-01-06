@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fx:id="spWindow" fitToHeight="true" fitToWidth="true" prefHeight="600.0" prefWidth="800.0" styleClass="scroll-pane-primary" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.menus.FxPrincipalController">
+<ScrollPane fx:id="spWindow" fitToHeight="true" fitToWidth="true" prefHeight="600.0" prefWidth="800.0" styleClass="scroll-pane-primary" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.menus.FxPrincipalController">
    <content>
       <AnchorPane>
          <children>
@@ -336,11 +336,11 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox fx:id="hbLoadModulos" layoutX="10.0" layoutY="10.0" style="-fx-background-color: rgba(255,255,255,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <HBox fx:id="hbLoadModulos" layoutX="10.0" layoutY="10.0" style="-fx-background-color: rgba(255,255,255,0.7);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <VBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label styleClass="labelRobotoBold17" text="Cargando modulos, espere porfavavor." textFill="#020203">
+                        <Label styleClass="labelRobotoBold17" text="Cargando modulos, espere por favor." textFill="#020203">
                            <graphic>
                               <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

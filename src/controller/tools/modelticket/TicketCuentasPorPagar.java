@@ -252,8 +252,7 @@ public class TicketCuentasPorPagar {
             HBox box = ((HBox) hbPie.getChildren().get(i));
 
             billPrintable.hbPie(box,
-                    "M",
-                    "0.00",
+                    "M",                  
                     "0.00",
                     "0.00",
                     "0.00",
@@ -360,8 +359,7 @@ public class TicketCuentasPorPagar {
             HBox box = ((HBox) hbPie.getChildren().get(i));
 
             billPrintable.hbPie(box,
-                    "M",
-                    "0.00",
+                    "M",                    
                     "0.00",
                     "0.00",
                     "0.00",

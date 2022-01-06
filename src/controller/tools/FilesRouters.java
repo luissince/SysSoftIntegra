@@ -291,6 +291,8 @@ public final class FilesRouters {
     //--------------------------------------------------------------------------------------------------
     public static final String FX_ORDEN_COMPRA = "/view/operaciones/ordencompra/FxOrdenCompra.fxml";
 
+    public static final String FX_ORDEN_COMPRA_LISTA = "/view/operaciones/ordencompra/FxOrdenCompraLista.fxml";
+
     public static final String FX_ORDEN_COMPRA_PRODUCTO = "/view/operaciones/ordencompra/FxOrdenCompraProducto.fxml";
 
     public static final String FX_ORDEN_COMPRA_DETALLE = "/view/operaciones/ordencompra/FxOrdenCompraDetalle.fxml";

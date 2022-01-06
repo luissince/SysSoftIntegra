@@ -169,8 +169,8 @@ public class FxPrincipalController implements Initializable {
             configuracionController.setContent(this);
         } catch (IOException ex) {
             System.out.println("Error en controller principal:" + ex.getLocalizedMessage());
-        }       
-        
+        }
+
     }
 
     public void initLoadMenus() {
@@ -199,7 +199,9 @@ public class FxPrincipalController implements Initializable {
             };
 
             task.setOnScheduled(e -> {
-                hbLoadModulos.setVisible(true);
+                if (!hbLoadModulos.isVisible()) {
+                    hbLoadModulos.setVisible(true);
+                }
             });
 
             task.setOnFailed(e -> {

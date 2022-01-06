@@ -207,10 +207,9 @@ public class TicketVenta {
                                     HBox box = ((HBox) hbPie.getChildren().get(i));
                                     billPrintable.hbPie(box, ventaTB.getMonedaTB().getSimbolo(),
                                             Tools.roundingValue(ventaTB.getImporteBruto(), 2),
-                                            "-" + Tools.roundingValue(ventaTB.getDescuento(), 2),
+                                            Tools.roundingValue(ventaTB.getDescuento(), 2),
                                             Tools.roundingValue(ventaTB.getSubImporteNeto(), 2),
                                             Tools.roundingValue(ventaTB.getImpuesto(), 2),
-                                            Tools.roundingValue(ventaTB.getSubImporteNeto(), 2),
                                             Tools.roundingValue(ventaTB.getImporteNeto(), 2),
                                             Tools.roundingValue(ventaTB.getTarjeta(), 2),
                                             Tools.roundingValue(ventaTB.getEfectivo(), 2),
@@ -381,12 +380,12 @@ public class TicketVenta {
             object.add((HBox) hbPie.getChildren().get(i));
             HBox box = ((HBox) hbPie.getChildren().get(i));
             rows++;
-            lines += billPrintable.hbPie(box, ventaTB.getMonedaTB().getSimbolo(),
+            lines += billPrintable.hbPie(box,
+                    ventaTB.getMonedaTB().getSimbolo(),
                     Tools.roundingValue(ventaTB.getImporteBruto(), 2),
-                    "-" + Tools.roundingValue(ventaTB.getDescuento(), 2),
+                    Tools.roundingValue(ventaTB.getDescuento(), 2),
                     Tools.roundingValue(ventaTB.getSubImporteNeto(), 2),
                     Tools.roundingValue(ventaTB.getImpuesto(), 2),
-                    Tools.roundingValue(ventaTB.getSubImporteNeto(), 2),
                     Tools.roundingValue(ventaTB.getImporteNeto(), 2),
                     Tools.roundingValue(ventaTB.getTarjeta(), 2),
                     Tools.roundingValue(ventaTB.getEfectivo(), 2),
