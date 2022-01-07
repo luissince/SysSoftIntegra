@@ -109,7 +109,7 @@ public class FxVentaRealizadasController implements Initializable {
         Tools.actualDate(Tools.getDate(), dtFechaFinal);
 
         cbEstado.getItems().add(new DetalleTB(0, "TODOS"));
-        cbEstado.getItems().addAll(DetalleADO.GetDetailIdName("2", "0009", ""));
+        cbEstado.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0009", ""));
         cbEstado.getSelectionModel().select(0);
 
         cbComprobante.getItems().add(new TipoDocumentoTB(0, "TODOS"));

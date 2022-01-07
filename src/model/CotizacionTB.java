@@ -25,7 +25,7 @@ public class CotizacionTB {
     private ClienteTB clienteTB;
     private EmpleadoTB empleadoTB;
     private MonedaTB monedaTB;
-    private ArrayList<DetalleCotizacionTB> detalleCotizacionTBs;
+    private ArrayList<CotizacionDetalleTB> cotizacionDetalleTBs;
     private ObservableList<SuministroTB> detalleSuministroTBs;
 
     public CotizacionTB() {
@@ -183,12 +183,12 @@ public class CotizacionTB {
         this.monedaTB = monedaTB;
     }
 
-    public ArrayList<DetalleCotizacionTB> getDetalleCotizacionTBs() {
-        return detalleCotizacionTBs;
+    public ArrayList<CotizacionDetalleTB> getCotizacionDetalleTBs() {
+        return cotizacionDetalleTBs;
     }
 
-    public void setDetalleCotizacionTBs(ArrayList<DetalleCotizacionTB> detalleCotizacionTBs) {
-        this.detalleCotizacionTBs = detalleCotizacionTBs;
+    public void setCotizacionDetalleTBs(ArrayList<CotizacionDetalleTB> cotizacionDetalleTBs) {
+        this.cotizacionDetalleTBs = cotizacionDetalleTBs;
     }
 
     public ObservableList<SuministroTB> getDetalleSuministroTBs() {

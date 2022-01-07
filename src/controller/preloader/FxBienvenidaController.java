@@ -111,11 +111,11 @@ public class FxBienvenidaController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        DetalleADO.GetDetailIdName("3", "0011", "").forEach(e -> {
+        DetalleADO.Get_Detail_IdName("3", "0011", "").forEach(e -> {
             cbGiroComercial.getItems().add(new DetalleTB(e.getIdDetalle(), e.getNombre()));
         });
 
-        DetalleADO.GetDetailIdName("0", "0003", "RUC").forEach(e -> {
+        DetalleADO.Get_Detail_IdName("0", "0003", "RUC").forEach(e -> {
             cbTipoDocumento.getItems().add(new DetalleTB(e.getIdDetalle(), e.getNombre()));
         });
         if (!cbTipoDocumento.getItems().isEmpty()) {

@@ -100,6 +100,7 @@ public class OrdenCompraADO {
                 ordenCompraTB.setHoraVencimiento(resultSet.getTime("HoraVencimiento").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
 
                 ProveedorTB proveedorTB = new ProveedorTB();
+                proveedorTB.setIdProveedor(resultSet.getString("IdProveedor"));
                 proveedorTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
                 proveedorTB.setRazonSocial(resultSet.getString("RazonSocial"));
                 proveedorTB.setTelefono(resultSet.getString("Telefono"));
@@ -126,6 +127,7 @@ public class OrdenCompraADO {
                     compraDetalleTB.setIdOrdenCompra(resultSet.getString("IdOrdenCompra"));
 
                     SuministroTB suministroTB = new SuministroTB();
+                    suministroTB.setIdSuministro(resultSet.getString("IdSuministro"));
                     suministroTB.setClave(resultSet.getString("Clave"));
                     suministroTB.setNombreMarca(resultSet.getString("NombreMarca"));
                     suministroTB.setUnidadCompraName(resultSet.getString("Nombre"));

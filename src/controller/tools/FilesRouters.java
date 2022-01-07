@@ -354,8 +354,10 @@ public final class FilesRouters {
     public static final String FX_POS_VENTA_REALIZADAS = "/view/posterminal/venta/FxPostVentaRealizadas.fxml";
 
     public static final String FX_POS_VENTA_VALIDAR_CAJA = "/view/posterminal/venta/FxPostVentaValidarCaja.fxml";
-
-    //---------------------------------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------------------------------
+    //PROCESO DE COTIZACIÓN
+    //--------------------------------------------------------------------------------------------------
     public static final String FX_COTIZACION = "/view/operaciones/cotizacion/FxCotizacion.fxml";
 
     public static final String FX_COTIZACION_LISTA = "/view/operaciones/cotizacion/FxCotizacionLista.fxml";
@@ -363,7 +365,9 @@ public final class FilesRouters {
     public static final String FX_COTIZACION_DETALLE = "/view/operaciones/cotizacion/FxCotizacionDetalle.fxml";
 
     public static final String FX_COTIZACION_REALIZADAS = "/view/operaciones/cotizacion/FxCotizacionRealizadas.fxml";
-
+    
+    public static final String FX_COTIZACION_PRODUCTO = "/view/operaciones/cotizacion/FxCotizacionProducto.fxml";
+    //---------------------------------------------------------------------------------------------------
     public static final String FX_GUIA_REMISION_DETALLE = "/view/operaciones/guiaremision/FxGuiaRemisionDetalle.fxml";
 
     public static final String FX_GUIA_REMISION_REALIZADAS = "/view/operaciones/guiaremision/FxGuiaRemisionRealizadas.fxml";
@@ -394,9 +398,7 @@ public final class FilesRouters {
 
     public static final String FX_MODAL_ESTADO = "/view/produccion/producir/FXModalEstado.fxml";
 
-    public static final String FX_COMPRAS_INSUMOS_PROCESO = "/view/produccion/compras/FxComprasInsumosProceso.fxml";
-
-    public static final String FX_COTIZACION_MODAL = "/view/operaciones/cotizacion/FxCotizacionModal.fxml";
+    public static final String FX_COMPRAS_INSUMOS_PROCESO = "/view/produccion/compras/FxComprasInsumosProceso.fxml";   
 
     public static final String FX_PEDIDO_VISUALIZAR = "/view/produccion/producir/FxProducirVisualizar.fxml";
 

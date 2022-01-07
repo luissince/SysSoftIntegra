@@ -109,21 +109,6 @@ public class TicketOrdenCompra {
                 } else {
                     return (String) object;
                 }
-//                Object object = CotizacionADO.CargarCotizacionById(idCotizacion);
-//                if (object instanceof CotizacionTB) {
-//                    try {
-//                        CotizacionTB cotizacionTB = (CotizacionTB) object;
-//                        if (desing.equalsIgnoreCase("withdesing")) {
-//                            return printTicketWithDesingCotizacion(cotizacionTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
-//                        } else {
-//                            return "empty";
-//                        }
-//                    } catch (PrinterException | IOException | PrintException ex) {
-//                        return "Error en imprimir: " + ex.getLocalizedMessage();
-//                    }
-//                } else {
-//                    return (String) object;
-//                }
             }
         };
 

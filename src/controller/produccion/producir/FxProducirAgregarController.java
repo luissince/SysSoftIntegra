@@ -583,7 +583,7 @@ public class FxProducirAgregarController implements Initializable {
         searchComboBoxTipoMerma.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             if (!Tools.isText(searchComboBoxTipoMerma.getSearchComboBoxSkin().getSearchBox().getText())) {
                 searchComboBoxTipoMerma.getComboBox().getItems().clear();
-                suministroTB.getCbTipoMerma().getItems().addAll(DetalleADO.GetDetailIdName("4", "0020", searchComboBoxTipoMerma.getSearchComboBoxSkin().getSearchBox().getText().trim()));
+                suministroTB.getCbTipoMerma().getItems().addAll(DetalleADO.Get_Detail_IdName("4", "0020", searchComboBoxTipoMerma.getSearchComboBoxSkin().getSearchBox().getText().trim()));
             }
         });
         searchComboBoxTipoMerma.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {

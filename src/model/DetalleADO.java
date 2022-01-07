@@ -199,7 +199,7 @@ public class DetalleADO {
         return detalleTBs;
     }
 
-    public static ObservableList<DetalleTB> GetDetailIdName(String... value) {
+    public static ObservableList<DetalleTB> Get_Detail_IdName(String... value) {
         String selectStmt = "{call Sp_Get_Detalle_IdNombre(?,?,?)}";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;

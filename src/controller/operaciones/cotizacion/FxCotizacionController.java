@@ -41,8 +41,8 @@ import javafx.stage.Stage;
 import model.ClienteADO;
 import model.ClienteTB;
 import model.CotizacionADO;
+import model.CotizacionDetalleTB;
 import model.CotizacionTB;
-import model.DetalleCotizacionTB;
 import model.MonedaADO;
 import model.MonedaTB;
 import model.SuministroTB;
@@ -60,19 +60,19 @@ public class FxCotizacionController implements Initializable {
     @FXML
     private DatePicker dtFechaVencimiento;
     @FXML
-    private TableView<SuministroTB> tvList;
+    private TableView<CotizacionDetalleTB> tvList;
     @FXML
-    private TableColumn<SuministroTB, Button> tcOpcion;
+    private TableColumn<CotizacionDetalleTB, Button> tcOpcion;
     @FXML
-    private TableColumn<SuministroTB, String> tcCantidad;
+    private TableColumn<CotizacionDetalleTB, String> tcCantidad;
     @FXML
-    private TableColumn<SuministroTB, String> tcProducto;
+    private TableColumn<CotizacionDetalleTB, String> tcProducto;
     @FXML
-    private TableColumn<SuministroTB, String> tcImpuesto;
+    private TableColumn<CotizacionDetalleTB, String> tcImpuesto;
     @FXML
-    private TableColumn<SuministroTB, String> tcPrecio;
+    private TableColumn<CotizacionDetalleTB, String> tcPrecio;
     @FXML
-    private TableColumn<SuministroTB, String> tcImporte;
+    private TableColumn<CotizacionDetalleTB, String> tcImporte;
     @FXML
     private Label lblSubImporte;
     @FXML
@@ -100,15 +100,15 @@ public class FxCotizacionController implements Initializable {
 
     private String idCotizacion;
 
-    private double importeBruto;
+    private double importeBrutoTotal;
 
-    private double descuentoBruto;
+    private double descuentoTotal;
 
-    private double subImporteNeto;
+    private double subImporteNetoTotal;
 
-    private double impuestoNeto;
+    private double impuestoTotal;
 
-    private double importeNeto;
+    private double importeNetoTotal;
 
     private String monedaSimbolo;
 
@@ -136,14 +136,14 @@ public class FxCotizacionController implements Initializable {
     private void loadTableView() {
         tcOpcion.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
         tcProducto.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getClave() + "\n" + cellData.getValue().getNombreMarca()));
+                cellData.getValue().getSuministroTB().getClave() + "\n" + cellData.getValue().getSuministroTB().getNombreMarca()));
         tcCantidad.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
         tcPrecio.setCellValueFactory(cellData -> Bindings.concat(
-                Tools.roundingValue(cellData.getValue().getPrecioVentaGeneral(), 2)));
+                Tools.roundingValue(cellData.getValue().getPrecio(), 2)));
         tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getNombreImpuesto()));
         tcImporte.setCellValueFactory(cellData -> Bindings.concat(
-                Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+                Tools.roundingValue(cellData.getValue().getCantidad() * (cellData.getValue().getPrecio() - cellData.getValue().getDescuento()), 2)));
 
         tcCantidad.setCellFactory(TextFieldTableCell.forTableColumn());
         tcCantidad.setOnEditCommit(data -> {
@@ -151,11 +151,8 @@ public class FxCotizacionController implements Initializable {
                     ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.parseDouble(data.getOldValue()) : Double.parseDouble(data.getNewValue()))
                     : Double.parseDouble(data.getOldValue());
 
-            SuministroTB suministroTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
-            suministroTB.setCantidad(newCantidad);
-            double descuento = suministroTB.getDescuento();
-            double precioDescuento = suministroTB.getPrecioVentaGeneral() - descuento;
-            suministroTB.setImporteNeto(suministroTB.getCantidad() * precioDescuento);
+            CotizacionDetalleTB detalleTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
+            detalleTB.setCantidad(newCantidad);
 
             tvList.refresh();
             calculateTotales();
@@ -167,11 +164,8 @@ public class FxCotizacionController implements Initializable {
                     ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.parseDouble(data.getOldValue()) : Double.parseDouble(data.getNewValue()))
                     : Double.parseDouble(data.getOldValue());
 
-            SuministroTB suministroTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
-            suministroTB.setPrecioVentaGeneral(newPrecio);
-            double descuento = suministroTB.getDescuento();
-            double precioDescuento = suministroTB.getPrecioVentaGeneral() - descuento;
-            suministroTB.setImporteNeto(suministroTB.getCantidad() * precioDescuento);
+            CotizacionDetalleTB detalleTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
+            detalleTB.setPrecio(newPrecio);
 
             tvList.refresh();
             calculateTotales();
@@ -317,34 +311,30 @@ public class FxCotizacionController implements Initializable {
         }
     }
 
-    public void getAddArticulo(SuministroTB suministro) {
-        if (validateDuplicate(suministro)) {
-            for (int i = 0; i < tvList.getItems().size(); i++) {
-                if (tvList.getItems().get(i).getIdSuministro().equalsIgnoreCase(suministro.getIdSuministro())) {
-                    SuministroTB suministroTB = tvList.getItems().get(i);
-                    suministroTB.setPrecioVentaGeneral(suministro.getPrecioVentaGeneral());
-                    suministroTB.setCantidad(suministro.getCantidad());
-                    double descuento = suministroTB.getDescuento();
-                    double precioDescuento = suministroTB.getPrecioVentaGeneral() - descuento;
-                    suministroTB.setImporteNeto(suministroTB.getCantidad() * precioDescuento);
-                    tvList.refresh();
-                    tvList.getSelectionModel().select(i);
-                    calculateTotales();
-                    break;
-                }
-            }
-        } else {
-            tvList.getItems().add(suministro);
-            int index = tvList.getItems().size() - 1;
-            tvList.getSelectionModel().select(index);
+    public void getAddDetalle(CotizacionDetalleTB cotizacionDetalleTB) {
+        cotizacionDetalleTB.getBtnRemove().setOnAction(e -> {
+            tvList.getItems().remove(cotizacionDetalleTB);
             calculateTotales();
-        }
+        });
+
+        cotizacionDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                tvList.getItems().remove(cotizacionDetalleTB);
+                calculateTotales();
+            }
+        });
+
+        tvList.getItems().add(cotizacionDetalleTB);
+        int index = tvList.getItems().size() - 1;
+        tvList.getSelectionModel().select(index);
+
+        calculateTotales();
     }
 
-    public boolean validateDuplicate(SuministroTB suministroTB) {
+    public boolean validateDuplicate(String idSuministro) {
         boolean ret = false;
         for (int i = 0; i < tvList.getItems().size(); i++) {
-            if (tvList.getItems().get(i).getClave().equals(suministroTB.getClave())) {
+            if (tvList.getItems().get(i).getIdSuministro().equals(idSuministro)) {
                 ret = true;
                 break;
             }
@@ -353,45 +343,32 @@ public class FxCotizacionController implements Initializable {
     }
 
     public void calculateTotales() {
-        importeBruto = 0;
-        tvList.getItems().forEach(e -> {
-            double descuento = e.getDescuento();
-            double precioDescuento = e.getPrecioVentaGeneral() - descuento;
-            double subPrecio = Tools.calculateTaxBruto(e.getImpuestoTB().getValor(), precioDescuento);
-            double precioBruto = subPrecio + descuento;
-            importeBruto += precioBruto * e.getCantidad();
-        });
-        lblValorVenta.setText(monedaSimbolo + " " + Tools.roundingValue(importeBruto, 2));
+        importeBrutoTotal = 0;
+        descuentoTotal = 0;
+        subImporteNetoTotal = 0;
+        impuestoTotal = 0;
+        importeNetoTotal = 0;
 
-        descuentoBruto = 0;
-        tvList.getItems().forEach(e -> {
-            double descuento = e.getDescuento();
-            descuentoBruto += e.getCantidad() * descuento;
-        });
-        lblDescuento.setText(monedaSimbolo + " " + (Tools.roundingValue(descuentoBruto * (-1), 2)));
+        tvList.getItems().forEach(ocdtb -> {
+            double importeBruto = ocdtb.getPrecio() * ocdtb.getCantidad();
+            double descuento = ocdtb.getDescuento();
+            double subImporteBruto = importeBruto - descuento;
+            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+            double importeNeto = subImporteNeto + impuesto;
 
-        subImporteNeto = 0;
-        tvList.getItems().forEach(e -> {
-            double descuento = e.getDescuento();
-            double precioDescuento = e.getPrecioVentaGeneral() - descuento;
-            double subPrecio = Tools.calculateTaxBruto(e.getImpuestoTB().getValor(), precioDescuento);
-            subImporteNeto += e.getCantidad() * subPrecio;
-        });
-        lblSubImporte.setText(monedaSimbolo + " " + Tools.roundingValue(subImporteNeto, 2));
-
-        impuestoNeto = 0;
-        tvList.getItems().forEach(e -> {
-            double descuento = e.getDescuento();
-            double precioDescuento = e.getPrecioVentaGeneral() - descuento;
-            double subPrecio = Tools.calculateTaxBruto(e.getImpuestoTB().getValor(), precioDescuento);
-            double impuesto = Tools.calculateTax(e.getImpuestoTB().getValor(), subPrecio);
-            impuestoNeto += e.getCantidad() * impuesto;
+            importeBrutoTotal += importeBruto;
+            descuentoTotal += descuento;
+            subImporteNetoTotal += subImporteNeto;
+            impuestoTotal += impuesto;
+            importeNetoTotal += importeNeto;
         });
 
-        importeNeto = 0;
-        importeNeto = subImporteNeto + impuestoNeto;
-        lblImpuesto.setText(monedaSimbolo + " " + Tools.roundingValue(impuestoNeto, 2));
-        lblImporteTotal.setText(monedaSimbolo + " " + Tools.roundingValue(importeNeto, 2));
+        lblValorVenta.setText(monedaSimbolo + " " + Tools.roundingValue(importeBrutoTotal, 2));
+        lblDescuento.setText(monedaSimbolo + " " + (Tools.roundingValue(descuentoTotal * (-1), 2)));
+        lblSubImporte.setText(monedaSimbolo + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+        lblImpuesto.setText(monedaSimbolo + " " + Tools.roundingValue(impuestoTotal, 2));
+        lblImporteTotal.setText(monedaSimbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
     }
 
     private void cancelarVenta() {
@@ -495,7 +472,7 @@ public class FxCotizacionController implements Initializable {
                         }
                     });
                 }
-                tvList.setItems(cotizacionTBs);
+//                tvList.setItems(cotizacionTBs);
 
                 calculateTotales();
                 hbBody.setDisable(false);
@@ -563,20 +540,7 @@ public class FxCotizacionController implements Initializable {
                         cotizacionTB.setEstado((short) 1);
                         cotizacionTB.setObservaciones(txtObservacion.getText().trim());
 
-                        ArrayList<DetalleCotizacionTB> detalleCotizacionTBs = new ArrayList();
-                        tvList.getItems().stream().map((suministroTB) -> {
-                            DetalleCotizacionTB detalleCotizacionTB = new DetalleCotizacionTB();
-                            detalleCotizacionTB.setIdSuministros(suministroTB.getIdSuministro());
-                            detalleCotizacionTB.setCantidad(suministroTB.getCantidad());
-                            detalleCotizacionTB.setPrecio(suministroTB.getPrecioVentaGeneral());
-                            detalleCotizacionTB.setDescuento(suministroTB.getDescuento());
-                            detalleCotizacionTB.setIdImpuesto(suministroTB.getIdImpuesto());
-                            return detalleCotizacionTB;
-                        }).forEachOrdered((detalleCotizacionTB) -> {
-                            detalleCotizacionTBs.add(detalleCotizacionTB);
-                        });
-                        cotizacionTB.setDetalleCotizacionTBs(detalleCotizacionTBs);
-
+                        cotizacionTB.setCotizacionDetalleTBs(new ArrayList<>(tvList.getItems()));
                         return CotizacionADO.CrudCotizacion(cotizacionTB);
                     }
                 };
@@ -649,7 +613,12 @@ public class FxCotizacionController implements Initializable {
                     exec.shutdown();
                 }
             }
+        }
+    }
 
+    private void onEventEditar() {
+        if(tvList.getSelectionModel().getSelectedIndex()>=0){
+            
         }
     }
 
@@ -678,15 +647,27 @@ public class FxCotizacionController implements Initializable {
     }
 
     @FXML
-    private void onKeyPressedArticulo(KeyEvent event) {
+    private void onKeyPressedProducto(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             openWindowSuministro();
         }
     }
 
     @FXML
-    private void onActionArticulo(ActionEvent event) {
+    private void onActionProducto(ActionEvent event) {
         openWindowSuministro();
+    }
+
+    @FXML
+    private void onKeyPressedEditar(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            onEventEditar();
+        }
+    }
+
+    @FXML
+    private void onActionEditar(ActionEvent event) {
+        onEventEditar();
     }
 
     @FXML
@@ -720,27 +701,26 @@ public class FxCotizacionController implements Initializable {
 
     @FXML
     private void onKeyReleasedWindow(KeyEvent event) {
-        if (null != event.getCode()) {
-            switch (event.getCode()) {
-                case F1:
-                    onEventGuardar();
-                    break;
-                case F2:
-                    openWindowSuministro();
-                    break;
-                case F3:
-                    openWindowCotizaciones();
-                    break;
-                case F4:
-                    cancelarVenta();
-                    break;
-                default:
-                    break;
-            }
+        switch (event.getCode()) {
+            case F1:
+                onEventGuardar();
+                break;
+            case F2:
+                openWindowSuministro();
+                break;
+            case F3:
+                openWindowCotizaciones();
+                break;
+            case F4:
+
+                break;
+            case F5:
+                cancelarVenta();
+                break;
         }
     }
 
-    public TableView<SuministroTB> getTvList() {
+    public TableView<CotizacionDetalleTB> getTvList() {
         return tvList;
     }
 

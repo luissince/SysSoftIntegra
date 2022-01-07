@@ -51,7 +51,7 @@ public class FxImpuestoProcesoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         idImpuesto = 0;
-        DetalleADO.GetDetailIdName("2", "0010", "").forEach(e -> {
+        DetalleADO.Get_Detail_IdName("2", "0010", "").forEach(e -> {
             cbOperaciones.getItems().add(new DetalleTB(e.getIdDetalle(), e.getNombre()));
         });
     }

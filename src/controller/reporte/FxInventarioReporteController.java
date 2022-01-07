@@ -160,7 +160,7 @@ public class FxInventarioReporteController implements Initializable {
         sCbUnidadMedida.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             if (!Tools.isText(sCbUnidadMedida.getSearchComboBoxSkin().getSearchBox().getText())) {
                 sCbUnidadMedida.getComboBox().getItems().clear();
-                sCbUnidadMedida.getComboBox().getItems().addAll(DetalleADO.GetDetailIdName("4", "0013", sCbUnidadMedida.getSearchComboBoxSkin().getSearchBox().getText().trim()));
+                sCbUnidadMedida.getComboBox().getItems().addAll(DetalleADO.Get_Detail_IdName("4", "0013", sCbUnidadMedida.getSearchComboBoxSkin().getSearchBox().getText().trim()));
             }
         });
 
@@ -210,7 +210,7 @@ public class FxInventarioReporteController implements Initializable {
         sCbCategoria.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             if (!Tools.isText(sCbCategoria.getSearchComboBoxSkin().getSearchBox().getText())) {
                 sCbCategoria.getComboBox().getItems().clear();
-                sCbCategoria.getComboBox().getItems().addAll(DetalleADO.GetDetailIdName("4", "0006", sCbCategoria.getSearchComboBoxSkin().getSearchBox().getText().trim()));
+                sCbCategoria.getComboBox().getItems().addAll(DetalleADO.Get_Detail_IdName("4", "0006", sCbCategoria.getSearchComboBoxSkin().getSearchBox().getText().trim()));
             }
         });
 
@@ -260,7 +260,7 @@ public class FxInventarioReporteController implements Initializable {
         sCbMarca.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             if (!Tools.isText(sCbMarca.getSearchComboBoxSkin().getSearchBox().getText())) {
                 sCbMarca.getComboBox().getItems().clear();
-                sCbMarca.getComboBox().getItems().addAll(DetalleADO.GetDetailIdName("4", "0007", sCbMarca.getSearchComboBoxSkin().getSearchBox().getText().trim()));
+                sCbMarca.getComboBox().getItems().addAll(DetalleADO.Get_Detail_IdName("4", "0007", sCbMarca.getSearchComboBoxSkin().getSearchBox().getText().trim()));
             }
         });
 
@@ -310,7 +310,7 @@ public class FxInventarioReporteController implements Initializable {
         sCbPresentacion.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             if (!Tools.isText(sCbPresentacion.getSearchComboBoxSkin().getSearchBox().getText())) {
                 sCbPresentacion.getComboBox().getItems().clear();
-                sCbPresentacion.getComboBox().getItems().addAll(DetalleADO.GetDetailIdName("4", "0008", sCbPresentacion.getSearchComboBoxSkin().getSearchBox().getText().trim()));
+                sCbPresentacion.getComboBox().getItems().addAll(DetalleADO.Get_Detail_IdName("4", "0008", sCbPresentacion.getSearchComboBoxSkin().getSearchBox().getText().trim()));
             }
         });
 

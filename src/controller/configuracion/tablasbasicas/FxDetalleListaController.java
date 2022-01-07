@@ -48,7 +48,7 @@ public class FxDetalleListaController implements Initializable {
     public void initListDetalle(String idDetalle, String nombre) {
         this.idMantenimiento = idDetalle;
         lvList.getItems().clear();
-        DetalleADO.GetDetailIdName("4", idMantenimiento, nombre).forEach(e -> {
+        DetalleADO.Get_Detail_IdName("4", idMantenimiento, nombre).forEach(e -> {
             lvList.getItems().add(new DetalleTB(e.getIdDetalle(), e.getNombre()));
         });
     }

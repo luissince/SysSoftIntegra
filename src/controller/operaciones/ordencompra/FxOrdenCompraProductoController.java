@@ -67,7 +67,6 @@ public class FxOrdenCompraProductoController implements Initializable {
 
         cbImpuestoCompra.getItems().clear();
         cbImpuestoCompra.getItems().addAll(ImpuestoADO.GetTipoImpuestoCombBox());
-
     }
 
     public void loadComponents(SuministroTB suministroTB) {
@@ -112,6 +111,7 @@ public class FxOrdenCompraProductoController implements Initializable {
             SuministroTB newsSuministroTB = new SuministroTB();
             newsSuministroTB.setClave(suministroTB.getClave());
             newsSuministroTB.setNombreMarca(suministroTB.getNombreMarca());
+            newsSuministroTB.setUnidadCompraName(suministroTB.getUnidadCompraName());
             compraDetalleTB.setSuministroTB(newsSuministroTB);
 
             Button btnRemove = new Button("X");

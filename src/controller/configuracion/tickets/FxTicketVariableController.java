@@ -69,22 +69,22 @@ public class FxTicketVariableController implements Initializable {
             listCabecera.add(new TicketTB("Numeración del documento de emitido", "V000-00000000", "numventa"));
             listCabecera.add(new TicketTB("Tipo/Forma de Venta", "TIPO/FORMA DE VENTA", "tipofomaventa"));
 
-            listCabecera.add(new TicketTB("Número del documento del cliente", "NUMERO DOCUMENTO CLIENTE", "numcliente"));
-            listCabecera.add(new TicketTB("Datos del cliente", "DATOS DEL CLIENTE", "infocliente"));
-            listCabecera.add(new TicketTB("Celular del cliente", "CELULAR DEL CLIENTE", "celcliente"));
-            listCabecera.add(new TicketTB("Dirección del cliente", "DIRECCION DEL CLIENTE", "direcliente"));
+            listCabecera.add(new TicketTB("N° de documento del cliente/proeedor", "N° DOCUMENTO CLIENTE/PROVEEDOR", "numcliente"));
+            listCabecera.add(new TicketTB("Datos del cliente/proveedor", "DATOS DEL CLIENTE/PROVEEDOR", "infocliente"));
+            listCabecera.add(new TicketTB("Celular del cliente/proveedor", "CELULAR DEL CLIENTE/PROVEEDOR", "celcliente"));
+            listCabecera.add(new TicketTB("Dirección del cliente/proveedor", "DIRECCION DEL CLIENTE/PROVEEDOR", "direcliente"));
 
             listCabecera.add(new TicketTB("Codigo de venta", "CODIGO UNICO DE VENTA", "codigo"));
             listCabecera.add(new TicketTB("Importe Total en Letras", "0.00", "importetotalletras"));
 
-            listCabecera.add(new TicketTB("Monto Total", "0.00", "montotal"));
-            listCabecera.add(new TicketTB("Monto Pagado/Cobrado", "0.00", "montopagacobra"));
-            listCabecera.add(new TicketTB("Monto Restante", "0.00", "montorestanten"));
+            listCabecera.add(new TicketTB("Monto Total(Para cuentas por cobrar o pagar)", "0.00", "montotal"));
+            listCabecera.add(new TicketTB("Monto Pagado/Cobrado(Para cuentas por cobrar o pagar)", "0.00", "montopagacobra"));
+            listCabecera.add(new TicketTB("Monto Restante(Para cuentas por cobrar o pagar)", "0.00", "montorestanten"));
 
-            listCabecera.add(new TicketTB("Fecha de inicio de la Operación", "dd/MM/yyyy", "finiciooperacion"));
-            listCabecera.add(new TicketTB("Hora de inicio de la Operación", "HH:mm:ss a", "hiniciooperacion"));
-            listCabecera.add(new TicketTB("Fecha de termino de la Operación", "dd/MM/yyyy", "fterminooperacion"));
-            listCabecera.add(new TicketTB("Hora de termino de la Operación", "HH:mm:ss a", "hterminooperacion"));
+            listCabecera.add(new TicketTB("Fecha de inicio de la operación/registro", "dd/MM/yyyy", "finiciooperacion"));
+            listCabecera.add(new TicketTB("Hora de inicio de la operación/registro", "HH:mm:ss a", "hiniciooperacion"));
+            listCabecera.add(new TicketTB("Fecha de termino de la operación/vencimiento", "dd/MM/yyyy", "fterminooperacion"));
+            listCabecera.add(new TicketTB("Hora de termino de la operación/vencimento", "HH:mm:ss a", "hterminooperacion"));
             listCabecera.add(new TicketTB("Contado para corte de caja", "0.00", "contado"));
             listCabecera.add(new TicketTB("Calculado para corte de caja", "0.00", "calculado"));
             listCabecera.add(new TicketTB("Diferencia para corte de caja", "0.00", "diferencia"));
@@ -94,10 +94,12 @@ public class FxTicketVariableController implements Initializable {
             listCabecera.add(new TicketTB("Ventas con deposito de caja", "0.00", "ventasdepositocaja"));
             listCabecera.add(new TicketTB("Ingresos en efectivo de caja", "0.00", "ingresosefectivocaja"));
             listCabecera.add(new TicketTB("Egresos en efectivo de caja", "0.00", "egresosefectivocaja"));
-            listCabecera.add(new TicketTB("Numero documento Empleado", "NUMERO DE DOCUMENTO EMPLEADO", "numempleado"));
-            listCabecera.add(new TicketTB("Información del Empleado", "INFORMACION DEL EMPLEADO", "infoempleado"));
-            listCabecera.add(new TicketTB("Celular del Empleado", "CELULAR DEL EMPLEADO", "celempleado"));
-            listCabecera.add(new TicketTB("Dirección del Empleado", "DIRECCION DEL EMPLEADO", "direcempleado"));
+
+            listCabecera.add(new TicketTB("N° de documento del empleado", "NUMERO DE DOCUMENTO EMPLEADO", "numempleado"));
+            listCabecera.add(new TicketTB("Información del empleado", "INFORMACION DEL EMPLEADO", "infoempleado"));
+            listCabecera.add(new TicketTB("Celular del empleado", "CELULAR DEL EMPLEADO", "celempleado"));
+            listCabecera.add(new TicketTB("Dirección del empleado", "DIRECCION DEL EMPLEADO", "direcempleado"));
+
             listCabecera.add(new TicketTB("Observación Generada en los documentos", "OBSERVACION", "observacion"));
             listCabecera.add(new TicketTB("Nombre del documento asociado de la guia", "DOCUMENTO GUIA ASOCIADO", "docuasociaguia"));
             listCabecera.add(new TicketTB("Numeración y Serie del documento asociado de la guía", "NUMERO Y SERIE ASOCIADO GUIA", "numeroasocuguia"));
@@ -133,16 +135,18 @@ public class FxTicketVariableController implements Initializable {
             listPie.add(new TicketTB("Hora actual", Tools.getTime("hh:mm:ss aa"), "horactual"));
             listPie.add(new TicketTB("Importe Bruto", "M 00.00", "imptotal"));
             listPie.add(new TicketTB("Descuento", "M 00.00", "dscttotal"));
-            listPie.add(new TicketTB("Sub Importe", "M 00.00", "subtotal"));          
+            listPie.add(new TicketTB("Sub Importe", "M 00.00", "subtotal"));
             listPie.add(new TicketTB("Impuesto", "M 00.00", "valorimpustos"));
             listPie.add(new TicketTB("Importe Neto", "M 00.00", "totalpagar"));
             listPie.add(new TicketTB("Tarjeta", "M 00.00", "tarjeta"));
             listPie.add(new TicketTB("Efectivo", "M 00.00", "efectivo"));
             listPie.add(new TicketTB("Vuelto", "M 00.00", "vuelto"));
-            listPie.add(new TicketTB("Número del documento del cliente", "NUMERO DE DOCUMENTO CLIENTE", "numcliente"));
-            listPie.add(new TicketTB("Información del cliente", "DATOS DEL CLIENTE", "infocliente"));
-            listPie.add(new TicketTB("Celular del cliente", "CELULAR DEL CLIENTE", "celcliente"));
-            listPie.add(new TicketTB("Dirección del cliente", "DIRECCION DEL CLIENTE", "direcliente"));
+
+            listPie.add(new TicketTB("N° de documento del cliente/proveedor", "N° DE DOCUMENTO CLIENTE/PROVEEDOR", "numcliente"));
+            listPie.add(new TicketTB("Datos del cliente/proveedor", "DATOS DEL CLIENTE/PROVEEDOR", "infocliente"));
+            listPie.add(new TicketTB("Celular del cliente/proveedor", "CELULAR DEL CLIENTE/PROVEEDOR", "celcliente"));
+            listPie.add(new TicketTB("Dirección del cliente/proveedor", "DIRECCION DEL CLIENTE/PROVEEDOR", "direcliente"));
+
             listPie.add(new TicketTB("Codigo de venta", "CODIGO UNICO DE VENTA", "codigo"));
             listPie.add(new TicketTB("Importe Total en Letras", "SON CERO 0/0 SOLES", "importetotalletras"));
             listPie.add(new TicketTB("Numero documento Empleado", "NUMERO DE DOCUMENTO EMPLEADO", "numempleado"));

@@ -67,9 +67,9 @@ public class CotizacionADO {
                             + ",IdImpuesto)"
                             + "VALUES(?,?,?,?,?,?)");
 
-                    for (DetalleCotizacionTB detalleCotizacionTB : cotizacionTB.getDetalleCotizacionTBs()) {
+                    for (CotizacionDetalleTB detalleCotizacionTB : cotizacionTB.getCotizacionDetalleTBs()) {
                         statementDetalleCotizacion.setString(1, cotizacionTB.getIdCotizacion());
-                        statementDetalleCotizacion.setString(2, detalleCotizacionTB.getIdSuministros());
+                        statementDetalleCotizacion.setString(2, detalleCotizacionTB.getIdSuministro());
                         statementDetalleCotizacion.setDouble(3, detalleCotizacionTB.getCantidad());
                         statementDetalleCotizacion.setDouble(4, detalleCotizacionTB.getPrecio());
                         statementDetalleCotizacion.setDouble(5, detalleCotizacionTB.getDescuento());
@@ -123,9 +123,9 @@ public class CotizacionADO {
                             + ",IdImpuesto)"
                             + "VALUES(?,?,?,?,?,?)");
 
-                    for (DetalleCotizacionTB detalleCotizacionTB : cotizacionTB.getDetalleCotizacionTBs()) {
+                    for (CotizacionDetalleTB detalleCotizacionTB : cotizacionTB.getCotizacionDetalleTBs()) {
                         statementDetalleCotizacion.setString(1, idCotizacion);
-                        statementDetalleCotizacion.setString(2, detalleCotizacionTB.getIdSuministros());
+                        statementDetalleCotizacion.setString(2, detalleCotizacionTB.getIdSuministro());
                         statementDetalleCotizacion.setDouble(3, detalleCotizacionTB.getCantidad());
                         statementDetalleCotizacion.setDouble(4, detalleCotizacionTB.getPrecio());
                         statementDetalleCotizacion.setDouble(5, detalleCotizacionTB.getDescuento());

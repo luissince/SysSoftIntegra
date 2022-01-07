@@ -15,6 +15,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -95,15 +97,17 @@ public class FxOrdenCompraController implements Initializable {
 
     private FxPrincipalController principalController;
 
-    double importeBrutoTotal;
+    private String idOrdenCompra;
 
-    double descuentoTotal;
+    private double importeBrutoTotal;
 
-    double subImporteNetoTotal;
+    private double descuentoTotal;
 
-    double impuestoTotal;
+    private double subImporteNetoTotal;
 
-    double importeNetoTotal;
+    private double impuestoTotal;
+
+    private double importeNetoTotal;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -225,6 +229,7 @@ public class FxOrdenCompraController implements Initializable {
             tvList.getItems().remove(compraDetalleTB);
             calculateTotales();
         });
+        
         compraDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 tvList.getItems().remove(compraDetalleTB);
@@ -375,40 +380,6 @@ public class FxOrdenCompraController implements Initializable {
                             }
                         });
                     }
-
-//                    Object object = task.getValue();
-//                    if (object instanceof String[]) {
-//                        String result[] = (String[]) object;
-//                        if (result[0].equalsIgnoreCase("1")) {
-//                            lblMessageLoad.setText("Registro correctamente la orden de compra.");
-//                            lblMessageLoad.setTextFill(Color.web("#ffffff"));
-//                            hbBody.setDisable(false);
-//                            hbLoad.setVisible(false);
-//                            resetVenta();
-//                        } else {
-//                            lblMessageLoad.setText("Se registro corectamente la cotización.");
-//                            lblMessageLoad.setTextFill(Color.web("#ffffff"));
-//                            hbBody.setDisable(false);
-//                            hbLoad.setVisible(false);
-//                            resetVenta();
-//                        }
-//                    } else {
-//                        lblMessageLoad.setText((String) object);
-//                        lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-//                        btnAceptarLoad.setVisible(true);
-//                        btnAceptarLoad.setOnAction(event -> {
-//                            hbBody.setDisable(false);
-//                            hbLoad.setVisible(false);
-//                            resetVenta();
-//                        });
-//                        btnAceptarLoad.setOnKeyPressed(event -> {
-//                            if (event.getCode() == KeyCode.ENTER) {
-//                                hbBody.setDisable(false);
-//                                hbLoad.setVisible(false);
-//                                resetVenta();
-//                            }
-//                        });
-//                    }
                 });
 
                 exec.execute(task);
@@ -421,6 +392,7 @@ public class FxOrdenCompraController implements Initializable {
     }
 
     private void resetVenta() {
+        idOrdenCompra = "";
         cbProveedor.getItems().clear();
         Tools.actualDate(Tools.getDate(), dtFechaEmision);
         Tools.actualDate(Tools.getDate(), dtFechaVencimiento);
@@ -429,6 +401,128 @@ public class FxOrdenCompraController implements Initializable {
         lblProceso.setTextFill(Color.web("#0060e8"));
         txtObservacion.clear();
         calculateTotales();
+    }
+
+    private void openWindowOrdenCompra() {
+        try {
+            principalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_ORDEN_COMPRA_LISTA);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            //Controlller here
+            FxOrdenCompraListaController controller = fXMLLoader.getController();
+            controller.setInitOrdenCompraListarController(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Mostrar Ordenes de Compra", apWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> principalController.closeFondoModal());
+            stage.setOnShown(w -> controller.initLoad());
+            stage.show();
+        } catch (IOException ex) {
+            Tools.println("Error en la función openWindowOrdenCompra():" + ex.getLocalizedMessage());
+        }
+    }
+
+    public void loadOrdenCompra(String idOrdenCompra) {
+        ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+        Task<Object> task = new Task<Object>() {
+            @Override
+            public Object call() {
+                return OrdenCompraADO.ObtenerOrdenCompraId(idOrdenCompra);
+            }
+        };
+        task.setOnScheduled(w -> {
+            hbBody.setDisable(true);
+            hbLoad.setVisible(true);
+            btnAceptarLoad.setVisible(false);
+            lblMessageLoad.setText("Cargando información...");
+            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+        });
+        task.setOnFailed(w -> {
+            btnAceptarLoad.setVisible(true);
+            btnAceptarLoad.setOnAction(event -> {
+                hbBody.setDisable(false);
+                hbLoad.setVisible(false);
+                resetVenta();
+            });
+            btnAceptarLoad.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    resetVenta();
+                }
+                event.consume();
+            });
+            lblMessageLoad.setText(task.getException().getLocalizedMessage());
+            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+        });
+        task.setOnSucceeded(w -> {
+            Object object = task.getValue();
+            if (object instanceof OrdenCompraTB) {
+                OrdenCompraTB ordenCompraTB = (OrdenCompraTB) object;
+                this.idOrdenCompra = idOrdenCompra;
+
+                cbProveedor.getItems().clear();
+                cbProveedor.getItems().add(new ProveedorTB(ordenCompraTB.getProveedorTB().getIdProveedor(), ordenCompraTB.getProveedorTB().getNumeroDocumento(), ordenCompraTB.getProveedorTB().getRazonSocial()));
+                cbProveedor.getSelectionModel().select(0);
+
+                lblProceso.setText("Orden de Compra en proceso de actualizar");
+                lblProceso.setTextFill(Color.web("#c52700"));
+
+                Tools.actualDate(Tools.getDate(), dtFechaEmision);
+                Tools.actualDate(Tools.getDate(), dtFechaVencimiento);
+
+                ObservableList<OrdenCompraDetalleTB> compraDetalleTBs = FXCollections.observableArrayList(ordenCompraTB.getOrdenCompraDetalleTBs());
+                compraDetalleTBs.forEach(compraDetalleTB -> {
+                    compraDetalleTB.getBtnRemove().setOnAction(e -> {
+                        tvList.getItems().remove(compraDetalleTB);
+                        calculateTotales();
+                    });
+
+                    compraDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
+                        if (e.getCode() == KeyCode.ENTER) {
+                            tvList.getItems().remove(compraDetalleTB);
+                            calculateTotales();
+                        }
+                    });
+                });
+
+                tvList.setItems(compraDetalleTBs);
+
+                txtObservacion.setText(ordenCompraTB.getObservacion());
+
+                hbBody.setDisable(false);
+                hbLoad.setVisible(false);
+            } else {
+                lblMessageLoad.setText((String) object);
+                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+                btnAceptarLoad.setVisible(true);
+                btnAceptarLoad.setOnAction(event -> {
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    resetVenta();
+                });
+                btnAceptarLoad.setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        hbBody.setDisable(false);
+                        hbLoad.setVisible(false);
+                        resetVenta();
+                    }
+                    event.consume();
+                });
+            }
+        });
+
+        exec.execute(task);
+
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
     }
 
     @FXML
@@ -465,6 +559,18 @@ public class FxOrdenCompraController implements Initializable {
     @FXML
     private void onActionProveedor(ActionEvent event) {
         openWindowProveedores();
+    }
+
+    @FXML
+    private void onKeyPressedOrdenCompra(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowOrdenCompra();
+        }
+    }
+
+    @FXML
+    private void onActionOrdenCompra(ActionEvent event) {
+        openWindowOrdenCompra();
     }
 
     public void setContent(FxPrincipalController principalController) {

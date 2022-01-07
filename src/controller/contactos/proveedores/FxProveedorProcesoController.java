@@ -71,13 +71,13 @@ public class FxProveedorProcesoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
         idProveedor = "";
-        DetalleADO.GetDetailIdName("2", "0003", "").forEach(e -> {
+        DetalleADO.Get_Detail_IdName("2", "0003", "").forEach(e -> {
             cbDocumentTypeFactura.getItems().add(new DetalleTB(e.getIdDetalle(), e.getNombre()));
         });
-        DetalleADO.GetDetailIdName("2", "0005", "").forEach(e -> {
+        DetalleADO.Get_Detail_IdName("2", "0005", "").forEach(e -> {
             cbAmbito.getItems().add(new DetalleTB(e.getIdDetalle(), e.getNombre()));
         });
-        DetalleADO.GetDetailIdName("2", "0001", "").forEach(e -> {
+        DetalleADO.Get_Detail_IdName("2", "0001", "").forEach(e -> {
             cbEstado.getItems().add(new DetalleTB(e.getIdDetalle(), e.getNombre()));
         });
         cbEstado.getSelectionModel().select(0);

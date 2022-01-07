@@ -369,9 +369,9 @@ public class FxSuministrosProcesoModalController implements Initializable {
             @Override
             public ArrayList<Object> call() {
                 ArrayList<Object> arrayList = new ArrayList<>();
-                arrayList.add(DetalleADO.GetDetailIdName("1", "0016", "SUB PRODUCTO(S)"));
+                arrayList.add(DetalleADO.Get_Detail_IdName("1", "0016", "SUB PRODUCTO(S)"));
                 arrayList.add(ImpuestoADO.GetTipoImpuestoCombBox());
-                arrayList.add(DetalleADO.GetDetailIdName("2", "0001", ""));
+                arrayList.add(DetalleADO.Get_Detail_IdName("2", "0001", ""));
                 return arrayList;
             }
         };

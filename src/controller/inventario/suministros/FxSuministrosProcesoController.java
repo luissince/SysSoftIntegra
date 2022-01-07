@@ -393,9 +393,9 @@ public class FxSuministrosProcesoController implements Initializable {
             @Override
             public ArrayList<Object> call() {
                 ArrayList<Object> arrayList = new ArrayList<>();
-                arrayList.add(DetalleADO.GetDetailIdName("2", "0016", ""));
+                arrayList.add(DetalleADO.Get_Detail_IdName("2", "0016", ""));
                 arrayList.add(ImpuestoADO.GetTipoImpuestoCombBox());
-                arrayList.add(DetalleADO.GetDetailIdName("2", "0001", ""));
+                arrayList.add(DetalleADO.Get_Detail_IdName("2", "0001", ""));
                 return arrayList;
             }
         };
@@ -426,9 +426,9 @@ public class FxSuministrosProcesoController implements Initializable {
             @Override
             public ArrayList<Object> call() {
                 ArrayList<Object> arrayList = new ArrayList<>();
-                arrayList.add(DetalleADO.GetDetailIdName("2", "0016", ""));
+                arrayList.add(DetalleADO.Get_Detail_IdName("2", "0016", ""));
                 arrayList.add(ImpuestoADO.GetTipoImpuestoCombBox());
-                arrayList.add(DetalleADO.GetDetailIdName("2", "0001", ""));
+                arrayList.add(DetalleADO.Get_Detail_IdName("2", "0001", ""));
                 arrayList.add(SuministroADO.GetSuministroById(value));
                 arrayList.add(PreciosADO.Get_Lista_Precios_By_IdSuministro(value));
                 return arrayList;
@@ -604,9 +604,9 @@ public class FxSuministrosProcesoController implements Initializable {
             @Override
             public ArrayList<Object> call() {
                 ArrayList<Object> arrayList = new ArrayList<>();
-                arrayList.add(DetalleADO.GetDetailIdName("2", "0016", ""));
+                arrayList.add(DetalleADO.Get_Detail_IdName("2", "0016", ""));
                 arrayList.add(ImpuestoADO.GetTipoImpuestoCombBox());
-                arrayList.add(DetalleADO.GetDetailIdName("2", "0001", ""));
+                arrayList.add(DetalleADO.Get_Detail_IdName("2", "0001", ""));
                 arrayList.add(SuministroADO.GetSuministroById(value));
                 arrayList.add(PreciosADO.Get_Lista_Precios_By_IdSuministro(value));
                 return arrayList;

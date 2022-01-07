@@ -1,11 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.ordencompra.FxOrdenCompraListaController">
-    
+
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16" fx:controller="controller.operaciones.ordencompra.FxOrdenCompraListaController">
+   <children>
+      <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0 0 1px; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                     <children>
+                        <Label styleClass="labelRobotoBold15" text="Lista de ordenes de compra" textFill="#020203">
+                           <font>
+                              <Font name="Roboto Bold" size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/pedidos.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Label>
+                        <Label fx:id="lblLoad" contentDisplay="RIGHT" styleClass="labelNormal" text="Cargando" textFill="#1a2226" textOverrun="CLIP" visible="false">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox style="-fx-border-color: #cccccc; -fx-border-width: 0 0 1px 0; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                     <children>
+                        <VBox style="-fx-spacing: 0.5em;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="labelRoboto13" text="Buscar por N° de Ornde de comra o Proveedor" textFill="#020203">
+                                 <graphic>
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/search.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                              <HBox VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <TextField fx:id="txtBuscar" onKeyPressed="#onKeyPressedBuscar" onKeyReleased="#onKeyReleasedBuscar" prefHeight="30.0" promptText="Buscar..." styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false" onAction="#onActionRecargar" onKeyPressed="#onkeyPressedRecargar" prefHeight="30.0" styleClass="buttonLight" text="Recargar">
+                                       <graphic>
+                                          <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/reload.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox style="-fx-spacing: 0.5em;">
+                           <children>
+                              <Label styleClass="labelRoboto13" text="Fecha Inicio" textFill="#020203">
+                                 <graphic>
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/calendar.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                              <DatePicker fx:id="txtFechaInicio" editable="false" onAction="#onActionFechaInicio" prefHeight="30.0" prefWidth="200.0" promptText="00/00/0000" />
+                           </children>
+                        </VBox>
+                        <VBox style="-fx-spacing: 0.5em;">
+                           <children>
+                              <Label styleClass="labelRoboto13" text="Fecha  Final" textFill="#020203">
+                                 <graphic>
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/calendar.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                              <DatePicker fx:id="txtFechaFinal" editable="false" onAction="#onActionFechaFinal" prefHeight="30.0" prefWidth="200.0" promptText="00/00/0000" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox style="-fx-padding: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
+                     <children>
+                        <TableView fx:id="tvList" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="320.0" prefWidth="870.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
+                           <columns>
+                              <TableColumn fx:id="tcNumero" prefWidth="60.0" style="-fx-alignment: center;" text="N°" />
+                              <TableColumn fx:id="tcFechaRegistro" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha de registro" />
+                              <TableColumn fx:id="tcProveedor" prefWidth="190.0" style="-fx-alignment: CENTER-LEFT;" text="Proveedor" />
+                              <TableColumn fx:id="tcOrdenCompra" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Orden de Compra" />
+                              <TableColumn fx:id="tcObservacion" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Observación" />
+                              <TableColumn fx:id="tcTotal" prefWidth="160.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 1px 0px 0px 0px;">
+                     <children>
+                        <HBox alignment="CENTER" style="-fx-background-color: #cccccc;">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onActionAnterior" onKeyPressed="#onKeyPressedAnterior" styleClass="buttonLight" text="Anterior">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/left.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Label fx:id="lblPaginaActual" styleClass="labelBorder" text="0" textFill="#020203" />
+                              <Label styleClass="labelForm" text="de" textFill="#020203" />
+                              <Label fx:id="lblPaginaSiguiente" styleClass="labelBorder" text="0" textFill="#020203" />
+                              <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onActionSiguiente" onKeyPressed="#onKeyPressedSiguiente" styleClass="buttonLight" text="Siguiente">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/right.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onActionAceptar" onKeyPressed="#onKeyPressedAceptar" prefHeight="30.0" styleClass="buttonLight" text="Aceptar">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/accept.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button mnemonicParsing="false" onAction="#onActionCerrar" onKeyPressed="#onKeyPressedCerrar" prefHeight="30.0" styleClass="buttonLight" text="Cerrar">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/error.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
 </AnchorPane>

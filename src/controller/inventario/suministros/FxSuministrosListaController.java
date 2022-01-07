@@ -8,7 +8,7 @@ import controller.inventario.movimientos.FxMovimientosProcesoController;
 import controller.inventario.traslados.FxTrasladoController;
 import controller.inventario.traslados.FxTrasladoInventarioController;
 import controller.operaciones.cotizacion.FxCotizacionController;
-import controller.operaciones.cotizacion.FxCotizacionModalController;
+import controller.operaciones.cotizacion.FxCotizacionProductoController;
 import controller.operaciones.guiaremision.FxGuiaRemisionController;
 import controller.operaciones.ordencompra.FxOrdenCompraController;
 import controller.operaciones.ordencompra.FxOrdenCompraProductoController;
@@ -479,15 +479,10 @@ public class FxSuministrosListaController implements Initializable {
 
     private void addCotizacion() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            if (cotizacionController.validateDuplicate(tvList.getSelectionModel().getSelectedItem())) {
-                for (int i = 0; i < cotizacionController.getTvList().getItems().size(); i++) {
-                    if (cotizacionController.getTvList().getItems().get(i).getIdSuministro().equalsIgnoreCase(tvList.getSelectionModel().getSelectedItem().getIdSuministro())) {
-                        openWindowCotizacion(cotizacionController.getTvList().getItems().get(i), true);
-                        break;
-                    }
-                }
+            if (cotizacionController.validateDuplicate(tvList.getSelectionModel().getSelectedItem().getIdSuministro())) {
+                Tools.AlertMessageWarning(apWindow, "Cotización", "Hay en la lista un producto con los mismos datos.");
             } else {
-                openWindowCotizacion(tvList.getSelectionModel().getSelectedItem(), false);
+                openWindowCotizacion(tvList.getSelectionModel().getSelectedItem());
             }
         }
     }
@@ -612,15 +607,15 @@ public class FxSuministrosListaController implements Initializable {
         }
     }
 
-    private void openWindowCotizacion(SuministroTB suministroTB, boolean exists) {
+    private void openWindowCotizacion(SuministroTB suministroTB) {
         try {
-            URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_COTIZACION_MODAL);
+            URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_COTIZACION_PRODUCTO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
-            FxCotizacionModalController controller = fXMLLoader.getController();
+            FxCotizacionProductoController controller = fXMLLoader.getController();
             controller.setInitCotizacionController(cotizacionController);
-            controller.initComponents(suministroTB, exists);
+            controller.initComponents(suministroTB);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
             stage.setResizable(false);
@@ -643,8 +638,8 @@ public class FxSuministrosListaController implements Initializable {
             Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
+            stage.setOnShowing(e -> controller.setInitArticulo());
             stage.show();
-            controller.setInitArticulo();
         } catch (IOException ex) {
             System.out.println("Error en suministro lista:" + ex.getLocalizedMessage());
         }

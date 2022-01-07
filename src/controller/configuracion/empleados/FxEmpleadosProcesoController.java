@@ -72,11 +72,11 @@ public class FxEmpleadosProcesoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
-        cbTipoDocumento.getItems().addAll(DetalleADO.GetDetailIdName("1", "0003", "RUC"));
+        cbTipoDocumento.getItems().addAll(DetalleADO.Get_Detail_IdName("1", "0003", "RUC"));
         cbSexo.getItems().addAll(DetalleADO.GetDetailId("0004"));
-        cbPuesto.getItems().addAll(DetalleADO.GetDetailIdName("2", "0012", ""));
+        cbPuesto.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0012", ""));
         cbRol.getItems().addAll(RolADO.RolList());
-        cbEstado.getItems().addAll(DetalleADO.GetDetailIdName("2", "0001", ""));
+        cbEstado.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0001", ""));
         cbEstado.getSelectionModel().select(0);
         idEmpleado = "";
     }
