@@ -138,7 +138,7 @@
                                           <TableColumn fx:id="tcProveedor" prefWidth="190.0" style="-fx-alignment: CENTER-LEFT;" text="Proveedor" />
                                           <TableColumn fx:id="tcOrdenCompra" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Orden de Compra" />
                                           <TableColumn fx:id="tcObservacion" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Observación" />
-                                          <TableColumn fx:id="tcTotal" prefWidth="160.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
+                                          <TableColumn fx:id="tcTotal" prefWidth="100.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
                                        </columns>
                                     </TableView>
                                  </children>

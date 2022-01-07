@@ -42,13 +42,13 @@ public class FxCotizacionListaController implements Initializable {
     @FXML
     private TableColumn<CotizacionTB, String> tcNumero;
     @FXML
-    private TableColumn<CotizacionTB, String> tcVendedor;
+    private TableColumn<CotizacionTB, String> tcFechaRegistro;
+    @FXML
+    private TableColumn<CotizacionTB, String> tcCliente;
     @FXML
     private TableColumn<CotizacionTB, String> tcCotizacion;
     @FXML
-    private TableColumn<CotizacionTB, String> tcFecha;
-    @FXML
-    private TableColumn<CotizacionTB, String> tcCliente;
+    private TableColumn<CotizacionTB, String> tcObservacion;
     @FXML
     private TableColumn<CotizacionTB, String> tcTotal;
     @FXML
@@ -72,11 +72,11 @@ public class FxCotizacionListaController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
-        tcVendedor.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getEmpleadoTB().getApellidos() + "\n" + cellData.getValue().getEmpleadoTB().getNombres()));
-        tcCotizacion.setCellValueFactory(cellData -> Bindings.concat("COTIZACIÓN N° " + cellData.getValue().getIdCotizacion()));
-        tcFecha.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFechaCotizacion() + "\n" + cellData.getValue().getHoraCotizacion()));
-        tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getInformacion()));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+        tcFechaRegistro.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFechaCotizacion() + "\n" + cellData.getValue().getHoraCotizacion()));
+        tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
+        tcCotizacion.setCellValueFactory(cellData -> Bindings.concat("COTIZACIÓN\nN° - " + Tools.formatNumber(cellData.getValue().getIdCotizacion())));
+        tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservaciones()));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         Tools.actualDate(Tools.getDate(), txtFechaInicio);
@@ -102,7 +102,7 @@ public class FxCotizacionListaController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CotizacionADO.ListarCotizacion(opcion, buscar, fechaInicio, fechaFinal, (paginacion - 1) * 10, 10);
+                return CotizacionADO.Listar_Cotizacion(opcion, buscar, fechaInicio, fechaFinal, (paginacion - 1) * 10, 10);
             }
         };
         task.setOnSucceeded(w -> {

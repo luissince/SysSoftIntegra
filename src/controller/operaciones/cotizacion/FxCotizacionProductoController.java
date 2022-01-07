@@ -23,7 +23,7 @@ public class FxCotizacionProductoController implements Initializable {
     @FXML
     private AnchorPane apWindow;
     @FXML
-    private Label lblArticulo;
+    private Label lblProducto;
     @FXML
     private TextField txtCantidad;
     @FXML
@@ -35,17 +35,23 @@ public class FxCotizacionProductoController implements Initializable {
 
     private SuministroTB suministroTB;
 
+    private boolean edit;
+
+    private int index;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         cbUnidadMedida.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0013", ""));
     }
 
-    public void initComponents(SuministroTB suministroTB) {
+    public void initComponents(SuministroTB suministroTB, boolean edit, int index) {
         this.suministroTB = suministroTB;
-        txtCantidad.setText(Tools.roundingValue(1, 2));
+        this.edit = edit;
+        this.index = index;
+        txtCantidad.setText(Tools.roundingValue(suministroTB.getCantidad() <= 0 ? 1 : suministroTB.getCantidad(), 2));
         txtPrecio.setText(Tools.roundingValue(suministroTB.getPrecioVentaGeneral(), 2));
-        lblArticulo.setText(suministroTB.getNombreMarca());
+        lblProducto.setText(suministroTB.getNombreMarca());
     }
 
     private void onEventAceptar() {
@@ -76,7 +82,11 @@ public class FxCotizacionProductoController implements Initializable {
             cotizacionDetalleTB.setBtnRemove(button);
 
             Tools.Dispose(apWindow);
-            cotizacionController.getAddDetalle(cotizacionDetalleTB);
+            if (edit) {
+                cotizacionController.getEditDetalle(index, cotizacionDetalleTB);
+            } else {
+                cotizacionController.getAddDetalle(cotizacionDetalleTB);
+            }
         }
     }
 

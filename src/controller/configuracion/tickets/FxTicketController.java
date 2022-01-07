@@ -474,7 +474,7 @@ public class FxTicketController implements Initializable {
                     Files.write(Paths.get("./archivos/ticketventa.json"), sampleObject.toJSONString().getBytes());
                     TicketTB ticketTB = new TicketTB();
                     ticketTB.setId(idTicket);
-                    ticketTB.setNombreTicket(lblNombre.getText());
+                    ticketTB.setNombreTicket(lblNombre.getText().trim().toUpperCase());
                     ticketTB.setRuta(sampleObject.toJSONString());
                     ticketTB.setTipo(tipoTicket);
                     ticketTB.setPredeterminado(cbPredeterminado.isSelected());
@@ -1037,7 +1037,7 @@ public class FxTicketController implements Initializable {
         }
     }
 
-    private void clearPane() {
+    public void clearPane() {
         idTicket = 0;
         tipoTicket = 0;
         ruta = "";
@@ -1622,6 +1622,32 @@ public class FxTicketController implements Initializable {
         }
     }
 
+    private void onEventClonar() {
+        if(idTicket == 0){
+            Tools.AlertMessageWarning(vbWindow, "Ticket", "No se puede clonar un ticket recien creado.");
+            return;
+        }
+        try {
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_TICKET_CLONAR);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            //Controlller here
+            FxTicketClonarController controller = fXMLLoader.getController();
+            controller.setInitTicketController(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Clonar formato", vbWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShowing(w -> controller.loadComponents(idTicket));
+            stage.show();
+
+        } catch (IOException ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
+    }
+
     @FXML
     private void onKeyPressNuevo(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
@@ -1657,6 +1683,18 @@ public class FxTicketController implements Initializable {
     @FXML
     private void onActionSave(ActionEvent event) {
         saveTicket();
+    }
+
+    @FXML
+    private void onKeyPressedClonar(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            onEventClonar();
+        }
+    }
+
+    @FXML
+    private void onActionClonar(ActionEvent event) {
+        onEventClonar();
     }
 
     @FXML

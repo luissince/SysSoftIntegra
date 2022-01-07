@@ -38,7 +38,7 @@ public class BancoADO {
                 bancoTB.setDescripcion(rsEmps.getString("Descripcion"));
                 bancoTB.setSistema(rsEmps.getBoolean("Sistema"));
                 bancoTB.setFormaPago(rsEmps.getShort("FormaPago"));
-                bancoTB.setMostrar(rsEmps.getBoolean("Mostrar")); 
+                bancoTB.setMostrar(rsEmps.getBoolean("Mostrar"));
                 empList.add(bancoTB);
             }
         } catch (SQLException e) {
@@ -529,6 +529,48 @@ public class BancoADO {
             }
         }
         return cajaValida;
+    }
+
+    public static Object Listar_Banco_Mostrar() {
+        PreparedStatement statementBanco = null;
+        ResultSet resultSet = null;
+        try {
+            DBUtil.dbConnect();
+            statementBanco = DBUtil.getConnection().prepareStatement("SELECT \n"
+                    + "b.NombreCuenta,\n"
+                    + "b.NumeroCuenta,\n"
+                    + "m.Simbolo \n"
+                    + "FROM Banco AS b INNER JOIN MonedaTB AS m ON m.IdMoneda = b.IdMoneda\n"
+                    + "WHERE b.Mostrar = 1");
+            resultSet = statementBanco.executeQuery();
+            ArrayList<BancoTB> bancoTBs = new ArrayList();
+            while (resultSet.next()) {
+                BancoTB bancoTB = new BancoTB();
+                bancoTB.setNombreCuenta(resultSet.getString("NombreCuenta"));
+                bancoTB.setNumeroCuenta(resultSet.getString("NumeroCuenta"));
+
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setSimbolo(resultSet.getString("Simbolo"));
+                bancoTB.setMonedaTB(monedaTB);
+                bancoTBs.add(bancoTB);
+            }
+
+            return bancoTBs;
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementBanco != null) {
+                    statementBanco.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
     }
 
 }

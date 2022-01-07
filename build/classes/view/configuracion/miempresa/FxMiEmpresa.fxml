@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="window" fitToWidth="true" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.configuracion.miempresa.FxMiEmpresaController">
+<ScrollPane fx:id="window" fitToWidth="true" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.configuracion.miempresa.FxMiEmpresaController">
    <content>
       <VBox style="-fx-background-color: white;">
          <children>
@@ -133,8 +133,8 @@
                                                 <Font name="Roboto" size="14.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="txtTerminos" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="240.0" promptText="Ingrese el Email" styleClass="text-field-normal" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                          <TextField fx:id="txtCondiciones" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="240.0" promptText="Ingrese el Email" styleClass="text-field-normal" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                          <TextField fx:id="txtTerminos" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="240.0" promptText="Ingrese sus Terminos" styleClass="text-field-normal" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                          <TextField fx:id="txtCondiciones" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="240.0" promptText="Ingrese sus Condiones" styleClass="text-field-normal" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                        </children>
                                     </GridPane>
                                  </children>

@@ -52,6 +52,7 @@ import model.ClienteADO;
 import model.ClienteTB;
 import model.ComprobanteADO;
 import model.CotizacionADO;
+import model.CotizacionDetalleTB;
 import model.CotizacionTB;
 import model.DetalleADO;
 import model.DetalleTB;
@@ -1027,7 +1028,7 @@ public class FxPostVentaEstructuraController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CotizacionADO.CargarCotizacionVenta(idCotizacion);
+                return CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
             }
         };
         task.setOnSucceeded(w -> {
@@ -1055,10 +1056,12 @@ public class FxPostVentaEstructuraController implements Initializable {
                 txtCorreoElectronico.setText(cotizacionTB.getClienteTB().getEmail());
                 txtDireccionCliente.setText(cotizacionTB.getClienteTB().getDireccion());
 
-                if (!cotizacionTB.getDetalleSuministroTBs().isEmpty()) {
-                    ObservableList<SuministroTB> cotizacionTBs = cotizacionTB.getDetalleSuministroTBs();
-                    for (int i = 0; i < cotizacionTBs.size(); i++) {
-                        SuministroTB suministroTB = cotizacionTBs.get(i);
+                if (!cotizacionTB.getCotizacionDetalleTBs().isEmpty()) {
+                    ObservableList<SuministroTB> suministroTBs = FXCollections.observableArrayList();
+                    for (CotizacionDetalleTB detalleTB : cotizacionTB.getCotizacionDetalleTBs()) {
+                        CotizacionDetalleTB cotizacionDetalleTB = detalleTB;
+
+                        SuministroTB suministroTB = new SuministroTB();
                         suministroTB.getBtnRemove().setOnAction(e -> {
                             tvList.getItems().remove(suministroTB);
                             calculateTotales();
@@ -1070,7 +1073,7 @@ public class FxPostVentaEstructuraController implements Initializable {
                             }
                         });
                     }
-                    tvList.setItems(cotizacionTBs);
+                    tvList.setItems(suministroTBs);
                     calculateTotales();
                 }
                 vbBody.setDisable(false);

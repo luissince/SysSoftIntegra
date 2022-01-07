@@ -199,9 +199,7 @@ public class FxPrincipalController implements Initializable {
             };
 
             task.setOnScheduled(e -> {
-                if (!hbLoadModulos.isVisible()) {
-                    hbLoadModulos.setVisible(true);
-                }
+                
             });
 
             task.setOnFailed(e -> {

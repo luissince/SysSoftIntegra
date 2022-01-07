@@ -1,6 +1,7 @@
 package model;
 
 import controller.tools.ImageViewTicket;
+import controller.tools.Tools;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,189 +12,261 @@ import javafx.scene.layout.HBox;
 public class TicketADO {
 
     public static String CrudTicket(TicketTB ticketTB) {
-        String result = "";
-        DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            CallableStatement callableTicket = null;
-            PreparedStatement statementValidar = null;
-            PreparedStatement statementTicket = null;
-            PreparedStatement statementImagen = null;
-            PreparedStatement statementImagenBorrar = null;
+        CallableStatement callableTicket = null;
+        PreparedStatement statementValidar = null;
+        PreparedStatement statementTicket = null;
+        PreparedStatement statementImagen = null;
+        PreparedStatement statementImagenBorrar = null;
 
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementValidar = DBUtil.getConnection().prepareStatement("SELECT idTicket FROM TicketTB WHERE idTicket = ?");
+        try {
+            DBUtil.dbConnect();
+            DBUtil.getConnection().setAutoCommit(false);
+            statementValidar = DBUtil.getConnection().prepareStatement("SELECT idTicket FROM TicketTB WHERE idTicket = ?");
+            statementValidar.setInt(1, ticketTB.getId());
+            if (statementValidar.executeQuery().next()) {
+                statementValidar = DBUtil.getConnection().prepareStatement("SELECT nombre FROM TicketTB WHERE idTicket <> ? and nombre = ?");
                 statementValidar.setInt(1, ticketTB.getId());
+                statementValidar.setString(2, ticketTB.getNombreTicket());
                 if (statementValidar.executeQuery().next()) {
-                    statementValidar = DBUtil.getConnection().prepareStatement("SELECT nombre FROM TicketTB WHERE idTicket <> ? and nombre = ?");
-                    statementValidar.setInt(1, ticketTB.getId());
-                    statementValidar.setString(2, ticketTB.getNombreTicket());
-                    if (statementValidar.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicate";
-                    } else {
-
-                        statementTicket = DBUtil.getConnection().prepareStatement("UPDATE TicketTB SET nombre = ?,tipo=?,ruta = ? WHERE idTicket = ?");
-                        statementTicket.setString(1, ticketTB.getNombreTicket());
-                        statementTicket.setInt(2, ticketTB.getTipo());
-                        statementTicket.setString(3, ticketTB.getRuta());
-                        statementTicket.setInt(4, ticketTB.getId());
-                        statementTicket.addBatch();
-
-                        statementImagenBorrar = DBUtil.getConnection().prepareStatement("DELETE FROM ImagenTB WHERE IdRelacionado = ?");
-                        statementImagenBorrar.setString(1, ticketTB.getId() + "");
-                        statementImagenBorrar.addBatch();
-
-                        statementImagen = DBUtil.getConnection().prepareStatement("INSERT INTO ImagenTB(Imagen,IdRelacionado,IdSubRelacion)VALUES(?,?,?)");
-
-                        for (int c = 0; c < ticketTB.getApCabecera().getChildren().size(); c++) {
-                            HBox hBox = (HBox) ticketTB.getApCabecera().getChildren().get(c);
-                            if (hBox.getChildren().size() == 1) {
-                                if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
-                                    ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
-                                    statementImagen.setBytes(1, imageViewTicket.getUrl());
-                                    statementImagen.setString(2, ticketTB.getId() + "");
-                                    statementImagen.setString(3, imageViewTicket.getId());
-                                    statementImagen.addBatch();
-                                }
-                            }
-                        }
-
-                        for (int c = 0; c < ticketTB.getApDetalle().getChildren().size(); c++) {
-                            HBox hBox = (HBox) ticketTB.getApDetalle().getChildren().get(c);
-                            if (hBox.getChildren().size() == 1) {
-                                if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
-                                    ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
-                                    statementImagen.setBytes(1, imageViewTicket.getUrl());
-                                    statementImagen.setString(2, ticketTB.getId() + "");
-                                    statementImagen.setString(3, imageViewTicket.getId());
-                                    statementImagen.addBatch();
-                                }
-                            }
-                        }
-
-                        for (int c = 0; c < ticketTB.getApPie().getChildren().size(); c++) {
-                            HBox hBox = (HBox) ticketTB.getApPie().getChildren().get(c);
-                            if (hBox.getChildren().size() == 1) {
-                                if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
-                                    ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
-                                    statementImagen.setBytes(1, imageViewTicket.getUrl());
-                                    statementImagen.setString(2, ticketTB.getId() + "");
-                                    statementImagen.setString(3, imageViewTicket.getId());
-                                    statementImagen.addBatch();
-                                }
-                            }
-                        }
-
-                        statementTicket.executeBatch();
-                        statementImagenBorrar.executeBatch();
-                        statementImagen.executeBatch();
-                        DBUtil.getConnection().commit();
-                        result = "updated";
-                    }
-
-                } else {
-                    statementValidar = DBUtil.getConnection().prepareStatement("SELECT nombre FROM TicketTB WHERE nombre = ?");
-                    statementValidar.setString(1, ticketTB.getNombreTicket());
-                    if (statementValidar.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicate";
-                    } else {
-
-                        callableTicket = DBUtil.getConnection().prepareCall("{? = call Fc_Ticket_Codigo_Numerico()}");
-                        callableTicket.registerOutParameter(1, java.sql.Types.VARCHAR);
-                        callableTicket.execute();
-                        int idTicket = callableTicket.getInt(1);
-
-                        statementTicket = DBUtil.getConnection().prepareStatement("INSERT INTO TicketTB(idTicket,nombre,tipo,predeterminado,ruta)VALUES(?,?,?,?,?)");
-                        statementTicket.setInt(1, idTicket);
-                        statementTicket.setString(2, ticketTB.getNombreTicket());
-                        statementTicket.setInt(3, ticketTB.getTipo());
-                        statementTicket.setBoolean(4, false);
-                        statementTicket.setString(5, ticketTB.getRuta());
-                        statementTicket.addBatch();
-
-                        statementImagen = DBUtil.getConnection().prepareStatement("INSERT INTO ImagenTB(Imagen,IdRelacionado,IdSubRelacion)VALUES(?,?,?)");
-
-                        for (int c = 0; c < ticketTB.getApCabecera().getChildren().size(); c++) {
-                            HBox hBox = (HBox) ticketTB.getApCabecera().getChildren().get(c);
-                            if (hBox.getChildren().size() == 1) {
-                                if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
-                                    ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
-                                    statementImagen.setBytes(1, imageViewTicket.getUrl());
-                                    statementImagen.setString(2, idTicket + "");
-                                    statementImagen.setString(3, imageViewTicket.getId());
-                                    statementImagen.addBatch();
-                                }
-                            }
-                        }
-
-                        for (int c = 0; c < ticketTB.getApDetalle().getChildren().size(); c++) {
-                            HBox hBox = (HBox) ticketTB.getApDetalle().getChildren().get(c);
-                            if (hBox.getChildren().size() == 1) {
-                                if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
-                                    ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
-                                    statementImagen.setBytes(1, imageViewTicket.getUrl());
-                                    statementImagen.setString(2, idTicket + "");
-                                    statementImagen.setString(3, imageViewTicket.getId());
-                                    statementImagen.addBatch();
-                                }
-                            }
-                        }
-
-                        for (int c = 0; c < ticketTB.getApPie().getChildren().size(); c++) {
-                            HBox hBox = (HBox) ticketTB.getApPie().getChildren().get(c);
-                            if (hBox.getChildren().size() == 1) {
-                                if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
-                                    ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
-                                    statementImagen.setBytes(1, imageViewTicket.getUrl());
-                                    statementImagen.setString(2, idTicket + "");
-                                    statementImagen.setString(3, imageViewTicket.getId());
-                                    statementImagen.addBatch();
-                                }
-                            }
-                        }
-
-                        statementTicket.executeBatch();
-                        statementImagen.executeBatch();
-                        DBUtil.getConnection().commit();
-                        result = "registered";
-                    }
-                }
-
-            } catch (SQLException ex) {
-                try {
                     DBUtil.getConnection().rollback();
-                } catch (SQLException exr) {
+                    return "duplicate";
+                } else {
+
+                    statementTicket = DBUtil.getConnection().prepareStatement("UPDATE TicketTB SET nombre = ?,tipo=?,ruta = ? WHERE idTicket = ?");
+                    statementTicket.setString(1, ticketTB.getNombreTicket());
+                    statementTicket.setInt(2, ticketTB.getTipo());
+                    statementTicket.setString(3, ticketTB.getRuta());
+                    statementTicket.setInt(4, ticketTB.getId());
+                    statementTicket.addBatch();
+
+                    statementImagenBorrar = DBUtil.getConnection().prepareStatement("DELETE FROM ImagenTB WHERE IdRelacionado = ?");
+                    statementImagenBorrar.setString(1, ticketTB.getId() + "");
+                    statementImagenBorrar.addBatch();
+
+                    statementImagen = DBUtil.getConnection().prepareStatement("INSERT INTO ImagenTB(Imagen,IdRelacionado,IdSubRelacion)VALUES(?,?,?)");
+
+                    for (int c = 0; c < ticketTB.getApCabecera().getChildren().size(); c++) {
+                        HBox hBox = (HBox) ticketTB.getApCabecera().getChildren().get(c);
+                        if (hBox.getChildren().size() == 1) {
+                            if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
+                                ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
+                                statementImagen.setBytes(1, imageViewTicket.getUrl());
+                                statementImagen.setString(2, ticketTB.getId() + "");
+                                statementImagen.setString(3, imageViewTicket.getId());
+                                statementImagen.addBatch();
+                            }
+                        }
+                    }
+
+                    for (int c = 0; c < ticketTB.getApDetalle().getChildren().size(); c++) {
+                        HBox hBox = (HBox) ticketTB.getApDetalle().getChildren().get(c);
+                        if (hBox.getChildren().size() == 1) {
+                            if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
+                                ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
+                                statementImagen.setBytes(1, imageViewTicket.getUrl());
+                                statementImagen.setString(2, ticketTB.getId() + "");
+                                statementImagen.setString(3, imageViewTicket.getId());
+                                statementImagen.addBatch();
+                            }
+                        }
+                    }
+
+                    for (int c = 0; c < ticketTB.getApPie().getChildren().size(); c++) {
+                        HBox hBox = (HBox) ticketTB.getApPie().getChildren().get(c);
+                        if (hBox.getChildren().size() == 1) {
+                            if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
+                                ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
+                                statementImagen.setBytes(1, imageViewTicket.getUrl());
+                                statementImagen.setString(2, ticketTB.getId() + "");
+                                statementImagen.setString(3, imageViewTicket.getId());
+                                statementImagen.addBatch();
+                            }
+                        }
+                    }
+
+                    statementTicket.executeBatch();
+                    statementImagenBorrar.executeBatch();
+                    statementImagen.executeBatch();
+                    DBUtil.getConnection().commit();
+                    return "updated";
                 }
-                result = ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (callableTicket != null) {
-                        callableTicket.close();
+
+            } else {
+                statementValidar = DBUtil.getConnection().prepareStatement("SELECT nombre FROM TicketTB WHERE nombre = ?");
+                statementValidar.setString(1, ticketTB.getNombreTicket());
+                if (statementValidar.executeQuery().next()) {
+                    DBUtil.getConnection().rollback();
+                    return "duplicate";
+                } else {
+
+                    callableTicket = DBUtil.getConnection().prepareCall("{? = call Fc_Ticket_Codigo_Numerico()}");
+                    callableTicket.registerOutParameter(1, java.sql.Types.VARCHAR);
+                    callableTicket.execute();
+                    int idTicket = callableTicket.getInt(1);
+
+                    statementTicket = DBUtil.getConnection().prepareStatement("INSERT INTO TicketTB(idTicket,nombre,tipo,predeterminado,ruta)VALUES(?,?,?,?,?)");
+                    statementTicket.setInt(1, idTicket);
+                    statementTicket.setString(2, ticketTB.getNombreTicket());
+                    statementTicket.setInt(3, ticketTB.getTipo());
+                    statementTicket.setBoolean(4, false);
+                    statementTicket.setString(5, ticketTB.getRuta());
+                    statementTicket.addBatch();
+
+                    statementImagen = DBUtil.getConnection().prepareStatement("INSERT INTO ImagenTB(Imagen,IdRelacionado,IdSubRelacion)VALUES(?,?,?)");
+
+                    for (int c = 0; c < ticketTB.getApCabecera().getChildren().size(); c++) {
+                        HBox hBox = (HBox) ticketTB.getApCabecera().getChildren().get(c);
+                        if (hBox.getChildren().size() == 1) {
+                            if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
+                                ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
+                                statementImagen.setBytes(1, imageViewTicket.getUrl());
+                                statementImagen.setString(2, idTicket + "");
+                                statementImagen.setString(3, imageViewTicket.getId());
+                                statementImagen.addBatch();
+                            }
+                        }
                     }
-                    if (statementTicket != null) {
-                        statementTicket.close();
+
+                    for (int c = 0; c < ticketTB.getApDetalle().getChildren().size(); c++) {
+                        HBox hBox = (HBox) ticketTB.getApDetalle().getChildren().get(c);
+                        if (hBox.getChildren().size() == 1) {
+                            if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
+                                ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
+                                statementImagen.setBytes(1, imageViewTicket.getUrl());
+                                statementImagen.setString(2, idTicket + "");
+                                statementImagen.setString(3, imageViewTicket.getId());
+                                statementImagen.addBatch();
+                            }
+                        }
                     }
-                    if (statementValidar != null) {
-                        statementValidar.close();
+
+                    for (int c = 0; c < ticketTB.getApPie().getChildren().size(); c++) {
+                        HBox hBox = (HBox) ticketTB.getApPie().getChildren().get(c);
+                        if (hBox.getChildren().size() == 1) {
+                            if (hBox.getChildren().get(0) instanceof ImageViewTicket) {
+                                ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
+                                statementImagen.setBytes(1, imageViewTicket.getUrl());
+                                statementImagen.setString(2, idTicket + "");
+                                statementImagen.setString(3, imageViewTicket.getId());
+                                statementImagen.addBatch();
+                            }
+                        }
                     }
-                    if (statementImagen != null) {
-                        statementImagen.close();
-                    }
-                    if (statementImagenBorrar != null) {
-                        statementImagenBorrar.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
+
+                    statementTicket.executeBatch();
+                    statementImagen.executeBatch();
+                    DBUtil.getConnection().commit();
+                    return "registered";
                 }
             }
 
-        } else {
-            result = "No se puedo conectac al servidor, intente nuevamente.";
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+            } catch (SQLException exr) {
+            }
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (callableTicket != null) {
+                    callableTicket.close();
+                }
+                if (statementTicket != null) {
+                    statementTicket.close();
+                }
+                if (statementValidar != null) {
+                    statementValidar.close();
+                }
+                if (statementImagen != null) {
+                    statementImagen.close();
+                }
+                if (statementImagenBorrar != null) {
+                    statementImagenBorrar.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
         }
-        return result;
+    }
+
+    public static String ClonarTicket(TicketTB ticketTB) {
+        PreparedStatement statementTicket = null;
+        PreparedStatement statementValue = null;
+        PreparedStatement statementImagen = null;
+        CallableStatement callableTicket = null;
+        ResultSet resultSet = null;
+
+        try {
+            DBUtil.dbConnect();
+            DBUtil.getConnection().setAutoCommit(true);
+
+            statementValue = DBUtil.getConnection().prepareStatement("SELECT * FROM TicketTB WHERE idTicket = ?");
+            statementValue.setInt(1, ticketTB.getIdTicket());
+            resultSet = statementValue.executeQuery();
+            if (resultSet.next()) {
+                callableTicket = DBUtil.getConnection().prepareCall("{? = call Fc_Ticket_Codigo_Numerico()}");
+                callableTicket.registerOutParameter(1, java.sql.Types.VARCHAR);
+                callableTicket.execute();
+                int idTicket = callableTicket.getInt(1);
+
+                statementTicket = DBUtil.getConnection().prepareStatement("INSERT INTO TicketTB(idTicket,nombre,tipo,predeterminado,ruta)VALUES(?,?,?,?,?)");
+                statementTicket.setInt(1, idTicket);
+                statementTicket.setString(2, ticketTB.getNombreTicket());
+                statementTicket.setInt(3, ticketTB.getTipo());
+                statementTicket.setBoolean(4, false);
+                statementTicket.setString(5, resultSet.getString("ruta"));
+                statementTicket.addBatch();
+
+                statementValue = DBUtil.getConnection().prepareStatement("SELECT Imagen,IdSubRelacion FROM ImagenTB WHERE IdRelacionado = ?");
+                statementValue.setInt(1, ticketTB.getIdTicket());
+                resultSet = statementValue.executeQuery();
+
+                statementImagen = DBUtil.getConnection().prepareStatement("INSERT INTO ImagenTB(Imagen,IdRelacionado,IdSubRelacion)VALUES(?,?,?)");
+                while (resultSet.next()) {
+                    statementImagen.setBytes(1, resultSet.getBytes("Imagen"));
+                    statementImagen.setString(2, idTicket + "");
+                    statementImagen.setString(3, resultSet.getString("IdSubRelacion"));
+                    statementImagen.addBatch();
+                }
+
+                statementTicket.executeBatch();
+                statementImagen.executeBatch();
+                DBUtil.getConnection().commit();
+                return "inserted";
+            } else {
+                DBUtil.getConnection().rollback();
+                return "No se pudo clonar por problemas del id intente nuevamente.";
+            }
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+                return ex.getLocalizedMessage();
+            } catch (SQLException ex1) {
+                return ex1.getLocalizedMessage();
+            }
+        } finally {
+            try {
+                if (callableTicket != null) {
+                    callableTicket.close();
+                }
+                if (statementTicket != null) {
+                    statementTicket.close();
+                }
+                if (statementValue != null) {
+                    statementValue.close();
+                }
+                if (statementImagen != null) {
+                    statementImagen.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
     }
 
     public static ArrayList<TicketTB> ListTicket(int tipoTicket, boolean todos) {
@@ -306,7 +379,7 @@ public class TicketADO {
         return ticketTB;
     }
 
-    public static String ChangeDefaultState(int idTicket,int tipoTicket) {
+    public static String ChangeDefaultState(int idTicket, int tipoTicket) {
         String result = null;
         DBUtil.dbConnect();
         if (DBUtil.getConnection() != null) {

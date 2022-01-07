@@ -18,7 +18,7 @@ import model.TicketTB;
 public class FxTicketProcesoController implements Initializable {
 
     @FXML
-    private AnchorPane window;
+    private AnchorPane apWindow;
     @FXML
     private TextField txtNombre;
     @FXML
@@ -34,7 +34,7 @@ public class FxTicketProcesoController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
+        Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         cbTpo.getItems().addAll(TicketADO.ListTipoTicket());
         editar = false;
     }
@@ -57,28 +57,28 @@ public class FxTicketProcesoController implements Initializable {
     private void addTicket() {
         if (editar) {
             if (!Tools.isNumericInteger(txtColumnas.getText().trim())) {
-                Tools.AlertMessageWarning(window, "Ticket", "El valor en el campo columna no es un número");
+                Tools.AlertMessageWarning(apWindow, "Ticket", "El valor en el campo columna no es un número");
                 txtColumnas.requestFocus();
             } else if (Short.parseShort(txtColumnas.getText()) <= 0) {
-                Tools.AlertMessageWarning(window, "Ticket", "El valor en el campo columna es menor que 0");
+                Tools.AlertMessageWarning(apWindow, "Ticket", "El valor en el campo columna es menor que 0");
                 txtColumnas.requestFocus();
             } else {
                 ticketController.editarTicket(editar, cbTpo.getSelectionModel().getSelectedItem().getId(), txtNombre.getText().trim(), Short.parseShort(txtColumnas.getText()));
-                Tools.Dispose(window);
+                Tools.Dispose(apWindow);
             }
         } else {
             if (!Tools.isNumericInteger(txtColumnas.getText().trim())) {
-                Tools.AlertMessageWarning(window, "Ticket", "El valor en el campo columna no es un número");
+                Tools.AlertMessageWarning(apWindow, "Ticket", "El valor en el campo columna no es un número");
                 txtColumnas.requestFocus();
             } else if (Short.parseShort(txtColumnas.getText()) <= 0) {
-                Tools.AlertMessageWarning(window, "Ticket", "El valor en el campo columna es menor que 0");
+                Tools.AlertMessageWarning(apWindow, "Ticket", "El valor en el campo columna es menor que 0");
                 txtColumnas.requestFocus();
             } else if (cbTpo.getSelectionModel().getSelectedIndex() < 0) {
-                Tools.AlertMessageWarning(window, "Ticket", "Seleccione el tipo de ticket");
+                Tools.AlertMessageWarning(apWindow, "Ticket", "Seleccione el tipo de ticket");
                 cbTpo.requestFocus();
             } else {
                 ticketController.editarTicket(editar, cbTpo.getSelectionModel().getSelectedItem().getId(), txtNombre.getText().trim(), Short.parseShort(txtColumnas.getText()));
-                Tools.Dispose(window);
+                Tools.Dispose(apWindow);
             }
         }
     }
@@ -98,13 +98,13 @@ public class FxTicketProcesoController implements Initializable {
     @FXML
     private void onKeyPressedCancelar(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            Tools.Dispose(window);
+            Tools.Dispose(apWindow);
         }
     }
 
     @FXML
     private void onActionCancelar(ActionEvent event) {
-        Tools.Dispose(window);
+        Tools.Dispose(apWindow);
     }
 
     @FXML

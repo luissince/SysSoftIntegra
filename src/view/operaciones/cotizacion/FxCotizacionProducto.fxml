@@ -32,7 +32,7 @@
                <children>
                   <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label fx:id="lblArticulo" maxWidth="1.7976931348623157E308" style="-fx-padding: 0.8333333333333334em;" styleClass="labelRobotoBold14" text="Producto" textAlignment="CENTER" textFill="#020203" wrapText="true" />
+                        <Label fx:id="lblProducto" maxWidth="1.7976931348623157E308" style="-fx-padding: 0.8333333333333334em;" styleClass="labelRobotoBold14" text="Producto" textAlignment="CENTER" textFill="#020203" wrapText="true" />
                      </children>
                   </VBox>
                </children>

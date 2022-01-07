@@ -1,5 +1,6 @@
 package model;
 
+import controller.tools.Tools;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -184,6 +185,36 @@ public class EmpresaADO {
             }
         }
         return empresaTB;
+    }
+
+    public static String Terminos_Condiciones() {
+        PreparedStatement statementTerCond = null;
+        ResultSet resultSet = null;
+        try {
+            DBUtil.dbConnect();
+            statementTerCond = DBUtil.getConnection().prepareStatement("SELECT TOP 1 Terminos,Condiciones FROM EmpresaTB");
+            resultSet = statementTerCond.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("Terminos") + "\n" + resultSet.getString("Condiciones");
+            } else {
+                return "-";
+            }
+        } catch (SQLException ex) {
+            Tools.println(ex.getLocalizedMessage());
+            return "--";
+        } finally {
+            try {
+                if (statementTerCond != null) {
+                    statementTerCond.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+
+            }
+        }
     }
 
 }

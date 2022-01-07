@@ -68,11 +68,11 @@ public class FxBancosController implements Initializable {
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcNombreCuenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
-        tcNumeroCuenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
+        tcNumeroCuenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
         tcDescripcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
+        tcForma.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
+        tcMostrar.prefWidthProperty().bind(tvList.widthProperty().multiply(0.11));
         tcSaldo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
-        tcForma.prefWidthProperty().bind(tvList.widthProperty().multiply(0.11));
-        tcMostrar.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
 
     }
 

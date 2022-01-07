@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -32,13 +33,18 @@ import javafx.util.Duration;
 import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import javax.print.PrintService;
+import model.BancoADO;
+import model.BancoTB;
 import model.CotizacionADO;
+import model.CotizacionDetalleTB;
 import model.CotizacionTB;
-import model.SuministroTB;
+import model.EmpresaADO;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class TicketCotizacion {
 
@@ -96,7 +102,7 @@ public class TicketCotizacion {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object object = CotizacionADO.CargarCotizacionById(idCotizacion);
+                Object object = CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
                 if (object instanceof CotizacionTB) {
                     try {
                         CotizacionTB cotizacionTB = (CotizacionTB) object;
@@ -171,7 +177,7 @@ public class TicketCotizacion {
             billPrintable.hbEncebezado(box,
                     "",
                     "COTIZACIÓN",
-                    "N° " + cotizacionTB.getIdCotizacion(),
+                    "N° - " + Tools.formatNumber(cotizacionTB.getIdCotizacion()),
                     cotizacionTB.getClienteTB().getNumeroDocumento(),
                     cotizacionTB.getClienteTB().getInformacion(),
                     cotizacionTB.getClienteTB().getCelular(),
@@ -213,7 +219,7 @@ public class TicketCotizacion {
         }
 
         AnchorPane hbDetalle = new AnchorPane();
-        ObservableList<SuministroTB> arrList = FXCollections.observableArrayList(cotizacionTB.getDetalleSuministroTBs());
+        ObservableList<CotizacionDetalleTB> arrList = FXCollections.observableArrayList(cotizacionTB.getCotizacionDetalleTBs());
         for (int m = 0; m < arrList.size(); m++) {
             for (int i = 0; i < hbDetalleCabecera.getChildren().size(); i++) {
                 HBox hBox = new HBox();
@@ -230,17 +236,19 @@ public class TicketCotizacion {
         double totalImpuesto = 0;
         double totalNeto = 0;
 
-        for (SuministroTB suministroTB : arrList) {
-            double descuento = suministroTB.getDescuento();
-            double precioDescuento = suministroTB.getPrecioVentaGeneral() - descuento;
-            double subPrecio = Tools.calculateTaxBruto(suministroTB.getImpuestoTB().getValor(), precioDescuento);
-            double precioBruto = subPrecio + descuento;
-            totalBruto += precioBruto * suministroTB.getCantidad();
-            totalDescuento += suministroTB.getCantidad() * descuento;
-            totalSubTotal += suministroTB.getCantidad() * subPrecio;
-            double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), subPrecio);
-            totalImpuesto += suministroTB.getCantidad() * impuesto;
-            totalNeto = totalSubTotal + totalImpuesto;
+        for (CotizacionDetalleTB ocdtb : arrList) {
+            double importeBruto = ocdtb.getPrecio() * ocdtb.getCantidad();
+            double descuento = ocdtb.getDescuento();
+            double subImporteBruto = importeBruto - descuento;
+            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+            double importeNeto = subImporteNeto + impuesto;
+
+            totalBruto += importeBruto;
+            totalDescuento += descuento;
+            totalSubTotal += subImporteNeto;
+            totalImpuesto += impuesto;
+            totalNeto += importeNeto;
         }
 
         for (int i = 0; i < hbPie.getChildren().size(); i++) {
@@ -296,7 +304,7 @@ public class TicketCotizacion {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CotizacionADO.CargarCotizacionById(idCotizacion);
+                return CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
             }
         };
         task.setOnScheduled(w -> {
@@ -347,12 +355,53 @@ public class TicketCotizacion {
     }
 
     private void printA4WithDesingCotizacion(CotizacionTB cotizacionTB) throws JRException, IOException {
+        double importeBrutoTotal = 0;
+        double descuentoTotal = 0;
+        double subImporteNetoTotal = 0;
+        double impuestoTotal = 0;
+        double importeNetoTotal = 0;
+        JSONArray array = new JSONArray();
+
+        for (CotizacionDetalleTB ocdtb : cotizacionTB.getCotizacionDetalleTBs()) {
+            JSONObject jsono = new JSONObject();
+            jsono.put("id", ocdtb.getId());
+            jsono.put("cantidad", Tools.roundingValue(ocdtb.getCantidad(), 2));
+            jsono.put("unidad", ocdtb.getSuministroTB().getUnidadCompraName());
+            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n" + ocdtb.getSuministroTB().getNombreMarca());
+            jsono.put("precio", Tools.roundingValue(ocdtb.getPrecio(), 2));
+            jsono.put("descuento", Tools.roundingValue(ocdtb.getDescuento(), 0));
+            jsono.put("importe", Tools.roundingValue(ocdtb.getPrecio() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
+            array.add(jsono);
+
+            double importeBruto = ocdtb.getPrecio() * ocdtb.getCantidad();
+            double descuento = ocdtb.getDescuento();
+            double subImporteBruto = importeBruto - descuento;
+            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+            double importeNeto = subImporteNeto + impuesto;
+
+            importeBrutoTotal += importeBruto;
+            descuentoTotal += descuento;
+            subImporteNetoTotal += subImporteNeto;
+            impuestoTotal += impuesto;
+            importeNetoTotal += importeNeto;
+        }
+
+        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(array.toJSONString().getBytes());
+
         InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
 
         InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
 
         if (Session.COMPANY_IMAGE != null) {
             imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
+        }
+
+        String cuentasBancos = "";
+        Object object = BancoADO.Listar_Banco_Mostrar();
+        if (object instanceof ArrayList) {
+            ArrayList<BancoTB> bancoTBs = (ArrayList<BancoTB>) object;
+            cuentasBancos = bancoTBs.stream().map(bancoTB -> bancoTB.getNombreCuenta() + " " + bancoTB.getMonedaTB().getSimbolo() + " N° " + bancoTB.getNumeroCuenta() + "\n").reduce(cuentasBancos, String::concat);
         }
 
         InputStream dir = getClass().getResourceAsStream("/report/Cotizacion.jasper");
@@ -368,7 +417,7 @@ public class TicketCotizacion {
 
         map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
         map.put("NOMBREDOCUMENTO", "COTIZACIÓN");
-        map.put("NUMERODOCUMENTO", Tools.textShow("N°-", Tools.formatNumber(cotizacionTB.getIdCotizacion())));
+        map.put("NUMERODOCUMENTO", Tools.textShow("N° - ", Tools.formatNumber(cotizacionTB.getIdCotizacion())));
 
         map.put("DATOSCLIENTE", cotizacionTB.getClienteTB().getInformacion());
         map.put("DOCUMENTOCLIENTE", "");
@@ -378,27 +427,28 @@ public class TicketCotizacion {
         map.put("DIRECCIONCLIENTE", cotizacionTB.getClienteTB().getDireccion());
 
         map.put("FECHAEMISION", cotizacionTB.getFechaCotizacion());
-        map.put("MONEDA", cotizacionTB.getMonedaTB().getNombre());
-        map.put("CONDICIONPAGO", "");
-
+        map.put("MONEDA", cotizacionTB.getMonedaTB().getNombre());     
+        
         map.put("SIMBOLO", cotizacionTB.getMonedaTB().getSimbolo());
-        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(cotizacionTB.getImporteNeto(), 2), true, cotizacionTB.getMonedaTB().getNombre()));
+        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, cotizacionTB.getMonedaTB().getNombre()));
 
-        map.put("VALOR_VENTA", Tools.roundingValue(cotizacionTB.getImporteBruto(), 2));
-        map.put("DESCUENTO", Tools.roundingValue(cotizacionTB.getDescuento(), 2));
-        map.put("SUB_IMPORTE", Tools.roundingValue(cotizacionTB.getSubImporteNeto(), 2));
-        map.put("IMPUESTO_TOTAL", Tools.roundingValue(cotizacionTB.getImpuesto(), 2));
-        map.put("IMPORTE_TOTAL", Tools.roundingValue(cotizacionTB.getImporteNeto(), 2));
+        map.put("VALOR_VENTA", Tools.roundingValue(importeBrutoTotal, 2));
+        map.put("DESCUENTO", Tools.roundingValue(descuentoTotal, 2));
+        map.put("SUB_IMPORTE", Tools.roundingValue(subImporteNetoTotal, 2));
+        map.put("IMPUESTO_TOTAL", Tools.roundingValue(impuestoTotal, 2));
+        map.put("IMPORTE_TOTAL", Tools.roundingValue(importeNetoTotal, 2));
         map.put("OBSERVACION", cotizacionTB.getObservaciones());
+        map.put("TERMINOS_CONDICIONES", EmpresaADO.Terminos_Condiciones());
+        map.put("NUMERO_CUENTA", cuentasBancos);
 
-        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(cotizacionTB.getDetalleSuministroTBs()));
+        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
 
         URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
         FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
         Parent parent = fXMLLoader.load(url.openStream());
         //Controlller here
         FxReportViewController controller = fXMLLoader.getController();
-        controller.setFileName("COTIZACION N°-" + Tools.formatNumber(cotizacionTB.getIdCotizacion()));
+        controller.setFileName("COTIZACION N° - " + Tools.formatNumber(cotizacionTB.getIdCotizacion()));
         controller.setJasperPrint(jasperPrint);
         controller.show();
         Stage stage = WindowStage.StageLoader(parent, "Cotización");

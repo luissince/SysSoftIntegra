@@ -4,10 +4,10 @@ import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
 import controller.tools.Tools;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,8 +26,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import model.CotizacionADO;
+import model.CotizacionDetalleTB;
 import model.CotizacionTB;
-import model.SuministroTB;
 
 public class FxCotizacionDetalleController implements Initializable {
 
@@ -38,7 +38,7 @@ public class FxCotizacionDetalleController implements Initializable {
     @FXML
     private Text lblNumero;
     @FXML
-    private Text lblFechaVenta;
+    private Text lblFechaCotizacion;
     @FXML
     private Text lblCliente;
     @FXML
@@ -78,7 +78,7 @@ public class FxCotizacionDetalleController implements Initializable {
 
     private FxOpcionesImprimirController fxOpcionesImprimirController;
 
-    private CotizacionTB cotizacionTB;
+    private String idCotizacion;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -88,6 +88,7 @@ public class FxCotizacionDetalleController implements Initializable {
     }
 
     public void setInitComponents(String idCotizacion) {
+        this.idCotizacion = idCotizacion;
         ExecutorService executor = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -97,7 +98,7 @@ public class FxCotizacionDetalleController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return CotizacionADO.CargarCotizacionById(idCotizacion);
+                return CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
             }
         };
         task.setOnScheduled(e -> {
@@ -117,18 +118,17 @@ public class FxCotizacionDetalleController implements Initializable {
         task.setOnSucceeded(e -> {
             Object object = task.getValue();
             if (object instanceof CotizacionTB) {
-                cotizacionTB = (CotizacionTB) object;
-                lblNumero.setText("N° " + cotizacionTB.getIdCotizacion());
-                lblFechaVenta.setText(cotizacionTB.getFechaCotizacion());
-                lblCliente.setText(cotizacionTB.getClienteTB().getInformacion());
-                lblCelularTelefono.setText("TEL.: " + cotizacionTB.getClienteTB().getTelefono() + " CEL.: " + cotizacionTB.getClienteTB().getCelular());
+                CotizacionTB cotizacionTB = (CotizacionTB) object;
+                lblNumero.setText("N° - " + Tools.formatNumber(cotizacionTB.getIdCotizacion()));
+                lblFechaCotizacion.setText(cotizacionTB.getFechaCotizacion() + " " + cotizacionTB.getHoraCotizacion());
+                lblCliente.setText(cotizacionTB.getClienteTB().getNumeroDocumento() + " " + cotizacionTB.getClienteTB().getInformacion());
+                lblCelularTelefono.setText(Tools.textShow("TEL.: ", cotizacionTB.getClienteTB().getTelefono()) + " " + Tools.textShow(" CEL.: ", cotizacionTB.getClienteTB().getCelular()));
                 lbCorreoElectronico.setText(cotizacionTB.getClienteTB().getEmail());
                 lbDireccion.setText(cotizacionTB.getClienteTB().getDireccion());
                 lblObservaciones.setText(cotizacionTB.getObservaciones());
-                lblVendedor.setText(cotizacionTB.getEmpleadoTB().getApellidos() + " " + cotizacionTB.getEmpleadoTB().getNombres());
+                lblVendedor.setText(cotizacionTB.getEmpleadoTB().getApellidos() + ", " + cotizacionTB.getEmpleadoTB().getNombres());
 
-                ObservableList<SuministroTB> cotizacionTBs = cotizacionTB.getDetalleSuministroTBs();
-                fillVentasDetalleTable(cotizacionTBs, cotizacionTB.getMonedaTB().getSimbolo());
+                fillTableDetalle(cotizacionTB.getCotizacionDetalleTBs(), cotizacionTB.getMonedaTB().getSimbolo());
 
                 spBody.setDisable(false);
                 hbLoad.setVisible(false);
@@ -145,18 +145,18 @@ public class FxCotizacionDetalleController implements Initializable {
         }
     }
 
-    private void fillVentasDetalleTable(ObservableList<SuministroTB> empList, String simbolo) {       
+    private void fillTableDetalle(ArrayList<CotizacionDetalleTB> empList, String simbolo) {
         for (int i = 0; i < empList.size(); i++) {
             gpList.add(addElementGridPane("l1" + (i + 1), empList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
-            gpList.add(addElementGridPane("l2" + (i + 1), empList.get(i).getClave() + "\n" + empList.get(i).getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
+            gpList.add(addElementGridPane("l2" + (i + 1), empList.get(i).getSuministroTB().getClave() + "\n" + empList.get(i).getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
             gpList.add(addElementGridPane("l3" + (i + 1), Tools.roundingValue(empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpList.add(addElementGridPane("l4" + (i + 1), empList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
+            gpList.add(addElementGridPane("l4" + (i + 1), empList.get(i).getSuministroTB().getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
             gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(empList.get(i).getImpuestoTB().getValor(), 2) + "%", Pos.CENTER_RIGHT), 4, (i + 1));
-            gpList.add(addElementGridPane("l6" + (i + 1), simbolo + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
+            gpList.add(addElementGridPane("l6" + (i + 1), simbolo + "" + Tools.roundingValue(empList.get(i).getPrecio(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
             gpList.add(addElementGridPane("l7" + (i + 1), "-" + Tools.roundingValue(empList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPane("l8" + (i + 1), simbolo + "" + Tools.roundingValue(empList.get(i).getImporteNeto(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpList.add(addElementGridPane("l8" + (i + 1), simbolo + "" + Tools.roundingValue(empList.get(i).getCantidad() * (empList.get(i).getPrecio() - empList.get(i).getDescuento()), 2), Pos.CENTER_RIGHT), 7, (i + 1));
         }
-        calculateTotales(simbolo);
+        calculateTotales(empList, simbolo);
     }
 
     private Label addElementGridPane(String id, String nombre, Pos pos) {
@@ -173,12 +173,33 @@ public class FxCotizacionDetalleController implements Initializable {
         return label;
     }
 
-    public void calculateTotales(String simbolo) {
-        lblImporteBruto.setText(Tools.roundingValue(cotizacionTB.getImporteBruto(), 2));
-        lblDescuento.setText(Tools.roundingValue(cotizacionTB.getDescuento(), 2));
-        lblSubImporteNeto.setText(Tools.roundingValue(cotizacionTB.getSubImporteNeto(), 2));
-        lblImpuesto.setText(Tools.roundingValue(cotizacionTB.getImpuesto(), 2));
-        lblImporteNeto.setText(Tools.roundingValue(cotizacionTB.getImporteNeto(), 2));
+    public void calculateTotales(ArrayList<CotizacionDetalleTB> empList, String simbolo) {
+        double importeBrutoTotal = 0;
+        double descuentoTotal = 0;
+        double subImporteNetoTotal = 0;
+        double impuestoTotal = 0;
+        double importeNetoTotal = 0;
+
+        for (CotizacionDetalleTB ocdtb : empList) {
+            double importeBruto = ocdtb.getPrecio() * ocdtb.getCantidad();
+            double descuento = ocdtb.getDescuento();
+            double subImporteBruto = importeBruto - descuento;
+            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+            double importeNeto = subImporteNeto + impuesto;
+
+            importeBrutoTotal += importeBruto;
+            descuentoTotal += descuento;
+            subImporteNetoTotal += subImporteNeto;
+            impuestoTotal += impuesto;
+            importeNetoTotal += importeNeto;
+        }
+
+        lblImporteBruto.setText(simbolo + " " + Tools.roundingValue(importeBrutoTotal, 2));
+        lblDescuento.setText(simbolo + " " + Tools.roundingValue(descuentoTotal, 2));
+        lblSubImporteNeto.setText(simbolo + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+        lblImpuesto.setText(simbolo + " " + Tools.roundingValue(impuestoTotal, 2));
+        lblImporteNeto.setText(simbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
     }
 
     @FXML
@@ -195,25 +216,25 @@ public class FxCotizacionDetalleController implements Initializable {
     @FXML
     private void onKeyPressedReporte(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            fxOpcionesImprimirController.getTicketCotizacion().mostrarReporte(cotizacionTB.getIdCotizacion());
+            fxOpcionesImprimirController.getTicketCotizacion().mostrarReporte(idCotizacion);
         }
     }
 
     @FXML
     private void onActionReporte(ActionEvent event) {
-        fxOpcionesImprimirController.getTicketCotizacion().mostrarReporte(cotizacionTB.getIdCotizacion());
+        fxOpcionesImprimirController.getTicketCotizacion().mostrarReporte(idCotizacion);
     }
 
     @FXML
     private void onKeyPressedTicket(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            fxOpcionesImprimirController.getTicketCotizacion().imprimir(cotizacionTB.getIdCotizacion());
+            fxOpcionesImprimirController.getTicketCotizacion().imprimir(idCotizacion);
         }
     }
 
     @FXML
     private void onActionTicket(ActionEvent event) {
-        fxOpcionesImprimirController.getTicketCotizacion().imprimir(cotizacionTB.getIdCotizacion());
+        fxOpcionesImprimirController.getTicketCotizacion().imprimir(idCotizacion);
     }
 
     @FXML

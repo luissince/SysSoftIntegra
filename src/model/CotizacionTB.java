@@ -1,32 +1,42 @@
 package model;
 
 import java.util.ArrayList;
-import javafx.collections.ObservableList;
 
 public class CotizacionTB {
 
     private int id;
+
     private String idCotizacion;
+
     private String idCliente;
+
     private String idVendedor;
+
     private int idMoneda;
+
     private String fechaCotizacion;
+
     private String horaCotizacion;
+
     private String fechaVencimiento;
+
     private String horaVencimiento;
-    private double importeBruto;
-    private double descuento;
-    private double subImporteNeto;
-    private double impuesto;
-    private double importeNeto;
-    private short estado;
+
+    private int estado;
+
+    private double total;
+
     private String observaciones;
 
     private ClienteTB clienteTB;
+
     private EmpleadoTB empleadoTB;
+
     private MonedaTB monedaTB;
+
+    private EmpresaTB empresaTB;
+
     private ArrayList<CotizacionDetalleTB> cotizacionDetalleTBs;
-    private ObservableList<SuministroTB> detalleSuministroTBs;
 
     public CotizacionTB() {
     }
@@ -101,54 +111,22 @@ public class CotizacionTB {
 
     public void setHoraVencimiento(String horaVencimiento) {
         this.horaVencimiento = horaVencimiento;
-    }   
-
-    public double getImpuesto() {
-        return impuesto;
     }
 
-    public void setImpuesto(double impuesto) {
-        this.impuesto = impuesto;
-    }
-
-    public double getImporteBruto() {
-        return importeBruto;
-    }
-
-    public void setImporteBruto(double importeBruto) {
-        this.importeBruto = importeBruto;
-    }
-
-    public double getDescuento() {
-        return descuento;
-    }
-
-    public void setDescuento(double descuento) {
-        this.descuento = descuento;
-    }
-
-    public double getSubImporteNeto() {
-        return subImporteNeto;
-    }
-
-    public void setSubImporteNeto(double subImporteNeto) {
-        this.subImporteNeto = subImporteNeto;
-    }
-
-    public double getImporteNeto() {
-        return importeNeto;
-    }
-
-    public void setImporteNeto(double importeNeto) {
-        this.importeNeto = importeNeto;
-    }
-
-    public short getEstado() {
+    public int getEstado() {
         return estado;
     }
 
-    public void setEstado(short estado) {
+    public void setEstado(int estado) {
         this.estado = estado;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 
     public String getObservaciones() {
@@ -175,6 +153,14 @@ public class CotizacionTB {
         this.empleadoTB = empleadoTB;
     }
 
+    public EmpresaTB getEmpresaTB() {
+        return empresaTB;
+    }
+
+    public void setEmpresaTB(EmpresaTB empresaTB) {
+        this.empresaTB = empresaTB;
+    }
+
     public MonedaTB getMonedaTB() {
         return monedaTB;
     }
@@ -189,14 +175,6 @@ public class CotizacionTB {
 
     public void setCotizacionDetalleTBs(ArrayList<CotizacionDetalleTB> cotizacionDetalleTBs) {
         this.cotizacionDetalleTBs = cotizacionDetalleTBs;
-    }
-
-    public ObservableList<SuministroTB> getDetalleSuministroTBs() {
-        return detalleSuministroTBs;
-    }
-
-    public void setDetalleSuministroTBs(ObservableList<SuministroTB> detalleSuministroTBs) {
-        this.detalleSuministroTBs = detalleSuministroTBs;
     }
 
 }

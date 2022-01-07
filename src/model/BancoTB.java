@@ -16,6 +16,7 @@ public class BancoTB {
     private boolean asignacion;
     private short formaPago;
     private boolean mostrar;
+    private MonedaTB monedaTB;
 
     public BancoTB() {
     }
@@ -140,6 +141,14 @@ public class BancoTB {
 
     public void setMostrar(boolean mostrar) {
         this.mostrar = mostrar;
+    }
+
+    public MonedaTB getMonedaTB() {
+        return monedaTB;
+    }
+
+    public void setMonedaTB(MonedaTB monedaTB) {
+        this.monedaTB = monedaTB;
     }
     
     

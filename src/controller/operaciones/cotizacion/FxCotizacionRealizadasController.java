@@ -45,13 +45,13 @@ public class FxCotizacionRealizadasController implements Initializable {
     @FXML
     private TableColumn<CotizacionTB, String> tcNumero;
     @FXML
-    private TableColumn<CotizacionTB, String> tcVendedor;
-    @FXML
-    private TableColumn<CotizacionTB, String> tcCotizacion;
-    @FXML
     private TableColumn<CotizacionTB, String> tcFecha;
     @FXML
     private TableColumn<CotizacionTB, String> tcCliente;
+    @FXML
+    private TableColumn<CotizacionTB, String> tcCotizacion;
+    @FXML
+    private TableColumn<CotizacionTB, String> tcObservacion;
     @FXML
     private TableColumn<CotizacionTB, String> tcTotal;
     @FXML
@@ -70,27 +70,27 @@ public class FxCotizacionRealizadasController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
-        tcVendedor.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getEmpleadoTB().getApellidos() + "\n" + cellData.getValue().getEmpleadoTB().getNombres()));
-        tcCotizacion.setCellValueFactory(cellData -> Bindings.concat("COTIZACIÓN N° " + cellData.getValue().getIdCotizacion()));
         tcFecha.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFechaCotizacion() + "\n" + cellData.getValue().getHoraCotizacion()));
-        tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getInformacion()));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+        tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
+        tcCotizacion.setCellValueFactory(cellData -> Bindings.concat("COTIZACIÓN\n N° - " + Tools.formatNumber(cellData.getValue().getIdCotizacion())));
+        tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservaciones()));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
-        tcVendedor.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
-        tcCotizacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
         tcFecha.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
-        tcCliente.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));
+        tcCliente.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcCotizacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
+        tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));
         tcTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         Tools.actualDate(Tools.getDate(), dtFechaInicial);
-        Tools.actualDate(Tools.getDate(), dtFechaFinal);     
+        Tools.actualDate(Tools.getDate(), dtFechaFinal);
+
+        loadInit();
     }
 
     public void loadInit() {
-        txtSearch.selectAll();
-        txtSearch.requestFocus();
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
             if (!lblLoad.isVisible()) {
                 paginacion = 1;
@@ -109,7 +109,7 @@ public class FxCotizacionRealizadasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CotizacionADO.ListarCotizacion(opcion, buscar, fechaInicio, fechaFinal, (paginacion - 1) * 10, 10);
+                return CotizacionADO.Listar_Cotizacion(opcion, buscar, fechaInicio, fechaFinal, (paginacion - 1) * 10, 10);
             }
         };
         task.setOnSucceeded(w -> {

@@ -5,6 +5,7 @@ import javafx.scene.layout.AnchorPane;
 public class TicketTB {
 
     private int id;
+    private int idTicket;
     private String nombreTicket;
     private Object variable;
     private String idVariable;
@@ -36,6 +37,14 @@ public class TicketTB {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdTicket() {
+        return idTicket;
+    }
+
+    public void setIdTicket(int idTicket) {
+        this.idTicket = idTicket;
     }
 
     public String getNombreTicket() {

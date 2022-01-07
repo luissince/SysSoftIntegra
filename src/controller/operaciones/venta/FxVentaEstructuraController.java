@@ -52,6 +52,7 @@ import model.ClienteADO;
 import model.ClienteTB;
 import model.ComprobanteADO;
 import model.CotizacionADO;
+import model.CotizacionDetalleTB;
 import model.CotizacionTB;
 import model.DetalleADO;
 import model.DetalleTB;
@@ -401,7 +402,7 @@ public class FxVentaEstructuraController implements Initializable {
                     tvList.refresh();
                     calculateTotales();
                 } else {
-                    double valor_sin_impuesto = value / ((suministroTB.getImpuestoTB().getValor()/ 100.00) + 1);
+                    double valor_sin_impuesto = value / ((suministroTB.getImpuestoTB().getValor() / 100.00) + 1);
                     double descuento = suministroTB.getDescuento();
                     double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
                     double preciocalculado = valor_sin_impuesto - porcentajeRestante;
@@ -908,7 +909,7 @@ public class FxVentaEstructuraController implements Initializable {
                     double porcentajeRestante = suministroTB.getPrecioVentaGeneralUnico() * (suministroTB.getDescuento() / 100.00);
 
                     suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-                    suministroTB.setImpuestoSumado(suministroTB.getCantidad() * (suministroTB.getPrecioVentaGeneralReal() * (suministroTB.getImpuestoTB().getValor()/ 100.00)));
+                    suministroTB.setImpuestoSumado(suministroTB.getCantidad() * (suministroTB.getPrecioVentaGeneralReal() * (suministroTB.getImpuestoTB().getValor() / 100.00)));
 
                     suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
                     suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
@@ -1024,7 +1025,7 @@ public class FxVentaEstructuraController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CotizacionADO.CargarCotizacionVenta(idCotizacion);
+                return CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
             }
         };
         task.setOnSucceeded(w -> {
@@ -1052,10 +1053,12 @@ public class FxVentaEstructuraController implements Initializable {
                 txtCorreoElectronico.setText(cotizacionTB.getClienteTB().getEmail());
                 txtDireccionCliente.setText(cotizacionTB.getClienteTB().getDireccion());
 
-                if (!cotizacionTB.getDetalleSuministroTBs().isEmpty()) {
-                    ObservableList<SuministroTB> cotizacionTBs = cotizacionTB.getDetalleSuministroTBs();
-                    for (int i = 0; i < cotizacionTBs.size(); i++) {
-                        SuministroTB suministroTB = cotizacionTBs.get(i);
+                if (!cotizacionTB.getCotizacionDetalleTBs().isEmpty()) {
+                    ObservableList<SuministroTB> suministroTBs = FXCollections.observableArrayList();
+                    for (CotizacionDetalleTB detalleTB : cotizacionTB.getCotizacionDetalleTBs()) {
+                        CotizacionDetalleTB cotizacionDetalleTB = detalleTB;
+
+                        SuministroTB suministroTB = new SuministroTB();
                         suministroTB.getBtnRemove().setOnAction(e -> {
                             tvList.getItems().remove(suministroTB);
                             calculateTotales();
@@ -1067,7 +1070,7 @@ public class FxVentaEstructuraController implements Initializable {
                             }
                         });
                     }
-                    tvList.setItems(cotizacionTBs);
+                    tvList.setItems(suministroTBs);
                     calculateTotales();
                 }
                 vbBody.setDisable(false);
@@ -1225,7 +1228,7 @@ public class FxVentaEstructuraController implements Initializable {
                                 double porcentajeRestante = suministroTB.getPrecioVentaGeneralUnico() * (suministroTB.getDescuento() / 100.00);
 
                                 suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-                                suministroTB.setImpuestoSumado(suministroTB.getCantidad() * (suministroTB.getPrecioVentaGeneralReal() * (suministroTB.getImpuestoTB().getValor()/ 100.00)));
+                                suministroTB.setImpuestoSumado(suministroTB.getCantidad() * (suministroTB.getPrecioVentaGeneralReal() * (suministroTB.getImpuestoTB().getValor() / 100.00)));
 
                                 suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
                                 suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());

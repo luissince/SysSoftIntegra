@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="hbWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.cotizacion.FxCotizacionRealizadasController">
+<VBox fx:id="hbWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.cotizacion.FxCotizacionRealizadasController">
    <children>
       <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 2px 0; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
          <children>
@@ -137,11 +137,11 @@
                               <TableView fx:id="tvList" fixedCellSize="-0.0" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="298.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
                                  <columns>
                                     <TableColumn fx:id="tcNumero" prefWidth="60.0" style="-fx-alignment: CENTER;" text="N°" />
-                                    <TableColumn fx:id="tcVendedor" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Vendedor" />
-                                    <TableColumn fx:id="tcCotizacion" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Cotización" />
-                                    <TableColumn fx:id="tcFecha" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha" />
-                                    <TableColumn fx:id="tcCliente" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Cliente" />
-                                    <TableColumn fx:id="tcTotal" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Total" />
+                                    <TableColumn fx:id="tcFecha" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha Registro" />
+                                    <TableColumn fx:id="tcCliente" prefWidth="190.0" style="-fx-alignment: CENTER-LEFT;" text="Cliente" />
+                                    <TableColumn fx:id="tcCotizacion" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Cotización" />
+                                    <TableColumn fx:id="tcObservacion" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Observación" />
+                                    <TableColumn fx:id="tcTotal" prefWidth="100.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
                                  </columns>
                               </TableView>
                            </children>

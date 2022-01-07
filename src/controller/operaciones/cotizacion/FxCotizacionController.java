@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -311,6 +312,41 @@ public class FxCotizacionController implements Initializable {
         }
     }
 
+    private void onEventEditar() {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            try {
+                SuministroTB suministroTB = new SuministroTB();
+                suministroTB.setIdSuministro(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getIdSuministro());
+                suministroTB.setClave(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getClave());
+                suministroTB.setNombreMarca(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getNombreMarca());
+                suministroTB.setUnidadCompraName(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getUnidadCompraName());
+                suministroTB.setIdImpuesto(tvList.getSelectionModel().getSelectedItem().getIdImpuesto());
+                suministroTB.setImpuestoTB(tvList.getSelectionModel().getSelectedItem().getImpuestoTB());
+
+                suministroTB.setCantidad(tvList.getSelectionModel().getSelectedItem().getCantidad());
+                suministroTB.setPrecioVentaGeneral(tvList.getSelectionModel().getSelectedItem().getPrecio());
+
+                fxPrincipalController.openFondoModal();
+                URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_COTIZACION_PRODUCTO);
+                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                Parent parent = fXMLLoader.load(url.openStream());
+                //Controlller here
+                FxCotizacionProductoController controller = fXMLLoader.getController();
+                controller.setInitCotizacionController(this);
+                controller.initComponents(suministroTB, true, tvList.getSelectionModel().getSelectedIndex());
+                //
+                Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
+                stage.setResizable(false);
+                stage.sizeToScene();
+                stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+                stage.setOnShown(w -> controller.getTxtCantidad().requestFocus());
+                stage.show();
+            } catch (IOException ix) {
+                System.out.println("Error Producto Lista Controller:" + ix.getLocalizedMessage());
+            }
+        }
+    }
+
     public void getAddDetalle(CotizacionDetalleTB cotizacionDetalleTB) {
         cotizacionDetalleTB.getBtnRemove().setOnAction(e -> {
             tvList.getItems().remove(cotizacionDetalleTB);
@@ -327,6 +363,24 @@ public class FxCotizacionController implements Initializable {
         tvList.getItems().add(cotizacionDetalleTB);
         int index = tvList.getItems().size() - 1;
         tvList.getSelectionModel().select(index);
+
+        calculateTotales();
+    }
+
+    public void getEditDetalle(int index, CotizacionDetalleTB cotizacionDetalleTB) {
+        cotizacionDetalleTB.getBtnRemove().setOnAction(e -> {
+            tvList.getItems().remove(cotizacionDetalleTB);
+            calculateTotales();
+        });
+
+        cotizacionDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                tvList.getItems().remove(cotizacionDetalleTB);
+                calculateTotales();
+            }
+        });
+
+        tvList.getItems().set(index, cotizacionDetalleTB);
 
         calculateTotales();
     }
@@ -408,7 +462,7 @@ public class FxCotizacionController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CotizacionADO.CargarCotizacionEditar(idCotizacion);
+                return CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
             }
         };
         task.setOnScheduled(w -> {
@@ -453,26 +507,27 @@ public class FxCotizacionController implements Initializable {
                 cbCliente.getItems().add(new ClienteTB(cotizacionTB.getClienteTB().getIdCliente(), cotizacionTB.getClienteTB().getNumeroDocumento(), cotizacionTB.getClienteTB().getInformacion(), cotizacionTB.getClienteTB().getCelular(), cotizacionTB.getClienteTB().getEmail(), cotizacionTB.getClienteTB().getDireccion()));
                 cbCliente.getSelectionModel().select(0);
 
-//                dtFechaEmision.setValue(LocalDate.parse(cotizacionTB.getFechaCotizacion()));
-//                dtFechaVencimiento.setValue(LocalDate.parse(cotizacionTB.getFechaVencimiento()));
+                Tools.actualDate(Tools.getDate(), dtFechaEmision);
+                Tools.actualDate(Tools.getDate(), dtFechaVencimiento);
+
                 lblProceso.setText("Cotización en proceso de actualizar");
                 lblProceso.setTextFill(Color.web("#c52700"));
+                txtObservacion.setText(cotizacionTB.getObservaciones());
 
-                ObservableList<SuministroTB> cotizacionTBs = cotizacionTB.getDetalleSuministroTBs();
-                for (int i = 0; i < cotizacionTBs.size(); i++) {
-                    SuministroTB suministroTB = cotizacionTBs.get(i);
-                    suministroTB.getBtnRemove().setOnAction(e -> {
-                        tvList.getItems().remove(suministroTB);
+                ObservableList<CotizacionDetalleTB> cotizacionDetalleTBs = FXCollections.observableArrayList(cotizacionTB.getCotizacionDetalleTBs());
+                cotizacionDetalleTBs.forEach(cotizacionDetalleTB -> {
+                    cotizacionDetalleTB.getBtnRemove().setOnAction(e -> {
+                        tvList.getItems().remove(cotizacionDetalleTB);
                         calculateTotales();
                     });
-                    suministroTB.getBtnRemove().setOnKeyPressed(e -> {
+                    cotizacionDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
                         if (e.getCode() == KeyCode.ENTER) {
-                            tvList.getItems().remove(suministroTB);
+                            tvList.getItems().remove(cotizacionDetalleTB);
                             calculateTotales();
                         }
                     });
-                }
-//                tvList.setItems(cotizacionTBs);
+                });
+                tvList.setItems(cotizacionDetalleTBs);
 
                 calculateTotales();
                 hbBody.setDisable(false);
@@ -613,12 +668,6 @@ public class FxCotizacionController implements Initializable {
                     exec.shutdown();
                 }
             }
-        }
-    }
-
-    private void onEventEditar() {
-        if(tvList.getSelectionModel().getSelectedIndex()>=0){
-            
         }
     }
 

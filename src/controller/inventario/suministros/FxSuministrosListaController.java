@@ -615,7 +615,7 @@ public class FxSuministrosListaController implements Initializable {
             //Controlller here
             FxCotizacionProductoController controller = fXMLLoader.getController();
             controller.setInitCotizacionController(cotizacionController);
-            controller.initComponents(suministroTB);
+            controller.initComponents(suministroTB,false,0);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
             stage.setResizable(false);
