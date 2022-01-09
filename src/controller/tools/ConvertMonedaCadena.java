@@ -1,4 +1,3 @@
-
 package controller.tools;
 
 import java.util.regex.Matcher;
@@ -99,7 +98,7 @@ public class ConvertMonedaCadena {
         String c = numero.substring(numero.length() - 3);
         //obtiene los miles
         String m = numero.substring(0, numero.length() - 3);
-        String n = "";
+        String n;
         //se comprueba que miles tenga valor entero
         if (Integer.parseInt(m) > 0) {
             n = getCentenas(m);
@@ -115,7 +114,7 @@ public class ConvertMonedaCadena {
         String miles = numero.substring(numero.length() - 6);
         //se obtiene los millones
         String millon = numero.substring(0, numero.length() - 6);
-        String n = "";
+        String n;
         if (millon.length() > 1) {
             n = getCentenas(millon) + "millones ";
         } else {
