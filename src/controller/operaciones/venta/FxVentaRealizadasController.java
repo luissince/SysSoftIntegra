@@ -141,7 +141,7 @@ public class FxVentaRealizadasController implements Initializable {
                 cellData.getValue().getComprobanteName() + "\n"
                 + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()
                 + (cellData.getValue().getNotaCreditoTB() != null ? " (NOTA CREDITO: " + cellData.getValue().getNotaCreditoTB().getSerie() + "-" + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")" : "")));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaName() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
         tcFechaVenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.11));
@@ -151,7 +151,6 @@ public class FxVentaRealizadasController implements Initializable {
         tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
         tcTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
-
     }
 
     public void loadPrivilegios(ObservableList<PrivilegioTB> privilegioTBs) {
@@ -202,7 +201,7 @@ public class FxVentaRealizadasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return VentaADO.ListVentasLibres(opcion, value, fechaInicial, fechaFinal, comprobante, estado, usuario, (paginacion - 1) * 20, 20);
+                return VentaADO.Listar_Ventas_Libres(opcion, value, fechaInicial, fechaFinal, comprobante, estado, usuario, (paginacion - 1) * 20, 20);
             }
         };
         task.setOnSucceeded(w -> {

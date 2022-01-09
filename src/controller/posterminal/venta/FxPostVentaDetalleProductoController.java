@@ -82,12 +82,12 @@ public class FxPostVentaDetalleProductoController implements Initializable {
                     bbItemProducto.getSuministroTB().setPrecioVentaGeneralReal(preciocalculado);
 
                     double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoTB().getValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
-                    bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
+//                    bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
                     bbItemProducto.getSuministroTB().setPrecioVentaGeneral(bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() + impuesto);
 
-                    bbItemProducto.getSuministroTB().setImporteBruto(bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico() * Double.parseDouble(txtCantidad.getText()));
-                    bbItemProducto.getSuministroTB().setSubImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
-                    bbItemProducto.getSuministroTB().setImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneral());
+//                    bbItemProducto.getSuministroTB().setImporteBruto(bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico() * Double.parseDouble(txtCantidad.getText()));
+//                    bbItemProducto.getSuministroTB().setSubImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
+//                    bbItemProducto.getSuministroTB().setImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneral());
 
                     txtPrecio.setText(Tools.roundingValue(bbItemProducto.getSuministroTB().getPrecioVentaGeneral(), 2));
                 }
@@ -113,12 +113,12 @@ public class FxPostVentaDetalleProductoController implements Initializable {
             bbItemProducto.getSuministroTB().setPrecioVentaGeneralReal(preciocalculado);
 
             double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoTB().getValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
-            bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
+//            bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
             bbItemProducto.getSuministroTB().setPrecioVentaGeneral(bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() + impuesto);
 
-            bbItemProducto.getSuministroTB().setImporteBruto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico());
-            bbItemProducto.getSuministroTB().setSubImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
-            bbItemProducto.getSuministroTB().setImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneral());
+//            bbItemProducto.getSuministroTB().setImporteBruto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico());
+//            bbItemProducto.getSuministroTB().setSubImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
+//            bbItemProducto.getSuministroTB().setImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneral());
         }
     }
 
@@ -143,12 +143,12 @@ public class FxPostVentaDetalleProductoController implements Initializable {
             bbItemProducto.getSuministroTB().setPrecioVentaGeneralReal(preciocalculado);
 
             double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoTB().getValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
-            bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
+//            bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
             bbItemProducto.getSuministroTB().setPrecioVentaGeneral(bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() + impuesto);
 
-            bbItemProducto.getSuministroTB().setImporteBruto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico());
-            bbItemProducto.getSuministroTB().setSubImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
-            bbItemProducto.getSuministroTB().setImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneral());
+//            bbItemProducto.getSuministroTB().setImporteBruto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico());
+//            bbItemProducto.getSuministroTB().setSubImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
+//            bbItemProducto.getSuministroTB().setImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneral());
 
         }
     }
@@ -201,12 +201,13 @@ public class FxPostVentaDetalleProductoController implements Initializable {
             bbItemProducto.getSuministroTB().setPrecioVentaGeneralReal(preciocalculado);
 
             double impuesto = Tools.calculateTax(bbItemProducto.getSuministroTB().getImpuestoTB().getValor(), bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
-            bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
+//            bbItemProducto.getSuministroTB().setImpuestoSumado(Double.parseDouble(txtCantidad.getText()) * impuesto);
             bbItemProducto.getSuministroTB().setPrecioVentaGeneral(bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() + impuesto);
 
-            bbItemProducto.getSuministroTB().setImporteBruto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico());
-            bbItemProducto.getSuministroTB().setSubImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
-            bbItemProducto.getSuministroTB().setImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneral());
+//            bbItemProducto.getSuministroTB().setImporteBruto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico());
+//            bbItemProducto.getSuministroTB().setSubImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
+//            bbItemProducto.getSuministroTB().setImporteNeto(Double.parseDouble(txtCantidad.getText()) * bbItemProducto.getSuministroTB().getPrecioVentaGeneral());
+//       
         }
     }
 

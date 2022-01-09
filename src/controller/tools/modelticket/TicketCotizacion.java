@@ -60,6 +60,8 @@ public class TicketCotizacion {
 
     private final AnchorPane hbPie;
 
+    private String fileName;
+
     public TicketCotizacion(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
         this.billPrintable = billPrintable;
@@ -304,9 +306,99 @@ public class TicketCotizacion {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
+                Object object = CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
+                if (object instanceof CotizacionTB) {
+                    try {
+                        CotizacionTB cotizacionTB = (CotizacionTB) object;
+
+                        double importeBrutoTotal = 0;
+                        double descuentoTotal = 0;
+                        double subImporteNetoTotal = 0;
+                        double impuestoTotal = 0;
+                        double importeNetoTotal = 0;
+                        JSONArray array = new JSONArray();
+
+                        for (CotizacionDetalleTB ocdtb : cotizacionTB.getCotizacionDetalleTBs()) {
+                            JSONObject jsono = new JSONObject();
+                            jsono.put("id", ocdtb.getId());
+                            jsono.put("cantidad", Tools.roundingValue(ocdtb.getCantidad(), 2));
+                            jsono.put("unidad", ocdtb.getSuministroTB().getUnidadCompraName());
+                            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n" + ocdtb.getSuministroTB().getNombreMarca());
+                            jsono.put("precio", Tools.roundingValue(ocdtb.getPrecio(), 2));
+                            jsono.put("descuento", Tools.roundingValue(ocdtb.getDescuento(), 0));
+                            jsono.put("importe", Tools.roundingValue(ocdtb.getPrecio() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
+                            array.add(jsono);
+
+                            double importeBruto = ocdtb.getPrecio() * ocdtb.getCantidad();
+                            double descuento = ocdtb.getDescuento();
+                            double subImporteBruto = importeBruto - descuento;
+                            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+                            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+                            double importeNeto = subImporteNeto + impuesto;
+
+                            importeBrutoTotal += importeBruto;
+                            descuentoTotal += descuento;
+                            subImporteNetoTotal += subImporteNeto;
+                            impuestoTotal += impuesto;
+                            importeNetoTotal += importeNeto;
+                        }
+                        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(array.toJSONString().getBytes());
+
+                        InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+                        InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+                        if (Session.COMPANY_IMAGE != null) {
+                            imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
+                        }
+                        InputStream dir = getClass().getResourceAsStream("/report/Cotizacion.jasper");
+
+                        Map map = new HashMap();
+                        map.put("LOGO", imgInputStream);
+                        map.put("ICON", imgInputStreamIcon);
+                        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
+                        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
+                        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
+                        map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL));
+                        map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
+
+                        map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
+                        map.put("NOMBREDOCUMENTO", "COTIZACIÓN");
+                        map.put("NUMERODOCUMENTO", Tools.textShow("N° - ", Tools.formatNumber(cotizacionTB.getIdCotizacion())));
+
+                        map.put("DATOSCLIENTE", cotizacionTB.getClienteTB().getInformacion());
+                        map.put("DOCUMENTOCLIENTE", "");
+                        map.put("NUMERODOCUMENTOCLIENTE", cotizacionTB.getClienteTB().getNumeroDocumento());
+                        map.put("CELULARCLIENTE", cotizacionTB.getClienteTB().getCelular());
+                        map.put("EMAILCLIENTE", cotizacionTB.getClienteTB().getEmail());
+                        map.put("DIRECCIONCLIENTE", cotizacionTB.getClienteTB().getDireccion());
+
+                        map.put("FECHAEMISION", cotizacionTB.getFechaCotizacion());
+                        map.put("MONEDA", cotizacionTB.getMonedaTB().getNombre());
+
+                        map.put("SIMBOLO", cotizacionTB.getMonedaTB().getSimbolo());
+                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, cotizacionTB.getMonedaTB().getNombre()));
+
+                        map.put("VALOR_VENTA", Tools.roundingValue(importeBrutoTotal, 2));
+                        map.put("DESCUENTO", Tools.roundingValue(descuentoTotal, 2));
+                        map.put("SUB_IMPORTE", Tools.roundingValue(subImporteNetoTotal, 2));
+                        map.put("IMPUESTO_TOTAL", Tools.roundingValue(impuestoTotal, 2));
+                        map.put("IMPORTE_TOTAL", Tools.roundingValue(importeNetoTotal, 2));
+                        map.put("OBSERVACION", cotizacionTB.getObservaciones());
+                        map.put("TERMINOS_CONDICIONES", EmpresaADO.Terminos_Condiciones());
+                        map.put("NUMERO_CUENTA", BancoADO.Listar_Banco_Mostrar());
+
+                        fileName = "COTIZACIÓN N° - " + Tools.formatNumber(cotizacionTB.getIdCotizacion());
+
+                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
+                        return jasperPrint;
+                    } catch (JRException ex) {
+                        return ex.getLocalizedMessage();
+                    }
+                } else {
+                    return (String) object;
+                }
             }
         };
+
         task.setOnScheduled(w -> {
             Tools.showAlertNotification("/view/image/information_large.png",
                     "Generando reporte",
@@ -314,6 +406,7 @@ public class TicketCotizacion {
                     Duration.seconds(5),
                     Pos.BOTTOM_RIGHT);
         });
+
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Generando reporte",
@@ -321,17 +414,29 @@ public class TicketCotizacion {
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
+
         task.setOnSucceeded(w -> {
             try {
                 Object object = task.getValue();
-                if (object instanceof CotizacionTB) {
-                    CotizacionTB cotizacionTB = (CotizacionTB) object;
-                    printA4WithDesingCotizacion(cotizacionTB);
+                if (object instanceof JasperPrint) {
                     Tools.showAlertNotification("/view/image/succes_large.png",
                             "Generando reporte",
                             Tools.newLineString("Se genero correctamente el reporte."),
                             Duration.seconds(5),
                             Pos.BOTTOM_RIGHT);
+
+                    URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
+                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                    Parent parent = fXMLLoader.load(url.openStream());
+                    //Controlller here
+                    FxReportViewController controller = fXMLLoader.getController();
+                    controller.setFileName(fileName);
+                    controller.setJasperPrint((JasperPrint) object);
+                    controller.show();
+                    Stage stage = WindowStage.StageLoader(parent, fileName);
+                    stage.setResizable(true);
+                    stage.show();
+                    stage.requestFocus();
 
                 } else {
                     Tools.showAlertNotification("/view/image/error_large.png",
@@ -340,121 +445,20 @@ public class TicketCotizacion {
                             Duration.seconds(10),
                             Pos.BOTTOM_RIGHT);
                 }
-            } catch (IOException | JRException ex) {
+            } catch (IOException ex) {
                 Tools.showAlertNotification("/view/image/error_large.png",
                         "Generando reporte",
-                        Tools.newLineString("Error en mostrar el contenido: " + ex.getLocalizedMessage()),
+                        Tools.newLineString(ex.getLocalizedMessage()),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             }
         });
+
         exec.execute(task);
+
         if (!exec.isShutdown()) {
             exec.shutdown();
         }
-    }
-
-    private void printA4WithDesingCotizacion(CotizacionTB cotizacionTB) throws JRException, IOException {
-        double importeBrutoTotal = 0;
-        double descuentoTotal = 0;
-        double subImporteNetoTotal = 0;
-        double impuestoTotal = 0;
-        double importeNetoTotal = 0;
-        JSONArray array = new JSONArray();
-
-        for (CotizacionDetalleTB ocdtb : cotizacionTB.getCotizacionDetalleTBs()) {
-            JSONObject jsono = new JSONObject();
-            jsono.put("id", ocdtb.getId());
-            jsono.put("cantidad", Tools.roundingValue(ocdtb.getCantidad(), 2));
-            jsono.put("unidad", ocdtb.getSuministroTB().getUnidadCompraName());
-            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n" + ocdtb.getSuministroTB().getNombreMarca());
-            jsono.put("precio", Tools.roundingValue(ocdtb.getPrecio(), 2));
-            jsono.put("descuento", Tools.roundingValue(ocdtb.getDescuento(), 0));
-            jsono.put("importe", Tools.roundingValue(ocdtb.getPrecio() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
-            array.add(jsono);
-
-            double importeBruto = ocdtb.getPrecio() * ocdtb.getCantidad();
-            double descuento = ocdtb.getDescuento();
-            double subImporteBruto = importeBruto - descuento;
-            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
-            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
-            double importeNeto = subImporteNeto + impuesto;
-
-            importeBrutoTotal += importeBruto;
-            descuentoTotal += descuento;
-            subImporteNetoTotal += subImporteNeto;
-            impuestoTotal += impuesto;
-            importeNetoTotal += importeNeto;
-        }
-
-        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(array.toJSONString().getBytes());
-
-        InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-
-        InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-
-        if (Session.COMPANY_IMAGE != null) {
-            imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
-        }
-
-        String cuentasBancos = "";
-        Object object = BancoADO.Listar_Banco_Mostrar();
-        if (object instanceof ArrayList) {
-            ArrayList<BancoTB> bancoTBs = (ArrayList<BancoTB>) object;
-            cuentasBancos = bancoTBs.stream().map(bancoTB -> bancoTB.getNombreCuenta() + " " + bancoTB.getMonedaTB().getSimbolo() + " N° " + bancoTB.getNumeroCuenta() + "\n").reduce(cuentasBancos, String::concat);
-        }
-
-        InputStream dir = getClass().getResourceAsStream("/report/Cotizacion.jasper");
-
-        Map map = new HashMap();
-        map.put("LOGO", imgInputStream);
-        map.put("ICON", imgInputStreamIcon);
-        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
-        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
-        map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
-        map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
-
-        map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
-        map.put("NOMBREDOCUMENTO", "COTIZACIÓN");
-        map.put("NUMERODOCUMENTO", Tools.textShow("N° - ", Tools.formatNumber(cotizacionTB.getIdCotizacion())));
-
-        map.put("DATOSCLIENTE", cotizacionTB.getClienteTB().getInformacion());
-        map.put("DOCUMENTOCLIENTE", "");
-        map.put("NUMERODOCUMENTOCLIENTE", cotizacionTB.getClienteTB().getNumeroDocumento());
-        map.put("CELULARCLIENTE", cotizacionTB.getClienteTB().getCelular());
-        map.put("EMAILCLIENTE", cotizacionTB.getClienteTB().getEmail());
-        map.put("DIRECCIONCLIENTE", cotizacionTB.getClienteTB().getDireccion());
-
-        map.put("FECHAEMISION", cotizacionTB.getFechaCotizacion());
-        map.put("MONEDA", cotizacionTB.getMonedaTB().getNombre());     
-        
-        map.put("SIMBOLO", cotizacionTB.getMonedaTB().getSimbolo());
-        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, cotizacionTB.getMonedaTB().getNombre()));
-
-        map.put("VALOR_VENTA", Tools.roundingValue(importeBrutoTotal, 2));
-        map.put("DESCUENTO", Tools.roundingValue(descuentoTotal, 2));
-        map.put("SUB_IMPORTE", Tools.roundingValue(subImporteNetoTotal, 2));
-        map.put("IMPUESTO_TOTAL", Tools.roundingValue(impuestoTotal, 2));
-        map.put("IMPORTE_TOTAL", Tools.roundingValue(importeNetoTotal, 2));
-        map.put("OBSERVACION", cotizacionTB.getObservaciones());
-        map.put("TERMINOS_CONDICIONES", EmpresaADO.Terminos_Condiciones());
-        map.put("NUMERO_CUENTA", cuentasBancos);
-
-        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
-
-        URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
-        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-        Parent parent = fXMLLoader.load(url.openStream());
-        //Controlller here
-        FxReportViewController controller = fXMLLoader.getController();
-        controller.setFileName("COTIZACION N° - " + Tools.formatNumber(cotizacionTB.getIdCotizacion()));
-        controller.setJasperPrint(jasperPrint);
-        controller.show();
-        Stage stage = WindowStage.StageLoader(parent, "Cotización");
-        stage.setResizable(true);
-        stage.show();
-        stage.requestFocus();
     }
 
 }

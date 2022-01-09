@@ -52,6 +52,12 @@ public class FxCotizacionProductoController implements Initializable {
         txtCantidad.setText(Tools.roundingValue(suministroTB.getCantidad() <= 0 ? 1 : suministroTB.getCantidad(), 2));
         txtPrecio.setText(Tools.roundingValue(suministroTB.getPrecioVentaGeneral(), 2));
         lblProducto.setText(suministroTB.getNombreMarca());
+        for (DetalleTB dtb : cbUnidadMedida.getItems()) {
+            if (dtb.getIdDetalle() == suministroTB.getUnidadCompra()) {
+                cbUnidadMedida.getSelectionModel().select(dtb);
+                break;
+            }
+        }
     }
 
     private void onEventAceptar() {
@@ -61,6 +67,9 @@ public class FxCotizacionProductoController implements Initializable {
         } else if (!Tools.isNumeric(txtPrecio.getText().trim())) {
             Tools.AlertMessageWarning(apWindow, "Cotización", "Ingrese el precio.");
             txtPrecio.requestFocus();
+        } else if (cbUnidadMedida.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(apWindow, "Cotización", "Seleccione su unidad de medida.");
+            cbUnidadMedida.requestFocus();
         } else {
             CotizacionDetalleTB cotizacionDetalleTB = new CotizacionDetalleTB();
             cotizacionDetalleTB.setIdSuministro(suministroTB.getIdSuministro());
@@ -74,8 +83,9 @@ public class FxCotizacionProductoController implements Initializable {
             SuministroTB newSuministroTB = new SuministroTB();
             newSuministroTB.setClave(suministroTB.getClave());
             newSuministroTB.setNombreMarca(suministroTB.getNombreMarca());
-            newSuministroTB.setUnidadCompraName(suministroTB.getUnidadCompraName());
-            cotizacionDetalleTB.setSuministroTB(suministroTB);
+            newSuministroTB.setUnidadCompra(cbUnidadMedida.getSelectionModel().getSelectedItem().getIdDetalle());
+            newSuministroTB.setUnidadCompraName(cbUnidadMedida.getSelectionModel().getSelectedItem().getNombre());
+            cotizacionDetalleTB.setSuministroTB(newSuministroTB);
 
             Button button = new Button("X");
             button.getStyleClass().add("buttonDark");

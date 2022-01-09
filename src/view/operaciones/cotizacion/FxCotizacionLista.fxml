@@ -70,7 +70,7 @@
                         </VBox>
                         <VBox style="-fx-spacing: 0.5em;">
                            <children>
-                              <Label styleClass="labelRoboto13" text="Fecha Inicio" textFill="#020203">
+                              <Label styleClass="labelRoboto13" text="Fecha Inicio" textFill="#020302">
                                  <graphic>
                                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -90,7 +90,8 @@
                                           <Image url="@../../image/calendar.png" />
                                        </image>
                                     </ImageView>
-                                 </graphic></Label>
+                                 </graphic>
+                              </Label>
                               <DatePicker fx:id="txtFechaFinal" editable="false" onAction="#onActionFechaFinal" prefHeight="30.0" prefWidth="200.0" />
                            </children>
                         </VBox>
@@ -101,10 +102,11 @@
                         <TableView fx:id="tvList" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="320.0" prefWidth="870.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
                           <columns>
                             <TableColumn fx:id="tcNumero" prefWidth="60.0" style="-fx-alignment: center;" text="N°" />
-                              <TableColumn fx:id="tcFechaRegistro" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha Registro" />
-                              <TableColumn fx:id="tcCliente" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Cliente" />
-                              <TableColumn fx:id="tcCotizacion" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Cotización" />
-                              <TableColumn fx:id="tcObservacion" prefWidth="200.0" style="-fx-alignment: CENTER-LEFT;" text="Observación" />
+                              <TableColumn fx:id="tcFechaRegistro" prefWidth="110.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha Registro" />
+                              <TableColumn fx:id="tcCliente" prefWidth="140.0" style="-fx-alignment: CENTER-LEFT;" text="Cliente" />
+                              <TableColumn fx:id="tcCotizacion" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Cotización" />
+                              <TableColumn fx:id="tcObservacion" prefWidth="170.0" style="-fx-alignment: CENTER-LEFT;" text="Observación" />
+                              <TableColumn fx:id="tcEstado" prefWidth="130.0" style="-fx-alignment: CENTER;" text="Estado" />
                               <TableColumn fx:id="tcTotal" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Total" />
                           </columns>
                         </TableView>

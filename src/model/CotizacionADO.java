@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 public class CotizacionADO {
 
@@ -64,8 +65,9 @@ public class CotizacionADO {
                             + ",Cantidad"
                             + ",Precio"
                             + ",Descuento"
-                            + ",IdImpuesto)"
-                            + "VALUES(?,?,?,?,?,?)");
+                            + ",IdImpuesto"
+                            + ",IdMedida)"
+                            + "VALUES(?,?,?,?,?,?,?)");
 
                     for (CotizacionDetalleTB detalleCotizacionTB : cotizacionTB.getCotizacionDetalleTBs()) {
                         statementDetalleCotizacion.setString(1, cotizacionTB.getIdCotizacion());
@@ -74,6 +76,7 @@ public class CotizacionADO {
                         statementDetalleCotizacion.setDouble(4, detalleCotizacionTB.getPrecio());
                         statementDetalleCotizacion.setDouble(5, detalleCotizacionTB.getDescuento());
                         statementDetalleCotizacion.setInt(6, detalleCotizacionTB.getIdImpuesto());
+                        statementDetalleCotizacion.setInt(7, detalleCotizacionTB.getSuministroTB().getUnidadCompra());
                         statementDetalleCotizacion.addBatch();
                     }
 
@@ -120,8 +123,9 @@ public class CotizacionADO {
                             + ",Cantidad"
                             + ",Precio"
                             + ",Descuento"
-                            + ",IdImpuesto)"
-                            + "VALUES(?,?,?,?,?,?)");
+                            + ",IdImpuesto"
+                            + ",IdMedida)"
+                            + "VALUES(?,?,?,?,?,?,?)");
 
                     for (CotizacionDetalleTB detalleCotizacionTB : cotizacionTB.getCotizacionDetalleTBs()) {
                         statementDetalleCotizacion.setString(1, idCotizacion);
@@ -130,6 +134,7 @@ public class CotizacionADO {
                         statementDetalleCotizacion.setDouble(4, detalleCotizacionTB.getPrecio());
                         statementDetalleCotizacion.setDouble(5, detalleCotizacionTB.getDescuento());
                         statementDetalleCotizacion.setInt(6, detalleCotizacionTB.getIdImpuesto());
+                        statementDetalleCotizacion.setInt(7, detalleCotizacionTB.getSuministroTB().getUnidadCompra());
                         statementDetalleCotizacion.addBatch();
                     }
 
@@ -200,6 +205,11 @@ public class CotizacionADO {
                 cotizacionTB.setHoraCotizacion(result.getTime("HoraCotizacion").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 cotizacionTB.setObservaciones(result.getString("Observaciones"));
                 cotizacionTB.setEstado(result.getInt("Estado"));
+
+                Label lblEstado = new Label(cotizacionTB.getEstado() == 1 ? "SIN USO" : "ASIGNADO A UNA FACTURA");
+                lblEstado.getStyleClass().add("labelRoboto13");
+                lblEstado.setStyle(cotizacionTB.getEstado() == 1 ? "-fx-text-fill:#020203;" : "-fx-text-fill:#0a6f25;");
+                cotizacionTB.setLblEstado(lblEstado);
 
                 EmpleadoTB empleadoTB = new EmpleadoTB();
                 empleadoTB.setApellidos(result.getString("Apellidos"));
@@ -305,6 +315,7 @@ public class CotizacionADO {
                     suministroTB.setIdSuministro(result.getString("IdSuministro"));
                     suministroTB.setClave(result.getString("Clave"));
                     suministroTB.setNombreMarca(result.getString("NombreMarca"));
+                    suministroTB.setUnidadCompra(result.getInt("IdMedida"));
                     suministroTB.setUnidadCompraName(result.getString("UnidadCompraName"));
                     cotizacionDetalleTB.setSuministroTB(suministroTB);
 

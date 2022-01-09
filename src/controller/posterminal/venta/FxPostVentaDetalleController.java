@@ -133,7 +133,7 @@ public class FxPostVentaDetalleController implements Initializable {
                 ImpuestoADO.GetTipoImpuestoCombBox().forEach(e -> {
                     arrayImpuestos.add(new ImpuestoTB(e.getIdImpuesto(), e.getNombreOperacion(), e.getNombre(), e.getValor(), e.isPredeterminado()));
                 });
-                return VentaADO.ListCompletaVentasDetalle(idVenta);
+                return VentaADO.Obtener_Venta_ById(idVenta);
             }
         };
 
@@ -378,7 +378,7 @@ public class FxPostVentaDetalleController implements Initializable {
                 //Controlller here
                 FxReportViewController controller = fXMLLoader.getController();
                 controller.setFileName(ventaTB.getComprobanteName().toUpperCase() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-                controller.setJasperPrint(fxOpcionesImprimirController.getTicketVenta().reportA4(ventaTB, ventaTB.getSuministroTBs()));
+                controller.setJasperPrint(fxOpcionesImprimirController.getTicketVenta().reportA4());
                 controller.show();
                 Stage stage = WindowStage.StageLoader(parent, "Venta realizada");
                 stage.setResizable(true);

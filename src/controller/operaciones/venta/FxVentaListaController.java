@@ -61,7 +61,7 @@ public class FxVentaListaController implements Initializable {
     private FxGuiaRemisionController guiaRemisionController;
 
     private FxNotaCreditoController notaCreditoController;
-        
+
     private FxTrasladoGuiaController trasladoGuiaController;
 
     private int paginacion;
@@ -79,7 +79,7 @@ public class FxVentaListaController implements Initializable {
         tcComprobante.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getComprobanteName() + "\n" + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()));
         tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaName() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         Tools.actualDate(Tools.getDate(), txtFechaInicio);
@@ -106,7 +106,7 @@ public class FxVentaListaController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return VentaADO.ListVentasAll(opcion, value, fechaInicial, fechaFinal, estado,(paginacion - 1) * 20, 20);
+                return VentaADO.ListVentasAll(opcion, value, fechaInicial, fechaFinal, estado, (paginacion - 1) * 20, 20);
             }
         };
         task.setOnSucceeded(w -> {
@@ -148,7 +148,7 @@ public class FxVentaListaController implements Initializable {
     }
 
     private void onEventPaginacion() {
-        switch (opcion) {      
+        switch (opcion) {
             case 1:
                 fillVentasTable(1, "", Tools.getDatePicker(txtFechaInicio), Tools.getDatePicker(txtFechaFinal), 0);
                 break;
@@ -361,8 +361,8 @@ public class FxVentaListaController implements Initializable {
     public void setInitNotaCreditoController(FxNotaCreditoController notaCreditoController) {
         this.notaCreditoController = notaCreditoController;
     }
-    
-    public void setInitTrasladoGuia(FxTrasladoGuiaController trasladoGuiaController){
+
+    public void setInitTrasladoGuia(FxTrasladoGuiaController trasladoGuiaController) {
         this.trasladoGuiaController = trasladoGuiaController;
     }
 

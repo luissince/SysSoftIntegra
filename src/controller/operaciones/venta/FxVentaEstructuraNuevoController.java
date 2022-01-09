@@ -243,7 +243,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return SuministroADO.ListSuministrosListaView(tipo, value, (paginacion - 1) * 20, 20);
+                return SuministroADO.Listar_Suministros_Lista_View(tipo, value, (paginacion - 1) * 20, 20);
             }
         };
 
@@ -412,13 +412,13 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         suministroTB.setImpuestoTB(a.getImpuestoTB());
 
         double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-        suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
+//        suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
         suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
         suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
 
-        suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-        suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-        suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
+//        suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
+//        suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
+//        suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
 
         suministroTB.setInventario(a.isInventario());
         suministroTB.setUnidadVenta(a.getUnidadVenta());
@@ -436,11 +436,12 @@ public class FxVentaEstructuraNuevoController implements Initializable {
                     double porcentajeRestante = bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico() * (bbItemProducto.getSuministroTB().getDescuento() / 100.00);
 
                     bbItemProducto.getSuministroTB().setDescuentoSumado(porcentajeRestante * bbItemProducto.getSuministroTB().getCantidad());
-                    bbItemProducto.getSuministroTB().setImpuestoSumado(bbItemProducto.getSuministroTB().getCantidad() * (bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() * (bbItemProducto.getSuministroTB().getImpuestoTB().getValor() / 100.00)));
+//                    bbItemProducto.getSuministroTB().setImpuestoSumado(bbItemProducto.getSuministroTB().getCantidad() * (bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal() * (bbItemProducto.getSuministroTB().getImpuestoTB().getValor() / 100.00)));
 
-                    bbItemProducto.getSuministroTB().setImporteBruto(bbItemProducto.getSuministroTB().getCantidad() * bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico());
-                    bbItemProducto.getSuministroTB().setSubImporteNeto(bbItemProducto.getSuministroTB().getCantidad() * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
-                    bbItemProducto.getSuministroTB().setImporteNeto(bbItemProducto.getSuministroTB().getCantidad() * bbItemProducto.getSuministroTB().getPrecioVentaGeneral());
+//                    bbItemProducto.getSuministroTB().setImporteBruto(bbItemProducto.getSuministroTB().getCantidad() * bbItemProducto.getSuministroTB().getPrecioVentaGeneralUnico());
+//                    bbItemProducto.getSuministroTB().setSubImporteNeto(bbItemProducto.getSuministroTB().getCantidad() * bbItemProducto.getSuministroTB().getPrecioVentaGeneralReal());
+//                    bbItemProducto.getSuministroTB().setImporteNeto(bbItemProducto.getSuministroTB().getCantidad() * bbItemProducto.getSuministroTB().getPrecioVentaGeneral());
+//                   
                     bbItemProducto.getChildren().clear();
                     bbItemProducto.addElementListView();
 
@@ -512,15 +513,15 @@ public class FxVentaEstructuraNuevoController implements Initializable {
 
     public void calculateTotales() {
         importeBruto = 0;
-        lvProductoAgregados.getItems().forEach(e -> importeBruto += e.getSuministroTB().getImporteBruto());
+//        lvProductoAgregados.getItems().forEach(e -> importeBruto += e.getSuministroTB().getImporteBruto());
 //        lblValorVenta.setText(monedaSimbolo + " " + Tools.roundingValue(subTotal, 2));
 
         descuentoBruto = 0;
-        lvProductoAgregados.getItems().forEach(e -> descuentoBruto += e.getSuministroTB().getDescuentoSumado());
+//        lvProductoAgregados.getItems().forEach(e -> descuentoBruto += e.getSuministroTB().getDescuentoSumado());
 //        lblDescuento.setText(monedaSimbolo + " " + (Tools.roundingValue(descuento * (-1), 2)));
 
         subImporteNeto = 0;
-        lvProductoAgregados.getItems().forEach(e -> subImporteNeto += e.getSuministroTB().getSubImporteNeto());
+//        lvProductoAgregados.getItems().forEach(e -> subImporteNeto += e.getSuministroTB().getSubImporteNeto());
 //        lblSubImporte.setText(monedaSimbolo + " " + Tools.roundingValue(subTotalImporte, 2));
 
 //        gpTotales.getChildren().clear();
@@ -552,7 +553,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         impuestoNeto = 0;
         if (!lvProductoAgregados.getItems().isEmpty()) {
             for (int i = 0; i < lvProductoAgregados.getItems().size(); i++) {
-                totalImpuestos += lvProductoAgregados.getItems().get(i).getSuministroTB().getImpuestoSumado();
+//                totalImpuestos += lvProductoAgregados.getItems().get(i).getSuministroTB().getImpuestoSumado();
             }
         }
         impuestoNeto = totalImpuestos;
@@ -699,7 +700,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
                 ventaTB.setIdComprobante(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento());
                 ventaTB.setComprobanteName(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
                 ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedIndex() >= 0 ? cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda() : 0);
-                ventaTB.setMonedaName(monedaSimbolo);
+//                ventaTB.setMonedaName(monedaSimbolo);
                 ventaTB.setSerie(lblSerie.getText());
                 ventaTB.setNumeracion(lblNumeracion.getText());
                 ventaTB.setFechaVenta(Tools.getDate());

@@ -662,7 +662,7 @@ public class FxGuiaRemisionController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return VentaADO.ListCompletaVentasDetalle(idVenta);
+                return VentaADO.Obtener_Venta_ById(idVenta);
             }
         };
         task.setOnSucceeded(e -> {

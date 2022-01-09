@@ -166,6 +166,7 @@
                                     <TableColumn fx:id="tcOpcion" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Quitar" />
                                     <TableColumn fx:id="tcProducto" prefWidth="176.0" style="-fx-alignment: CENTER-LEFT;" text="Producto" />
                                     <TableColumn fx:id="tcCantidad" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Cantidad" />
+                                    <TableColumn fx:id="tcMedida" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Medida" />
                                     <TableColumn fx:id="tcPrecio" prefWidth="121.0" style="-fx-alignment: CENTER;" text="Precio" />
                                     <TableColumn fx:id="tcImpuesto" prefWidth="118.0" style="-fx-alignment: CENTER;" text="Impuesto" />
                                     <TableColumn fx:id="tcImporte" prefWidth="100.0" style="-fx-alignment: CENTER-RIGHT;" text="Importe" />

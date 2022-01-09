@@ -8,54 +8,101 @@ import javafx.scene.layout.HBox;
 public class VentaTB {
 
     private int id;
+    
     private String idVenta;
+    
     private String idCliente;
+    
     private String vendedor;
+    
     private int idComprobante;
+    
     private int idMoneda;
-    private String monedaName;
+    
     private String comprobanteName;
+    
     private String serie;
+    
     private String numeracion;
+    
     private String fechaVenta;
+    
     private String horaVenta;
+    
     private String fechaVencimiento;
+    
     private String horaVencimiento;
+    
     private double importeBruto;
+    
     private double descuento;
+    
     private double subImporteNeto;
+    
     private double impuesto;
+    
     private double importeNeto;
+    
     private int tipo;
+    
     private String tipoName;
+    
     private int estado;
+    
     private String estadoName;
+    
     private Label estadoLabel;
+    
     private String formaName;
+    
     private String observaciones;
+    
     private double efectivo;
+    
     private double vuelto;
+    
     private double tarjeta;
+    
     private double deposito;
+    
     private String codigo;
+    
     private String numeroOperacion;
+    
     private boolean tipopago;
+    
     private String codigoAlterno;
+    
     private ClienteTB clienteTB;
+    
     private MonedaTB monedaTB;
+    
     private EmpleadoTB empleadoTB;
+    
     private NotaCreditoTB notaCreditoTB;
+    
     private ArrayList<SuministroTB> suministroTBs;
+    
     private HBox hbOpciones;
+    
     private Button btnImprimir;
+    
     private Button btnAgregar;
+    
     private Button btnSumar;
+    
     private ArrayList<VentaCreditoTB> ventaCreditoTBs;
+    
     private String clienteName;
+    
     private double montoTotal;
+    
     private double montoCobrado;
+    
     private double montoRestante;
+    
     private int procedencia;
+    
     private EmpresaTB empresaTB;
 
     public VentaTB() {
@@ -114,14 +161,6 @@ public class VentaTB {
 
     public void setIdMoneda(int idMoneda) {
         this.idMoneda = idMoneda;
-    }
-
-    public String getMonedaName() {
-        return monedaName;
-    }
-
-    public void setMonedaName(String monedaName) {
-        this.monedaName = monedaName;
     }
 
     public String getComprobanteName() {

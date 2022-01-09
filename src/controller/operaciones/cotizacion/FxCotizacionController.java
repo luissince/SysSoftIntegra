@@ -67,6 +67,8 @@ public class FxCotizacionController implements Initializable {
     @FXML
     private TableColumn<CotizacionDetalleTB, String> tcCantidad;
     @FXML
+    private TableColumn<CotizacionDetalleTB, String> tcMedida;
+    @FXML
     private TableColumn<CotizacionDetalleTB, String> tcProducto;
     @FXML
     private TableColumn<CotizacionDetalleTB, String> tcImpuesto;
@@ -140,6 +142,7 @@ public class FxCotizacionController implements Initializable {
                 cellData.getValue().getSuministroTB().getClave() + "\n" + cellData.getValue().getSuministroTB().getNombreMarca()));
         tcCantidad.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
+        tcMedida.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getSuministroTB().getUnidadCompraName()));
         tcPrecio.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getPrecio(), 2)));
         tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getNombreImpuesto()));
@@ -172,12 +175,15 @@ public class FxCotizacionController implements Initializable {
             calculateTotales();
         });
 
-        tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.08));
-        tcProducto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.34));
-        tcCantidad.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
-        tcPrecio.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
-        tcImpuesto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
-        tcImporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
+        tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
+        tcProducto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.32));
+        tcCantidad.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
+        tcMedida.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
+        tcPrecio.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
+        tcImpuesto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
+        tcImporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
+        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+
     }
 
     private void loadComboBoxCliente() {
@@ -319,6 +325,7 @@ public class FxCotizacionController implements Initializable {
                 suministroTB.setIdSuministro(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getIdSuministro());
                 suministroTB.setClave(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getClave());
                 suministroTB.setNombreMarca(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getNombreMarca());
+                suministroTB.setUnidadCompra(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getUnidadCompra());
                 suministroTB.setUnidadCompraName(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getUnidadCompraName());
                 suministroTB.setIdImpuesto(tvList.getSelectionModel().getSelectedItem().getIdImpuesto());
                 suministroTB.setImpuestoTB(tvList.getSelectionModel().getSelectedItem().getImpuestoTB());
@@ -434,6 +441,7 @@ public class FxCotizacionController implements Initializable {
 
     public void resetVenta() {
         tvList.getItems().clear();
+        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
         cbCliente.getItems().clear();
         Tools.actualDate(Tools.getDate(), dtFechaEmision);
         Tools.actualDate(Tools.getDate(), dtFechaVencimiento);

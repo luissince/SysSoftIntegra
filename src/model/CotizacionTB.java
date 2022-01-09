@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import javafx.scene.control.Label;
 
 public class CotizacionTB {
 
@@ -35,6 +36,8 @@ public class CotizacionTB {
     private MonedaTB monedaTB;
 
     private EmpresaTB empresaTB;
+    
+    private Label lblEstado;
 
     private ArrayList<CotizacionDetalleTB> cotizacionDetalleTBs;
 
@@ -159,6 +162,14 @@ public class CotizacionTB {
 
     public void setEmpresaTB(EmpresaTB empresaTB) {
         this.empresaTB = empresaTB;
+    }
+
+    public Label getLblEstado() {
+        return lblEstado;
+    }
+
+    public void setLblEstado(Label lblEstado) {
+        this.lblEstado = lblEstado;
     }
 
     public MonedaTB getMonedaTB() {

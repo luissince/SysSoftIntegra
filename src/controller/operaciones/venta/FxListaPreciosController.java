@@ -49,15 +49,13 @@ public class FxListaPreciosController implements Initializable {
         tcFactor.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getFactor(), 2)));
     }
 
-    public void loadDataView(SuministroTB item) {
-        suministroTB = item;
+    public void loadDataView(SuministroTB suministroTB) {
+        this.suministroTB = suministroTB;
         ObservableList<PreciosTB> artPrices = SuministroADO.GetItemPriceList(suministroTB.getIdSuministro());
-        if (!artPrices.isEmpty()) {
-            tvList.setItems(artPrices);
-            if (!tvList.getItems().isEmpty()) {
-                tvList.requestFocus();
-                tvList.getSelectionModel().select(0);
-            }
+        tvList.setItems(artPrices);
+        if (!tvList.getItems().isEmpty()) {
+            tvList.requestFocus();
+            tvList.getSelectionModel().select(0);
         }
         lblNombreArticulo.setText(suministroTB.getNombreMarca());
     }
@@ -67,33 +65,13 @@ public class FxListaPreciosController implements Initializable {
             double valor = tvList.getSelectionModel().getSelectedItem().getValor();
             double factor = tvList.getSelectionModel().getSelectedItem().getFactor();
 
-            double precio = factor <= 1 ? valor : valor / factor;
-            
-            suministroTB.setCantidad(factor <= 1 ? suministroTB.getCantidad() : factor);
+            double precio = factor <= 0 ? valor : valor / factor;
 
-            double valor_sin_impuesto = precio / ((suministroTB.getImpuestoTB().getValor()/ 100.00) + 1);
-            double descuento = suministroTB.getDescuento();
-            double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
-            double preciocalculado = valor_sin_impuesto - porcentajeRestante;
-
-            suministroTB.setDescuento(descuento);
-            suministroTB.setDescuentoCalculado(porcentajeRestante);
-            suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-
-            suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
-            suministroTB.setPrecioVentaGeneralReal(preciocalculado);
-
-            double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-            suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-            suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
-
-            suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-            suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-            suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
+            suministroTB.setCantidad(factor <= 0 ? suministroTB.getCantidad() : factor);
+            suministroTB.setPrecioVentaGeneral(precio);
 
             ventaEstructuraController.getTvList().refresh();
             ventaEstructuraController.calculateTotales();
-
             Tools.Dispose(window);
         }
     }

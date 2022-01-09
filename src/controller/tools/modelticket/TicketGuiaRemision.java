@@ -454,7 +454,7 @@ public class TicketGuiaRemision {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object object =  VentaADO.ListCompletaVentasDetalle(idVenta);
+                Object object =  VentaADO.Obtener_Venta_ById(idVenta);
                 if (object instanceof VentaTB) {
                     try {
                         VentaTB ventaTB = (VentaTB) object;

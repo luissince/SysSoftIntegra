@@ -531,7 +531,7 @@ public class BancoADO {
         return cajaValida;
     }
 
-    public static Object Listar_Banco_Mostrar() {
+    public static String Listar_Banco_Mostrar() {
         PreparedStatement statementBanco = null;
         ResultSet resultSet = null;
         try {
@@ -543,21 +543,14 @@ public class BancoADO {
                     + "FROM Banco AS b INNER JOIN MonedaTB AS m ON m.IdMoneda = b.IdMoneda\n"
                     + "WHERE b.Mostrar = 1");
             resultSet = statementBanco.executeQuery();
-            ArrayList<BancoTB> bancoTBs = new ArrayList();
+            String cuentasBancos = "";
             while (resultSet.next()) {
-                BancoTB bancoTB = new BancoTB();
-                bancoTB.setNombreCuenta(resultSet.getString("NombreCuenta"));
-                bancoTB.setNumeroCuenta(resultSet.getString("NumeroCuenta"));
-
-                MonedaTB monedaTB = new MonedaTB();
-                monedaTB.setSimbolo(resultSet.getString("Simbolo"));
-                bancoTB.setMonedaTB(monedaTB);
-                bancoTBs.add(bancoTB);
+                cuentasBancos += resultSet.getString("NombreCuenta") + " " + resultSet.getString("Simbolo") + " N° " + resultSet.getString("NumeroCuenta") + "\n";
             }
 
-            return bancoTBs;
+            return cuentasBancos;
         } catch (SQLException ex) {
-            return ex.getLocalizedMessage();
+            return "";
         } finally {
             try {
                 if (statementBanco != null) {
@@ -568,7 +561,7 @@ public class BancoADO {
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-                return ex.getLocalizedMessage();
+                return "";
             }
         }
     }

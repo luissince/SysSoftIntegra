@@ -130,7 +130,7 @@ public class FxVentaProcesoController implements Initializable {
     public void setInitComponents(VentaTB ventaTB, ArrayList<SuministroTB> tvList, boolean provilegios, String moneda) {
         this.ventaTB = ventaTB;
         this.tvList = tvList;
-        moneda_simbolo = ventaTB.getMonedaName();
+        moneda_simbolo = ventaTB.getMonedaTB().getSimbolo();
         total_venta = Double.parseDouble(Tools.roundingValue(ventaTB.getImporteNeto(), 2));
 
         lblTotal.setText("TOTAL A PAGAR: " + moneda_simbolo + " " + Tools.roundingValue(total_venta, 2));
@@ -621,7 +621,7 @@ public class FxVentaProcesoController implements Initializable {
             vbViewPagoAdelantado.setVisible(true);
 
             txtEfectivoAdelantado.requestFocus();
-            
+
             state_view_pago = 2;
         }
     }

@@ -1,17 +1,25 @@
 package controller.tools.modelticket;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.qrcode.QRCodeWriter;
+import controller.reporte.FxReportViewController;
 import controller.tools.BillPrintable;
 import controller.tools.ConvertMonedaCadena;
 import controller.tools.FilesRouters;
 import controller.tools.ObjectGlobal;
 import controller.tools.Session;
 import controller.tools.Tools;
+import controller.tools.WindowStage;
+import java.awt.image.BufferedImage;
 import java.awt.print.Book;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,10 +28,13 @@ import java.util.concurrent.Executors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.print.DocPrintJob;
 import javax.print.PrintException;
@@ -34,9 +45,12 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.PrintServiceAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.PrinterName;
+import model.BancoADO;
+import model.EmpresaADO;
 import model.SuministroTB;
 import model.VentaADO;
 import model.VentaTB;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -58,6 +72,8 @@ public class TicketVenta {
     private final AnchorPane hbPie;
 
     private final ConvertMonedaCadena monedaCadena;
+
+    private String fileName;
 
     public TicketVenta(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
@@ -101,7 +117,7 @@ public class TicketVenta {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object result = VentaADO.ListCompletaVentasDetalle(idVenta);
+                Object result = VentaADO.Obtener_Venta_ById(idVenta);
                 try {
                     if (result instanceof VentaTB) {
                         VentaTB ventaTB = (VentaTB) result;
@@ -119,7 +135,7 @@ public class TicketVenta {
                                 stb.setUnidadCompraName(suministroTBs.get(i).getUnidadCompraName());
                                 stb.setPrecioVentaGeneral(suministroTBs.get(i).getPrecioVentaGeneral());
                                 stb.setDescuento(suministroTBs.get(i).getDescuento());
-                                stb.setImporteNeto(suministroTBs.get(i).getCantidad() * +suministroTBs.get(i).getPrecioVentaGeneral());
+//                                stb.setImporteNeto(suministroTBs.get(i).getCantidad() * +suministroTBs.get(i).getPrecioVentaGeneral());
                                 list.add(stb);
                             }
 
@@ -133,7 +149,7 @@ public class TicketVenta {
 
                             JRPrintServiceExporter exporter = new JRPrintServiceExporter();
 
-                            exporter.setParameter(JRExporterParameter.JASPER_PRINT, reportA4(ventaTB, list));
+                            exporter.setParameter(JRExporterParameter.JASPER_PRINT, null);
                             exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);
                             exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, printServiceAttributeSet);
                             exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
@@ -403,7 +419,133 @@ public class TicketVenta {
         return billPrintable.modelTicket(rows + lines + 1 + 10, lines, object, printerName, printerCut);
     }
 
-    public JasperPrint reportA4(VentaTB ventaTB, ArrayList<SuministroTB> list) throws JRException {
+    public void mostrarReporte(String idVenta) {
+        ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+        Task<Object> task = new Task<Object>() {
+            @Override
+            public Object call() {
+                Object object = VentaADO.Obtener_Venta_ById(idVenta);
+                if (object instanceof VentaTB) {
+                    try {
+                        VentaTB ventaTB = (VentaTB) object;
+
+                        InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+                        InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+                        if (Session.COMPANY_IMAGE != null) {
+                            imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
+                        }
+                        InputStream dir = getClass().getResourceAsStream("/report/VentaRealizada.jasper");
+
+                        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(new QRCodeWriter().encode("|" + Session.COMPANY_NUMERO_DOCUMENTO + "|" + ventaTB.getCodigoAlterno() + "|" + ventaTB.getSerie() + "|" + ventaTB.getNumeracion() + "|" + Tools.roundingValue(ventaTB.getImpuesto(), 2) + "|" + Tools.roundingValue(ventaTB.getImporteNeto(), 2) + "|" + ventaTB.getFechaVenta() + "|" + ventaTB.getClienteTB().getIdAuxiliar() + "|" + ventaTB.getClienteTB().getNumeroDocumento() + "|", BarcodeFormat.QR_CODE, 800, 800));
+                        /**
+                         */
+                        Map map = new HashMap();
+                        map.put("LOGO", imgInputStream);
+                        map.put("ICON", imgInputStreamIcon);
+                        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
+                        map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
+                        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
+                        map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL));
+                        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
+                        map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
+
+                        map.put("NOMBREDOCUMENTO", ventaTB.getComprobanteName());
+                        map.put("NUMERODOCUMENTO", ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+                        map.put("FECHA_VENTA", ventaTB.getFechaVenta());
+                        map.put("MONEDA", ventaTB.getMonedaTB().getNombre() + " - " + ventaTB.getMonedaTB().getAbreviado());
+
+                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()));
+
+                        map.put("DOUMENTO_CLIENTE", ventaTB.getClienteTB().getNumeroDocumento());
+                        map.put("INFORMACION_CLIENTE", ventaTB.getClienteTB().getInformacion());
+                        map.put("DIRECCION_CLIENTE", ventaTB.getClienteTB().getDireccion());
+                        map.put("CELULAR_CLIENTE", ventaTB.getClienteTB().getCelular());
+                        map.put("EMAIL_CLIENTE", ventaTB.getClienteTB().getEmail());
+                        map.put("FORMA_PAGO", ventaTB.getTipoName());
+
+                        map.put("TERMINOS_CONDICIONES", EmpresaADO.Terminos_Condiciones());
+                        map.put("NUMEROS_CUENTA", BancoADO.Listar_Banco_Mostrar());
+                        map.put("QR_DATA", qrImage);
+
+                        fileName = ventaTB.getComprobanteName() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion();
+                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JREmptyDataSource());
+                        return jasperPrint;
+                    } catch (JRException | WriterException ex) {
+                        return ex.getLocalizedMessage();
+                    }
+                } else {
+                    return (String) object;
+                }
+            }
+        };
+
+        task.setOnScheduled(w -> {
+            Tools.showAlertNotification("/view/image/information_large.png",
+                    "Generando reporte",
+                    Tools.newLineString("Se envió los datos para generar el reporte."),
+                    Duration.seconds(5),
+                    Pos.BOTTOM_RIGHT);
+        });
+
+        task.setOnFailed(w -> {
+            Tools.showAlertNotification("/view/image/warning_large.png",
+                    "Generando reporte",
+                    Tools.newLineString("Se produjo un problema al generar."),
+                    Duration.seconds(10),
+                    Pos.BOTTOM_RIGHT);
+        });
+
+        task.setOnSucceeded(w -> {
+            try {
+                Object object = task.getValue();
+                if (object instanceof JasperPrint) {
+                    Tools.showAlertNotification("/view/image/succes_large.png",
+                            "Generando reporte",
+                            Tools.newLineString("Se genero correctamente el reporte."),
+                            Duration.seconds(5),
+                            Pos.BOTTOM_RIGHT);
+
+                    URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
+                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                    Parent parent = fXMLLoader.load(url.openStream());
+                    //Controlller here
+                    FxReportViewController controller = fXMLLoader.getController();
+                    controller.setFileName(fileName);
+                    controller.setJasperPrint((JasperPrint) object);
+                    controller.show();
+                    Stage stage = WindowStage.StageLoader(parent, fileName);
+                    stage.setResizable(true);
+                    stage.show();
+                    stage.requestFocus();
+
+                } else {
+                    Tools.showAlertNotification("/view/image/error_large.png",
+                            "Generando reporte",
+                            Tools.newLineString((String) object),
+                            Duration.seconds(10),
+                            Pos.BOTTOM_RIGHT);
+                }
+            } catch (IOException ex) {
+                Tools.showAlertNotification("/view/image/error_large.png",
+                        "Generando reporte",
+                        Tools.newLineString(ex.getLocalizedMessage()),
+                        Duration.seconds(10),
+                        Pos.BOTTOM_RIGHT);
+            }
+        });
+
+        exec.execute(task);
+
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+
+    public JasperPrint reportA4() throws JRException {
 
         InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
 
@@ -423,33 +565,32 @@ public class TicketVenta {
         map.put("TELEFONOCELULAR", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
         map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
 
-        map.put("DOCUMENTOEMPRESA", "R.U.C " + Session.COMPANY_NUMERO_DOCUMENTO);
-        map.put("NOMBREDOCUMENTO", ventaTB.getComprobanteName());
-        map.put("NUMERODOCUMENTO", ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-
-        map.put("DATOSCLIENTE", ventaTB.getClienteTB().getInformacion());
-        map.put("DOCUMENTOCLIENTE", ventaTB.getClienteTB().getTipoDocumentoName() + " N°:");
-        map.put("NUMERODOCUMENTOCLIENTE", ventaTB.getClienteTB().getNumeroDocumento());
-        map.put("CELULARCLIENTE", ventaTB.getClienteTB().getCelular());
-        map.put("EMAILCLIENTE", ventaTB.getClienteTB().getEmail());
-        map.put("DIRECCIONCLIENTE", ventaTB.getClienteTB().getDireccion());
-        map.put("FORMAPAGO", ventaTB.getTipoName());
-
-        map.put("FECHAEMISION", ventaTB.getFechaVenta());
-        map.put("MONEDA", ventaTB.getMonedaTB().getNombre() + " - " + ventaTB.getMonedaTB().getAbreviado());
-        map.put("CONDICIONPAGO", ventaTB.getTipoName() + "-" + ventaTB.getEstadoName());
-
-        map.put("SIMBOLO", ventaTB.getMonedaTB().getSimbolo());
-        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()));
-
-        map.put("VALOR_VENTA", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImporteBruto(), 2));
-        map.put("DESCUENTO", ventaTB.getMonedaTB().getSimbolo() + " -" + Tools.roundingValue(ventaTB.getDescuento(), 2));
-        map.put("SUB_IMPORTE", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getSubImporteNeto(), 2));
-        map.put("IMPUESTO_TOTAL", Tools.roundingValue(ventaTB.getImpuesto(), 2));
-        map.put("IMPORTE_TOTAL", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImporteNeto(), 2));
-        map.put("QRDATA", "|" + Session.COMPANY_NUMERO_DOCUMENTO + "|" + ventaTB.getCodigoAlterno() + "|" + ventaTB.getSerie() + "|" + ventaTB.getNumeracion() + "|" + Tools.roundingValue(ventaTB.getImpuesto(), 2) + "|" + Tools.roundingValue(ventaTB.getImporteNeto(), 2) + "|" + ventaTB.getFechaVenta() + "|" + ventaTB.getClienteTB().getIdAuxiliar() + "|" + ventaTB.getClienteTB().getNumeroDocumento() + "|");
-
-        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(list));
+//        map.put("DOCUMENTOEMPRESA", "R.U.C " + Session.COMPANY_NUMERO_DOCUMENTO);
+//        map.put("NOMBREDOCUMENTO", ventaTB.getComprobanteName());
+//        map.put("NUMERODOCUMENTO", ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+//
+//        map.put("DATOSCLIENTE", ventaTB.getClienteTB().getInformacion());
+//        map.put("DOCUMENTOCLIENTE", ventaTB.getClienteTB().getTipoDocumentoName() + " N°:");
+//        map.put("NUMERODOCUMENTOCLIENTE", ventaTB.getClienteTB().getNumeroDocumento());
+//        map.put("CELULARCLIENTE", ventaTB.getClienteTB().getCelular());
+//        map.put("EMAILCLIENTE", ventaTB.getClienteTB().getEmail());
+//        map.put("DIRECCIONCLIENTE", ventaTB.getClienteTB().getDireccion());
+//        map.put("FORMAPAGO", ventaTB.getTipoName());
+//ventaTB.getMonedaTB().getNombre() + " - " + ventaTB.getMonedaTB().getAbreviado()
+//        map.put("FECHAEMISION", ventaTB.getFechaVenta());
+//        map.put("MONEDA", ventaTB.getMonedaTB().getNombre() + " - " + ventaTB.getMonedaTB().getAbreviado());
+//        map.put("CONDICIONPAGO", ventaTB.getTipoName() + "-" + ventaTB.getEstadoName());
+//
+//        map.put("SIMBOLO", ventaTB.getMonedaTB().getSimbolo());
+//        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()));
+//
+//        map.put("VALOR_VENTA", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImporteBruto(), 2));
+//        map.put("DESCUENTO", ventaTB.getMonedaTB().getSimbolo() + " -" + Tools.roundingValue(ventaTB.getDescuento(), 2));
+//        map.put("SUB_IMPORTE", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getSubImporteNeto(), 2));
+//        map.put("IMPUESTO_TOTAL", Tools.roundingValue(ventaTB.getImpuesto(), 2));
+//        map.put("IMPORTE_TOTAL", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImporteNeto(), 2));
+//        map.put("QRDATA", "|" + Session.COMPANY_NUMERO_DOCUMENTO + "|" + ventaTB.getCodigoAlterno() + "|" + ventaTB.getSerie() + "|" + ventaTB.getNumeracion() + "|" + Tools.roundingValue(ventaTB.getImpuesto(), 2) + "|" + Tools.roundingValue(ventaTB.getImporteNeto(), 2) + "|" + ventaTB.getFechaVenta() + "|" + ventaTB.getClienteTB().getIdAuxiliar() + "|" + ventaTB.getClienteTB().getNumeroDocumento() + "|");
+        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JREmptyDataSource());
         return jasperPrint;
     }
 }

@@ -193,7 +193,7 @@ public class FxValorInventarioController implements Initializable {
                 if (!stbs.isEmpty()) {
                     tvList.setItems(stbs);
                     double total = 0;
-                    total = stbs.stream().map(v -> v.getImporteNeto()).reduce(total, (accumulator, _item) -> accumulator + _item);
+//                    total = stbs.stream().map(v -> v.getImporteNeto()).reduce(total, (accumulator, _item) -> accumulator + _item);
                     lblValoTotal.setText(Session.MONEDA_SIMBOLO + Tools.roundingValue(total, 2));
 
                     int integer = (int) (Math.ceil((double) (((Integer) objects[1]) / 20.00)));

@@ -96,7 +96,7 @@ public class TicketCuentasPorCobrar {
             @Override
             public String call() {
                 if (!Tools.isText(idVenta) && !Tools.isText(idVentaCredito)) {
-                    Object object = VentaADO.ImprimirVetanCreditoById(idVenta, idVentaCredito);
+                    Object object = VentaADO.Imprimir_Venta_Credito_ById(idVenta, idVentaCredito);
                     if (object instanceof VentaCreditoTB) {
                         VentaCreditoTB ventaCreditoTB = (VentaCreditoTB) object;
                         try {
@@ -413,7 +413,7 @@ public class TicketCuentasPorCobrar {
                 }
 
 //                if (!Tools.isText(idVenta) && !Tools.isText(idVentaCredito)) {
-//                    Object object = VentaADO.ImprimirVetanCreditoById(idVenta, idVentaCredito);
+//                    Object object = VentaADO.Imprimir_Venta_Credito_ById(idVenta, idVentaCredito);
 //                    if (object instanceof VentaCreditoTB) {
 //                        VentaCreditoTB ventaCreditoTB = (VentaCreditoTB) object;
 //                        return "";

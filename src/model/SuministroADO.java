@@ -581,7 +581,7 @@ public class SuministroADO {
         return rutaValidada;
     }
 
-    public static Object ListSuministrosListaView(short tipo, String value, int posicionPagina, int filasPorPagina) {
+    public static Object Listar_Suministros_Lista_View(short tipo, String value, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
         try {
@@ -609,7 +609,8 @@ public class SuministroADO {
 
                 suministroTB.setPrecioVentaGeneral(rsEmps.getDouble("PrecioVentaGeneral"));
 
-                suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
+                suministroTB.setUnidadCompra(rsEmps.getInt("UnidadCompra"));
+                suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompraName"));
                 suministroTB.setUnidadVenta(rsEmps.getInt("UnidadVenta"));
                 suministroTB.setInventario(rsEmps.getBoolean("Inventario"));
 
@@ -624,6 +625,7 @@ public class SuministroADO {
 
                 suministroTB.setLote(rsEmps.getBoolean("Lote"));
                 suministroTB.setValorInventario(rsEmps.getShort("ValorInventario"));
+
                 ImageView image = new ImageView(new Image(suministroTB.getValorInventario() == 1 ? "/view/image/unidad.png" : "/view/image/balanza.png"));
                 image.setFitWidth(32);
                 image.setFitHeight(32);
@@ -977,13 +979,12 @@ public class SuministroADO {
     }
 
     public static SuministroTB Get_Suministro_By_Search(String value) {
-        String selectStmt = "{call Sp_Listar_Suministro_By_Search(?)}";
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
         SuministroTB suministroTB = null;
         try {
             DBUtil.dbConnect();
-            preparedStatement = DBUtil.getConnection().prepareStatement(selectStmt);
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Suministro_By_Search(?)}");
             preparedStatement.setString(1, value);
             rsEmps = preparedStatement.executeQuery();
             if (rsEmps.next()) {
@@ -996,9 +997,10 @@ public class SuministroADO {
                 suministroTB.setCantidad(rsEmps.getDouble("Cantidad"));
                 suministroTB.setCostoCompra(rsEmps.getDouble("PrecioCompra"));
                 suministroTB.setPrecioVentaGeneral(rsEmps.getDouble("PrecioVentaGeneral"));
+
+                suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
                 suministroTB.setUnidadVenta(rsEmps.getInt("UnidadVenta"));
                 suministroTB.setLote(rsEmps.getBoolean("Lote"));
-                suministroTB.setInventario(rsEmps.getBoolean("Inventario"));
 
                 suministroTB.setIdImpuesto(rsEmps.getInt("Impuesto"));
 
@@ -1010,7 +1012,7 @@ public class SuministroADO {
                 suministroTB.setImpuestoTB(impuestoTB);
 
                 suministroTB.setValorInventario(rsEmps.getShort("ValorInventario"));
-                suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
+                suministroTB.setInventario(rsEmps.getBoolean("Inventario"));
             }
         } catch (SQLException e) {
             System.out.println("La operación de selección de SQL ha fallado: " + e);
@@ -1246,7 +1248,7 @@ public class SuministroADO {
                 suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
                 suministroTB.setEstado(rsEmps.getInt("Estado"));
                 suministroTB.setEstadoName(rsEmps.getString("EstadoName"));
-                suministroTB.setImporteNeto(rsEmps.getDouble("Total"));
+//                suministroTB.setImporteNeto(rsEmps.getDouble("Total"));
                 suministroTB.setStockMinimo(rsEmps.getDouble("StockMinimo"));
                 suministroTB.setStockMaximo(rsEmps.getDouble("StockMaximo"));
                 suministroTB.setInventario(rsEmps.getBoolean("Inventario"));
@@ -1308,7 +1310,7 @@ public class SuministroADO {
                 suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
                 suministroTB.setEstado(rsEmps.getInt("Estado"));
                 suministroTB.setEstadoName(rsEmps.getString("EstadoName"));
-                suministroTB.setImporteNeto(rsEmps.getDouble("Total"));
+//                suministroTB.setImporteNeto(rsEmps.getDouble("Total"));
                 suministroTB.setStockMinimo(rsEmps.getDouble("StockMinimo"));
                 suministroTB.setStockMaximo(rsEmps.getDouble("StockMaximo"));
                 suministroTB.setInventario(rsEmps.getBoolean("Inventario"));

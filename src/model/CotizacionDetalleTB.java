@@ -20,6 +20,8 @@ public class CotizacionDetalleTB {
     
     private int idImpuesto;
     
+    private int idMedida;
+    
     private SuministroTB suministroTB;
     
     private ImpuestoTB impuestoTB;
@@ -83,6 +85,14 @@ public class CotizacionDetalleTB {
 
     public void setIdImpuesto(int idImpuesto) {
         this.idImpuesto = idImpuesto;
+    }
+
+    public int getIdMedida() {
+        return idMedida;
+    }
+
+    public void setIdMedida(int idMedida) {
+        this.idMedida = idMedida;
     }
 
     public SuministroTB getSuministroTB() {

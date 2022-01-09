@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -50,6 +51,8 @@ public class FxCotizacionListaController implements Initializable {
     @FXML
     private TableColumn<CotizacionTB, String> tcObservacion;
     @FXML
+    private TableColumn<CotizacionTB, Label> tcEstado;
+    @FXML
     private TableColumn<CotizacionTB, String> tcTotal;
     @FXML
     private Label lblPaginaActual;
@@ -76,6 +79,7 @@ public class FxCotizacionListaController implements Initializable {
         tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
         tcCotizacion.setCellValueFactory(cellData -> Bindings.concat("COTIZACIÓN\nN° - " + Tools.formatNumber(cellData.getValue().getIdCotizacion())));
         tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservaciones()));
+        tcEstado.setCellValueFactory(new PropertyValueFactory<>("lblEstado"));
         tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 

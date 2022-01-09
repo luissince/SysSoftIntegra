@@ -102,9 +102,9 @@ public class FxCuentasPorCobrarController implements Initializable {
         tcProveedor.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
         tcComprobante.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
-        tcMontoTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaName() + " " + Tools.roundingValue(cellData.getValue().getMontoTotal(), 2)));
-        tcMontoCobrado.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaName() + " " + Tools.roundingValue(cellData.getValue().getMontoCobrado(), 2)));
-        tcDiferencia.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaName() + " " + Tools.roundingValue(cellData.getValue().getMontoRestante(), 2)));
+        tcMontoTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getMontoTotal(), 2)));
+        tcMontoCobrado.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getMontoCobrado(), 2)));
+        tcDiferencia.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getMontoRestante(), 2)));
         tcOpciones.setCellValueFactory(new PropertyValueFactory<>("hbOpciones"));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));

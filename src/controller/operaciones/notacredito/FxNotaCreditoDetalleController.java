@@ -226,7 +226,7 @@ public class FxNotaCreditoDetalleController implements Initializable {
             suministroTB.setNombreMarca(e.getSuministroTB().getClave() + "\n" + e.getSuministroTB().getNombreMarca());
             suministroTB.setPrecioVentaGeneral(e.getPrecio());
             suministroTB.setDescuento(e.getDescuento());
-            suministroTB.setImporteNeto(e.getImporte());
+//            suministroTB.setImporteNeto(e.getImporte());
             arrayList.add(suministroTB);
         });
 

@@ -39,7 +39,6 @@ public class SuministroTB {
     private double costoCompraReal;
     private double porLlevar;
     
-    private double impuestoSumado;
     private double precioVentaGeneral;
     private double precioVentaGeneralReal;
     private double precioVentaGeneralUnico;
@@ -61,9 +60,6 @@ public class SuministroTB {
     private double movimiento;
     private double diferencia;
 
-    private double importeBruto;
-    private double subImporteNeto;
-    private double importeNeto;
     //private String imagenTB;
     private File imagenFile;
     private String claveSat;
@@ -319,14 +315,6 @@ public class SuministroTB {
         this.preciosTB = preciosTB;
     }
 
-    public double getImpuestoSumado() {
-        return impuestoSumado;
-    }
-
-    public void setImpuestoSumado(double impuestoSumado) {
-        this.impuestoSumado = impuestoSumado;
-    }
-
     public double getPrecioVentaGeneral() {
         return precioVentaGeneral;
     }
@@ -407,22 +395,6 @@ public class SuministroTB {
         this.descuentoCalculado = descuentoCalculado;
     }
 
-    public double getImporteBruto() {
-        return importeBruto;
-    }
-
-    public void setImporteBruto(double importeBruto) {
-        this.importeBruto = importeBruto;
-    }
-
-    public double getSubImporteNeto() {
-        return subImporteNeto;
-    }
-
-    public void setSubImporteNeto(double subImporteNeto) {
-        this.subImporteNeto = subImporteNeto;
-    }
-
     public double getMovimiento() {
         return movimiento;
     }
@@ -437,14 +409,6 @@ public class SuministroTB {
 
     public void setDiferencia(double diferencia) {
         this.diferencia = diferencia;
-    }
-
-    public double getImporteNeto() {
-        return importeNeto;
-    }
-
-    public void setImporteNeto(double importeNeto) {
-        this.importeNeto = importeNeto;
     }
 
     public ImageView getImageValorInventario() {

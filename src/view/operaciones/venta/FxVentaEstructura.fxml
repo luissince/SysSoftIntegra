@@ -14,7 +14,6 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
@@ -27,7 +26,7 @@
                <children>
                   <HBox fx:id="hbBotonesSuperior" alignment="CENTER_LEFT" style="-fx-background-color: #cccccc;">
                      <children>
-                        <Button fx:id="btnArticulo" contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionArticulo" onKeyPressed="#onKeyPressedArticulo" styleClass="buttonLight" text="Productos(F2)">
+                        <Button fx:id="btnProducto" contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionProducto" onKeyPressed="#onKeyPressedProducto" styleClass="buttonLight" text="Productos(F2)">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -117,7 +116,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="btnContizaciones" contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionCotizaciones" onKeyPressed="#onKeyPressedCotizaciones" styleClass="buttonLight" text="Cotizaciones(F12)">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionCotizaciones" onKeyPressed="#onKeyPressedCotizaciones" styleClass="buttonLight" text="Cotizaciones(F12)">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -274,7 +273,7 @@
                                                             <HBox>
                                                                <children>
                                                                   <TextField fx:id="txtNumeroDocumento" maxHeight="1.7976931348623157E308" onAction="#onActionCliente" onKeyTyped="#onKeyTypedNumeroDocumento" prefHeight="30.0" prefWidth="220.0" promptText="N° de documento" styleClass="text-field-normal" />
-                                                                  <Button fx:id="btnBuscarCliente" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionCliente" onKeyPressed="#onKeyPressedCliente" prefHeight="30.0" styleClass="buttonLight">
+                                                                  <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionCliente" onKeyPressed="#onKeyPressedCliente" prefHeight="30.0" styleClass="buttonLight">
                                                                      <graphic>
                                                                         <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                                                            <image>
@@ -283,7 +282,7 @@
                                                                         </ImageView>
                                                                      </graphic>
                                                                   </Button>
-                                                                  <Button fx:id="btnBuscarSunat" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionSunat" onKeyPressed="#onKeyPressedSunat" prefHeight="30.0" styleClass="buttonLight">
+                                                                  <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionSunat" onKeyPressed="#onKeyPressedSunat" prefHeight="30.0" styleClass="buttonLight">
                                                                      <graphic>
                                                                         <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                                                            <image>
@@ -292,7 +291,7 @@
                                                                         </ImageView>
                                                                      </graphic>
                                                                   </Button>
-                                                                  <Button fx:id="btnBuscarReniec" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionReniec" onKeyPressed="#onKeyPressedReniec" prefHeight="30.0" styleClass="buttonLight">
+                                                                  <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionReniec" onKeyPressed="#onKeyPressedReniec" prefHeight="30.0" styleClass="buttonLight">
                                                                      <graphic>
                                                                         <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                                                            <image>
@@ -400,37 +399,20 @@
                                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                        </rowConstraints>
-                                                         <children>
-                                                            <Label style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPORTE BRUTO:" textFill="#020203" />
-                                                            <Label fx:id="lblValorVenta" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" GridPane.columnIndex="1" />
-                                                            <Label style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="DESCUESTO TOTAL:" textFill="#020203" GridPane.rowIndex="1" />
-                                                            <Label fx:id="lblDescuento" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                            <Label style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="SUB IMPORTE:" textFill="#020203" GridPane.rowIndex="2" />
-                                                            <Label fx:id="lblSubImporte" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                         </children>
-                                                      </GridPane>
-                                                      <Pane minHeight="1.0" prefHeight="1.0" style="-fx-border-color: #999999; -fx-border-width: 1px;" />
-                                                      <GridPane fx:id="gpTotales" style="-fx-padding: 0px  0.8333333333333334em 0px  0.8333333333333334em;">
-                                                        <columnConstraints>
-                                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
-                                                        </columnConstraints>
-                                                      </GridPane>
-                                                      <Pane minHeight="1.0" prefHeight="1.0" style="-fx-border-color: #999999; -fx-border-width: 1px;" />
-                                                      <GridPane style="-fx-padding: 0px  0.8333333333333334em  0.8333333333333334em  0.8333333333333334em;">
-                                                        <columnConstraints>
-                                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
-                                                        </columnConstraints>
-                                                        <rowConstraints>
-                                                          <RowConstraints />
-                                                          <RowConstraints />
+                                                            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                                             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                                         </rowConstraints>
                                                          <children>
-                                                            <Label style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPORTE NETO:" textFill="#020203" GridPane.rowIndex="2" />
-                                                            <Label fx:id="lblImporteTotal" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <Label style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPORTE BRUTO:" textFill="#020203" />
+                                                            <Label fx:id="lblImporteBruto" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" GridPane.columnIndex="1" />
+                                                            <Label style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="DESCUESTO:" textFill="#020203" GridPane.rowIndex="1" />
+                                                            <Label fx:id="lblDescuento" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Label style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="SUB IMPORTE:" textFill="#020203" GridPane.rowIndex="2" />
+                                                            <Label fx:id="lblSubImporte" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <Label style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPUESTO:" textFill="#020203" GridPane.rowIndex="3" />
+                                                            <Label style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPORTE NETO:" textFill="#020203" GridPane.rowIndex="4" />
+                                                            <Label fx:id="lblImporteTotal" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                            <Label fx:id="lblImpuesto" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                          </children>
                                                       </GridPane>
                                                    </children>

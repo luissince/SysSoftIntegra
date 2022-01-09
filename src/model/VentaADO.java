@@ -216,7 +216,8 @@ public class VentaADO {
 
                 for (SuministroTB sm : tvList) {
 
-                    double cantidad = sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad();
+//                    double cantidad = sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad();
+                    double cantidad = 0;
                     double precio = sm.getValorInventario() == 2 ? sm.getPrecioVentaGeneralAuxiliar() : sm.getPrecioVentaGeneral();
 
                     detalle_venta.setString(1, id_venta);
@@ -240,7 +241,7 @@ public class VentaADO {
                         suministro_update.setString(2, sm.getIdSuministro());
                         suministro_update.addBatch();
                     } else if (sm.isInventario() && sm.getValorInventario() == 2) {
-                        suministro_update.setDouble(1, sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar());
+//                        suministro_update.setDouble(1, sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar());
                         suministro_update.setString(2, sm.getIdSuministro());
                         suministro_update.addBatch();
                     } else if (sm.isInventario() && sm.getValorInventario() == 3) {
@@ -252,7 +253,8 @@ public class VentaADO {
                     double cantidadKardex = sm.getValorInventario() == 1
                             ? sm.getCantidad() + sm.getBonificacion()
                             : sm.getValorInventario() == 2
-                            ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            //                            ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            ? 0
                             : sm.getCantidad();
 
                     suministro_kardex.setString(1, sm.getIdSuministro());
@@ -533,7 +535,7 @@ public class VentaADO {
 
                 detalle_venta.setString(1, id_venta);
                 detalle_venta.setString(2, sm.getIdSuministro());
-                detalle_venta.setDouble(3, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
+//                detalle_venta.setDouble(3, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
                 detalle_venta.setDouble(4, sm.getCostoCompra());
                 detalle_venta.setDouble(5, precio);
                 detalle_venta.setDouble(6, sm.getDescuento());
@@ -839,7 +841,7 @@ public class VentaADO {
 
                     detalle_venta.setString(1, id_venta);
                     detalle_venta.setString(2, sm.getIdSuministro());
-                    detalle_venta.setDouble(3, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
+//                    detalle_venta.setDouble(3, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
                     detalle_venta.setDouble(4, sm.getCostoCompra());
                     detalle_venta.setDouble(5, precio);
                     detalle_venta.setDouble(6, sm.getDescuento());
@@ -849,7 +851,7 @@ public class VentaADO {
                     detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
                     detalle_venta.setDouble(11, precio * sm.getCantidad());
                     detalle_venta.setDouble(12, sm.getBonificacion());
-                    detalle_venta.setDouble(13, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
+//                    detalle_venta.setDouble(13, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
                     detalle_venta.setString(14, "C");
                     detalle_venta.addBatch();
 
@@ -858,7 +860,7 @@ public class VentaADO {
                         suministro_update.setString(2, sm.getIdSuministro());
                         suministro_update.addBatch();
                     } else if (sm.isInventario() && sm.getValorInventario() == 2) {
-                        suministro_update.setDouble(1, sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar());
+//                        suministro_update.setDouble(1, sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar());
                         suministro_update.setString(2, sm.getIdSuministro());
                         suministro_update.addBatch();
                     } else if (sm.isInventario() && sm.getValorInventario() == 3) {
@@ -870,7 +872,8 @@ public class VentaADO {
                     double cantidadKardex = sm.getValorInventario() == 1
                             ? sm.getCantidad() + sm.getBonificacion()
                             : sm.getValorInventario() == 2
-                            ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            //                            ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            ? 0
                             : sm.getCantidad();
 
                     suministro_kardex.setString(1, sm.getIdSuministro());
@@ -1146,7 +1149,8 @@ public class VentaADO {
 
                 for (SuministroTB sm : tvList) {
 
-                    double cantidad = sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad();
+//                    double cantidad = sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad();
+                    double cantidad = 0;
                     double precio = sm.getValorInventario() == 2 ? sm.getPrecioVentaGeneralAuxiliar() : sm.getPrecioVentaGeneral();
 
                     detalle_venta.setString(1, id_venta);
@@ -1170,7 +1174,7 @@ public class VentaADO {
                         suministro_update.setString(2, sm.getIdSuministro());
                         suministro_update.addBatch();
                     } else if (sm.isInventario() && sm.getValorInventario() == 2) {
-                        suministro_update.setDouble(1, sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar());
+//                        suministro_update.setDouble(1, sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar());
                         suministro_update.setString(2, sm.getIdSuministro());
                         suministro_update.addBatch();
                     } else if (sm.isInventario() && sm.getValorInventario() == 3) {
@@ -1182,7 +1186,8 @@ public class VentaADO {
                     double cantidadKardex = sm.getValorInventario() == 1
                             ? sm.getCantidad() + sm.getBonificacion()
                             : sm.getValorInventario() == 2
-                            ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            //                            ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            ? 0
                             : sm.getCantidad();
 
                     suministro_kardex.setString(1, sm.getIdSuministro());
@@ -1461,7 +1466,7 @@ public class VentaADO {
 
                 detalle_venta.setString(1, id_venta);
                 detalle_venta.setString(2, sm.getIdSuministro());
-                detalle_venta.setDouble(3, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
+//                detalle_venta.setDouble(3, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
                 detalle_venta.setDouble(4, sm.getCostoCompra());
                 detalle_venta.setDouble(5, precio);
                 detalle_venta.setDouble(6, sm.getDescuento());
@@ -1764,7 +1769,7 @@ public class VentaADO {
 
                     detalle_venta.setString(1, id_venta);
                     detalle_venta.setString(2, sm.getIdSuministro());
-                    detalle_venta.setDouble(3, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
+//                    detalle_venta.setDouble(3, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
                     detalle_venta.setDouble(4, sm.getCostoCompra());
                     detalle_venta.setDouble(5, precio);
                     detalle_venta.setDouble(6, sm.getDescuento());
@@ -1774,7 +1779,7 @@ public class VentaADO {
                     detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
                     detalle_venta.setDouble(11, precio * sm.getCantidad());
                     detalle_venta.setDouble(12, sm.getBonificacion());
-                    detalle_venta.setDouble(13, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
+//                    detalle_venta.setDouble(13, sm.getValorInventario() == 2 ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar() : sm.getCantidad());
                     detalle_venta.setString(14, "C");
                     detalle_venta.addBatch();
 
@@ -1783,7 +1788,7 @@ public class VentaADO {
                         suministro_update.setString(2, sm.getIdSuministro());
                         suministro_update.addBatch();
                     } else if (sm.isInventario() && sm.getValorInventario() == 2) {
-                        suministro_update.setDouble(1, sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar());
+//                        suministro_update.setDouble(1, sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar());
                         suministro_update.setString(2, sm.getIdSuministro());
                         suministro_update.addBatch();
                     } else if (sm.isInventario() && sm.getValorInventario() == 3) {
@@ -1795,7 +1800,8 @@ public class VentaADO {
                     double cantidadKardex = sm.getValorInventario() == 1
                             ? sm.getCantidad() + sm.getBonificacion()
                             : sm.getValorInventario() == 2
-                            ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            //                            ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            ? 0
                             : sm.getCantidad();
 
                     suministro_kardex.setString(1, sm.getIdSuministro());
@@ -1906,7 +1912,7 @@ public class VentaADO {
                 ventaTB.setNumeracion(rsEmps.getString("Numeracion"));
                 ventaTB.setTipo(rsEmps.getInt("Tipo"));
                 ventaTB.setEstado(rsEmps.getInt("Estado"));
-                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
+//                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
                 ventaTB.setImporteNeto(rsEmps.getDouble("Total"));
                 ventaTB.setObservaciones(rsEmps.getString("Observaciones"));
 
@@ -1997,7 +2003,7 @@ public class VentaADO {
         }
     }
 
-    public static Object ListVentasLibres(int opcion, String value, String fechaInicial, String fechaFinal, int comprobante, int estado, String usuario, int posicionPagina, int filasPorPagina) {
+    public static Object Listar_Ventas_Libres(int opcion, String value, String fechaInicial, String fechaFinal, int comprobante, int estado, String usuario, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
         try {
@@ -2021,15 +2027,25 @@ public class VentaADO {
                 ventaTB.setIdVenta(rsEmps.getString("IdVenta"));
                 ventaTB.setFechaVenta(rsEmps.getDate("FechaVenta").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 ventaTB.setHoraVenta(rsEmps.getTime("HoraVenta").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
-                ventaTB.setClienteTB(new ClienteTB(rsEmps.getString("DocumentoCliente"), rsEmps.getString("Cliente")));
+
+                ClienteTB clienteTB = new ClienteTB();
+                clienteTB.setNumeroDocumento(rsEmps.getString("DocumentoCliente"));
+                clienteTB.setInformacion(rsEmps.getString("Cliente"));
+                ventaTB.setClienteTB(clienteTB);
+
                 ventaTB.setComprobanteName(rsEmps.getString("Comprobante"));
                 ventaTB.setSerie(rsEmps.getString("Serie"));
                 ventaTB.setNumeracion(rsEmps.getString("Numeracion"));
                 ventaTB.setTipo(rsEmps.getInt("Tipo"));
                 ventaTB.setEstado(rsEmps.getInt("Estado"));
-                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
                 ventaTB.setImporteNeto(rsEmps.getDouble("Total"));
                 ventaTB.setObservaciones(rsEmps.getString("Observaciones"));
+                
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setSimbolo(rsEmps.getString("Simbolo"));
+                monedaTB.setNombre(rsEmps.getString("NombreMoneda"));
+                monedaTB.setAbreviado(rsEmps.getString("TipoMoneda"));
+                ventaTB.setMonedaTB(monedaTB);
 
                 if (rsEmps.getInt("IdNotaCredito") == 1) {
                     NotaCreditoTB notaCreditoTB = new NotaCreditoTB();
@@ -2154,7 +2170,7 @@ public class VentaADO {
                 ventaTB.setNumeracion(rsEmps.getString("Numeracion"));
                 ventaTB.setTipo(rsEmps.getInt("Tipo"));
                 ventaTB.setEstado(rsEmps.getInt("Estado"));
-                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
+//                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
                 ventaTB.setImporteNeto(rsEmps.getDouble("Total"));
                 ventaTB.setObservaciones(rsEmps.getString("Observaciones"));
 
@@ -2272,7 +2288,7 @@ public class VentaADO {
                 ventaTB.setHoraVenta(rsEmps.getTime("HoraVenta").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 ventaTB.setSerie(rsEmps.getString("Serie"));
                 ventaTB.setNumeracion(rsEmps.getString("Numeracion"));
-                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
+//                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
                 ventaTB.setImporteNeto(rsEmps.getDouble("Total"));
 
                 if (rsEmps.getInt("IdNotaCredito") == 1) {
@@ -2364,7 +2380,7 @@ public class VentaADO {
                 ventaTB.setHoraVenta(rsEmps.getTime("HoraVenta").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 ventaTB.setSerie(rsEmps.getString("Serie"));
                 ventaTB.setNumeracion(rsEmps.getString("Numeracion"));
-                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
+//                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
                 ventaTB.setImporteNeto(rsEmps.getDouble("Total"));
 
                 if (rsEmps.getInt("IdNotaCredito") == 1) {
@@ -2433,7 +2449,7 @@ public class VentaADO {
         }
     }
 
-    public static Object ListCompletaVentasDetalle(String idVenta) {
+    public static Object Obtener_Venta_ById(String idVenta) {
         PreparedStatement statementVenta = null;
         PreparedStatement statementEmpleado = null;
         PreparedStatement statementEmpresa = null;
@@ -2507,7 +2523,7 @@ public class VentaADO {
                 //moneda end
 
                 //empleado start
-                statementEmpleado = DBUtil.getConnection().prepareStatement("SELECT "
+                statementEmpleado = DBUtil.getConnection().prepareStatement("SELECT\n"
                         + "e.Apellidos,\n"
                         + "e.Nombres \n"
                         + "FROM VentaTB AS v INNER JOIN EmpleadoTB AS e \n"
@@ -2545,6 +2561,7 @@ public class VentaADO {
                     suministroTB.setCantidad(resultSetLista.getDouble("Cantidad"));
                     suministroTB.setBonificacion(resultSetLista.getDouble("Bonificacion"));
                     suministroTB.setCostoCompra(resultSetLista.getDouble("CostoVenta"));
+                    suministroTB.setPrecioVentaGeneral(resultSetLista.getDouble("PrecioVenta"));
 
                     ImpuestoTB impuestoTB = new ImpuestoTB();
                     impuestoTB.setIdImpuesto(resultSetLista.getInt("IdImpuesto"));
@@ -2552,27 +2569,6 @@ public class VentaADO {
                     impuestoTB.setNombreImpuesto(resultSetLista.getString("NombreImpuesto"));
                     impuestoTB.setValor(resultSetLista.getDouble("ValorImpuesto"));
                     suministroTB.setImpuestoTB(impuestoTB);
-
-                    double valor_sin_impuesto = resultSetLista.getDouble("PrecioVenta") / ((suministroTB.getImpuestoTB().getValor() / 100.00) + 1);
-                    double descuento = suministroTB.getDescuento();
-                    double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
-                    double preciocalculado = valor_sin_impuesto - porcentajeRestante;
-
-                    suministroTB.setDescuento(descuento);
-                    suministroTB.setDescuentoCalculado(porcentajeRestante);
-                    suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-
-                    suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
-                    suministroTB.setPrecioVentaGeneralReal(preciocalculado);
-
-                    double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-                    suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-                    suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
-                    suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
-
-                    suministroTB.setImporteBruto(suministroTB.getPrecioVentaGeneralUnico() * suministroTB.getCantidad());
-                    suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-                    suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
 
                     suministroTB.setInventario(resultSetLista.getBoolean("Inventario"));
                     suministroTB.setUnidadVenta(resultSetLista.getInt("UnidadVenta"));
@@ -2586,7 +2582,17 @@ public class VentaADO {
                 }
                 ventaTB.setSuministroTBs(empList);
 
-                statementEmpresa = DBUtil.getConnection().prepareStatement("SELECT TOP 1 d.IdAuxiliar,e.NumeroDocumento,e.RazonSocial,e.NombreComercial,e.Domicilio,e.Telefono,e.Email FROM EmpresaTB AS e INNER JOIN DetalleTB AS d ON e.TipoDocumento = d.IdDetalle AND d.IdMantenimiento = '0003'");
+                statementEmpresa = DBUtil.getConnection().prepareStatement("SELECT "
+                        + "TOP 1 d.IdAuxiliar,"
+                        + "e.NumeroDocumento,"
+                        + "e.RazonSocial,"
+                        + "e.NombreComercial,"
+                        + "e.Domicilio,"
+                        + "e.Telefono,"
+                        + "e.Email "
+                        + "FROM EmpresaTB AS e "
+                        + "INNER JOIN DetalleTB AS d "
+                        + "ON e.TipoDocumento = d.IdDetalle AND d.IdMantenimiento = '0003'");
                 ResultSet resultSetEmpresa = statementEmpresa.executeQuery();
                 resultSetEmpresa.next();
                 EmpresaTB empresaTB = new EmpresaTB();
@@ -3017,7 +3023,7 @@ public class VentaADO {
                 ventaTB.setEstado(resultSet.getInt("Estado"));
                 ventaTB.setEstadoName(resultSet.getString("EstadoName"));
                 ventaTB.setFormaName(resultSet.getString("FormaName"));
-                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
+//                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
                 ventaTB.setEfectivo(resultSet.getDouble("Efectivo"));
                 ventaTB.setTarjeta(resultSet.getDouble("Tarjeta"));
                 ventaTB.setDeposito(resultSet.getDouble("Deposito"));
@@ -3074,7 +3080,7 @@ public class VentaADO {
                 ventaTB.setClienteName(resultSet.getString("Informacion"));
                 ventaTB.setEstado(resultSet.getInt("Estado"));
                 ventaTB.setEstadoName(ventaTB.getEstado() == 3 ? "CANCELADO" : ventaTB.getEstado() == 2 ? "POR PAGAR" : "PAGADO");
-                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
+//                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
                 ventaTB.setMontoTotal(resultSet.getDouble("MontoTotal"));
                 ventaTB.setMontoCobrado(resultSet.getDouble("MontoCobrado"));
                 ventaTB.setMontoRestante(ventaTB.getMontoTotal() - ventaTB.getMontoCobrado());
@@ -3149,7 +3155,7 @@ public class VentaADO {
                 ventaTB.setNumeracion(resultSet.getString("Numeracion"));
                 ventaTB.setEstado(resultSet.getInt("Estado"));
                 ventaTB.setEstadoName(resultSet.getString("EstadoName"));
-                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
+//                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
                 ventaTB.setMontoTotal(resultSet.getDouble("MontoTotal"));
                 ventaTB.setMontoCobrado(resultSet.getDouble("MontoCobrado"));
                 ventaTB.setMontoRestante(resultSet.getDouble("MontoTotal") - resultSet.getDouble("MontoCobrado"));
@@ -3220,13 +3226,9 @@ public class VentaADO {
                     suministroTB.setPrecioVentaGeneralReal(preciocalculado);
 
                     double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-                    suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
+//                    suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
                     suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
                     suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
-
-                    suministroTB.setImporteBruto(suministroTB.getPrecioVentaGeneralUnico() * suministroTB.getCantidad());
-                    suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-                    suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
 
                     suministroTB.setInventario(resultSetLista.getBoolean("Inventario"));
                     suministroTB.setUnidadVenta(resultSetLista.getInt("UnidadVenta"));
@@ -3426,7 +3428,7 @@ public class VentaADO {
         return result;
     }
 
-    public static Object ImprimirVetanCreditoById(String idVenta, String idVentaCredito) {
+    public static Object Imprimir_Venta_Credito_ById(String idVenta, String idVentaCredito) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
@@ -3454,7 +3456,7 @@ public class VentaADO {
                 ventaTB.setNumeracion(resultSet.getString("Numeracion"));
                 ventaTB.setEstado(resultSet.getInt("Estado"));
                 ventaTB.setEstadoName(resultSet.getString("EstadoName"));
-                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
+//                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
                 ventaTB.setMontoTotal(resultSet.getDouble("MontoTotal"));
                 ventaTB.setMontoCobrado(resultSet.getDouble("MontoCobrado"));
                 ventaTB.setMontoRestante(resultSet.getDouble("MontoTotal") - resultSet.getDouble("MontoCobrado"));
