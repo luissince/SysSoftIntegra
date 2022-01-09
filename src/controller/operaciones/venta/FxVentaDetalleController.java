@@ -329,14 +329,15 @@ public class FxVentaDetalleController implements Initializable {
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
             FxVentaLlevarController controller = fXMLLoader.getController();
-            controller.setInitData(idVenta, idSuministro, lblComprobante.getText(), costo);
             controller.setInitVentaDetalleController(this);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Producto a llevar", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
+            stage.setOnShowing(w -> controller.setInitData(idVenta, idSuministro, lblComprobante.getText(), costo));
             stage.setOnHiding(w -> principalController.closeFondoModal());
             stage.show();
+            Tools.println("dd");
 
         } catch (IOException ex) {
             Tools.println("Venta estructura openWindowLlevar: " + ex.getLocalizedMessage());
@@ -352,11 +353,11 @@ public class FxVentaDetalleController implements Initializable {
             //Controlller here
             FxVentaLlevarControllerHistorial controller = fXMLLoader.getController();
             controller.setInitVentaDetalleController(this);
-            controller.loadData(ventaTB, suministroTB);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Historial del Producto", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
+            stage.setOnShowing(w -> controller.loadData(ventaTB, suministroTB));
             stage.setOnHiding(w -> principalController.closeFondoModal());
             stage.show();
 

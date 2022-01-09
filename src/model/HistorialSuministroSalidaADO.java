@@ -9,12 +9,19 @@ import javafx.collections.ObservableList;
 
 public class HistorialSuministroSalidaADO {
 
-    public static Object ListarHistorialSuministroSalida(String idVenta, String idSuministro) {
+    public static Object Listar_Historial_Suministro_Salida(String idVenta, String idSuministro) {
         PreparedStatement statementLista = null;
         try {
             DBUtil.dbConnect();
             ObservableList<HistorialSuministroSalidaTB> suministroSalidas = FXCollections.observableArrayList();
-            statementLista = DBUtil.getConnection().prepareStatement("SELECT IdHistorialSuministroLlevar,Fecha,Hora,Cantidad,Observacion FROM HistorialSuministroLlevar WHERE IdVenta = ? AND IdSuministro = ?");
+            statementLista = DBUtil.getConnection().prepareStatement("SELECT "
+                    + "IdHistorialSuministroLlevar,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "Cantidad,"
+                    + "Observacion "
+                    + "FROM HistorialSuministroLlevar "
+                    + "WHERE IdVenta = ? AND IdSuministro = ?");
             statementLista.setString(1, idVenta);
             statementLista.setString(2, idSuministro);
             try (ResultSet rs = statementLista.executeQuery()) {
@@ -37,6 +44,7 @@ public class HistorialSuministroSalidaADO {
                 if (statementLista != null) {
                     statementLista.close();
                 }
+                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
                 return ex.getLocalizedMessage();
             }

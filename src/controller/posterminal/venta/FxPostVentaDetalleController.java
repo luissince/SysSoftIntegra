@@ -370,26 +370,26 @@ public class FxPostVentaDetalleController implements Initializable {
     }
 
     private void openWindowReporte() {
-        if (ventaTB != null) {
-            try {
-                URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
-                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                Parent parent = fXMLLoader.load(url.openStream());
-                //Controlller here
-                FxReportViewController controller = fXMLLoader.getController();
-                controller.setFileName(ventaTB.getComprobanteName().toUpperCase() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-                controller.setJasperPrint(fxOpcionesImprimirController.getTicketVenta().reportA4());
-                controller.show();
-                Stage stage = WindowStage.StageLoader(parent, "Venta realizada");
-                stage.setResizable(true);
-                stage.show();
-                stage.requestFocus();
-            } catch (IOException | JRException ex) {
-                Tools.AlertMessageError(window, "Reporte de Ventas", "Error al generar el reporte: " + ex.getLocalizedMessage());
-            }
-        } else {
-            Tools.AlertMessageWarning(window, "Detalle Venta", "No se puede generar el reporte por problemas en al carga de información.");
-        }
+//        if (ventaTB != null) {
+//            try {
+//                URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
+//                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+//                Parent parent = fXMLLoader.load(url.openStream());
+//                //Controlller here
+//                FxReportViewController controller = fXMLLoader.getController();
+//                controller.setFileName(ventaTB.getComprobanteName().toUpperCase() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+//                controller.setJasperPrint(fxOpcionesImprimirController.getTicketVenta().reportA4());
+//                controller.show();
+//                Stage stage = WindowStage.StageLoader(parent, "Venta realizada");
+//                stage.setResizable(true);
+//                stage.show();
+//                stage.requestFocus();
+//            } catch (IOException | JRException ex) {
+//                Tools.AlertMessageError(window, "Reporte de Ventas", "Error al generar el reporte: " + ex.getLocalizedMessage());
+//            }
+//        } else {
+//            Tools.AlertMessageWarning(window, "Detalle Venta", "No se puede generar el reporte por problemas en al carga de información.");
+//        }
     }
 
     private void onEventImprimirVenta() {

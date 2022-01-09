@@ -23,7 +23,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -32,7 +31,6 @@ import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import model.DetalleVentaTB;
 import model.HistorialSuministroSalidaTB;
-import model.SuministroTB;
 import model.VentaADO;
 import model.VentaTB;
 import net.sf.jasperreports.engine.JRException;
@@ -238,7 +236,7 @@ public class TicketVentaLlevar {
         for (int i = 0; i < hbPie.getChildren().size(); i++) {
             HBox box = ((HBox) hbPie.getChildren().get(i));
             billPrintable.hbPie(box,
-                    "M",                  
+                    "M",
                     "0.00",
                     "0.00",
                     "0.00",
@@ -352,7 +350,7 @@ public class TicketVentaLlevar {
             HBox box = ((HBox) hbPie.getChildren().get(i));
             rows++;
             lines += billPrintable.hbPie(box,
-                    "M",                   
+                    "M",
                     "0.00",
                     "0.00",
                     "0.00",
@@ -375,7 +373,7 @@ public class TicketVentaLlevar {
         return billPrintable.modelTicket(rows + lines + 1 + 10, lines, object, nombreImpresora, cortaPapel);
     }
 
-    public void mostrarReporte(VentaTB ventaTB, SuministroTB suministroTB, TableView<HistorialSuministroSalidaTB> tvList) {
+    public void mostrarReporte(String idVenta, String idSuministro) {
         ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -384,7 +382,52 @@ public class TicketVentaLlevar {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return new Object();
+                Object object = VentaADO.ListarHistorialSuministroLlevar(idVenta, idSuministro);
+
+                if (object instanceof Object[]) {
+                    Object[] objects = (Object[]) object;
+                    try {
+                        VentaTB ventaTB = (VentaTB) objects[0];
+                        DetalleVentaTB detalleVentaTB = (DetalleVentaTB) objects[1];
+                        ArrayList<HistorialSuministroSalidaTB> suministroSalidas = (ArrayList<HistorialSuministroSalidaTB>) objects[2];
+
+                        double cantidad = 0;
+                        cantidad = suministroSalidas.stream().map(sd -> sd.getCantidad()).reduce(cantidad, (accumulator, _item) -> accumulator + _item);
+
+                        InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+
+                        if (Session.COMPANY_IMAGE != null) {
+                            imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
+                        }
+
+                        InputStream dir = getClass().getResourceAsStream("/report/ReporteHistorialMoivimiento.jasper");
+
+                        Map map = new HashMap();
+                        map.put("LOGO", imgInputStream);
+                        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
+                        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
+                        map.put("TELEFONOCELULAR", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
+                        map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
+                        map.put("DOCUMENTOEMPRESA", "R.U.C " + Session.COMPANY_NUMERO_DOCUMENTO);
+
+                        map.put("CLIENTE_INFORMACION", ventaTB.getClienteTB().getInformacion());
+                        map.put("CLIENTE_CELULAR", ventaTB.getClienteTB().getCelular());
+                        map.put("CLIENTE_EMAIL", ventaTB.getClienteTB().getEmail());
+                        map.put("PRODUCTO", detalleVentaTB.getSuministroTB().getNombreMarca());
+
+                        map.put("COMPROBANTE", ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+                        map.put("FECHA", ventaTB.getFechaVenta() + " " + ventaTB.getHoraVenta());
+                        map.put("TIPO_ESTADO", ventaTB.getTipoName() + " " + ventaTB.getEstadoName());
+                        map.put("CANTIDAD", Tools.roundingValue(cantidad, 2));
+
+                        return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(suministroSalidas));
+
+                    } catch (JRException ex) {
+                        return "Error en imprimir: " + ex.getLocalizedMessage();
+                    }
+                } else {
+                    return (String) object;
+                }
             }
         };
         task.setOnScheduled(w -> {
@@ -404,8 +447,19 @@ public class TicketVentaLlevar {
         task.setOnSucceeded(w -> {
             try {
                 Object object = task.getValue();
-                if (object instanceof Object) {
-                    reportDesing(ventaTB, suministroTB, tvList);
+                if (object instanceof JasperPrint) {
+                    URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
+                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                    Parent parent = fXMLLoader.load(url.openStream());
+                    //Controlller here
+                    FxReportViewController controller = fXMLLoader.getController();
+                    //controller.setFileName(ventaTB.getComprobanteName().toUpperCase() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+                    controller.setJasperPrint((JasperPrint) object);
+                    controller.show();
+                    Stage stage = WindowStage.StageLoader(parent, "Historial de Salida");
+                    stage.setResizable(true);
+                    stage.show();
+                    stage.requestFocus();
 
                     Tools.showAlertNotification("/view/image/succes_large.png",
                             "Generando reporte",
@@ -420,7 +474,7 @@ public class TicketVentaLlevar {
                             Duration.seconds(10),
                             Pos.BOTTOM_RIGHT);
                 }
-            } catch (IOException | JRException ex) {
+            } catch (IOException ex) {
                 Tools.showAlertNotification("/view/image/error_large.png",
                         "Generando reporte",
                         Tools.newLineString("Error en generar el reporte: " + ex.getLocalizedMessage()),
@@ -432,50 +486,6 @@ public class TicketVentaLlevar {
         if (!exec.isShutdown()) {
             exec.shutdown();
         }
-    }
-
-    private void reportDesing(VentaTB ventaTB, SuministroTB suministroTB, TableView<HistorialSuministroSalidaTB> tvList) throws IOException, JRException {
-        InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-
-        if (Session.COMPANY_IMAGE != null) {
-            imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
-        }
-
-        InputStream dir = getClass().getResourceAsStream("/report/ReporteHistorialMoivimiento.jasper");
-
-        Map map = new HashMap();
-        map.put("LOGO", imgInputStream);
-        //map.put("ICON", imgInputStreamIcon);
-        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
-        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-        map.put("TELEFONOCELULAR", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
-        map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
-        map.put("DOCUMENTOEMPRESA", "R.U.C " + Session.COMPANY_NUMERO_DOCUMENTO);
-
-        map.put("CLIENTE_INFORMACION", ventaTB.getClienteTB().getInformacion());
-        map.put("CLIENTE_CELULAR", ventaTB.getClienteTB().getCelular());
-        map.put("CLIENTE_EMAIL", ventaTB.getClienteTB().getEmail());
-        map.put("PRODUCTO", suministroTB.getNombreMarca());
-
-        map.put("COMPROBANTE", ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-        map.put("FECHA", ventaTB.getFechaVenta() + " " + ventaTB.getHoraVenta());
-        map.put("TIPO_ESTADO", ventaTB.getTipoName() + " " + ventaTB.getEstadoName());
-        map.put("CANTIDAD", Tools.roundingValue(suministroTB.getCantidad(), 2));
-
-        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(tvList.getItems()));
-
-        URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
-        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-        Parent parent = fXMLLoader.load(url.openStream());
-        //Controlller here
-        FxReportViewController controller = fXMLLoader.getController();
-        //controller.setFileName(ventaTB.getComprobanteName().toUpperCase() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-        controller.setJasperPrint(jasperPrint);
-        controller.show();
-        Stage stage = WindowStage.StageLoader(parent, "Historial de Salida");
-        stage.setResizable(true);
-        stage.show();
-        stage.requestFocus();
     }
 
 }
