@@ -160,7 +160,7 @@ public class FxPostVentaDetalleController implements Initializable {
                 lblEfectivo.setText(Tools.roundingValue(ventaTB.getEfectivo(), 2));
                 lblTarjeta.setText(Tools.roundingValue(ventaTB.getTarjeta(), 2));
                 lblDeposito.setText(Tools.roundingValue(ventaTB.getDeposito(), 2));
-                lblValor.setText(Tools.roundingValue(ventaTB.getImporteNeto(), 2));
+//                lblValor.setText(Tools.roundingValue(ventaTB.getImporteNeto(), 2));
                 lblVuelto.setText(Tools.roundingValue(ventaTB.getVuelto(), 2));
 
                 if (empleadoTB != null) {
@@ -213,7 +213,7 @@ public class FxPostVentaDetalleController implements Initializable {
             //Controlller here
             FxPostVentaDevolucionController controller = fXMLLoader.getController();
             controller.setInitVentaDetalle(this);
-            controller.setLoadVentaDevolucion(idVenta, arrList, ventaTB.getSerie() + "-" + ventaTB.getNumeracion(), Tools.roundingValue(ventaTB.getImporteNeto(), 2));
+//            controller.setLoadVentaDevolucion(idVenta, arrList, ventaTB.getSerie() + "-" + ventaTB.getNumeracion(), Tools.roundingValue(ventaTB.getImporteNeto(), 2));
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Cancelar la venta", window.getScene().getWindow());
             stage.setResizable(false);
@@ -227,11 +227,11 @@ public class FxPostVentaDetalleController implements Initializable {
 
     private void calcularTotales() {
         if (ventaTB != null) {
-            lblValorVenta.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImporteBruto(), 2));
-            lblDescuento.setText(ventaTB.getMonedaTB().getSimbolo() + " -" + Tools.roundingValue(ventaTB.getDescuento(), 2));
-            lblSubTotal.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getSubImporteNeto(), 2));
-            lblImpuesto.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImpuesto(), 2));
-            lblTotal.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImporteNeto(), 2));
+//            lblValorVenta.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImporteBruto(), 2));
+//            lblDescuento.setText(ventaTB.getMonedaTB().getSimbolo() + " -" + Tools.roundingValue(ventaTB.getDescuento(), 2));
+//            lblSubTotal.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getSubImporteNeto(), 2));
+//            lblImpuesto.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImpuesto(), 2));
+//            lblTotal.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImporteNeto(), 2));
         }
     }
 

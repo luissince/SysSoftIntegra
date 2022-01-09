@@ -360,6 +360,7 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setPrecioVentaGeneralUnico(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
             suministroTB.setPrecioVentaGeneralReal(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
 
+            suministroTB.setIdImpuesto(tvList.getSelectionModel().getSelectedItem().getIdImpuesto());
             suministroTB.setImpuestoTB(tvList.getSelectionModel().getSelectedItem().getImpuestoTB());
 
             suministroTB.setInventario(tvList.getSelectionModel().getSelectedItem().isInventario());

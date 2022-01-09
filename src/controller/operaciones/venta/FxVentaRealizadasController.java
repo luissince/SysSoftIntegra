@@ -141,7 +141,7 @@ public class FxVentaRealizadasController implements Initializable {
                 cellData.getValue().getComprobanteName() + "\n"
                 + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()
                 + (cellData.getValue().getNotaCreditoTB() != null ? " (NOTA CREDITO: " + cellData.getValue().getNotaCreditoTB().getSerie() + "-" + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")" : "")));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
         tcFechaVenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.11));
@@ -248,7 +248,7 @@ public class FxVentaRealizadasController implements Initializable {
     private void openWindowDetalleVenta() throws IOException {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             FXMLLoader fXMLLoader = new FXMLLoader(getClass().getResource(FilesRouters.FX_VENTA_DETALLE));
-            ScrollPane node = fXMLLoader.load();
+            AnchorPane node = fXMLLoader.load();
             //Controlller here
             FxVentaDetalleController controller = fXMLLoader.getController();
             controller.setInitVentasController(this, fxPrincipalController);

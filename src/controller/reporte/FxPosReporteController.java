@@ -470,7 +470,7 @@ public class FxPosReporteController implements Initializable {
                             cellStyle = workbook.createCellStyle();
                             cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
                             cell11.setCellStyle(cellStyle);
-                            cell11.setCellValue(Double.parseDouble(Tools.roundingValue(list.get(i).getImporteNeto(), 2)));
+//                            cell11.setCellValue(Double.parseDouble(Tools.roundingValue(list.get(i).getImporteNeto(), 2)));
                             cell11.setCellType(Cell.CELL_TYPE_NUMERIC);
                             sheet.autoSizeColumn(cell11.getColumnIndex());
                         }
@@ -625,17 +625,17 @@ public class FxPosReporteController implements Initializable {
 
             for (VentaTB vt : list) {
                 if (vt.getNotaCreditoTB() != null) {
-                    totalanulado += vt.getImporteNeto();
+//                    totalanulado += vt.getImporteNeto();
                 } else {
                     if (vt.getEstado() == 3) {
-                        totalanulado += vt.getImporteNeto();
+//                        totalanulado += vt.getImporteNeto();
                     } else {
                         if (vt.getTipo() == 1 && vt.getEstado() == 1 || vt.getTipo() == 1 && vt.getEstado() == 4) {
-                            totalcontado += vt.getImporteNeto();
+//                            totalcontado += vt.getImporteNeto();
                         } else if (vt.getTipo() == 2 && vt.getEstado() == 1) {
-                            totalcreditopagado += vt.getImporteNeto();
+//                            totalcreditopagado += vt.getImporteNeto();
                         } else {
-                            totalcredito += vt.getImporteNeto();
+//                            totalcredito += vt.getImporteNeto();
                         }
                     }
                 }
@@ -645,14 +645,14 @@ public class FxPosReporteController implements Initializable {
 //                        efectivo += vt.getImporteNeto();
                     } else if (vt.getEstado() == 1 || vt.getEstado() == 4) {
                         if (vt.getFormaName().equalsIgnoreCase("EFECTIVO")) {
-                            efectivo += vt.getImporteNeto();
+//                            efectivo += vt.getImporteNeto();
                         } else if (vt.getFormaName().equalsIgnoreCase("TARJETA")) {
-                            tarjeta += vt.getImporteNeto();
+//                            tarjeta += vt.getImporteNeto();
                         } else if (vt.getFormaName().equalsIgnoreCase("MIXTO")) {
                             efectivo += vt.getEfectivo();
                             tarjeta += vt.getTarjeta();
                         } else {
-                            deposito += vt.getImporteNeto();
+//                            deposito += vt.getImporteNeto();
                         }
                     }
                 }

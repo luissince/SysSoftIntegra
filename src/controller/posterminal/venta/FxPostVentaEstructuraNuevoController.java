@@ -709,11 +709,11 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
                 ventaTB.setNumeracion(lblNumeracion.getText());
                 ventaTB.setFechaVenta(Tools.getDate());
                 ventaTB.setHoraVenta(Tools.getTime());
-                ventaTB.setImporteBruto(importeBruto);
-                ventaTB.setDescuento(descuentoBruto);
-                ventaTB.setSubImporteNeto(subImporteNeto);
-                ventaTB.setImpuesto(impuestoNeto);
-                ventaTB.setImporteNeto(importeNeto);
+//                ventaTB.setImporteBruto(importeBruto);
+//                ventaTB.setDescuento(descuentoBruto);
+//                ventaTB.setSubImporteNeto(subImporteNeto);
+//                ventaTB.setImpuesto(impuestoNeto);
+//                ventaTB.setImporteNeto(importeNeto);
                 ventaTB.setClienteTB(clienteTB);
                 ArrayList<SuministroTB> suministroTBs = new ArrayList<>();
                 lvProductoAgregados.getItems().forEach(e -> suministroTBs.add(e.getSuministroTB()));

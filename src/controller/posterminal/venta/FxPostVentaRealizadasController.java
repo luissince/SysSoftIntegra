@@ -134,7 +134,7 @@ public class FxPostVentaRealizadasController implements Initializable {
                 cellData.getValue().getComprobanteName() + "\n"
                 + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()
                 + (cellData.getValue().getNotaCreditoTB() != null ? " Modificado(" + cellData.getValue().getNotaCreditoTB().getSerie() + "-" + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")" : "")));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+//        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcFechaVenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));

@@ -131,7 +131,7 @@ public class FxPostVentaProcesoNuevoController implements Initializable {
         this.ventaTB = ventaTB;
         this.tvList = tvList;
         moneda_simbolo = ventaTB.getMonedaTB().getSimbolo();
-        total_venta = Double.parseDouble(Tools.roundingValue(ventaTB.getImporteNeto(), 2));
+//        total_venta = Double.parseDouble(Tools.roundingValue(ventaTB.getImporteNeto(), 2));
 
         lblTotal.setText("TOTAL A PAGAR: " + moneda_simbolo + " " + Tools.roundingValue(total_venta, 2));
 

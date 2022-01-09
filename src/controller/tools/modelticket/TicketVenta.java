@@ -8,7 +8,6 @@ import controller.reporte.FxReportViewController;
 import controller.tools.BillPrintable;
 import controller.tools.ConvertMonedaCadena;
 import controller.tools.FilesRouters;
-import controller.tools.ObjectGlobal;
 import controller.tools.Session;
 import controller.tools.Tools;
 import controller.tools.WindowStage;
@@ -55,9 +54,11 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class TicketVenta {
 
@@ -160,7 +161,7 @@ public class TicketVenta {
 
                             if (Session.DESING_IMPRESORA_VENTA.equalsIgnoreCase("withdesing")) {
                                 billPrintable.loadEstructuraTicket(Session.TICKET_VENTA_ID, Session.TICKET_VENTA_RUTA, hbEncabezado, hbDetalleCabecera, hbPie);
-                                ObjectGlobal.QR_PERU_DATA = "|" + Session.COMPANY_NUMERO_DOCUMENTO + "|" + ventaTB.getCodigoAlterno() + "|" + ventaTB.getSerie() + "|" + ventaTB.getNumeracion() + "|" + Tools.roundingValue(ventaTB.getImpuesto(), 2) + "|" + Tools.roundingValue(ventaTB.getImporteNeto(), 2) + "|" + ventaTB.getFechaVenta() + "|" + ventaTB.getClienteTB().getIdAuxiliar() + "|" + ventaTB.getClienteTB().getNumeroDocumento() + "|";
+//                                ObjectGlobal.QR_PERU_DATA = "|" + Session.COMPANY_NUMERO_DOCUMENTO + "|" + ventaTB.getCodigoAlterno() + "|" + ventaTB.getSerie() + "|" + ventaTB.getNumeracion() + "|" + Tools.roundingValue(ventaTB.getImpuesto(), 2) + "|" + Tools.roundingValue(ventaTB.getImporteNeto(), 2) + "|" + ventaTB.getFechaVenta() + "|" + ventaTB.getClienteTB().getIdAuxiliar() + "|" + ventaTB.getClienteTB().getNumeroDocumento() + "|";
 
                                 for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
                                     HBox box = ((HBox) hbEncabezado.getChildren().get(i));
@@ -173,7 +174,8 @@ public class TicketVenta {
                                             ventaTB.getClienteTB().getCelular(),
                                             ventaTB.getClienteTB().getDireccion(),
                                             ventaTB.getCodigo(),
-                                            monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()),
+                                            "0",
+                                            //                                            monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()),
                                             ventaTB.getFechaVenta(),
                                             ventaTB.getHoraVenta(),
                                             "",
@@ -222,18 +224,24 @@ public class TicketVenta {
                                 for (int i = 0; i < hbPie.getChildren().size(); i++) {
                                     HBox box = ((HBox) hbPie.getChildren().get(i));
                                     billPrintable.hbPie(box, ventaTB.getMonedaTB().getSimbolo(),
-                                            Tools.roundingValue(ventaTB.getImporteBruto(), 2),
-                                            Tools.roundingValue(ventaTB.getDescuento(), 2),
-                                            Tools.roundingValue(ventaTB.getSubImporteNeto(), 2),
-                                            Tools.roundingValue(ventaTB.getImpuesto(), 2),
-                                            Tools.roundingValue(ventaTB.getImporteNeto(), 2),
+                                            //                                            Tools.roundingValue(ventaTB.getImporteBruto(), 2),
+                                            //                                            Tools.roundingValue(ventaTB.getDescuento(), 2),
+                                            //                                            Tools.roundingValue(ventaTB.getSubImporteNeto(), 2),
+                                            //                                            Tools.roundingValue(ventaTB.getImpuesto(), 2),
+                                            //                                            Tools.roundingValue(ventaTB.getImporteNeto(), 2),
+                                            "",
+                                            "",
+                                            "",
+                                            "",
+                                            "",
                                             Tools.roundingValue(ventaTB.getTarjeta(), 2),
                                             Tools.roundingValue(ventaTB.getEfectivo(), 2),
                                             Tools.roundingValue(ventaTB.getVuelto(), 2),
                                             ventaTB.getClienteTB().getNumeroDocumento(),
                                             ventaTB.getClienteTB().getInformacion(), ventaTB.getCodigo(),
                                             ventaTB.getClienteTB().getCelular(),
-                                            monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()),
+                                            "",
+                                            //                                            monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()),
                                             "",
                                             "",
                                             "",
@@ -346,7 +354,8 @@ public class TicketVenta {
                     ventaTB.getClienteTB().getCelular(),
                     ventaTB.getClienteTB().getDireccion(),
                     ventaTB.getCodigo(),
-                    monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()),
+                    "",
+                    //                    monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()),
                     ventaTB.getFechaVenta(),
                     ventaTB.getHoraVenta(),
                     "",
@@ -398,18 +407,24 @@ public class TicketVenta {
             rows++;
             lines += billPrintable.hbPie(box,
                     ventaTB.getMonedaTB().getSimbolo(),
-                    Tools.roundingValue(ventaTB.getImporteBruto(), 2),
-                    Tools.roundingValue(ventaTB.getDescuento(), 2),
-                    Tools.roundingValue(ventaTB.getSubImporteNeto(), 2),
-                    Tools.roundingValue(ventaTB.getImpuesto(), 2),
-                    Tools.roundingValue(ventaTB.getImporteNeto(), 2),
+                    //                    Tools.roundingValue(ventaTB.getImporteBruto(), 2),
+                    //                    Tools.roundingValue(ventaTB.getDescuento(), 2),
+                    //                    Tools.roundingValue(ventaTB.getSubImporteNeto(), 2),
+                    //                    Tools.roundingValue(ventaTB.getImpuesto(), 2),
+                    //                    Tools.roundingValue(ventaTB.getImporteNeto(), 2),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
                     Tools.roundingValue(ventaTB.getTarjeta(), 2),
                     Tools.roundingValue(ventaTB.getEfectivo(), 2),
                     Tools.roundingValue(ventaTB.getVuelto(), 2),
                     ventaTB.getClienteTB().getNumeroDocumento(),
                     ventaTB.getClienteTB().getInformacion(), ventaTB.getCodigo(),
                     ventaTB.getClienteTB().getCelular(),
-                    monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()),
+                    "",
+                    //                    monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()),
                     "",
                     "",
                     "",
@@ -433,6 +448,39 @@ public class TicketVenta {
                     try {
                         VentaTB ventaTB = (VentaTB) object;
 
+                        double importeBrutoTotal = 0;
+                        double descuentoTotal = 0;
+                        double subImporteNetoTotal = 0;
+                        double impuestoTotal = 0;
+                        double importeNetoTotal = 0;
+                        JSONArray array = new JSONArray();
+
+                        for (SuministroTB ocdtb : ventaTB.getSuministroTBs()) {
+                            JSONObject jsono = new JSONObject();
+                            jsono.put("id", ocdtb.getId());
+                            jsono.put("cantidad", Tools.roundingValue(ocdtb.getCantidad(), 2));
+                            jsono.put("unidad", ocdtb.getUnidadCompraName());
+                            jsono.put("producto", ocdtb.getClave() + "\n" + ocdtb.getNombreMarca());
+                            jsono.put("precio", Tools.roundingValue(ocdtb.getPrecioVentaGeneral(), 2));
+                            jsono.put("descuento", Tools.roundingValue(ocdtb.getDescuento(), 0));
+                            jsono.put("importe", Tools.roundingValue(ocdtb.getPrecioVentaGeneral() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
+                            array.add(jsono);
+
+                            double importeBruto = ocdtb.getPrecioVentaGeneral() * ocdtb.getCantidad();
+                            double descuento = ocdtb.getDescuento();
+                            double subImporteBruto = importeBruto - descuento;
+                            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+                            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+                            double importeNeto = subImporteNeto + impuesto;
+
+                            importeBrutoTotal += importeBruto;
+                            descuentoTotal += descuento;
+                            subImporteNetoTotal += subImporteNeto;
+                            impuestoTotal += impuesto;
+                            importeNetoTotal += importeNeto;
+                        }
+                        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(array.toJSONString().getBytes());
+
                         InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
                         InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
                         if (Session.COMPANY_IMAGE != null) {
@@ -440,7 +488,7 @@ public class TicketVenta {
                         }
                         InputStream dir = getClass().getResourceAsStream("/report/VentaRealizada.jasper");
 
-                        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(new QRCodeWriter().encode("|" + Session.COMPANY_NUMERO_DOCUMENTO + "|" + ventaTB.getCodigoAlterno() + "|" + ventaTB.getSerie() + "|" + ventaTB.getNumeracion() + "|" + Tools.roundingValue(ventaTB.getImpuesto(), 2) + "|" + Tools.roundingValue(ventaTB.getImporteNeto(), 2) + "|" + ventaTB.getFechaVenta() + "|" + ventaTB.getClienteTB().getIdAuxiliar() + "|" + ventaTB.getClienteTB().getNumeroDocumento() + "|", BarcodeFormat.QR_CODE, 800, 800));
+                        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(new QRCodeWriter().encode("|" + Session.COMPANY_NUMERO_DOCUMENTO + "|" + ventaTB.getCodigoAlterno() + "|" + ventaTB.getSerie() + "|" + ventaTB.getNumeracion() + "|" + Tools.roundingValue(impuestoTotal, 2) + "|" + Tools.roundingValue(importeNetoTotal, 2) + "|" + ventaTB.getFechaVenta() + "|" + ventaTB.getClienteTB().getIdAuxiliar() + "|" + ventaTB.getClienteTB().getNumeroDocumento() + "|", BarcodeFormat.QR_CODE, 800, 800));
                         /**
                          */
                         Map map = new HashMap();
@@ -458,8 +506,7 @@ public class TicketVenta {
                         map.put("FECHA_VENTA", ventaTB.getFechaVenta());
                         map.put("MONEDA", ventaTB.getMonedaTB().getNombre() + " - " + ventaTB.getMonedaTB().getAbreviado());
 
-                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(ventaTB.getImporteNeto(), 2), true, ventaTB.getMonedaTB().getNombre()));
-
+                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, ventaTB.getMonedaTB().getNombre()));
                         map.put("DOUMENTO_CLIENTE", ventaTB.getClienteTB().getNumeroDocumento());
                         map.put("INFORMACION_CLIENTE", ventaTB.getClienteTB().getInformacion());
                         map.put("DIRECCION_CLIENTE", ventaTB.getClienteTB().getDireccion());
@@ -471,8 +518,14 @@ public class TicketVenta {
                         map.put("NUMEROS_CUENTA", BancoADO.Listar_Banco_Mostrar());
                         map.put("QR_DATA", qrImage);
 
+                        map.put("IMPORTE_BRUTO", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBrutoTotal, 2));
+                        map.put("DESCUENTO", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(descuentoTotal, 2));
+                        map.put("SUB_IMPORTE", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+                        map.put("IMPUESTO", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
+                        map.put("IMPORTE_NETO", ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNetoTotal, 2));
+
                         fileName = ventaTB.getComprobanteName() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion();
-                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JREmptyDataSource());
+                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
                         return jasperPrint;
                     } catch (JRException | WriterException ex) {
                         return ex.getLocalizedMessage();
@@ -545,7 +598,7 @@ public class TicketVenta {
         }
     }
 
-    public JasperPrint reportA4() throws JRException {
+    public JasperPrint reportA4(VentaTB ventaTB) throws JRException {
 
         InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
 

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.venta.FxVentaRealizadasController">
+<VBox fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.venta.FxVentaRealizadasController">
    <children>
       <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 2px 0; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
          <children>
@@ -69,7 +69,7 @@
                            <children>
                               <VBox style="-fx-spacing: 0.3333333333333333em;">
                                  <children>
-                                    <Label styleClass="labelOpenSansRegular13" text="Fecha inicial" textFill="#020203">
+                                    <Label styleClass="labelRoboto13" text="Fecha inicial" textFill="#020203">
                                        <font>
                                           <Font name="Calibri" size="15.0" />
                                        </font>
@@ -86,7 +86,7 @@
                               </VBox>
                               <VBox style="-fx-spacing: 0.3333333333333333em;">
                                  <children>
-                                    <Label styleClass="labelOpenSansRegular13" text="Fecha final" textFill="#020203">
+                                    <Label styleClass="labelRoboto13" text="Fecha final" textFill="#020203">
                                        <font>
                                           <Font name="Calibri" size="15.0" />
                                        </font>
@@ -103,7 +103,7 @@
                               </VBox>
                               <VBox style="-fx-spacing: 0.3333333333333333em;">
                                  <children>
-                                    <Label styleClass="labelOpenSansRegular13" text="Documento" textFill="#020203">
+                                    <Label styleClass="labelRoboto13" text="Comprobantes" textFill="#020203">
                                        <font>
                                           <Font name="Calibri" size="15.0" />
                                        </font>
@@ -120,7 +120,7 @@
                               </VBox>
                               <VBox style="-fx-spacing: 0.3333333333333333em;">
                                  <children>
-                                    <Label styleClass="labelOpenSansRegular13" text="Estado" textFill="#020203">
+                                    <Label styleClass="labelRoboto13" text="Estado" textFill="#020203">
                                        <font>
                                           <Font name="Calibri" size="15.0" />
                                        </font>
@@ -137,7 +137,7 @@
                               </VBox>
                               <VBox style="-fx-spacing: 0.3333333333333333em;">
                                  <children>
-                                    <Label styleClass="labelOpenSansRegular13" text="Venta Total" textFill="#020203">
+                                    <Label styleClass="labelRoboto13" text="Venta Total" textFill="#020203">
                                        <font>
                                           <Font name="Calibri" size="15.0" />
                                        </font>
@@ -162,7 +162,7 @@
                            <children>
                               <VBox style="-fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label styleClass="labelOpenSansRegular13" text="Buscar por N° de Documento, Datos del Cliente o Serie/Numeración de Comprobante" textFill="#020203">
+                                    <Label styleClass="labelRoboto13" text="Buscar por N° de Documento, Datos del Cliente o Serie/Numeración de Comprobante" textFill="#020203">
                                        <font>
                                           <Font name="Calibri" size="15.0" />
                                        </font>
@@ -179,7 +179,7 @@
                               </VBox>
                               <VBox style="-fx-spacing: 0.3333333333333333em;">
                                  <children>
-                                    <Label styleClass="labelOpenSansRegular14" text="Vendedor" textFill="#020203">
+                                    <Label styleClass="labelRoboto13" text="Vendedor" textFill="#020203">
                                        <font>
                                           <Font name="Calibri" size="15.0" />
                                        </font>

@@ -204,8 +204,7 @@ public class FxOrdenCompraDetalleController implements Initializable {
         lblImporteNeto.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(importeNetoTotal, 2));
     }
 
-    @FXML
-    private void onMouseClickedBehind(MouseEvent event) {
+    private void onEventClose() {
         fxPrincipalController.getVbContent().getChildren().remove(apWindow);
         fxPrincipalController.getVbContent().getChildren().clear();
         AnchorPane.setLeftAnchor(ordenCompraRealizadasController.getVbWindow(), 0d);
@@ -213,6 +212,11 @@ public class FxOrdenCompraDetalleController implements Initializable {
         AnchorPane.setRightAnchor(ordenCompraRealizadasController.getVbWindow(), 0d);
         AnchorPane.setBottomAnchor(ordenCompraRealizadasController.getVbWindow(), 0d);
         fxPrincipalController.getVbContent().getChildren().add(ordenCompraRealizadasController.getVbWindow());
+    }
+
+    @FXML
+    private void onMouseClickedBehind(MouseEvent event) {
+        onEventClose();
     }
 
     @FXML
@@ -242,14 +246,13 @@ public class FxOrdenCompraDetalleController implements Initializable {
     @FXML
     private void onKeyPressedAceptarLoad(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-
+            onEventClose();
         }
-
     }
 
     @FXML
     private void onActionAceptarLoad(ActionEvent event) {
-
+        onEventClose();
     }
 
     public void setInitOrdenCompraRealizadasController(FxOrdenCompraRealizadasController ordenCompraRealizadasController, FxPrincipalController fxPrincipalController) {

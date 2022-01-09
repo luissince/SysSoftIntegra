@@ -33,15 +33,7 @@ public class VentaTB {
     
     private String horaVencimiento;
     
-    private double importeBruto;
-    
-    private double descuento;
-    
-    private double subImporteNeto;
-    
-    private double impuesto;
-    
-    private double importeNeto;
+    private double total;
     
     private int tipo;
     
@@ -109,10 +101,9 @@ public class VentaTB {
 
     }
 
-    public VentaTB(int id, String fechaVenta, double importeNeto) {
+    public VentaTB(int id, String fechaVenta) {
         this.id = id;
         this.fechaVenta = fechaVenta;
-        this.importeNeto = importeNeto;
     }
 
     public int getId() {
@@ -219,46 +210,14 @@ public class VentaTB {
         this.horaVencimiento = horaVencimiento;
     }
 
-    public double getImporteBruto() {
-        return importeBruto;
+    public double getTotal() {
+        return total;
     }
 
-    public void setImporteBruto(double importeBruto) {
-        this.importeBruto = importeBruto;
+    public void setTotal(double total) {
+        this.total = total;
     }
-
-    public double getDescuento() {
-        return descuento;
-    }
-
-    public void setDescuento(double descuento) {
-        this.descuento = descuento;
-    }
-
-    public double getSubImporteNeto() {
-        return subImporteNeto;
-    }
-
-    public void setSubImporteNeto(double subImporteNeto) {
-        this.subImporteNeto = subImporteNeto;
-    }
-
-    public double getImpuesto() {
-        return impuesto;
-    }
-
-    public void setImpuesto(double impuesto) {
-        this.impuesto = impuesto;
-    }
-
-    public double getImporteNeto() {
-        return importeNeto;
-    }
-
-    public void setImporteNeto(double importeNeto) {
-        this.importeNeto = importeNeto;
-    }
-
+    
     public int getTipo() {
         return tipo;
     }

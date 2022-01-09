@@ -93,8 +93,6 @@ public class FxVentaProcesoNuevoController implements Initializable {
 
     private FxVentaEstructuraNuevoController ventaEstructuraNuevoController;
 
-    private ArrayList<SuministroTB> tvList;
-
     private ConvertMonedaCadena monedaCadena;
 
     private VentaTB ventaTB;
@@ -129,9 +127,8 @@ public class FxVentaProcesoNuevoController implements Initializable {
 
     public void setInitComponents(VentaTB ventaTB, ArrayList<SuministroTB> tvList, boolean provilegios, String moneda) {
         this.ventaTB = ventaTB;
-        this.tvList = tvList;
         moneda_simbolo = ventaTB.getMonedaTB().getSimbolo();
-        total_venta = Double.parseDouble(Tools.roundingValue(ventaTB.getImporteNeto(), 2));
+//        total_venta = Double.parseDouble(Tools.roundingValue(ventaTB.getImporteNeto(), 2));
 
         lblTotal.setText("TOTAL A PAGAR: " + moneda_simbolo + " " + Tools.roundingValue(total_venta, 2));
 
@@ -295,7 +292,7 @@ public class FxVentaProcesoNuevoController implements Initializable {
 
                     short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Esta seguro de continuar?");
                     if (confirmation == 1) {
-                        ResultTransaction result = VentaADO.registrarVentaContado(ventaTB, tvList, privilegios);
+                        ResultTransaction result = VentaADO.registrarVentaContado(ventaTB, privilegios);
                         switch (result.getCode()) {
                             case "register":
                                 short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta", "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");
@@ -342,7 +339,7 @@ public class FxVentaProcesoNuevoController implements Initializable {
 
                     short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Está seguro de continuar?");
                     if (confirmation == 1) {
-                        ResultTransaction result = VentaADO.registrarVentaCredito(ventaTB, tvList, privilegios);
+                        ResultTransaction result = VentaADO.registrarVentaCredito(ventaTB, privilegios);
                         switch (result.getCode()) {
                             case "register":
                                 short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta", "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");
@@ -430,7 +427,7 @@ public class FxVentaProcesoNuevoController implements Initializable {
 
                     short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Esta seguro de continuar?");
                     if (confirmation == 1) {
-                        ResultTransaction result = VentaADO.registrarVentaAdelantado(ventaTB, tvList);
+                        ResultTransaction result = VentaADO.registrarVentaAdelantado(ventaTB);
                         switch (result.getCode()) {
                             case "register":
                                 short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta", "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");
