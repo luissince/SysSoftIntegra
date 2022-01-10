@@ -66,8 +66,9 @@ public class FxListaPreciosController implements Initializable {
             double factor = tvList.getSelectionModel().getSelectedItem().getFactor();
 
             double precio = factor <= 0 ? valor : valor / factor;
+            double cantidad = factor <= 0 ? suministroTB.getCantidad() : factor;
 
-            suministroTB.setCantidad(factor <= 0 ? suministroTB.getCantidad() : factor);
+            suministroTB.setCantidad(cantidad);
             suministroTB.setPrecioVentaGeneral(precio);
 
             ventaEstructuraController.getTvList().refresh();

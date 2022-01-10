@@ -2702,38 +2702,40 @@ public class VentaADO {
                                 + "IdAlmacen) "
                                 + "VALUES(?,?,?,?,?,?,?,?,?,?)");
 
-                        for (SuministroTB stb : arrList) {
-                            if (stb.isInventario() && stb.getValorInventario() == 1) {
-                                statementSuministro.setDouble(1, stb.getCantidad() + stb.getBonificacion());
-                                statementSuministro.setString(2, stb.getIdSuministro());
-                                statementSuministro.addBatch();
-                            } else if (stb.isInventario() && stb.getValorInventario() == 2) {
-                                statementSuministro.setDouble(1, stb.getCantidad());
-                                statementSuministro.setString(2, stb.getIdSuministro());
-                                statementSuministro.addBatch();
-                            } else if (stb.isInventario() && stb.getValorInventario() == 3) {
-                                statementSuministro.setDouble(1, stb.getCantidad());
-                                statementSuministro.setString(2, stb.getIdSuministro());
-                                statementSuministro.addBatch();
+                        if (resultSet.getInt("Estado") != 4) {
+                            for (SuministroTB stb : arrList) {
+                                if (stb.isInventario() && stb.getValorInventario() == 1) {
+                                    statementSuministro.setDouble(1, stb.getCantidad() + stb.getBonificacion());
+                                    statementSuministro.setString(2, stb.getIdSuministro());
+                                    statementSuministro.addBatch();
+                                } else if (stb.isInventario() && stb.getValorInventario() == 2) {
+                                    statementSuministro.setDouble(1, stb.getCantidad());
+                                    statementSuministro.setString(2, stb.getIdSuministro());
+                                    statementSuministro.addBatch();
+                                } else if (stb.isInventario() && stb.getValorInventario() == 3) {
+                                    statementSuministro.setDouble(1, stb.getCantidad());
+                                    statementSuministro.setString(2, stb.getIdSuministro());
+                                    statementSuministro.addBatch();
+                                }
+
+                                double cantidadTotal = stb.getValorInventario() == 1
+                                        ? stb.getCantidad() + stb.getBonificacion()
+                                        : stb.getValorInventario() == 2
+                                        ? stb.getCantidad()
+                                        : stb.getCantidad();
+
+                                statementKardex.setString(1, stb.getIdSuministro());
+                                statementKardex.setString(2, Tools.getDate());
+                                statementKardex.setString(3, Tools.getTime());
+                                statementKardex.setShort(4, (short) 1);
+                                statementKardex.setInt(5, 2);
+                                statementKardex.setString(6, "DEVOLUCIÓN DE PRODUCTO");
+                                statementKardex.setDouble(7, cantidadTotal);
+                                statementKardex.setDouble(8, stb.getCostoCompra());
+                                statementKardex.setDouble(9, cantidadTotal * stb.getCostoCompra());
+                                statementKardex.setInt(10, 0);
+                                statementKardex.addBatch();
                             }
-
-                            double cantidadTotal = stb.getValorInventario() == 1
-                                    ? stb.getCantidad() + stb.getBonificacion()
-                                    : stb.getValorInventario() == 2
-                                    ? stb.getCantidad()
-                                    : stb.getCantidad();
-
-                            statementKardex.setString(1, stb.getIdSuministro());
-                            statementKardex.setString(2, Tools.getDate());
-                            statementKardex.setString(3, Tools.getTime());
-                            statementKardex.setShort(4, (short) 1);
-                            statementKardex.setInt(5, 2);
-                            statementKardex.setString(6, "DEVOLUCIÓN DE PRODUCTO");
-                            statementKardex.setDouble(7, cantidadTotal);
-                            statementKardex.setDouble(8, stb.getCostoCompra());
-                            statementKardex.setDouble(9, cantidadTotal * stb.getCostoCompra());
-                            statementKardex.setInt(10, 0);
-                            statementKardex.addBatch();
                         }
 
                         statementIngreso = DBUtil.getConnection().prepareStatement("DELETE FROM IngresoTB WHERE IdProcedencia = ?");

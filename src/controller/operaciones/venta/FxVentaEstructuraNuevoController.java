@@ -140,8 +140,6 @@ public class FxVentaEstructuraNuevoController implements Initializable {
 
     private double importeNetoTotal;
 
-    private int origen;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         listSuministros = FXCollections.observableArrayList();
@@ -154,7 +152,6 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         state = false;
         monedaSimbolo = "M";
         idCliente = "";
-        origen = 2;
         loadDataComponent();
         autoCompletionBinding = TextFields.bindAutoCompletion(txtNumeroDocumento, posiblesWord);
         autoCompletionBinding.setOnAutoCompleted(e -> {
@@ -430,10 +427,10 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         }
     }
 
-    private boolean validateDuplicate( SuministroTB suministroTB) {
+    private boolean validateDuplicate(SuministroTB suministroTB) {
         boolean ret = false;
         for (int i = 0; i < lvProductoAgregados.getItems().size(); i++) {
-            if (lvProductoAgregados.getItems().get(i).getSuministroTB().getClave().equals(suministroTB.getClave())) {
+            if (lvProductoAgregados.getItems().get(i).getSuministroTB().getIdSuministro().equals(suministroTB.getIdSuministro())) {
                 ret = true;
                 break;
             }
@@ -491,12 +488,12 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         impuestoNetoTotal = 0;
         importeNetoTotal = 0;
 
-        listSuministros.forEach(suministroTB -> {
-            double importeBruto = suministroTB.getPrecioVentaGeneral() * suministroTB.getCantidad();
-            double descuento = suministroTB.getDescuento();
+        lvProductoAgregados.getItems().forEach(suministroTB -> {
+            double importeBruto = suministroTB.getSuministroTB().getPrecioVentaGeneral() * suministroTB.getSuministroTB().getCantidad();
+            double descuento = suministroTB.getSuministroTB().getDescuento();
             double subImporteBruto = importeBruto - descuento;
-            double subImporteNeto = Tools.calculateTaxBruto(suministroTB.getImpuestoTB().getValor(), subImporteBruto);
-            double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), subImporteNeto);
+            double subImporteNeto = Tools.calculateTaxBruto(suministroTB.getSuministroTB().getImpuestoTB().getValor(), subImporteBruto);
+            double impuesto = Tools.calculateTax(suministroTB.getSuministroTB().getImpuestoTB().getValor(), subImporteNeto);
             double importeNeto = subImporteNeto + impuesto;
 
             importeBrutoTotal += importeBruto;
@@ -507,7 +504,6 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         });
 
         lblTotal.setText(monedaSimbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
-
     }
 
     public void resetVenta() {
@@ -618,6 +614,34 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             } else if (importeNetoTotal <= 0) {
                 Tools.AlertMessageWarning(vbWindow, "Venta", "El total de la venta no puede ser menor que 0.");
             } else {
+
+                VentaTB ventaTB = new VentaTB();
+                ventaTB.setVendedor(Session.USER_ID);
+                ventaTB.setIdComprobante(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento());
+                ventaTB.setComprobanteName(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
+                ventaTB.setSerie(lblSerie.getText());
+                ventaTB.setNumeracion(lblNumeracion.getText());
+                ventaTB.setFechaVenta(Tools.getDate());
+                ventaTB.setHoraVenta(Tools.getTime());
+
+                ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
+                ventaTB.setMonedaTB(cbMoneda.getSelectionModel().getSelectedItem());
+
+                ClienteTB clienteTB = new ClienteTB();
+                clienteTB.setIdCliente(idCliente);
+                clienteTB.setTipoDocumento(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
+                clienteTB.setNumeroDocumento(txtNumeroDocumento.getText().trim().toUpperCase());
+                clienteTB.setInformacion(txtDatosCliente.getText().trim().toUpperCase());
+                clienteTB.setCelular(txtCelularCliente.getText().trim().toUpperCase());
+                clienteTB.setEmail(txtCorreoElectronico.getText().trim().toUpperCase());
+                clienteTB.setDireccion(txtDireccionCliente.getText().trim().toUpperCase());
+                ventaTB.setClienteTB(clienteTB);
+
+                ArrayList<SuministroTB> suministroTBs = new ArrayList<>();
+                lvProductoAgregados.getItems().forEach(e -> suministroTBs.add(e.getSuministroTB()));
+                
+                ventaTB.setSuministroTBs(suministroTBs); 
+
                 fxPrincipalController.openFondoModal();
                 URL url = getClass().getResource(FilesRouters.FX_VENTA_PROCESO_NUEVO);
                 FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
@@ -630,36 +654,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
                 stage.setResizable(false);
                 stage.sizeToScene();
                 stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+                stage.setOnShowing(w -> controller.setInitComponents(ventaTB, vender_con_cantidades_negativas));
                 stage.show();
-
-                ClienteTB clienteTB = new ClienteTB();
-                clienteTB.setIdCliente(idCliente);
-                clienteTB.setTipoDocumento(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
-                clienteTB.setNumeroDocumento(txtNumeroDocumento.getText().trim().toUpperCase());
-                clienteTB.setInformacion(txtDatosCliente.getText().trim().toUpperCase());
-                clienteTB.setCelular(txtCelularCliente.getText().trim().toUpperCase());
-                clienteTB.setEmail(txtCorreoElectronico.getText().trim().toUpperCase());
-                clienteTB.setDireccion(txtDireccionCliente.getText().trim().toUpperCase());
-
-                VentaTB ventaTB = new VentaTB();
-                ventaTB.setVendedor(Session.USER_ID);
-                ventaTB.setIdComprobante(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento());
-                ventaTB.setComprobanteName(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
-                ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedIndex() >= 0 ? cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda() : 0);
-//                ventaTB.setMonedaName(monedaSimbolo);
-                ventaTB.setSerie(lblSerie.getText());
-                ventaTB.setNumeracion(lblNumeracion.getText());
-                ventaTB.setFechaVenta(Tools.getDate());
-                ventaTB.setHoraVenta(Tools.getTime());
-//                ventaTB.setImporteBruto(importeBruto);
-//                ventaTB.setDescuento(descuentoBruto);
-//                ventaTB.setSubImporteNeto(subImporteNeto);
-//                ventaTB.setImpuesto(impuestoNeto);
-//                ventaTB.setImporteNeto(importeNeto);
-                ventaTB.setClienteTB(clienteTB);
-                ArrayList<SuministroTB> suministroTBs = new ArrayList<>();
-                lvProductoAgregados.getItems().forEach(e -> suministroTBs.add(e.getSuministroTB()));
-                controller.setInitComponents(ventaTB, suministroTBs, vender_con_cantidades_negativas, cbMoneda.getSelectionModel().getSelectedItem().getNombre());
             }
         } catch (IOException ex) {
             System.out.println("openWindowVentaProceso():" + ex.getLocalizedMessage());
