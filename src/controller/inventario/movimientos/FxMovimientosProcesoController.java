@@ -107,9 +107,9 @@ public class FxMovimientosProcesoController implements Initializable {
         tcDiferencia.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getDiferencia(), 2)));
 
         tcAccion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
-        tcClave.prefWidthProperty().bind(tvList.widthProperty().multiply(0.31));
-        tcNuevaExistencia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.19));
-        tcExistenciaActual.prefWidthProperty().bind(tvList.widthProperty().multiply(0.19));
+        tcClave.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));
+        tcNuevaExistencia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
+        tcExistenciaActual.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
         tcDiferencia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.19));
 
         ToggleGroup groupAjuste = new ToggleGroup();

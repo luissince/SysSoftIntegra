@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.posterminal.venta.FxPostVentaGranelController">
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.posterminal.venta.FxPostVentaGranelController">
    <children>
       <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -18,7 +18,7 @@
                <children>
                   <HBox alignment="CENTER">
                      <children>
-                        <Label fx:id="lblTitle" alignment="BASELINE_LEFT" contentDisplay="TOP" styleClass="labelRobotoBold17" text="Cambiar precio al Artículo" textFill="#020203">
+                        <Label fx:id="lblTitle" alignment="BASELINE_LEFT" contentDisplay="TOP" styleClass="labelRobotoBold17" text="Cambiar precio al Producto" textFill="#020203">
                            <graphic>
                               <ImageView fitHeight="96.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -28,9 +28,9 @@
                            </graphic></Label>
                      </children>
                   </HBox>
-                  <HBox>
+                  <HBox style="-fx-padding: 0.8333333333333334em;">
                      <children>
-                        <Label fx:id="lblArticulo" alignment="CENTER" maxWidth="1.7976931348623157E308" prefWidth="500.0" styleClass="labelOpenSansRegular17" text="Artículo" textFill="#037c09" wrapText="true" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="lblArticulo" alignment="CENTER" maxWidth="1.7976931348623157E308" prefWidth="200.0" styleClass="labelOpenSansRegular17" text="Producto" textFill="#037c09" wrapText="true" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <Separator />
@@ -50,7 +50,7 @@
                                        </graphic></Label>
                                  </children>
                               </HBox>
-                              <TextField fx:id="txtImporte" onAction="#onActionAceptar" onKeyTyped="#onKeyTypedImporte" prefHeight="30.0" prefWidth="400.0" promptText="0.00" styleClass="text-field-normal" />
+                              <TextField fx:id="txtImporte" onAction="#onActionAceptar" onKeyTyped="#onKeyTypedImporte" prefHeight="30.0" prefWidth="300.0" promptText="0.00" styleClass="text-field-normal" />
                            </children>
                         </VBox>
                      </children>

@@ -49,7 +49,6 @@ import model.GuiaRemisionDetalleTB;
 import model.HistorialSuministroSalidaTB;
 import model.ImageADO;
 import model.ImagenTB;
-import model.MovimientoCajaTB;
 import model.OrdenCompraDetalleTB;
 import model.SuministroTB;
 import model.VentaCreditoTB;
@@ -395,7 +394,7 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("precarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 0) + "%"));
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 0)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("observacion")) {
@@ -432,7 +431,7 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("precarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 0) + "%"));
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 0)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("observacion")) {
@@ -469,7 +468,7 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("precarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 0) + "%"));
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 0)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(0, 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("observacion")) {

@@ -443,7 +443,7 @@ public class FxVentaEstructuraController implements Initializable {
             suministroTB.setPrecioVentaGeneralUnico(a.getPrecioVentaGeneral());
             suministroTB.setPrecioVentaGeneralReal(a.getPrecioVentaGeneral());
             suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
-            
+
             suministroTB.setIdImpuesto(a.getIdImpuesto());
             suministroTB.setImpuestoTB(a.getImpuestoTB());
 
@@ -542,13 +542,12 @@ public class FxVentaEstructuraController implements Initializable {
                     //Controlller here
                     FxVentaCantidadesController controller = fXMLLoader.getController();
                     controller.setInitVentaEstructuraController(this);
-                    controller.initComponents(tvList.getSelectionModel().getSelectedItem(), false, primerLlamado);
-
                     //
                     Stage stage = WindowStage.StageLoaderModal(parent, "Modificar cantidades", window);
                     stage.setResizable(false);
                     stage.sizeToScene();
-                    stage.setOnShown(w -> {
+                    stage.setOnShowing(w -> {
+                        controller.initComponents(tvList.getSelectionModel().getSelectedItem(), false, primerLlamado);
                         controller.getTxtCantidad().requestFocus();
                     });
                     stage.setOnHiding(w -> {

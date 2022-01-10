@@ -49,11 +49,8 @@ public class FxVentaMovimientoController implements Initializable {
             Tools.AlertMessageWarning(window, "Ventas", "Ingrese un comentario.");
             txtComentario.requestFocus();
         } else {
-
             short opcion = Tools.AlertMessageConfirmation(window, "Ventas", "¿Está seguro de continuar?");
-
             if (opcion == 1) {
-
                 ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
                     Thread t = new Thread(runnable);
                     t.setDaemon(true);

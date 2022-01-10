@@ -2611,7 +2611,7 @@ public class VentaADO {
 
     }
 
-    public static String CancelTheSale(String idVenta, ObservableList<SuministroTB> arrList, String motivo) {
+    public static String Anular_Venta_ById(String idVenta, ArrayList<SuministroTB> arrList, String motivo) {
         PreparedStatement statementValidar = null;
         PreparedStatement statementVenta = null;
         PreparedStatement statementSuministro = null;
@@ -2636,15 +2636,14 @@ public class VentaADO {
                     DBUtil.getConnection().rollback();
                     return "ventacredito";
                 } else {
-                    statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ? and FechaVenta = CAST(GETDATE() AS DATE)");
+                    statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ? AND FechaVenta = CAST(GETDATE() AS DATE)");
                     statementValidar.setString(1, idVenta);
                     ResultSet resultSet = statementValidar.executeQuery();
                     if (resultSet.next()) {
 
                         statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = ?, Observaciones = ? WHERE IdVenta = ?");
-
                         statementVenta.setInt(1, 3);
-                        statementVenta.setString(2, Session.USER_NAME + " ANULÓ LA VENTA POR EL MOTIVO -> " + motivo);
+                        statementVenta.setString(2, Session.USER_NAME + " ANULÓ LA VENTA POR EL MOTIVO: " + motivo.toUpperCase());
                         statementVenta.setString(3, idVenta);
                         statementVenta.addBatch();
                         statementVenta.executeBatch();
@@ -2667,42 +2666,38 @@ public class VentaADO {
                                 + "IdAlmacen) "
                                 + "VALUES(?,?,?,?,?,?,?,?,?,?)");
 
-                        if (resultSet.getInt("Tipo") == 1 && resultSet.getInt("Estado") == 2) {
-
-                        } else {
-                            for (SuministroTB stb : arrList) {
-                                if (stb.isInventario() && stb.getValorInventario() == 1) {
-                                    statementSuministro.setDouble(1, stb.getCantidad() + stb.getBonificacion());
-                                    statementSuministro.setString(2, stb.getIdSuministro());
-                                    statementSuministro.addBatch();
-                                } else if (stb.isInventario() && stb.getValorInventario() == 2) {
-                                    statementSuministro.setDouble(1, stb.getCantidad());
-                                    statementSuministro.setString(2, stb.getIdSuministro());
-                                    statementSuministro.addBatch();
-                                } else if (stb.isInventario() && stb.getValorInventario() == 3) {
-                                    statementSuministro.setDouble(1, stb.getCantidad());
-                                    statementSuministro.setString(2, stb.getIdSuministro());
-                                    statementSuministro.addBatch();
-                                }
-
-                                double cantidadTotal = stb.getValorInventario() == 1
-                                        ? stb.getCantidad() + stb.getBonificacion()
-                                        : stb.getValorInventario() == 2
-                                        ? stb.getCantidad()
-                                        : stb.getCantidad();
-
-                                statementKardex.setString(1, stb.getIdSuministro());
-                                statementKardex.setString(2, Tools.getDate());
-                                statementKardex.setString(3, Tools.getTime());
-                                statementKardex.setShort(4, (short) 1);
-                                statementKardex.setInt(5, 2);
-                                statementKardex.setString(6, "DEVOLUCIÓN DE PRODUCTO");
-                                statementKardex.setDouble(7, cantidadTotal);
-                                statementKardex.setDouble(8, stb.getCostoCompra());
-                                statementKardex.setDouble(9, cantidadTotal * stb.getCostoCompra());
-                                statementKardex.setInt(10, 0);
-                                statementKardex.addBatch();
+                        for (SuministroTB stb : arrList) {
+                            if (stb.isInventario() && stb.getValorInventario() == 1) {
+                                statementSuministro.setDouble(1, stb.getCantidad() + stb.getBonificacion());
+                                statementSuministro.setString(2, stb.getIdSuministro());
+                                statementSuministro.addBatch();
+                            } else if (stb.isInventario() && stb.getValorInventario() == 2) {
+                                statementSuministro.setDouble(1, stb.getCantidad());
+                                statementSuministro.setString(2, stb.getIdSuministro());
+                                statementSuministro.addBatch();
+                            } else if (stb.isInventario() && stb.getValorInventario() == 3) {
+                                statementSuministro.setDouble(1, stb.getCantidad());
+                                statementSuministro.setString(2, stb.getIdSuministro());
+                                statementSuministro.addBatch();
                             }
+
+                            double cantidadTotal = stb.getValorInventario() == 1
+                                    ? stb.getCantidad() + stb.getBonificacion()
+                                    : stb.getValorInventario() == 2
+                                    ? stb.getCantidad()
+                                    : stb.getCantidad();
+
+                            statementKardex.setString(1, stb.getIdSuministro());
+                            statementKardex.setString(2, Tools.getDate());
+                            statementKardex.setString(3, Tools.getTime());
+                            statementKardex.setShort(4, (short) 1);
+                            statementKardex.setInt(5, 2);
+                            statementKardex.setString(6, "DEVOLUCIÓN DE PRODUCTO");
+                            statementKardex.setDouble(7, cantidadTotal);
+                            statementKardex.setDouble(8, stb.getCostoCompra());
+                            statementKardex.setDouble(9, cantidadTotal * stb.getCostoCompra());
+                            statementKardex.setInt(10, 0);
+                            statementKardex.addBatch();
                         }
 
                         statementIngreso = DBUtil.getConnection().prepareStatement("DELETE FROM IngresoTB WHERE IdProcedencia = ?");
@@ -2716,7 +2711,6 @@ public class VentaADO {
 
                         DBUtil.getConnection().commit();
                         return "updated";
-
                     } else {
                         DBUtil.getConnection().rollback();
                         return "nodate";
@@ -3412,12 +3406,11 @@ public class VentaADO {
         ResultSet resultSet = null;
         try {
             DBUtil.dbConnect();
-            VentaCreditoTB ventaCreditoTB = null;
             preparedStatement = DBUtil.getConnection().prepareCall("{CALL Sp_Obtener_VentaCredito_By_Id(?)}");
             preparedStatement.setString(1, idVentaCredito);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                ventaCreditoTB = new VentaCreditoTB();
+                VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
                 ventaCreditoTB.setIdVentaCredito(resultSet.getString("IdVentaCredito"));
                 ventaCreditoTB.setMonto(resultSet.getDouble("Monto"));
                 ventaCreditoTB.setFechaPago(resultSet.getDate("FechaPago").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
@@ -3722,6 +3715,7 @@ public class VentaADO {
                 resultSet = statementVenta.executeQuery();
                 while (resultSet.next()) {
                     HistorialSuministroSalidaTB suministroSalida = new HistorialSuministroSalidaTB();
+                    suministroSalida.setId(resultSet.getRow());
                     suministroSalida.setFecha(resultSet.getDate("Fecha").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                     suministroSalida.setHora(resultSet.getTime("Hora").toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
                     suministroSalida.setCantidad(resultSet.getDouble("Cantidad"));
