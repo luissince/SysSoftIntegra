@@ -168,6 +168,8 @@ public class FxVentaEstructuraController implements Initializable {
 
     private String idCliente;
 
+    private String idCotizacion;
+
     private final Set<String> posiblesWord = new HashSet<>();
 
     private boolean unidades_cambio_cantidades;
@@ -257,6 +259,8 @@ public class FxVentaEstructuraController implements Initializable {
 
         cbTipoDocumento.getItems().clear();
         cbTipoDocumento.getItems().addAll(DetalleADO.GetDetailId("0003"));
+
+        idCotizacion = "";
 
         idCliente = Session.CLIENTE_ID;
         txtNumeroDocumento.setText(Session.CLIENTE_NUMERO_DOCUMENTO);
@@ -740,6 +744,7 @@ public class FxVentaEstructuraController implements Initializable {
                 ventaTB.setFechaVenta(Tools.getDate());
                 ventaTB.setHoraVenta(Tools.getTime());
                 ventaTB.setTotal(importeNetoTotal);
+                ventaTB.setIdCotizacion(idCotizacion);
 
                 ventaTB.setMonedaTB(cbMoneda.getSelectionModel().getSelectedItem());
 
@@ -947,32 +952,61 @@ public class FxVentaEstructuraController implements Initializable {
                     }
                 }
 
+                this.idCotizacion = idCotizacion;
+
                 txtNumeroDocumento.setText(cotizacionTB.getClienteTB().getNumeroDocumento());
                 txtDatosCliente.setText(cotizacionTB.getClienteTB().getInformacion());
                 txtCelularCliente.setText(cotizacionTB.getClienteTB().getCelular());
                 txtCorreoElectronico.setText(cotizacionTB.getClienteTB().getEmail());
                 txtDireccionCliente.setText(cotizacionTB.getClienteTB().getDireccion());
 
-                if (!cotizacionTB.getCotizacionDetalleTBs().isEmpty()) {
-                    ObservableList<SuministroTB> suministroTBs = FXCollections.observableArrayList();
-                    for (CotizacionDetalleTB detalleTB : cotizacionTB.getCotizacionDetalleTBs()) {
-                        CotizacionDetalleTB cotizacionDetalleTB = detalleTB;
+                ObservableList<SuministroTB> suministroTBs = FXCollections.observableArrayList();
+                cotizacionTB.getCotizacionDetalleTBs().forEach(detalleTB -> {
+                    CotizacionDetalleTB cdtb = detalleTB;
 
-                        SuministroTB suministroTB = new SuministroTB();
-                        suministroTB.getBtnRemove().setOnAction(e -> {
+                    SuministroTB suministroTB = new SuministroTB();
+                    suministroTB.setIdSuministro(cdtb.getSuministroTB().getIdSuministro());
+                    suministroTB.setClave(cdtb.getSuministroTB().getClave());
+                    suministroTB.setNombreMarca(cdtb.getSuministroTB().getNombreMarca());
+                    suministroTB.setCantidad(cdtb.getCantidad());
+                    suministroTB.setCostoCompra(cdtb.getSuministroTB().getCostoCompra());
+                    suministroTB.setBonificacion(0);
+
+                    suministroTB.setDescuento(cdtb.getDescuento());
+                    suministroTB.setDescuentoCalculado(cdtb.getDescuento());
+                    suministroTB.setDescuentoSumado(cdtb.getDescuento());
+
+                    suministroTB.setPrecioVentaGeneral(cdtb.getPrecio());
+                    suministroTB.setPrecioVentaGeneralUnico(cdtb.getPrecio());
+                    suministroTB.setPrecioVentaGeneralReal(cdtb.getPrecio());
+
+                    suministroTB.setIdImpuesto(cdtb.getIdImpuesto());
+                    suministroTB.setImpuestoTB(cdtb.getImpuestoTB());
+
+                    suministroTB.setInventario(cdtb.getSuministroTB().isInventario());
+                    suministroTB.setUnidadVenta(cdtb.getSuministroTB().getUnidadVenta());
+                    suministroTB.setValorInventario(cdtb.getSuministroTB().getValorInventario());
+
+                    Button button = new Button("X");
+                    button.getStyleClass().add("buttonDark");
+                    button.setOnAction(e -> {
+                        tvList.getItems().remove(suministroTB);
+                        calculateTotales();
+                    });
+                    button.setOnKeyPressed(e -> {
+                        if (e.getCode() == KeyCode.ENTER) {
                             tvList.getItems().remove(suministroTB);
                             calculateTotales();
-                        });
-                        suministroTB.getBtnRemove().setOnKeyPressed(e -> {
-                            if (e.getCode() == KeyCode.ENTER) {
-                                tvList.getItems().remove(suministroTB);
-                                calculateTotales();
-                            }
-                        });
-                    }
-                    tvList.setItems(suministroTBs);
-                    calculateTotales();
-                }
+                        }
+                    });
+                    suministroTB.setBtnRemove(button);
+
+                    suministroTBs.add(suministroTB);
+                });
+
+                tvList.setItems(suministroTBs);
+                calculateTotales();
+
                 vbBody.setDisable(false);
                 hbLoad.setVisible(false);
             } else {
@@ -1124,22 +1158,12 @@ public class FxVentaEstructuraController implements Initializable {
                     if (validateDuplicate(s)) {
                         for (int i = 0; i < tvList.getItems().size(); i++) {
                             if (tvList.getItems().get(i).getIdSuministro().equalsIgnoreCase(s.getIdSuministro())) {
-
                                 SuministroTB suministroTB = tvList.getItems().get(i);
                                 suministroTB.setCantidad(suministroTB.getCantidad() + s.getCantidad());
-                                double porcentajeRestante = suministroTB.getPrecioVentaGeneralUnico() * (suministroTB.getDescuento() / 100.00);
-
-                                suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-//                                suministroTB.setImpuestoSumado(suministroTB.getCantidad() * (suministroTB.getPrecioVentaGeneralReal() * (suministroTB.getImpuestoTB().getValor() / 100.00)));
-
-//                                suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-//                                suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-//                                suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
                                 tvList.refresh();
                                 tvList.getSelectionModel().select(i);
                                 calculateTotales();
                                 break;
-
                             }
                         }
                     } else {
@@ -1619,7 +1643,6 @@ public class FxVentaEstructuraController implements Initializable {
                 break;
             }
         }
-
     }
 
     private void learnWord(String text) {

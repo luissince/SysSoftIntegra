@@ -50,6 +50,8 @@ public class TicketVentaLlevar {
 
     private final AnchorPane hbPie;
 
+    private String fileName;
+
     public TicketVentaLlevar(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie) {
         this.node = node;
         this.billPrintable = billPrintable;
@@ -420,8 +422,9 @@ public class TicketVentaLlevar {
                         map.put("TIPO_ESTADO", ventaTB.getTipoName() + " " + ventaTB.getEstadoName());
                         map.put("CANTIDAD", Tools.roundingValue(cantidad, 2));
 
-                        return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(suministroSalidas));
+                        fileName = "HISTORIAL DE MOVIMIENTOS DE " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion();
 
+                        return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(suministroSalidas));
                     } catch (JRException ex) {
                         return "Error en imprimir: " + ex.getLocalizedMessage();
                     }
@@ -453,7 +456,7 @@ public class TicketVentaLlevar {
                     Parent parent = fXMLLoader.load(url.openStream());
                     //Controlller here
                     FxReportViewController controller = fXMLLoader.getController();
-                    //controller.setFileName(ventaTB.getComprobanteName().toUpperCase() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+                    controller.setFileName(fileName);
                     controller.setJasperPrint((JasperPrint) object);
                     controller.show();
                     Stage stage = WindowStage.StageLoader(parent, "Historial de Salida");

@@ -106,7 +106,7 @@
                               <TableColumn fx:id="tcCliente" prefWidth="140.0" style="-fx-alignment: CENTER-LEFT;" text="Cliente" />
                               <TableColumn fx:id="tcCotizacion" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Cotización" />
                               <TableColumn fx:id="tcObservacion" prefWidth="170.0" style="-fx-alignment: CENTER-LEFT;" text="Observación" />
-                              <TableColumn fx:id="tcEstado" prefWidth="130.0" style="-fx-alignment: CENTER;" text="Estado" />
+                              <TableColumn fx:id="tcEstado" prefWidth="130.0" style="-fx-alignment: CENTER-LEFT;" text="Estado" />
                               <TableColumn fx:id="tcTotal" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Total" />
                           </columns>
                         </TableView>

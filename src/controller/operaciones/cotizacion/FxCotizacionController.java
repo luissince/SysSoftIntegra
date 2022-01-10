@@ -602,6 +602,7 @@ public class FxCotizacionController implements Initializable {
                         cotizacionTB.setHoraVencimiento(Tools.getTime());
                         cotizacionTB.setEstado((short) 1);
                         cotizacionTB.setObservaciones(txtObservacion.getText().trim());
+                        cotizacionTB.setIdVenta("");
 
                         cotizacionTB.setCotizacionDetalleTBs(new ArrayList<>(tvList.getItems()));
                         return CotizacionADO.CrudCotizacion(cotizacionTB);

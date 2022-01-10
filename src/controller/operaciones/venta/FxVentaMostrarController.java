@@ -69,7 +69,7 @@ public class FxVentaMostrarController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
-        tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getInformacion()));
+        tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
         tcFechaHora.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getFechaVenta() + "\n"
                 + cellData.getValue().getHoraVenta()
@@ -77,7 +77,8 @@ public class FxVentaMostrarController implements Initializable {
         tcDocumento.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion() + "\n" + (cellData.getValue().getNotaCreditoTB() != null ? " Modificado(" + cellData.getValue().getNotaCreditoTB().getSerie() + "-" + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")" : "")
         ));
-//        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
+
         tcImprimir.setCellValueFactory(new PropertyValueFactory<>("btnImprimir"));
         tcAgregarVenta.setCellValueFactory(new PropertyValueFactory<>("btnAgregar"));
         tcSumarVenta.setCellValueFactory(new PropertyValueFactory<>("btnSumar"));
@@ -102,6 +103,18 @@ public class FxVentaMostrarController implements Initializable {
                 return VentaADO.ListVentasMostrarLibres(opcion, value, (paginacion - 1) * 10, 10);
             }
         };
+
+        task.setOnScheduled(e -> {
+            lblLoad.setVisible(true);
+            tvList.getItems().clear();
+            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            totalPaginacion = 0;
+        });
+
+        task.setOnFailed(e -> {
+            lblLoad.setVisible(false);
+            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
+        });
 
         task.setOnSucceeded(e -> {
             Object result = task.getValue();
@@ -152,17 +165,7 @@ public class FxVentaMostrarController implements Initializable {
             }
             lblLoad.setVisible(false);
         });
-        task.setOnFailed(e -> {
-            lblLoad.setVisible(false);
-            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
-        });
 
-        task.setOnScheduled(e -> {
-            lblLoad.setVisible(true);
-            tvList.getItems().clear();
-            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
-            totalPaginacion = 0;
-        });
         exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();

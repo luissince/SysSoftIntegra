@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
@@ -39,7 +40,8 @@ public class CotizacionADO {
                             + ",FechaVencimiento=?"
                             + ",HoraVencimiento=?"
                             + ",Estado=?"
-                            + ",Observaciones=? "
+                            + ",Observaciones=?"
+                            + ",IdVenta='' "
                             + "WHERE IdCotizacion = ?");
 
                     statementCotizacion.setString(1, cotizacionTB.getIdCliente());
@@ -103,8 +105,9 @@ public class CotizacionADO {
                             + ",FechaVencimiento"
                             + ",HoraVencimiento"
                             + ",Estado"
-                            + ",Observaciones)"
-                            + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                            + ",Observaciones"
+                            + ",IdVenta)"
+                            + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
                     statementCotizacion.setString(1, idCotizacion);
                     statementCotizacion.setString(2, cotizacionTB.getIdCliente());
                     statementCotizacion.setString(3, cotizacionTB.getIdVendedor());
@@ -115,6 +118,7 @@ public class CotizacionADO {
                     statementCotizacion.setString(8, cotizacionTB.getHoraVencimiento());
                     statementCotizacion.setInt(9, cotizacionTB.getEstado());
                     statementCotizacion.setString(10, cotizacionTB.getObservaciones());
+                    statementCotizacion.setString(11, cotizacionTB.getIdVenta());
                     statementCotizacion.addBatch();
 
                     statementDetalleCotizacion = DBUtil.getConnection().prepareStatement("INSERT INTO DetalleCotizacionTB"
@@ -206,9 +210,18 @@ public class CotizacionADO {
                 cotizacionTB.setObservaciones(result.getString("Observaciones"));
                 cotizacionTB.setEstado(result.getInt("Estado"));
 
-                Label lblEstado = new Label(cotizacionTB.getEstado() == 1 ? "SIN USO" : "ASIGNADO A UNA FACTURA");
+                VentaTB ventaTB = new VentaTB();
+                ventaTB.setComprobanteName(result.getString("Comprobante"));
+                ventaTB.setSerie(result.getString("Serie"));
+                ventaTB.setNumeracion(result.getString("Numeracion"));
+                cotizacionTB.setIdVenta(buscar);
+
+                Label lblEstado = new Label(cotizacionTB.getEstado() == 1 ? "SIN USO" : ventaTB.getComprobanteName() + "\n" + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
                 lblEstado.getStyleClass().add("labelRoboto13");
+                lblEstado.setAlignment(Pos.CENTER_LEFT);
                 lblEstado.setStyle(cotizacionTB.getEstado() == 1 ? "-fx-text-fill:#020203;" : "-fx-text-fill:#0a6f25;");
+                lblEstado.setMinHeight(30);
+                lblEstado.setPrefHeight(30);
                 cotizacionTB.setLblEstado(lblEstado);
 
                 EmpleadoTB empleadoTB = new EmpleadoTB();
@@ -317,13 +330,17 @@ public class CotizacionADO {
                     suministroTB.setNombreMarca(result.getString("NombreMarca"));
                     suministroTB.setUnidadCompra(result.getInt("IdMedida"));
                     suministroTB.setUnidadCompraName(result.getString("UnidadCompraName"));
+                    suministroTB.setInventario(result.getBoolean("Inventario"));
+                    suministroTB.setUnidadVenta(result.getInt("UnidadVenta"));
+                    suministroTB.setValorInventario(result.getShort("ValorInventario"));
+                    suministroTB.setCostoCompra(result.getDouble("PrecioCompra"));
                     cotizacionDetalleTB.setSuministroTB(suministroTB);
 
                     cotizacionDetalleTB.setCantidad(result.getDouble("Cantidad"));
                     cotizacionDetalleTB.setPrecio(result.getDouble("Precio"));
                     cotizacionDetalleTB.setDescuento(result.getDouble("Descuento"));
-                    cotizacionDetalleTB.setIdImpuesto(result.getInt("IdImpuesto"));
 
+                    cotizacionDetalleTB.setIdImpuesto(result.getInt("IdImpuesto"));
                     ImpuestoTB impuestoTB = new ImpuestoTB();
                     impuestoTB.setIdImpuesto(result.getInt("IdImpuesto"));
                     impuestoTB.setOperacion(result.getInt("Operacion"));

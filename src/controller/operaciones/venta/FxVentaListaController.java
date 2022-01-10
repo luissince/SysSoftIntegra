@@ -79,7 +79,7 @@ public class FxVentaListaController implements Initializable {
         tcComprobante.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getComprobanteName() + "\n" + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()));
         tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
-//        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         Tools.actualDate(Tools.getDate(), txtFechaInicio);
@@ -106,7 +106,7 @@ public class FxVentaListaController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return VentaADO.ListVentasAll(opcion, value, fechaInicial, fechaFinal, estado, (paginacion - 1) * 20, 20);
+                return VentaADO.Listar_Ventas_All(opcion, value, fechaInicial, fechaFinal, estado, (paginacion - 1) * 20, 20);
             }
         };
         task.setOnSucceeded(w -> {

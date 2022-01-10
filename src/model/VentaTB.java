@@ -96,6 +96,8 @@ public class VentaTB {
     private int procedencia;
     
     private EmpresaTB empresaTB;
+    
+    private String idCotizacion;
 
     public VentaTB() {
 
@@ -466,6 +468,12 @@ public class VentaTB {
         this.empresaTB = empresaTB;
     }
 
-   
+    public String getIdCotizacion() {
+        return idCotizacion;
+    }
+
+    public void setIdCotizacion(String idCotizacion) {
+        this.idCotizacion = idCotizacion;
+    }   
 
 }

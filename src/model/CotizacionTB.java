@@ -26,6 +26,8 @@ public class CotizacionTB {
     private int estado;
 
     private double total;
+    
+    private String idVenta;
 
     private String observaciones;
 
@@ -36,6 +38,8 @@ public class CotizacionTB {
     private MonedaTB monedaTB;
 
     private EmpresaTB empresaTB;
+    
+    private VentaTB ventaTB;
     
     private Label lblEstado;
 
@@ -132,6 +136,14 @@ public class CotizacionTB {
         this.total = total;
     }
 
+    public String getIdVenta() {
+        return idVenta;
+    }
+
+    public void setIdVenta(String idVenta) {
+        this.idVenta = idVenta;
+    }
+
     public String getObservaciones() {
         return observaciones;
     }
@@ -162,6 +174,14 @@ public class CotizacionTB {
 
     public void setEmpresaTB(EmpresaTB empresaTB) {
         this.empresaTB = empresaTB;
+    }
+
+    public VentaTB getVentaTB() {
+        return ventaTB;
+    }
+
+    public void setVentaTB(VentaTB ventaTB) {
+        this.ventaTB = ventaTB;
     }
 
     public Label getLblEstado() {

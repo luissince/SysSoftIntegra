@@ -68,7 +68,7 @@ public class FxPostVentaLlevarController implements Initializable {
     private void executeQuery(double cantidad, String observacion) {
         short confirmation = Tools.AlertMessageConfirmation(apWindow, "Venta detalle", "¿Está seguro de continuar?");
         if (confirmation == 1) {
-            String result = VentaADO.UpdateProductoParaLlevar(idVenta, idSuministro, comprobante, cantidad, costo, observacion, rbCompletado.isSelected());
+            String result = VentaADO.Update_Producto_Para_Llevar(idVenta, idSuministro, comprobante, cantidad, costo, observacion, rbCompletado.isSelected());
             switch (result) {
                 case "update":
                     Tools.AlertMessageInformation(apWindow, "Venta detalle", "Se actualizó correctamente el cambio.");
