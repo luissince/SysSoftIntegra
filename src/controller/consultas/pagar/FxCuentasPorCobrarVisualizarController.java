@@ -32,7 +32,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.SuministroTB;
 import model.VentaADO;
-import model.VentaCreditoTB;
 import model.VentaTB;
 
 public class FxCuentasPorCobrarVisualizarController implements Initializable {
@@ -97,7 +96,7 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return VentaADO.ListarVentasDetalleCredito(idVenta);
+                return VentaADO.Listar_Ventas_Detalle_Credito_ById(idVenta);
             }
         };
         task.setOnScheduled(w -> {
@@ -133,14 +132,16 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
                 lblMontoPagado.setText(Tools.roundingValue(ventaTB.getMontoCobrado(), 2));
                 lblDiferencia.setText(Tools.roundingValue(ventaTB.getMontoRestante(), 2));
                 lblObservacion.setText(ventaTB.getObservaciones());
-                for (VentaCreditoTB vc : ventaTB.getVentaCreditoTBs()) {
+
+                ventaTB.getVentaCreditoTBs().forEach(vc -> {
                     vc.getBtnImprimir().setOnAction(event -> openModalImpresion(idVenta, vc.getIdVentaCredito()));
                     vc.getBtnImprimir().setOnKeyPressed(event -> {
                         if (event.getCode() == KeyCode.ENTER) {
                             openModalImpresion(idVenta, vc.getIdVentaCredito());
                         }
                     });
-                }
+                });
+
                 fillVentasDetalleTable();
                 fillVentasDetalleTable(ventaTB.getSuministroTBs());
                 spBody.setDisable(false);
@@ -186,8 +187,8 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             gpDetalle.add(addElementGridPaneLabel("l4" + (i + 1), arrList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
             gpDetalle.add(addElementGridPaneLabel("l5" + (i + 1), arrList.get(i).getImpuestoTB().getNombreImpuesto(), Pos.CENTER_RIGHT), 4, (i + 1));
             gpDetalle.add(addElementGridPaneLabel("l6" + (i + 1), Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l7" + (i + 1), Tools.roundingValue(arrList.get(i).getDescuento(), 2) + "%", Pos.CENTER_RIGHT), 6, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l8" + (i + 1), Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral() * arrList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l7" + (i + 1), Tools.roundingValue(arrList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l8" + (i + 1), Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral() * (arrList.get(i).getCantidad() - arrList.get(i).getDescuento()), 2), Pos.CENTER_RIGHT), 7, (i + 1));
         }
     }
 

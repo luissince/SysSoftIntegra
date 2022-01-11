@@ -114,7 +114,7 @@ public class TicketCuentasPorCobrar {
                         return (String) object;
                     }
                 } else {
-                    Object object = VentaADO.ListarVentasDetalleCredito(idVenta);
+                    Object object = VentaADO.Listar_Ventas_Detalle_Credito_ById(idVenta);
                     if (object instanceof VentaTB) {
                         VentaTB ventaTB = (VentaTB) object;
                         try {
@@ -405,29 +405,22 @@ public class TicketCuentasPorCobrar {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                Object object = VentaADO.ListarVentasDetalleCredito(idVenta);
-                if (object instanceof VentaTB) {
-                    return (VentaTB) object;
+                if (!Tools.isText(idVenta) && !Tools.isText(idVentaCredito)) {
+                    Object object = VentaADO.Imprimir_Venta_Credito_ById(idVenta, idVentaCredito);
+                    if (object instanceof VentaCreditoTB) {
+                        VentaCreditoTB ventaCreditoTB = (VentaCreditoTB) object;
+                        return ventaCreditoTB;
+                    } else {
+                        return (String) object;
+                    }
                 } else {
-                    return (String) object;
+                    Object object = VentaADO.Listar_Ventas_Detalle_Credito_ById(idVenta);
+                    if (object instanceof VentaTB) {
+                        return (VentaTB) object;
+                    } else {
+                        return (String) object;
+                    }
                 }
-
-//                if (!Tools.isText(idVenta) && !Tools.isText(idVentaCredito)) {
-//                    Object object = VentaADO.Imprimir_Venta_Credito_ById(idVenta, idVentaCredito);
-//                    if (object instanceof VentaCreditoTB) {
-//                        VentaCreditoTB ventaCreditoTB = (VentaCreditoTB) object;
-//                        return "";
-//                    } else {
-//                        return (String) object;
-//                    }
-//                } else {
-//                    Object object = VentaADO.ListarVentasDetalleCredito(idVenta);
-//                    if (object instanceof VentaTB) {
-//                        return (VentaTB) object;
-//                    } else {
-//                        return (String) object;
-//                    }
-//                }
             }
         };
         task.setOnScheduled(w -> {

@@ -3004,7 +3004,7 @@ public class VentaADO {
         }
     }
 
-    public static Object GetReporteGenetalVentas(int procedencia, String fechaInicial, String fechaFinal, int tipoDocumento, String cliente, String vendedor, int tipo, boolean metodo, int valormetodo) {
+    public static Object Reporte_Genetal_Ventas(int procedencia, String fechaInicial, String fechaFinal, int tipoDocumento, String cliente, String vendedor, int tipo, boolean metodo, int valormetodo) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
@@ -3034,14 +3034,19 @@ public class VentaADO {
                 ventaTB.setEstado(resultSet.getInt("Estado"));
                 ventaTB.setEstadoName(resultSet.getString("EstadoName"));
                 ventaTB.setFormaName(resultSet.getString("FormaName"));
-//                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
                 ventaTB.setEfectivo(resultSet.getDouble("Efectivo"));
                 ventaTB.setTarjeta(resultSet.getDouble("Tarjeta"));
                 ventaTB.setDeposito(resultSet.getDouble("Deposito"));
-//                ventaTB.setImporteNeto(resultSet.getDouble("Total"));
+                ventaTB.setTotal(resultSet.getDouble("Total"));
                 if (resultSet.getInt("IdNotaCredito") == 1) {
                     ventaTB.setNotaCreditoTB(new NotaCreditoTB());
                 }
+                
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setIdMoneda(resultSet.getInt("IdMoneda"));
+                monedaTB.setNombre(resultSet.getString("NombreMoneda"));
+                monedaTB.setSimbolo(resultSet.getString("Simbolo"));
+                ventaTB.setMonedaTB(monedaTB);
 
                 arrayList.add(ventaTB);
             }
@@ -3063,7 +3068,7 @@ public class VentaADO {
         }
     }
 
-    public static Object ListarVentasCredito(int opcion, String buscar, boolean mostrar, String fechaInicial, String fechaFinal, int posicionPagina, int filasPorPagina) {
+    public static Object Listar_Ventas_Credito(int opcion, String buscar, boolean mostrar, String fechaInicial, String fechaFinal, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
@@ -3087,14 +3092,22 @@ public class VentaADO {
                 ventaTB.setNumeracion(resultSet.getString("Numeracion"));
                 ventaTB.setFechaVenta(resultSet.getDate("FechaVenta").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 ventaTB.setHoraVenta(resultSet.getTime("HoraVenta").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
-                ventaTB.setClienteTB(new ClienteTB(resultSet.getString("NumeroDocumento"), resultSet.getString("Informacion")));
-                ventaTB.setClienteName(resultSet.getString("Informacion"));
                 ventaTB.setEstado(resultSet.getInt("Estado"));
                 ventaTB.setEstadoName(ventaTB.getEstado() == 3 ? "CANCELADO" : ventaTB.getEstado() == 2 ? "POR PAGAR" : "PAGADO");
-//                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
                 ventaTB.setMontoTotal(resultSet.getDouble("MontoTotal"));
                 ventaTB.setMontoCobrado(resultSet.getDouble("MontoCobrado"));
                 ventaTB.setMontoRestante(ventaTB.getMontoTotal() - ventaTB.getMontoCobrado());
+                
+                ClienteTB clienteTB = new ClienteTB();
+                clienteTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
+                clienteTB.setInformacion(resultSet.getString("Informacion"));
+                ventaTB.setClienteTB(clienteTB);
+                
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setIdMoneda(resultSet.getInt("IdMoneda"));
+                monedaTB.setNombre(resultSet.getString("NombreMoneda"));
+                monedaTB.setSimbolo(resultSet.getString("Simbolo"));
+                ventaTB.setMonedaTB(monedaTB);                
 
                 Label label = new Label(ventaTB.getEstado() == 3 ? "ANULADO" : ventaTB.getEstado() == 2 ? "POR COBRAR" : "COBRADO");
                 label.getStyleClass().add(ventaTB.getEstado() == 2 ? "label-medio" : ventaTB.getEstado() == 3 ? "label-proceso" : "label-asignacion");
@@ -3149,7 +3162,7 @@ public class VentaADO {
 
     }
 
-    public static Object ListarVentasDetalleCredito(String idVenta) {
+    public static Object Listar_Ventas_Detalle_Credito_ById(String idVenta) {
         PreparedStatement preparedStatement = null;
         PreparedStatement statementVentaDetalle = null;
         ResultSet resultSet = null;
@@ -3166,11 +3179,16 @@ public class VentaADO {
                 ventaTB.setNumeracion(resultSet.getString("Numeracion"));
                 ventaTB.setEstado(resultSet.getInt("Estado"));
                 ventaTB.setEstadoName(resultSet.getString("EstadoName"));
-//                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
                 ventaTB.setMontoTotal(resultSet.getDouble("MontoTotal"));
                 ventaTB.setMontoCobrado(resultSet.getDouble("MontoCobrado"));
                 ventaTB.setMontoRestante(resultSet.getDouble("MontoTotal") - resultSet.getDouble("MontoCobrado"));
 
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setIdMoneda(resultSet.getInt("IdMoneda"));
+                monedaTB.setNombre(resultSet.getString("Nombre"));
+                monedaTB.setSimbolo(resultSet.getString("Simbolo"));
+                ventaTB.setMonedaTB(monedaTB);
+                
                 preparedStatement = DBUtil.getConnection().prepareCall("{call Sp_Listar_Detalle_Venta_Credito(?)}");
                 preparedStatement.setString(1, idVenta);
                 resultSet = preparedStatement.executeQuery();
@@ -3224,22 +3242,15 @@ public class VentaADO {
                     impuestoTB.setValor(resultSetLista.getDouble("ValorImpuesto"));
                     suministroTB.setImpuestoTB(impuestoTB);
 
-                    double valor_sin_impuesto = resultSetLista.getDouble("PrecioVenta") / ((suministroTB.getImpuestoTB().getValor() / 100.00) + 1);
-                    double descuento = suministroTB.getDescuento();
-                    double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
-                    double preciocalculado = valor_sin_impuesto - porcentajeRestante;
 
-                    suministroTB.setDescuento(descuento);
-                    suministroTB.setDescuentoCalculado(porcentajeRestante);
-                    suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
+                    suministroTB.setDescuento(resultSetLista.getDouble("Descuento"));
+                    suministroTB.setDescuentoCalculado(resultSetLista.getDouble("Descuento"));
+                    suministroTB.setDescuentoSumado(resultSetLista.getDouble("Descuento"));
 
-                    suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
-                    suministroTB.setPrecioVentaGeneralReal(preciocalculado);
-
-                    double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-//                    suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-                    suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
-                    suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
+                    suministroTB.setPrecioVentaGeneralUnico(resultSetLista.getDouble("PrecioVenta"));
+                    suministroTB.setPrecioVentaGeneralReal(resultSetLista.getDouble("PrecioVenta"));
+                    suministroTB.setPrecioVentaGeneral(resultSetLista.getDouble("PrecioVenta"));
+                    suministroTB.setPrecioVentaGeneralAuxiliar(resultSetLista.getDouble("PrecioVenta"));
 
                     suministroTB.setInventario(resultSetLista.getBoolean("Inventario"));
                     suministroTB.setUnidadVenta(resultSetLista.getInt("UnidadVenta"));
@@ -3466,10 +3477,16 @@ public class VentaADO {
                 ventaTB.setNumeracion(resultSet.getString("Numeracion"));
                 ventaTB.setEstado(resultSet.getInt("Estado"));
                 ventaTB.setEstadoName(resultSet.getString("EstadoName"));
-//                ventaTB.setMonedaName(resultSet.getString("Simbolo"));
                 ventaTB.setMontoTotal(resultSet.getDouble("MontoTotal"));
                 ventaTB.setMontoCobrado(resultSet.getDouble("MontoCobrado"));
                 ventaTB.setMontoRestante(resultSet.getDouble("MontoTotal") - resultSet.getDouble("MontoCobrado"));
+                
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setIdMoneda(resultSet.getInt("IdMoneda"));
+                monedaTB.setNombre(resultSet.getString("Nombre"));
+                monedaTB.setSimbolo(resultSet.getString("Simbolo"));
+                ventaTB.setMonedaTB(monedaTB);
+                
                 ventaCreditoTB.setVentaTB(ventaTB);
 
                 return ventaCreditoTB;

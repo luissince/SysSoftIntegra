@@ -48,7 +48,7 @@ public class FxPostVentaCantidadesController implements Initializable {
     }
 
     private void eventMas() {
-        if (Tools.isNumeric(txtCantidad.getText().trim())) {
+         if (Tools.isNumeric(txtCantidad.getText().trim())) {
             if (Double.parseDouble(txtCantidad.getText().trim()) > 0) {
                 double cantidad = Double.parseDouble(txtCantidad.getText()) + 1;
                 txtCantidad.setText(Tools.roundingValue(cantidad, 2));
@@ -74,22 +74,11 @@ public class FxPostVentaCantidadesController implements Initializable {
     }
 
     private void eventAceptar() {
-        double cantidad = Tools.isNumeric(txtCantidad.getText().trim())
+       double cantidad = Tools.isNumeric(txtCantidad.getText().trim())
                 ? (Double.parseDouble(txtCantidad.getText()) <= 0 ? oldCantidad : Double.parseDouble(txtCantidad.getText()))
                 : oldCantidad;
         suministroTB.setCantidad(primerLlamado ? cantidad : suministroTB.getCantidad() + cantidad);
-        double porcentajeRestante = suministroTB.getPrecioVentaGeneralUnico() * (suministroTB.getDescuento() / 100.00);
-
-        suministroTB.setDescuentoCalculado(porcentajeRestante);
-        suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-
-        double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-//        suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-
-//        suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-//        suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-//        suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
-
+        
         if (tipoVenta) {
             ventaEstructuraController.getAddArticulo(suministroTB, ventaEstructuraController.getWindow().getScene().getWindow());
             Tools.Dispose(apWindow);

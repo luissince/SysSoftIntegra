@@ -106,7 +106,7 @@
                           <columns>
                             <TableColumn fx:id="tcNumero" prefWidth="60.0" style="-fx-alignment: TOP-CENTER;" text="N°" />
                             <TableColumn fx:id="tcDescripcion" prefWidth="340.0" style="-fx-alignment: TOP-LEFT;" text="Descripción" />
-                              <TableColumn fx:id="tcCantidad" prefWidth="160.0" style="-fx-alignment: TOP-RIGHT;" text="Cantidad" />
+                              <TableColumn fx:id="tcCantidad" prefWidth="150.0" style="-fx-alignment: TOP-RIGHT;" text="Cantidad" />
                               <TableColumn fx:id="tcVerificar" minWidth="0.0" prefWidth="37.0" style="-fx-alignment: CENTER;" text="Verificar" visible="false" />
                               <TableColumn fx:id="tcPrecio" minWidth="0.0" prefWidth="0.0" style="-fx-alignment: CENTER;" text="Precio" visible="false" />
                           </columns>

@@ -188,8 +188,7 @@ public class FxCompraReporteController implements Initializable {
                 map.put("DEPOSITO", Tools.roundingValue(deposito, 2));
                 
                 InputStream dir = getClass().getResourceAsStream("/report/CompraGeneral.jasper");
-                JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(list));
-                return jasperPrint;
+                return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(list));
             } else {
                 return "No hay datos para mostrar";
             }
@@ -391,7 +390,6 @@ public class FxCompraReporteController implements Initializable {
                 } else {
                     Tools.AlertMessageWarning(vbWindow, "Exportar", "Elija un formato valido");
                 }
-
             }
         }
     }
@@ -441,7 +439,6 @@ public class FxCompraReporteController implements Initializable {
                             Cell cell = headerRow.createCell(i);
                             cell.setCellStyle(cellStyleHeader);
                             cell.setCellValue(header[i].toUpperCase());
-
                         }
 
                         CellStyle cellStyle = workbook.createCellStyle();

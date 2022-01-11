@@ -109,13 +109,13 @@ public class FxCuentasPorCobrarController implements Initializable {
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
         tcFechaRegistro.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
-        tcProveedor.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
+        tcProveedor.prefWidthProperty().bind(tvList.widthProperty().multiply(0.19));
         tcComprobante.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
+        tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
         tcMontoTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
         tcMontoCobrado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
         tcDiferencia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
-        tcOpciones.prefWidthProperty().bind(tvList.widthProperty().multiply(0.08));
+        tcOpciones.prefWidthProperty().bind(tvList.widthProperty().multiply(0.07));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         Tools.actualDate(Tools.getDate(), dpFechaInicial);
@@ -141,7 +141,7 @@ public class FxCuentasPorCobrarController implements Initializable {
         Task< Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return VentaADO.ListarVentasCredito(opcion, buscar, mostrar, fechaInicio, fechaFinal, (paginacion - 1) * 10, 10);
+                return VentaADO.Listar_Ventas_Credito(opcion, buscar, mostrar, fechaInicio, fechaFinal, (paginacion - 1) * 10, 10);
             }
         };
         task.setOnSucceeded(w -> {

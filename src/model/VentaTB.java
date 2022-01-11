@@ -84,9 +84,7 @@ public class VentaTB {
     private Button btnSumar;
     
     private ArrayList<VentaCreditoTB> ventaCreditoTBs;
-    
-    private String clienteName;
-    
+        
     private double montoTotal;
     
     private double montoCobrado;
@@ -418,14 +416,6 @@ public class VentaTB {
 
     public void setVentaCreditoTBs(ArrayList<VentaCreditoTB> ventaCreditoTBs) {
         this.ventaCreditoTBs = ventaCreditoTBs;
-    }
-
-    public String getClienteName() {
-        return clienteName;
-    }
-
-    public void setClienteName(String clienteName) {
-        this.clienteName = clienteName;
     }
 
     public double getMontoTotal() {

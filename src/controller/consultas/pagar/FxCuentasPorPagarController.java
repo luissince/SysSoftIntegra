@@ -109,13 +109,13 @@ public class FxCuentasPorPagarController implements Initializable {
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
         tcFechaRegistro.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
-        tcProveedor.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
+        tcProveedor.prefWidthProperty().bind(tvList.widthProperty().multiply(0.19));
         tcComprobante.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
+        tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
         tcMontoTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
         tcMontoPagado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
         tcDiferencia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
-        tcOpciones.prefWidthProperty().bind(tvList.widthProperty().multiply(0.08));
+        tcOpciones.prefWidthProperty().bind(tvList.widthProperty().multiply(0.07));
 
         Tools.actualDate(Tools.getDate(), dpFechaInicial);
         Tools.actualDate(Tools.getDate(), dpFechaFinal);

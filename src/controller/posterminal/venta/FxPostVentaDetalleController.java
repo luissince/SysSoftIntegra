@@ -2,7 +2,6 @@ package controller.posterminal.venta;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
-import controller.reporte.FxReportViewController;
 import controller.tools.FilesRouters;
 import controller.tools.Tools;
 import controller.tools.WindowStage;
@@ -32,6 +31,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.EmpleadoTB;
@@ -40,12 +41,13 @@ import model.ImpuestoTB;
 import model.SuministroTB;
 import model.VentaADO;
 import model.VentaTB;
-import net.sf.jasperreports.engine.JRException;
 
 public class FxPostVentaDetalleController implements Initializable {
 
     @FXML
-    private ScrollPane window;
+    private AnchorPane apWindow;
+    @FXML
+    private ScrollPane spBody;
     @FXML
     private Label lblLoad;
     @FXML
@@ -77,12 +79,6 @@ public class FxPostVentaDetalleController implements Initializable {
     @FXML
     private Label lblSubTotal;
     @FXML
-    private Button btnCancelarVenta;
-    @FXML
-    private Button btnReporte;
-    @FXML
-    private Button btnImprimir;
-    @FXML
     private Label lblEfectivo;
     @FXML
     private Label lblTarjeta;
@@ -94,27 +90,33 @@ public class FxPostVentaDetalleController implements Initializable {
     private Text lbClienteInformacion;
     @FXML
     private Label lblDeposito;
+    @FXML
+    private HBox hbLoad;
+    @FXML
+    private Label lblMessageLoad;
+    @FXML
+    private Button btnAceptarLoad;
 
-    private FxPrincipalController fxPrincipalController;
+    private FxPrincipalController principalController;
 
-    private FxOpcionesImprimirController fxOpcionesImprimirController;
+    private FxOpcionesImprimirController opcionesImprimirController;
 
     private FxPostVentaRealizadasController ventaRealizadasController;
 
-    private ObservableList<SuministroTB> arrList = null;
-
     private ArrayList<ImpuestoTB> arrayImpuestos;
+
+    private String idVenta;
 
     private VentaTB ventaTB;
 
-    private String idVenta;
+    private double total;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         arrayImpuestos = new ArrayList<>();
-        fxOpcionesImprimirController = new FxOpcionesImprimirController();
-        fxOpcionesImprimirController.loadComponents();
-        fxOpcionesImprimirController.loadTicketVentaDetalle(window);
+        opcionesImprimirController = new FxOpcionesImprimirController();
+        opcionesImprimirController.loadComponents();
+        opcionesImprimirController.loadTicketVentaDetalle(apWindow);
     }
 
     public void setInitComponents(String idVenta) {
@@ -139,6 +141,18 @@ public class FxPostVentaDetalleController implements Initializable {
 
         task.setOnScheduled(e -> {
             lblLoad.setVisible(true);
+            spBody.setDisable(true);
+            hbLoad.setVisible(true);
+            lblMessageLoad.setText("Cargando datos...");
+            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+            btnAceptarLoad.setVisible(false);
+        });
+
+        task.setOnFailed(e -> {
+            lblLoad.setVisible(false);
+            lblMessageLoad.setText(task.getException().getLocalizedMessage());
+            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+            btnAceptarLoad.setVisible(true);
         });
 
         task.setOnSucceeded(e -> {
@@ -146,93 +160,124 @@ public class FxPostVentaDetalleController implements Initializable {
             if (result instanceof VentaTB) {
                 ventaTB = (VentaTB) result;
                 EmpleadoTB empleadoTB = ventaTB.getEmpleadoTB();
-                ObservableList<SuministroTB> empList = FXCollections.observableArrayList(ventaTB.getSuministroTBs());
+
                 lblFechaVenta.setText(ventaTB.getFechaVenta() + " " + ventaTB.getHoraVenta());
-                lblCliente.setText(ventaTB.getClienteTB().getNumeroDocumento() + "-" + ventaTB.getClienteTB().getInformacion());
+                lblCliente.setText(ventaTB.getClienteTB().getNumeroDocumento() + " " + ventaTB.getClienteTB().getInformacion());
                 lbClienteInformacion.setText(ventaTB.getClienteTB().getTelefono() + "-" + ventaTB.getClienteTB().getCelular());
                 lbCorreoElectronico.setText(ventaTB.getClienteTB().getEmail());
                 lbDireccion.setText(ventaTB.getClienteTB().getDireccion());
                 lblComprobante.setText(ventaTB.getComprobanteName() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
                 lblObservaciones.setText(ventaTB.getObservaciones());
                 lblTipo.setText(ventaTB.getTipoName() + " - " + ventaTB.getEstadoName());
-                btnCancelarVenta.setDisable(ventaTB.getEstado() == 3);
 
                 lblEfectivo.setText(Tools.roundingValue(ventaTB.getEfectivo(), 2));
                 lblTarjeta.setText(Tools.roundingValue(ventaTB.getTarjeta(), 2));
                 lblDeposito.setText(Tools.roundingValue(ventaTB.getDeposito(), 2));
-//                lblValor.setText(Tools.roundingValue(ventaTB.getImporteNeto(), 2));
+                lblValor.setText(Tools.roundingValue(ventaTB.getTotal(), 2));
                 lblVuelto.setText(Tools.roundingValue(ventaTB.getVuelto(), 2));
 
                 if (empleadoTB != null) {
-                    lblVendedor.setText(empleadoTB.getApellidos() + " " + empleadoTB.getNombres());
+                    lblVendedor.setText(empleadoTB.getApellidos() + ", " + empleadoTB.getNombres());
                 }
-                fillVentasDetalleTable(empList);
-                lblLoad.setVisible(false);
+
+                ObservableList<SuministroTB> empList = FXCollections.observableArrayList(ventaTB.getSuministroTBs());
+
+                gpList.getChildren().clear();
+                createHeadTable();
+                createBodyTable(empList);
+
+                spBody.setDisable(false);
+                hbLoad.setVisible(false);
             } else {
-                btnReporte.setDisable(true);
-                btnCancelarVenta.setDisable(true);
-                btnImprimir.setDisable(true);
-                lblLoad.setVisible(false);
+                lblMessageLoad.setText((String) result);
+                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+                btnAceptarLoad.setVisible(true);
             }
-        });
-        task.setOnFailed(e -> {
             lblLoad.setVisible(false);
         });
+
         executor.execute(task);
         if (!executor.isShutdown()) {
             executor.shutdown();
         }
     }
 
-    private void fillVentasDetalleTable(ObservableList<SuministroTB> empList) {
-        arrList = empList;
-        for (int i = 0; i < arrList.size(); i++) {
-            gpList.add(addElementGridPaneLabel("l1" + (i + 1), arrList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
-            gpList.add(addElementGridPaneLabel("l2" + (i + 1), arrList.get(i).getClave() + "\n" + arrList.get(i).getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
-            gpList.add(addElementGridPaneLabel("l3" + (i + 1), Tools.roundingValue(arrList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpList.add(addElementGridPaneLabel("l4" + (i + 1), arrList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
-            gpList.add(addElementGridPaneLabel("l5" + (i + 1), arrList.get(i).getImpuestoTB().getNombreImpuesto(), Pos.CENTER_RIGHT), 4, (i + 1));
-            gpList.add(addElementGridPaneLabel("l6" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpList.add(addElementGridPaneLabel("l7" + (i + 1), Tools.roundingValue(arrList.get(i).getDescuento(), 2) + "%", Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPaneLabel("l8" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral() * arrList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
-            gpList.add(arrList.get(i).getEstadoName().equalsIgnoreCase("C")
+    private void createHeadTable() {
+        gpList.add(addHeadGridPane("N#"), 0, 0);
+        gpList.add(addHeadGridPane("Descripción"), 1, 0);
+        gpList.add(addHeadGridPane("Cantidad"), 2, 0);
+        gpList.add(addHeadGridPane("Medida"), 3, 0);
+        gpList.add(addHeadGridPane("Impuesto"), 4, 0);
+        gpList.add(addHeadGridPane("Precio"), 5, 0);
+        gpList.add(addHeadGridPane("Descuento"), 6, 0);
+        gpList.add(addHeadGridPane("Importe"), 7, 0);
+        gpList.add(addHeadGridPane("Por Llevar"), 8, 0);
+        gpList.add(addHeadGridPane("Historial"), 9, 0);
+    }
+
+    private void createBodyTable(ObservableList<SuministroTB> empList) {
+        for (int i = 0; i < empList.size(); i++) {
+            gpList.add(addElementGridPaneLabel("l1" + (i + 1), empList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
+            gpList.add(addElementGridPaneLabel("l2" + (i + 1), empList.get(i).getClave() + "\n" + empList.get(i).getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
+            gpList.add(addElementGridPaneLabel("l3" + (i + 1), Tools.roundingValue(empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
+            gpList.add(addElementGridPaneLabel("l4" + (i + 1), empList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
+            gpList.add(addElementGridPaneLabel("l5" + (i + 1), empList.get(i).getImpuestoTB().getNombreImpuesto(), Pos.CENTER_RIGHT), 4, (i + 1));
+            gpList.add(addElementGridPaneLabel("l6" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
+            gpList.add(addElementGridPaneLabel("l7" + (i + 1), Tools.roundingValue(empList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
+            gpList.add(addElementGridPaneLabel("l8" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral() * empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpList.add(empList.get(i).getEstadoName().equalsIgnoreCase("C")
                     ? addElementGridPaneLabel("l9" + (i + 1), "COMPLETADO", Pos.CENTER_LEFT)
-                    : addElementGridPaneButtonLlevar("l9" + (i + 1), "LLEVAR \n" + Tools.roundingValue(arrList.get(i).getPorLlevar(), 2), arrList.get(i).getIdSuministro(), arrList.get(i).getCostoCompra(), Pos.CENTER_LEFT),
+                    : addElementGridPaneButtonLlevar("l9" + (i + 1), "LLEVAR \n" + Tools.roundingValue(empList.get(i).getPorLlevar(), 2), empList.get(i).getIdSuministro(), empList.get(i).getCostoCompra(), Pos.CENTER_LEFT),
                     8, (i + 1));
-            gpList.add(addElementGridPaneButtonHistorial("l10" + (i + 1), "HISTORIAL", arrList.get(i), Pos.CENTER_LEFT), 9, (i + 1));
+            gpList.add(addElementGridPaneButtonHistorial("l10" + (i + 1), "HISTORIAL", empList.get(i), Pos.CENTER_LEFT), 9, (i + 1));
         }
         calcularTotales();
     }
 
-    private void onEventCancelar() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_DEVOLUCION);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
-            FxPostVentaDevolucionController controller = fXMLLoader.getController();
-            controller.setInitVentaDetalle(this);
-//            controller.setLoadVentaDevolucion(idVenta, arrList, ventaTB.getSerie() + "-" + ventaTB.getNumeracion(), Tools.roundingValue(ventaTB.getImporteNeto(), 2));
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Cancelar la venta", window.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println("Error en venta detalle: " + ex.getLocalizedMessage());
+    private void calcularTotales() {
+        double importeBrutoTotal = 0;
+        double descuentoTotal = 0;
+        double subImporteNetoTotal = 0;
+        double impuestoTotal = 0;
+        double importeNetoTotal = 0;
+        total = 0;
+
+        for (SuministroTB ocdtb : ventaTB.getSuministroTBs()) {
+            double importeBruto = ocdtb.getPrecioVentaGeneral() * ocdtb.getCantidad();
+            double descuento = ocdtb.getDescuento();
+            double subImporteBruto = importeBruto - descuento;
+            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+            double importeNeto = subImporteNeto + impuesto;
+
+            importeBrutoTotal += importeBruto;
+            descuentoTotal += descuento;
+            subImporteNetoTotal += subImporteNeto;
+            impuestoTotal += impuesto;
+            importeNetoTotal += importeNeto;
         }
+
+        total = importeNetoTotal;
+
+        lblValorVenta.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBrutoTotal, 2));
+        lblDescuento.setText(ventaTB.getMonedaTB().getSimbolo() + " -" + Tools.roundingValue(descuentoTotal, 2));
+        lblSubTotal.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+        lblImpuesto.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
+        lblTotal.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNetoTotal, 2));
     }
 
-    private void calcularTotales() {
-        if (ventaTB != null) {
-//            lblValorVenta.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImporteBruto(), 2));
-//            lblDescuento.setText(ventaTB.getMonedaTB().getSimbolo() + " -" + Tools.roundingValue(ventaTB.getDescuento(), 2));
-//            lblSubTotal.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getSubImporteNeto(), 2));
-//            lblImpuesto.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImpuesto(), 2));
-//            lblTotal.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ventaTB.getImporteNeto(), 2));
-        }
+    private Label addHeadGridPane(String nombre) {
+        Label label = new Label(nombre);
+        label.setTextFill(Color.web("#FFFFFF"));
+        label.setStyle("-fx-background-color:  #020203;-fx-padding:  0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;-fx-font-weight:100;");
+        label.getStyleClass().add("labelRoboto13");
+        label.setAlignment(Pos.CENTER);
+        label.setWrapText(true);
+        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
+        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxHeight(Double.MAX_VALUE);
+        return label;
     }
 
     private Label addElementGridPaneLabel(String id, String nombre, Pos pos) {
@@ -297,37 +342,30 @@ public class FxPostVentaDetalleController implements Initializable {
         return button;
     }
 
-    private Label addLabelTitle(String nombre, Pos pos) {
-        Label label = new Label(nombre);
-        label.setStyle("-fx-text-fill: #020203;-fx-padding:  0.4166666666666667em 0em  0.4166666666666667em 0em");
-        label.getStyleClass().add("labelRoboto13");
-        label.setAlignment(pos);
-        label.setMinWidth(Control.USE_COMPUTED_SIZE);
-        label.setMinHeight(Control.USE_COMPUTED_SIZE);
-        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
-        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
-        label.setMaxWidth(Double.MAX_VALUE);
-        label.setMaxHeight(Control.USE_COMPUTED_SIZE);
-        return label;
-    }
-
-    private Label addLabelTotal(String nombre, Pos pos) {
-        Label label = new Label(nombre);
-        label.setStyle("-fx-text-fill:#0771d3;");
-        label.getStyleClass().add("labelRoboto15");
-        label.setAlignment(pos);
-        label.setMinWidth(Control.USE_COMPUTED_SIZE);
-        label.setMinHeight(Control.USE_COMPUTED_SIZE);
-        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
-        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
-        label.setMaxWidth(Double.MAX_VALUE);
-        label.setMaxHeight(Control.USE_COMPUTED_SIZE);
-        return label;
+    private void onEventCancelar() {
+        try {
+            principalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_DEVOLUCION);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            //Controlller here
+            FxPostVentaDevolucionController controller = fXMLLoader.getController();
+            controller.setInitVentaDetalle(this);
+//            controller.setLoadVentaDevolucion(idVenta, arrList, ventaTB.getSerie() + "-" + ventaTB.getNumeracion(), Tools.roundingValue(ventaTB.getImporteNeto(), 2));
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Cancelar la venta", apWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> principalController.closeFondoModal());
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println("Error en venta detalle: " + ex.getLocalizedMessage());
+        }
     }
 
     private void openWindowLlevar(String idSuministro, double costo) {
         try {
-            fxPrincipalController.openFondoModal();
+            principalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_LLEVAR);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
@@ -336,10 +374,10 @@ public class FxPostVentaDetalleController implements Initializable {
             controller.setInitData(idVenta, idSuministro, lblComprobante.getText(), costo);
             controller.setInitVentaDetalleController(this);
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Producto a llevar", window.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Producto a llevar", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnHiding(w -> principalController.closeFondoModal());
             stage.show();
 
         } catch (IOException ex) {
@@ -349,7 +387,7 @@ public class FxPostVentaDetalleController implements Initializable {
 
     private void openWindowHistorial(SuministroTB suministroTB) {
         try {
-            fxPrincipalController.openFondoModal();
+            principalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_LLEVAR_HISTORIAL);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
@@ -358,10 +396,10 @@ public class FxPostVentaDetalleController implements Initializable {
             controller.setInitVentaDetalleController(this);
             controller.loadData(ventaTB, suministroTB);
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Historial de Salida", window.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Historial de Salida", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnHiding(w -> principalController.closeFondoModal());
             stage.show();
 
         } catch (IOException ex) {
@@ -370,34 +408,21 @@ public class FxPostVentaDetalleController implements Initializable {
     }
 
     private void openWindowReporte() {
-//        if (ventaTB != null) {
-//            try {
-//                URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
-//                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-//                Parent parent = fXMLLoader.load(url.openStream());
-//                //Controlller here
-//                FxReportViewController controller = fXMLLoader.getController();
-//                controller.setFileName(ventaTB.getComprobanteName().toUpperCase() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-//                controller.setJasperPrint(fxOpcionesImprimirController.getTicketVenta().reportA4());
-//                controller.show();
-//                Stage stage = WindowStage.StageLoader(parent, "Venta realizada");
-//                stage.setResizable(true);
-//                stage.show();
-//                stage.requestFocus();
-//            } catch (IOException | JRException ex) {
-//                Tools.AlertMessageError(window, "Reporte de Ventas", "Error al generar el reporte: " + ex.getLocalizedMessage());
-//            }
-//        } else {
-//            Tools.AlertMessageWarning(window, "Detalle Venta", "No se puede generar el reporte por problemas en al carga de información.");
-//        }
+        opcionesImprimirController.getTicketVenta().mostrarReporte(idVenta);
     }
 
     private void onEventImprimirVenta() {
-        if (idVenta != null || !idVenta.equalsIgnoreCase("")) {
-            fxOpcionesImprimirController.getTicketVenta().imprimir(idVenta);
-        } else {
-            Tools.AlertMessageWarning(window, "Detalle Venta", "No se puede generar la impresión por poblemas de carga de datos.");
-        }
+        opcionesImprimirController.getTicketVenta().imprimir(idVenta);
+    }
+
+    private void onEventClose() {
+        principalController.getVbContent().getChildren().remove(apWindow);
+        principalController.getVbContent().getChildren().clear();
+        AnchorPane.setLeftAnchor(ventaRealizadasController.getWindow(), 0d);
+        AnchorPane.setTopAnchor(ventaRealizadasController.getWindow(), 0d);
+        AnchorPane.setRightAnchor(ventaRealizadasController.getWindow(), 0d);
+        AnchorPane.setBottomAnchor(ventaRealizadasController.getWindow(), 0d);
+        principalController.getVbContent().getChildren().add(ventaRealizadasController.getWindow());
     }
 
     @FXML
@@ -426,13 +451,7 @@ public class FxPostVentaDetalleController implements Initializable {
 
     @FXML
     private void onMouseClickedBehind(MouseEvent event) throws IOException {
-        fxPrincipalController.getVbContent().getChildren().remove(window);
-        fxPrincipalController.getVbContent().getChildren().clear();
-        AnchorPane.setLeftAnchor(ventaRealizadasController.getWindow(), 0d);
-        AnchorPane.setTopAnchor(ventaRealizadasController.getWindow(), 0d);
-        AnchorPane.setRightAnchor(ventaRealizadasController.getWindow(), 0d);
-        AnchorPane.setBottomAnchor(ventaRealizadasController.getWindow(), 0d);
-        fxPrincipalController.getVbContent().getChildren().add(ventaRealizadasController.getWindow());
+        onEventClose();
     }
 
     @FXML
@@ -447,13 +466,25 @@ public class FxPostVentaDetalleController implements Initializable {
         openWindowReporte();
     }
 
-    public void setInitVentasController(FxPostVentaRealizadasController ventaRealizadasController, FxPrincipalController fxPrincipalController) {
-        this.ventaRealizadasController = ventaRealizadasController;
-        this.fxPrincipalController = fxPrincipalController;
+    @FXML
+    private void onKeyPressedAceptarLoad(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            onEventClose();
+        }
     }
 
-    public ScrollPane getWindow() {
-        return window;
+    @FXML
+    private void onActionAceptarLoad(ActionEvent event) {
+        onEventClose();
+    }
+
+    public void setInitVentasController(FxPostVentaRealizadasController ventaRealizadasController, FxPrincipalController fxPrincipalController) {
+        this.ventaRealizadasController = ventaRealizadasController;
+        this.principalController = fxPrincipalController;
+    }
+
+    public AnchorPane getWindow() {
+        return apWindow;
     }
 
 }

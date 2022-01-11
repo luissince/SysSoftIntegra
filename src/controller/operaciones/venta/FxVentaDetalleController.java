@@ -74,8 +74,6 @@ public class FxVentaDetalleController implements Initializable {
     @FXML
     private Label lblSubTotal;
     @FXML
-    private Button btnCancelarVenta;
-    @FXML
     private Label lblEfectivo;
     @FXML
     private Label lblTarjeta;
@@ -161,7 +159,6 @@ public class FxVentaDetalleController implements Initializable {
                 lblComprobante.setText(ventaTB.getComprobanteName() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
                 lblObservaciones.setText(ventaTB.getObservaciones());
                 lblTipo.setText(ventaTB.getTipoName() + " - " + ventaTB.getEstadoName());
-                btnCancelarVenta.setDisable(ventaTB.getEstado() == 3);
 
                 lblEfectivo.setText(Tools.roundingValue(ventaTB.getEfectivo(), 2));
                 lblTarjeta.setText(Tools.roundingValue(ventaTB.getTarjeta(), 2));

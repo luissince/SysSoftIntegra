@@ -37,28 +37,10 @@ public class FxPostVentaDescuentoController implements Initializable {
 
     private void executeDescuento() {
         if (Tools.isNumeric(txtPorcentajeDescuento.getText())) {
-
-            double precio = suministroTB.getPrecioVentaGeneralUnico();
-
-            double descuento = Double.parseDouble(txtPorcentajeDescuento.getText());
-            double porcentajeRestante = precio * (descuento / 100.00);
-            double preciocalculado = precio - porcentajeRestante;
-
-            suministroTB.setDescuento(descuento);
-            suministroTB.setDescuentoCalculado(porcentajeRestante);
-            suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-
-            suministroTB.setPrecioVentaGeneralUnico(precio);
-            suministroTB.setPrecioVentaGeneralReal(preciocalculado);
-
-            double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-
-//            suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-            suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
-
-//            suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-//            suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-//            suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
+            suministroTB.setDescuento(Double.parseDouble(txtPorcentajeDescuento.getText()));
+            if (Double.parseDouble(txtPorcentajeDescuento.getText()) < 0) {
+                suministroTB.setDescuento(0);
+            }
 
             ventaEstructuraController.getTvList().refresh();
             ventaEstructuraController.calculateTotales();

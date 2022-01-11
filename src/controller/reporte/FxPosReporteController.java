@@ -350,7 +350,7 @@ public class FxPosReporteController implements Initializable {
         Task<String> task = new Task<String>() {
             @Override
             public String call() throws InterruptedException {
-                Object object = VentaADO.GetReporteGenetalVentas(
+                Object object = VentaADO.Reporte_Genetal_Ventas(
                         2,
                         Tools.getDatePicker(dpFechaInicial),
                         Tools.getDatePicker(dpFechaFinal),
@@ -470,7 +470,7 @@ public class FxPosReporteController implements Initializable {
                             cellStyle = workbook.createCellStyle();
                             cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
                             cell11.setCellStyle(cellStyle);
-//                            cell11.setCellValue(Double.parseDouble(Tools.roundingValue(list.get(i).getImporteNeto(), 2)));
+                            cell11.setCellValue(Double.parseDouble(Tools.roundingValue(list.get(i).getTotal(), 2)));
                             cell11.setCellType(Cell.CELL_TYPE_NUMERIC);
                             sheet.autoSizeColumn(cell11.getColumnIndex());
                         }
@@ -598,7 +598,7 @@ public class FxPosReporteController implements Initializable {
     }
 
     private Object reportGenerateVentas() throws JRException {
-        Object object = VentaADO.GetReporteGenetalVentas(
+        Object object = VentaADO.Reporte_Genetal_Ventas(
                 2,
                 Tools.getDatePicker(dpFechaInicial),
                 Tools.getDatePicker(dpFechaFinal),
@@ -625,34 +625,34 @@ public class FxPosReporteController implements Initializable {
 
             for (VentaTB vt : list) {
                 if (vt.getNotaCreditoTB() != null) {
-//                    totalanulado += vt.getImporteNeto();
+                    totalanulado += vt.getTotal();
                 } else {
                     if (vt.getEstado() == 3) {
-//                        totalanulado += vt.getImporteNeto();
+                        totalanulado += vt.getTotal();
                     } else {
                         if (vt.getTipo() == 1 && vt.getEstado() == 1 || vt.getTipo() == 1 && vt.getEstado() == 4) {
-//                            totalcontado += vt.getImporteNeto();
+                            totalcontado += vt.getTotal();
                         } else if (vt.getTipo() == 2 && vt.getEstado() == 1) {
-//                            totalcreditopagado += vt.getImporteNeto();
+                            totalcreditopagado += vt.getTotal();
                         } else {
-//                            totalcredito += vt.getImporteNeto();
+                            totalcredito += vt.getTotal();
                         }
                     }
                 }
 
                 if (vt.getNotaCreditoTB() == null && vt.getEstado() != 3) {
                     if (vt.getTipo() == 2 && vt.getEstado() == 1) {
-//                        efectivo += vt.getImporteNeto();
+                        efectivo += vt.getTotal();
                     } else if (vt.getEstado() == 1 || vt.getEstado() == 4) {
                         if (vt.getFormaName().equalsIgnoreCase("EFECTIVO")) {
-//                            efectivo += vt.getImporteNeto();
+                            efectivo += vt.getTotal();
                         } else if (vt.getFormaName().equalsIgnoreCase("TARJETA")) {
-//                            tarjeta += vt.getImporteNeto();
+                            tarjeta += vt.getTotal();
                         } else if (vt.getFormaName().equalsIgnoreCase("MIXTO")) {
                             efectivo += vt.getEfectivo();
                             tarjeta += vt.getTarjeta();
                         } else {
-//                            deposito += vt.getImporteNeto();
+                            deposito += vt.getTotal();
                         }
                     }
                 }
