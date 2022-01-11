@@ -414,6 +414,7 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setPrecioVentaGeneralUnico(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
             suministroTB.setPrecioVentaGeneralReal(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
 
+            suministroTB.setIdImpuesto(tvList.getSelectionModel().getSelectedItem().getIdImpuesto());
             suministroTB.setImpuestoTB(tvList.getSelectionModel().getSelectedItem().getImpuestoTB());
 
             suministroTB.setInventario(tvList.getSelectionModel().getSelectedItem().isInventario());
@@ -423,23 +424,23 @@ public class FxSuministrosListaController implements Initializable {
             Button button = new Button("X");
             button.getStyleClass().add("buttonDark");
             button.setOnAction(e -> {
-                postVentaEstructuraController.getTvList().getItems().remove(suministroTB);
-                postVentaEstructuraController.calculateTotales();
+                ventaEstructuraController.getTvList().getItems().remove(suministroTB);
+                ventaEstructuraController.calculateTotales();
             });
             button.setOnKeyPressed(e -> {
                 if (e.getCode() == KeyCode.ENTER) {
-                    postVentaEstructuraController.getTvList().getItems().remove(suministroTB);
-                    postVentaEstructuraController.calculateTotales();
+                    ventaEstructuraController.getTvList().getItems().remove(suministroTB);
+                    ventaEstructuraController.calculateTotales();
                 }
             });
             suministroTB.setBtnRemove(button);
             if (postVentaEstructuraController.isCerar_modal_agregar_item_lista()) {
                 Tools.Dispose(apWindow);
-                postVentaEstructuraController.getAddArticulo(suministroTB, postVentaEstructuraController.getWindow().getScene().getWindow());
+                postVentaEstructuraController.getAddSuministro(suministroTB, postVentaEstructuraController.getWindow().getScene().getWindow());
             } else {
                 txtSearch.selectAll();
                 txtSearch.requestFocus();
-                postVentaEstructuraController.getAddArticulo(suministroTB, apWindow.getScene().getWindow());
+                postVentaEstructuraController.getAddSuministro(suministroTB, apWindow.getScene().getWindow());
             }
         }
     }

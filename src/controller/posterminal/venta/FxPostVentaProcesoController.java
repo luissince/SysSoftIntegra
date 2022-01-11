@@ -3,7 +3,6 @@ package controller.posterminal.venta;
 import controller.tools.ConvertMonedaCadena;
 import controller.tools.Tools;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,7 +19,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.ResultTransaction;
-import model.SuministroTB;
 import model.VentaADO;
 import model.VentaTB;
 
@@ -93,13 +91,9 @@ public class FxPostVentaProcesoController implements Initializable {
 
     private FxPostVentaEstructuraController ventaEstructuraController;
 
-    private ArrayList<SuministroTB> tvList;
-
     private ConvertMonedaCadena monedaCadena;
 
     private VentaTB ventaTB;
-
-    private String moneda_simbolo;
 
     private double vueltoContado;
 
@@ -123,23 +117,21 @@ public class FxPostVentaProcesoController implements Initializable {
         total_venta = 0;
         vueltoContado = 0.00;
         monedaCadena = new ConvertMonedaCadena();
-        lblVueltoNombre.setText("Su cambio: ");
-        lblVueltoNombreAdelantado.setText("Su cambio: ");
+        lblVueltoNombre.setText("SU CAMBIO: ");
+        lblVueltoNombreAdelantado.setText("SU CAMBIO: ");
     }
 
-    public void setInitComponents(VentaTB ventaTB, ArrayList<SuministroTB> tvList, boolean provilegios, String moneda) {
+    public void setInitComponents(VentaTB ventaTB, boolean provilegios) {
         this.ventaTB = ventaTB;
-        this.tvList = tvList;
-        moneda_simbolo = ventaTB.getMonedaTB().getSimbolo();
-//        total_venta = Double.parseDouble(Tools.roundingValue(ventaTB.getImporteNeto(), 2));
+        total_venta = Double.parseDouble(Tools.roundingValue(ventaTB.getTotal(), 2));
 
-        lblTotal.setText("TOTAL A PAGAR: " + moneda_simbolo + " " + Tools.roundingValue(total_venta, 2));
+        lblTotal.setText("TOTAL A PAGAR: " + ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(total_venta, 2));
 
-        lblVuelto.setText(moneda_simbolo + " " + Tools.roundingValue(vueltoContado, 2));
+        lblVuelto.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
 
-        lblVueltoAdelantado.setText(moneda_simbolo + " " + Tools.roundingValue(vueltoAdelantado, 2));
+        lblVueltoAdelantado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoAdelantado, 2));
 
-        lblMonedaLetras.setText(monedaCadena.Convertir(Tools.roundingValue(total_venta, 2), true, moneda));
+        lblMonedaLetras.setText(monedaCadena.Convertir(Tools.roundingValue(total_venta, 2), true, ventaTB.getMonedaTB().getNombre()));
         txtDeposito.setText(Tools.roundingValue(total_venta, 2));
         txtDepositoAdelantado.setText(Tools.roundingValue(total_venta, 2));
 
@@ -150,7 +142,7 @@ public class FxPostVentaProcesoController implements Initializable {
 
     private void TotalAPagarContado() {
         if (txtEfectivo.getText().isEmpty() && txtTarjeta.getText().isEmpty()) {
-            lblVuelto.setText(moneda_simbolo + " 0.00");
+            lblVuelto.setText(ventaTB.getMonedaTB().getSimbolo() + " 0.00");
             lblVueltoNombre.setText("POR PAGAR: ");
             estadoCobroContado = false;
         } else if (txtEfectivo.getText().isEmpty()) {
@@ -187,12 +179,12 @@ public class FxPostVentaProcesoController implements Initializable {
             }
         }
 
-        lblVuelto.setText(moneda_simbolo + " " + Tools.roundingValue(vueltoContado, 2));
+        lblVuelto.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
     }
 
     private void TotalAPagarAdelantado() {
         if (txtEfectivoAdelantado.getText().isEmpty() && txtTarjetaAdelantado.getText().isEmpty()) {
-            lblVueltoAdelantado.setText(moneda_simbolo + " 0.00");
+            lblVueltoAdelantado.setText(ventaTB.getMonedaTB().getSimbolo() + " 0.00");
             lblVueltoNombreAdelantado.setText("POR PAGAR: ");
             estadoCobroAdelantado = false;
         } else if (txtEfectivoAdelantado.getText().isEmpty()) {
@@ -229,7 +221,7 @@ public class FxPostVentaProcesoController implements Initializable {
             }
         }
 
-        lblVueltoAdelantado.setText(moneda_simbolo + " " + Tools.roundingValue(vueltoAdelantado, 2));
+        lblVueltoAdelantado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoAdelantado, 2));
     }
 
     private void onEventAceptar() {

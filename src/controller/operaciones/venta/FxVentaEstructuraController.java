@@ -279,7 +279,6 @@ public class FxVentaEstructuraController implements Initializable {
                 }
             }
         }
-
     }
 
     private void initTable() {
@@ -629,7 +628,7 @@ public class FxVentaEstructuraController implements Initializable {
                     FxVentaDescuentoController controller = fXMLLoader.getController();
                     controller.setInitVentaEstructuraController(this);
                     //
-                    Stage stage = WindowStage.StageLoaderModal(parent, "Descuento del Artículo", window.getScene().getWindow());
+                    Stage stage = WindowStage.StageLoaderModal(parent, "Descuento del Producto", window.getScene().getWindow());
                     stage.setResizable(false);
                     stage.sizeToScene();
                     stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
@@ -911,7 +910,6 @@ public class FxVentaEstructuraController implements Initializable {
 
         lblImporteTotal.setText(monedaSimbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
         lblTotal.setText(monedaSimbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
-
     }
 
     public void resetVenta() {

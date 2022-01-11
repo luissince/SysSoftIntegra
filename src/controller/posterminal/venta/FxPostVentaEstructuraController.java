@@ -31,7 +31,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -40,7 +39,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -126,11 +124,13 @@ public class FxPostVentaEstructuraController implements Initializable {
     @FXML
     private TextField txtCelularCliente;
     @FXML
-    private Label lblValorVenta;
+    private Label lblImporteBruto;
     @FXML
     private Label lblDescuento;
     @FXML
     private Label lblSubImporte;
+    @FXML
+    private Label lblImpuesto;
     @FXML
     private Label lblImporteTotal;
     @FXML
@@ -140,17 +140,7 @@ public class FxPostVentaEstructuraController implements Initializable {
     @FXML
     private Button btnVentasPorDia;
     @FXML
-    private Button btnContizaciones;
-    @FXML
-    private GridPane gpTotales;
-    @FXML
-    private Button btnBuscarCliente;
-    @FXML
     private ComboBox<DetalleTB> cbTipoDocumento;
-    @FXML
-    private Button btnBuscarSunat;
-    @FXML
-    private Button btnBuscarReniec;
     @FXML
     private TextField txtCorreoElectronico;
     @FXML
@@ -178,6 +168,8 @@ public class FxPostVentaEstructuraController implements Initializable {
 
     private String idCliente;
 
+    private String idCotizacion;
+
     private final Set<String> posiblesWord = new HashSet<>();
 
     private boolean unidades_cambio_cantidades;
@@ -204,15 +196,15 @@ public class FxPostVentaEstructuraController implements Initializable {
 
     private boolean stateSearch;
 
-    private double importeBruto;
+    private double importeBrutoTotal;
 
-    private double descuentoBruto;
+    private double descuentoBrutoTotal;
 
-    private double subImporteNeto;
+    private double subImporteNetoTotal;
 
-    private double impuestoNeto;
+    private double impuestoNetoTotal;
 
-    private double importeNeto;
+    private double importeNetoTotal;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -267,6 +259,8 @@ public class FxPostVentaEstructuraController implements Initializable {
         cbTipoDocumento.getItems().clear();
         cbTipoDocumento.getItems().addAll(DetalleADO.GetDetailId("0003"));
 
+        idCotizacion = "";
+
         idCliente = Session.CLIENTE_ID;
         txtNumeroDocumento.setText(Session.CLIENTE_NUMERO_DOCUMENTO);
         txtDatosCliente.setText(Session.CLIENTE_DATOS);
@@ -284,7 +278,6 @@ public class FxPostVentaEstructuraController implements Initializable {
                 }
             }
         }
-
     }
 
     private void initTable() {
@@ -296,10 +289,10 @@ public class FxPostVentaEstructuraController implements Initializable {
         tcPrecio.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getPrecioVentaGeneral(), 2)));
         tcDescuento.setCellValueFactory(cellData -> Bindings.concat(
-                Tools.roundingValue(cellData.getValue().getDescuento(), 0) + "%"));
-        tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getValor()));
+                Tools.roundingValue(cellData.getValue().getDescuento(), 2)));
+        tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getNombreImpuesto()));
         tcImporte.setCellValueFactory(cellData -> Bindings.concat(
-                Tools.roundingValue(cellData.getValue().getPrecioVentaGeneral() * cellData.getValue().getCantidad(), 2)));
+                Tools.roundingValue(cellData.getValue().getCantidad() * (cellData.getValue().getPrecioVentaGeneral() - cellData.getValue().getDescuento()), 2)));
     }
 
     public void loadPrivilegios(ObservableList<PrivilegioTB> privilegioTBs) {
@@ -354,30 +347,13 @@ public class FxPostVentaEstructuraController implements Initializable {
             tcCantidad.setCellFactory(TextFieldTableCell.forTableColumn());
 
             tcCantidad.setOnEditCommit(data -> {
-
                 final Double value = Tools.isNumeric(data.getNewValue())
                         ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.parseDouble(data.getOldValue()) : Double.parseDouble(data.getNewValue()))
                         : Double.parseDouble(data.getOldValue());
                 SuministroTB suministroTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
 
-                if (unidades_cambio_cantidades && suministroTB.getUnidadVenta() == 1
-                        || valormonetario_cambio_cantidades && suministroTB.getUnidadVenta() == 2
-                        || medida_cambio_cantidades && suministroTB.getUnidadVenta() == 3) {
-
+                if (unidades_cambio_cantidades && suministroTB.getUnidadVenta() == 1 || valormonetario_cambio_cantidades && suministroTB.getUnidadVenta() == 2 || medida_cambio_cantidades && suministroTB.getUnidadVenta() == 3) {
                     suministroTB.setCantidad(value);
-
-                    double porcentajeRestante = suministroTB.getPrecioVentaGeneralUnico() * (suministroTB.getDescuento() / 100.00);
-
-                    suministroTB.setDescuentoCalculado(porcentajeRestante);
-                    suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-
-                    double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-//                    suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-
-//                    suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-//                    suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-//                    suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-
                     tvList.refresh();
                     calculateTotales();
                 } else {
@@ -403,26 +379,7 @@ public class FxPostVentaEstructuraController implements Initializable {
                     tvList.refresh();
                     calculateTotales();
                 } else {
-                    double valor_sin_impuesto = value / ((suministroTB.getImpuestoTB().getValor() / 100.00) + 1);
-                    double descuento = suministroTB.getDescuento();
-                    double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
-                    double preciocalculado = valor_sin_impuesto - porcentajeRestante;
-
-                    suministroTB.setDescuento(descuento);
-                    suministroTB.setDescuentoCalculado(porcentajeRestante);
-                    suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-
-                    suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
-                    suministroTB.setPrecioVentaGeneralReal(preciocalculado);
-
-                    double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-//                    suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-                    suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
-
-//                    suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-//                    suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-//                    suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-
+                    suministroTB.setPrecioVentaGeneral(value);
                     tvList.refresh();
                     calculateTotales();
                 }
@@ -484,24 +441,13 @@ public class FxPostVentaEstructuraController implements Initializable {
             suministroTB.setDescuentoCalculado(0);
             suministroTB.setDescuentoSumado(0);
 
-            double valor_sin_impuesto = a.getPrecioVentaGeneral() / ((a.getImpuestoTB().getValor() / 100.00) + 1);
-            double descuento = suministroTB.getDescuento();
-            double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
-            double preciocalculado = valor_sin_impuesto - porcentajeRestante;
-
-            suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
-            suministroTB.setPrecioVentaGeneralReal(preciocalculado);
-            suministroTB.setIdImpuesto(a.getIdImpuesto());
-            suministroTB.setImpuestoTB(a.getImpuestoTB());
-
-            double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-//            suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-            suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
+            suministroTB.setPrecioVentaGeneral(a.getPrecioVentaGeneral());
+            suministroTB.setPrecioVentaGeneralUnico(a.getPrecioVentaGeneral());
+            suministroTB.setPrecioVentaGeneralReal(a.getPrecioVentaGeneral());
             suministroTB.setPrecioVentaGeneralAuxiliar(suministroTB.getPrecioVentaGeneral());
 
-//            suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-//            suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-//            suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
+            suministroTB.setIdImpuesto(a.getIdImpuesto());
+            suministroTB.setImpuestoTB(a.getImpuestoTB());
 
             suministroTB.setInventario(a.isInventario());
             suministroTB.setUnidadVenta(a.getUnidadVenta());
@@ -521,7 +467,7 @@ public class FxPostVentaEstructuraController implements Initializable {
             });
             suministroTB.setBtnRemove(button);
 
-            getArticuloCodigoBarras(suministroTB);
+            getSuministroCodigoBarras(suministroTB);
             txtSearch.clear();
             txtSearch.selectAll();
             txtSearch.requestFocus();
@@ -532,7 +478,7 @@ public class FxPostVentaEstructuraController implements Initializable {
         }
     }
 
-    private void openWindowArticulos() {
+    private void openWindowSuministro() {
         try {
             fxPrincipalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_LISTA);
@@ -550,148 +496,6 @@ public class FxPostVentaEstructuraController implements Initializable {
         } catch (IOException ex) {
             fxPrincipalController.closeFondoModal();
         }
-    }
-
-    private void openWindowVentaProceso() {
-        try {
-            if (tvList.getItems().isEmpty()) {
-                Tools.AlertMessageWarning(window, "Ventas", "Debes agregar artículos a la venta");
-            } else if (cbComprobante.getSelectionModel().getSelectedIndex() < 0) {
-                Tools.AlertMessageWarning(window, "Ventas", "Seleccione el tipo de comprobante");
-                cbComprobante.requestFocus();
-            } else if (cbTipoDocumento.getSelectionModel().getSelectedIndex() < 0) {
-                Tools.AlertMessageWarning(window, "Ventas", "Seleccione el tipo de documento del cliente.");
-                cbTipoDocumento.requestFocus();
-            } else if (!Tools.isNumeric(txtNumeroDocumento.getText().trim())) {
-                Tools.AlertMessageWarning(window, "Ventas", "Ingrese el número del documento del cliente.");
-                txtNumeroDocumento.requestFocus();
-            } else if (cbComprobante.getSelectionModel().getSelectedItem().isCampo() && txtNumeroDocumento.getText().length() != cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo()) {
-                Tools.AlertMessageWarning(window, "Ventas", "El número de documento tiene que tener " + cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo() + " caracteres.");
-                txtNumeroDocumento.requestFocus();
-            } else if (txtDatosCliente.getText().trim().equalsIgnoreCase("")) {
-                Tools.AlertMessageWarning(window, "Ventas", "Ingrese los datos del cliente.");
-                txtDatosCliente.requestFocus();
-            } else if (cbMoneda.getSelectionModel().getSelectedIndex() < 0) {
-                Tools.AlertMessageWarning(window, "Ventas", "Seleccione un moneda.");
-                cbMoneda.requestFocus();
-            } else if (importeNeto <= 0) {
-                Tools.AlertMessageWarning(window, "Ventas", "El total de la venta no puede ser menor que 0.");
-            } else {
-                fxPrincipalController.openFondoModal();
-                URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_PROCESO);
-                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                Parent parent = fXMLLoader.load(url.openStream());
-                //Controlller here
-                FxPostVentaProcesoController controller = fXMLLoader.getController();
-                controller.setInitVentaEstructuraController(this);
-                //
-                Stage stage = WindowStage.StageLoaderModal(parent, "Completar la venta", window.getScene().getWindow());
-                stage.setResizable(false);
-                stage.sizeToScene();
-                stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-                stage.show();
-
-                ClienteTB clienteTB = new ClienteTB();
-                clienteTB.setIdCliente(idCliente);
-                clienteTB.setTipoDocumento(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
-                clienteTB.setNumeroDocumento(txtNumeroDocumento.getText().trim().toUpperCase());
-                clienteTB.setInformacion(txtDatosCliente.getText().trim().toUpperCase());
-                clienteTB.setCelular(txtCelularCliente.getText().trim().toUpperCase());
-                clienteTB.setEmail(txtCorreoElectronico.getText().trim().toUpperCase());
-                clienteTB.setDireccion(txtDireccionCliente.getText().trim().toUpperCase());
-
-                VentaTB ventaTB = new VentaTB();
-                ventaTB.setVendedor(Session.USER_ID);
-                ventaTB.setIdComprobante(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento());
-                ventaTB.setComprobanteName(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
-                ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedIndex() >= 0 ? cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda() : 0);
-//                ventaTB.setMonedaName(monedaSimbolo);
-                ventaTB.setSerie(lblSerie.getText());
-                ventaTB.setNumeracion(lblNumeracion.getText());
-                ventaTB.setFechaVenta(Tools.getDate());
-                ventaTB.setHoraVenta(Tools.getTime());
-//                ventaTB.setImporteBruto(importeBruto);
-//                ventaTB.setDescuento(descuentoBruto);
-//                ventaTB.setSubImporteNeto(subImporteNeto);
-//                ventaTB.setImpuesto(impuestoNeto);
-//                ventaTB.setImporteNeto(importeNeto);
-                ventaTB.setClienteTB(clienteTB);
-                ArrayList<SuministroTB> suministroTBs = new ArrayList<>(tvList.getItems());
-                controller.setInitComponents(ventaTB, suministroTBs, vender_con_cantidades_negativas, cbMoneda.getSelectionModel().getSelectedItem().getNombre());
-            }
-        } catch (IOException ex) {
-            System.out.println("openWindowVentaProceso():" + ex.getLocalizedMessage());
-        }
-    }
-
-    private void openWindowDescuento() {
-        try {
-            if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-                if (!unidades_cambio_descuento && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 1
-                        || !valormonetario_cambio_decuento && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
-                        || !medida_cambio_decuento && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
-                    Tools.AlertMessageWarning(window, "Ventas", "No se puede aplicar descuento a este producto.");
-                } else {
-                    fxPrincipalController.openFondoModal();
-                    URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_DESCUENTO);
-                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                    Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
-                    FxPostVentaDescuentoController controller = fXMLLoader.getController();
-                    controller.setInitVentaEstructuraController(this);
-                    //
-                    Stage stage = WindowStage.StageLoaderModal(parent, "Descuento del Artículo", window.getScene().getWindow());
-                    stage.setResizable(false);
-                    stage.sizeToScene();
-                    stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-                    stage.show();
-                    controller.initComponents(tvList.getSelectionModel().getSelectedItem());
-                }
-            } else {
-                tvList.requestFocus();
-            }
-        } catch (IOException ex) {
-            System.out.println("openWindowDescuento():" + ex.getLocalizedMessage());
-        }
-    }
-
-    private void openWindowCambiarPrecio(String title, boolean opcion, boolean isClose, Window window) {
-        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            if (!unidades_cambio_precio && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 1
-                    || !valormonetario_cambio_precio && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
-                    || !medida_cambio_precio && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
-                Tools.AlertMessageWarning(window.getScene().getRoot(), "Ventas", "No se puede cambiar precio a este producto.");
-            } else {
-                try {
-                    if (isClose) {
-                        fxPrincipalController.openFondoModal();
-                    }
-                    URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_GRANEL);
-                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                    Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
-                    FxPostVentaGranelController controller = fXMLLoader.getController();
-                    controller.setInitVentaEstructuraController(this);
-                    //
-                    Stage stage = WindowStage.StageLoaderModal(parent, title, window.getScene().getWindow());
-                    stage.setResizable(false);
-                    stage.sizeToScene();
-                    stage.setOnHiding(w -> {
-                        if (isClose) {
-                            fxPrincipalController.closeFondoModal();
-                        }
-                        calculateTotales();
-                    });
-                    stage.show();
-                    controller.initComponents(title, tvList.getSelectionModel().getSelectedItem(), opcion);
-                } catch (IOException ie) {
-                    System.out.println("openWindowGranel():" + ie.getLocalizedMessage());
-                }
-            }
-        } else {
-            tvList.requestFocus();
-        }
-
     }
 
     private void openWindowListaPrecios() {
@@ -721,27 +525,6 @@ public class FxPostVentaEstructuraController implements Initializable {
         } catch (IOException ex) {
             System.out.println("openWindowListaPrecios():" + ex.getLocalizedMessage());
         }
-    }
-
-    private void openWindowCashMovement() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_MOVIMIENTO);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
-            FxPostVentaMovimientoController controller = fXMLLoader.getController();
-//            controller.setInitVentaEstructuraController(this);
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Movimiento de caja", window.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println("openWindowCashMovement():" + ex.getLocalizedMessage());
-        }
-
     }
 
     public void openWindowCantidad(boolean isClose, Window window, boolean primerLlamado) {
@@ -785,6 +568,97 @@ public class FxPostVentaEstructuraController implements Initializable {
             if (!tvList.getItems().isEmpty()) {
                 tvList.getSelectionModel().select(0);
             }
+        }
+
+    }
+
+    private void openWindowCambiarPrecio(String title, boolean opcion, boolean isClose, Window window) {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            if (!unidades_cambio_precio && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 1
+                    || !valormonetario_cambio_precio && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
+                    || !medida_cambio_precio && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
+                Tools.AlertMessageWarning(window.getScene().getRoot(), "Ventas", "No se puede cambiar precio a este producto.");
+            } else {
+                try {
+                    if (isClose) {
+                        fxPrincipalController.openFondoModal();
+                    }
+                    URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_GRANEL);
+                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                    Parent parent = fXMLLoader.load(url.openStream());
+                    //Controlller here
+                    FxPostVentaGranelController controller = fXMLLoader.getController();
+                    controller.setInitVentaEstructuraController(this);
+                    //
+                    Stage stage = WindowStage.StageLoaderModal(parent, title, window.getScene().getWindow());
+                    stage.setResizable(false);
+                    stage.sizeToScene();
+                    stage.setOnHiding(w -> {
+                        if (isClose) {
+                            fxPrincipalController.closeFondoModal();
+                        }
+                        calculateTotales();
+                    });
+                    stage.show();
+                    controller.initComponents(title, tvList.getSelectionModel().getSelectedItem(), opcion);
+                } catch (IOException ie) {
+                    System.out.println("openWindowGranel():" + ie.getLocalizedMessage());
+                }
+            }
+        } else {
+            tvList.requestFocus();
+        }
+
+    }
+
+    private void openWindowDescuento() {
+        try {
+            if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+                if (!unidades_cambio_descuento && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 1
+                        || !valormonetario_cambio_decuento && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
+                        || !medida_cambio_decuento && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
+                    Tools.AlertMessageWarning(window, "Ventas", "No se puede aplicar descuento a este producto.");
+                } else {
+                    fxPrincipalController.openFondoModal();
+                    URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_DESCUENTO);
+                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                    Parent parent = fXMLLoader.load(url.openStream());
+                    //Controlller here
+                    FxPostVentaDescuentoController controller = fXMLLoader.getController();
+                    controller.setInitVentaEstructuraController(this);
+                    //
+                    Stage stage = WindowStage.StageLoaderModal(parent, "Descuento del Producto", window.getScene().getWindow());
+                    stage.setResizable(false);
+                    stage.sizeToScene();
+                    stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+                    stage.show();
+                    controller.initComponents(tvList.getSelectionModel().getSelectedItem());
+                }
+            } else {
+                tvList.requestFocus();
+            }
+        } catch (IOException ex) {
+            System.out.println("openWindowDescuento():" + ex.getLocalizedMessage());
+        }
+    }
+
+    private void openWindowCashMovement() {
+        try {
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_MOVIMIENTO);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            //Controlller here
+            FxPostVentaMovimientoController controller = fXMLLoader.getController();
+//            controller.setInitVentaEstructuraController(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Movimiento de caja", window.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println("openWindowCashMovement():" + ex.getLocalizedMessage());
         }
 
     }
@@ -834,8 +708,79 @@ public class FxPostVentaEstructuraController implements Initializable {
         }
     }
 
-    public void getAddArticulo(SuministroTB suministro, Window window) {
-        if (validateDuplicateArticulo(tvList, suministro)) {
+    private void openWindowVentaProceso() {
+        try {
+            if (tvList.getItems().isEmpty()) {
+                Tools.AlertMessageWarning(window, "Ventas", "Debes agregar artículos a la venta");
+            } else if (cbComprobante.getSelectionModel().getSelectedIndex() < 0) {
+                Tools.AlertMessageWarning(window, "Ventas", "Seleccione el tipo de comprobante");
+                cbComprobante.requestFocus();
+            } else if (cbTipoDocumento.getSelectionModel().getSelectedIndex() < 0) {
+                Tools.AlertMessageWarning(window, "Ventas", "Seleccione el tipo de documento del cliente.");
+                cbTipoDocumento.requestFocus();
+            } else if (!Tools.isNumeric(txtNumeroDocumento.getText().trim())) {
+                Tools.AlertMessageWarning(window, "Ventas", "Ingrese el número del documento del cliente.");
+                txtNumeroDocumento.requestFocus();
+            } else if (cbComprobante.getSelectionModel().getSelectedItem().isCampo() && txtNumeroDocumento.getText().length() != cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo()) {
+                Tools.AlertMessageWarning(window, "Ventas", "El número de documento tiene que tener " + cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo() + " caracteres.");
+                txtNumeroDocumento.requestFocus();
+            } else if (txtDatosCliente.getText().trim().equalsIgnoreCase("")) {
+                Tools.AlertMessageWarning(window, "Ventas", "Ingrese los datos del cliente.");
+                txtDatosCliente.requestFocus();
+            } else if (cbMoneda.getSelectionModel().getSelectedIndex() < 0) {
+                Tools.AlertMessageWarning(window, "Ventas", "Seleccione un moneda.");
+                cbMoneda.requestFocus();
+            } else if (importeNetoTotal <= 0) {
+                Tools.AlertMessageWarning(window, "Ventas", "El total de la venta no puede ser menor que 0.");
+            } else {
+                VentaTB ventaTB = new VentaTB();
+                ventaTB.setVendedor(Session.USER_ID);
+                ventaTB.setIdComprobante(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento());
+                ventaTB.setComprobanteName(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
+                ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedIndex() >= 0 ? cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda() : 0);
+                ventaTB.setSerie(lblSerie.getText());
+                ventaTB.setNumeracion(lblNumeracion.getText());
+                ventaTB.setFechaVenta(Tools.getDate());
+                ventaTB.setHoraVenta(Tools.getTime());
+                ventaTB.setTotal(importeNetoTotal);
+                ventaTB.setIdCotizacion(idCotizacion);
+
+                ventaTB.setMonedaTB(cbMoneda.getSelectionModel().getSelectedItem());
+
+                ClienteTB clienteTB = new ClienteTB();
+                clienteTB.setIdCliente(idCliente);
+                clienteTB.setTipoDocumento(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
+                clienteTB.setNumeroDocumento(txtNumeroDocumento.getText().trim().toUpperCase());
+                clienteTB.setInformacion(txtDatosCliente.getText().trim().toUpperCase());
+                clienteTB.setCelular(txtCelularCliente.getText().trim().toUpperCase());
+                clienteTB.setEmail(txtCorreoElectronico.getText().trim().toUpperCase());
+                clienteTB.setDireccion(txtDireccionCliente.getText().trim().toUpperCase());
+                ventaTB.setClienteTB(clienteTB);
+
+                ventaTB.setSuministroTBs(new ArrayList<>(tvList.getItems()));
+
+                fxPrincipalController.openFondoModal();
+                URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_PROCESO);
+                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                Parent parent = fXMLLoader.load(url.openStream());
+                //Controlller here
+                FxPostVentaProcesoController controller = fXMLLoader.getController();
+                controller.setInitVentaEstructuraController(this);
+                //
+                Stage stage = WindowStage.StageLoaderModal(parent, "Completar la venta", window.getScene().getWindow());
+                stage.setResizable(false);
+                stage.sizeToScene();
+                stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+                stage.setOnShowing(w -> controller.setInitComponents(ventaTB, vender_con_cantidades_negativas));
+                stage.show();
+            }
+        } catch (IOException ex) {
+            System.out.println("openWindowVentaProceso():" + ex.getLocalizedMessage());
+        }
+    }
+
+    public void getAddSuministro(SuministroTB suministro, Window window) {
+        if (validateDuplicate(suministro)) {
             for (int i = 0; i < tvList.getItems().size(); i++) {
                 if (tvList.getItems().get(i).getIdSuministro().equalsIgnoreCase(suministro.getIdSuministro())) {
                     switch (suministro.getUnidadVenta()) {
@@ -847,19 +792,11 @@ public class FxPostVentaEstructuraController implements Initializable {
                         case 2:
                             tvList.requestFocus();
                             tvList.getSelectionModel().select(i);
-                            openWindowCambiarPrecio("Cambiar precio al Artículo", false, cerar_modal_agregar_item_lista, window);
+                            openWindowCambiarPrecio("Cambiar precio del Producto", false, cerar_modal_agregar_item_lista, window);
                             break;
                         default:
                             SuministroTB suministroTB = tvList.getItems().get(i);
                             suministroTB.setCantidad(suministroTB.getCantidad() + 1);
-                            double porcentajeRestante = suministroTB.getPrecioVentaGeneralUnico() * (suministroTB.getDescuento() / 100.00);
-
-                            suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-//                            suministroTB.setImpuestoSumado(suministroTB.getCantidad() * (suministroTB.getPrecioVentaGeneralReal() * (suministroTB.getImpuestoTB().getValor() / 100.00)));
-
-//                            suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-//                            suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-//                            suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
 
                             tvList.refresh();
                             tvList.getSelectionModel().select(i);
@@ -902,22 +839,13 @@ public class FxPostVentaEstructuraController implements Initializable {
 
     }
 
-    public void getArticuloCodigoBarras(SuministroTB suministro) {
-        if (validateDuplicateArticulo(tvList, suministro)) {
+    public void getSuministroCodigoBarras(SuministroTB suministro) {
+        if (validateDuplicate(suministro)) {
             for (int i = 0; i < tvList.getItems().size(); i++) {
                 if (tvList.getItems().get(i).getIdSuministro().equalsIgnoreCase(suministro.getIdSuministro())) {
 
                     SuministroTB suministroTB = tvList.getItems().get(i);
                     suministroTB.setCantidad(suministroTB.getCantidad() + 1);
-                    double porcentajeRestante = suministroTB.getPrecioVentaGeneralUnico() * (suministroTB.getDescuento() / 100.00);
-
-                    suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-//                    suministroTB.setImpuestoSumado(suministroTB.getCantidad() * (suministroTB.getPrecioVentaGeneralReal() * (suministroTB.getImpuestoTB().getValor() / 100.00)));
-
-//                    suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-//                    suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-//                    suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
-
                     tvList.refresh();
                     tvList.getSelectionModel().select(i);
                     calculateTotales();
@@ -935,9 +863,9 @@ public class FxPostVentaEstructuraController implements Initializable {
 
     }
 
-    private boolean validateDuplicateArticulo(TableView<SuministroTB> view, SuministroTB suministroTB) {
+    private boolean validateDuplicate(SuministroTB suministroTB) {
         boolean ret = false;
-        for (SuministroTB sm : view.getItems()) {
+        for (SuministroTB sm : tvList.getItems()) {
             if (sm.getClave().equals(suministroTB.getClave())) {
                 ret = true;
                 break;
@@ -954,62 +882,34 @@ public class FxPostVentaEstructuraController implements Initializable {
     }
 
     public void calculateTotales() {
-        importeBruto = 0;
-//        tvList.getItems().forEach(e -> importeBruto += e.getImporteBruto());
-        lblValorVenta.setText(monedaSimbolo + " " + Tools.roundingValue(importeBruto, 2));
+        importeBrutoTotal = 0;
+        descuentoBrutoTotal = 0;
+        subImporteNetoTotal = 0;
+        impuestoNetoTotal = 0;
+        importeNetoTotal = 0;
 
-        descuentoBruto = 0;
-        tvList.getItems().forEach(e -> descuentoBruto += e.getDescuentoSumado());
-        lblDescuento.setText(monedaSimbolo + " " + (Tools.roundingValue(descuentoBruto * (-1), 2)));
+        tvList.getItems().forEach(suministroTB -> {
+            double importeBruto = suministroTB.getPrecioVentaGeneral() * suministroTB.getCantidad();
+            double descuento = suministroTB.getDescuento();
+            double subImporteBruto = importeBruto - descuento;
+            double subImporteNeto = Tools.calculateTaxBruto(suministroTB.getImpuestoTB().getValor(), subImporteBruto);
+            double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), subImporteNeto);
+            double importeNeto = subImporteNeto + impuesto;
 
-        subImporteNeto = 0;
-//        tvList.getItems().forEach(e -> subImporteNeto += e.getSubImporteNeto());
-        lblSubImporte.setText(monedaSimbolo + " " + Tools.roundingValue(subImporteNeto, 2));
+            importeBrutoTotal += importeBruto;
+            descuentoBrutoTotal += descuento;
+            subImporteNetoTotal += subImporteNeto;
+            impuestoNetoTotal += impuesto;
+            importeNetoTotal += importeNeto;
+        });
 
-        gpTotales.getChildren().clear();
+        lblImporteBruto.setText(monedaSimbolo + " " + Tools.roundingValue(importeBrutoTotal, 2));
+        lblDescuento.setText(monedaSimbolo + " " + (Tools.roundingValue(descuentoBrutoTotal, 2)));
+        lblSubImporte.setText(monedaSimbolo + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+        lblImpuesto.setText(monedaSimbolo + " " + Tools.roundingValue(impuestoNetoTotal, 2));
 
-        impuestoNeto = 0;
-        double totalImpuestos = 0;
-
-        if (!tvList.getItems().isEmpty()) {
-            for (int i = 0; i < tvList.getItems().size(); i++) {
-//                totalImpuestos += tvList.getItems().get(i).getImpuestoSumado();
-            }
-        }
-
-        impuestoNeto = totalImpuestos;
-        gpTotales.add(addLabelTitle("IMPUESTO:", Pos.CENTER_LEFT), 0, 0 + 1);
-        gpTotales.add(addLabelTotal(monedaSimbolo + " " + Tools.roundingValue(impuestoNeto, 2), Pos.CENTER_RIGHT), 1, 0 + 1);
-
-        importeNeto = 0;
-        importeNeto = subImporteNeto + impuestoNeto;
-        lblImporteTotal.setText(monedaSimbolo + " " + Tools.roundingValue(importeNeto, 2));
-        lblTotal.setText(monedaSimbolo + " " + Tools.roundingValue(importeNeto, 2));
-
-    }
-
-    private Label addLabelTitle(String nombre, Pos pos) {
-        Label label = new Label(nombre);
-        label.setStyle("-fx-text-fill:#020203;-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;");
-        label.getStyleClass().add("labelRoboto13");
-        label.setAlignment(pos);
-        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
-        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
-        label.setMaxWidth(Control.USE_COMPUTED_SIZE);
-        label.setMaxHeight(Control.USE_COMPUTED_SIZE);
-        return label;
-    }
-
-    private Label addLabelTotal(String nombre, Pos pos) {
-        Label label = new Label(nombre);
-        label.setStyle("-fx-text-fill:#020203;");
-        label.getStyleClass().add("labelRoboto15");
-        label.setAlignment(pos);
-        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
-        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
-        label.setMaxWidth(Double.MAX_VALUE);
-        label.setMaxHeight(Double.MAX_VALUE);
-        return label;
+        lblImporteTotal.setText(monedaSimbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
+        lblTotal.setText(monedaSimbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
     }
 
     public void resetVenta() {
@@ -1050,32 +950,61 @@ public class FxPostVentaEstructuraController implements Initializable {
                     }
                 }
 
+                this.idCotizacion = idCotizacion;
+
                 txtNumeroDocumento.setText(cotizacionTB.getClienteTB().getNumeroDocumento());
                 txtDatosCliente.setText(cotizacionTB.getClienteTB().getInformacion());
                 txtCelularCliente.setText(cotizacionTB.getClienteTB().getCelular());
                 txtCorreoElectronico.setText(cotizacionTB.getClienteTB().getEmail());
                 txtDireccionCliente.setText(cotizacionTB.getClienteTB().getDireccion());
 
-                if (!cotizacionTB.getCotizacionDetalleTBs().isEmpty()) {
-                    ObservableList<SuministroTB> suministroTBs = FXCollections.observableArrayList();
-                    for (CotizacionDetalleTB detalleTB : cotizacionTB.getCotizacionDetalleTBs()) {
-                        CotizacionDetalleTB cotizacionDetalleTB = detalleTB;
+                ObservableList<SuministroTB> suministroTBs = FXCollections.observableArrayList();
+                cotizacionTB.getCotizacionDetalleTBs().forEach(detalleTB -> {
+                    CotizacionDetalleTB cdtb = detalleTB;
 
-                        SuministroTB suministroTB = new SuministroTB();
-                        suministroTB.getBtnRemove().setOnAction(e -> {
+                    SuministroTB suministroTB = new SuministroTB();
+                    suministroTB.setIdSuministro(cdtb.getSuministroTB().getIdSuministro());
+                    suministroTB.setClave(cdtb.getSuministroTB().getClave());
+                    suministroTB.setNombreMarca(cdtb.getSuministroTB().getNombreMarca());
+                    suministroTB.setCantidad(cdtb.getCantidad());
+                    suministroTB.setCostoCompra(cdtb.getSuministroTB().getCostoCompra());
+                    suministroTB.setBonificacion(0);
+
+                    suministroTB.setDescuento(cdtb.getDescuento());
+                    suministroTB.setDescuentoCalculado(cdtb.getDescuento());
+                    suministroTB.setDescuentoSumado(cdtb.getDescuento());
+
+                    suministroTB.setPrecioVentaGeneral(cdtb.getPrecio());
+                    suministroTB.setPrecioVentaGeneralUnico(cdtb.getPrecio());
+                    suministroTB.setPrecioVentaGeneralReal(cdtb.getPrecio());
+
+                    suministroTB.setIdImpuesto(cdtb.getIdImpuesto());
+                    suministroTB.setImpuestoTB(cdtb.getImpuestoTB());
+
+                    suministroTB.setInventario(cdtb.getSuministroTB().isInventario());
+                    suministroTB.setUnidadVenta(cdtb.getSuministroTB().getUnidadVenta());
+                    suministroTB.setValorInventario(cdtb.getSuministroTB().getValorInventario());
+
+                    Button button = new Button("X");
+                    button.getStyleClass().add("buttonDark");
+                    button.setOnAction(e -> {
+                        tvList.getItems().remove(suministroTB);
+                        calculateTotales();
+                    });
+                    button.setOnKeyPressed(e -> {
+                        if (e.getCode() == KeyCode.ENTER) {
                             tvList.getItems().remove(suministroTB);
                             calculateTotales();
-                        });
-                        suministroTB.getBtnRemove().setOnKeyPressed(e -> {
-                            if (e.getCode() == KeyCode.ENTER) {
-                                tvList.getItems().remove(suministroTB);
-                                calculateTotales();
-                            }
-                        });
-                    }
-                    tvList.setItems(suministroTBs);
-                    calculateTotales();
-                }
+                        }
+                    });
+                    suministroTB.setBtnRemove(button);
+
+                    suministroTBs.add(suministroTB);
+                });
+
+                tvList.setItems(suministroTBs);
+                calculateTotales();
+
                 vbBody.setDisable(false);
                 hbLoad.setVisible(false);
             } else {
@@ -1222,26 +1151,15 @@ public class FxPostVentaEstructuraController implements Initializable {
                 }
 
                 cotizacionTBs.forEach(s -> {
-                    if (validateDuplicateArticulo(tvList, s)) {
+                    if (validateDuplicate(s)) {
                         for (int i = 0; i < tvList.getItems().size(); i++) {
                             if (tvList.getItems().get(i).getIdSuministro().equalsIgnoreCase(s.getIdSuministro())) {
-
                                 SuministroTB suministroTB = tvList.getItems().get(i);
                                 suministroTB.setCantidad(suministroTB.getCantidad() + s.getCantidad());
-                                double porcentajeRestante = suministroTB.getPrecioVentaGeneralUnico() * (suministroTB.getDescuento() / 100.00);
-
-                                suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-//                                suministroTB.setImpuestoSumado(suministroTB.getCantidad() * (suministroTB.getPrecioVentaGeneralReal() * (suministroTB.getImpuestoTB().getValor() / 100.00)));
-
-//                                suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
-//                                suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-//                                suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
-
                                 tvList.refresh();
                                 tvList.getSelectionModel().select(i);
                                 calculateTotales();
                                 break;
-
                             }
                         }
                     } else {
@@ -1261,6 +1179,7 @@ public class FxPostVentaEstructuraController implements Initializable {
                 btnAceptarLoad.setVisible(true);
             }
         });
+
         task.setOnFailed(w -> {
             vbBody.setDisable(false);
             hbLoad.setVisible(false);
@@ -1268,6 +1187,7 @@ public class FxPostVentaEstructuraController implements Initializable {
             lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
             btnAceptarLoad.setVisible(true);
         });
+
         task.setOnScheduled(w -> {
             vbBody.setDisable(true);
             hbLoad.setVisible(true);
@@ -1309,11 +1229,11 @@ public class FxPostVentaEstructuraController implements Initializable {
                 txtCelularCliente.getText().trim().toUpperCase(),
                 txtDireccionCliente.getText().trim().toUpperCase(),
                 monedaSimbolo,
-                importeBruto,
-                descuentoBruto,
-                subImporteNeto,
-                impuestoNeto,
-                importeNeto,
+                importeBrutoTotal,
+                descuentoBrutoTotal,
+                subImporteNetoTotal,
+                impuestoNetoTotal,
+                importeNetoTotal,
                 tvList.getItems()
         );
     }
@@ -1747,13 +1667,13 @@ public class FxPostVentaEstructuraController implements Initializable {
     @FXML
     private void onKeyPressedArticulo(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            openWindowArticulos();
+            openWindowSuministro();
         }
     }
 
     @FXML
     private void onActionArticulo(ActionEvent event) {
-        openWindowArticulos();
+        openWindowSuministro();
     }
 
     @FXML
@@ -1883,7 +1803,6 @@ public class FxPostVentaEstructuraController implements Initializable {
 //                suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
 //                suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
 //                suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
-
                 tvList.refresh();
                 tvList.getSelectionModel().select(index);
                 calculateTotales();
@@ -1909,7 +1828,6 @@ public class FxPostVentaEstructuraController implements Initializable {
 //                suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico());
 //                suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
 //                suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
-
                 tvList.refresh();
                 tvList.getSelectionModel().select(index);
                 calculateTotales();
@@ -2050,7 +1968,7 @@ public class FxPostVentaEstructuraController implements Initializable {
             openWindowVentaProceso();
             event.consume();
         } else if (event.getCode() == KeyCode.F2) {
-            openWindowArticulos();
+            openWindowSuministro();
             event.consume();
         } else if (event.getCode() == KeyCode.F3) {
             openWindowListaPrecios();
