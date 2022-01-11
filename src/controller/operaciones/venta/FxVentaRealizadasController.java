@@ -1,7 +1,6 @@
 package controller.operaciones.venta;
 
 import controller.configuracion.empleados.FxEmpleadosListaController;
-import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
 import controller.tools.FilesRouters;
 import controller.tools.Session;
@@ -25,7 +24,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -88,8 +86,6 @@ public class FxVentaRealizadasController implements Initializable {
 
     private FxPrincipalController fxPrincipalController;
 
-    private FxOpcionesImprimirController fxOpcionesImprimirController;
-
     private String idEmpleado;
 
     private int paginacion;
@@ -118,11 +114,6 @@ public class FxVentaRealizadasController implements Initializable {
 
         idEmpleado = Session.USER_ID;
         txtVendedor.setText(Session.USER_NAME.toUpperCase());
-
-        fxOpcionesImprimirController = new FxOpcionesImprimirController();
-        fxOpcionesImprimirController.loadComponents();
-        fxOpcionesImprimirController.loadTicketGuiaRemision(window);
-
     }
 
     private void loadTableView() {
@@ -143,10 +134,10 @@ public class FxVentaRealizadasController implements Initializable {
                 + (cellData.getValue().getNotaCreditoTB() != null ? " (NOTA CREDITO: " + cellData.getValue().getNotaCreditoTB().getSerie() + "-" + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")" : "")));
         tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
-        tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
-        tcFechaVenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.11));
+        tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
+        tcFechaVenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcCliente.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
-        tcSerie.prefWidthProperty().bind(tvList.widthProperty().multiply(0.19));
+        tcSerie.prefWidthProperty().bind(tvList.widthProperty().multiply(0.17));
         tcTipo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
         tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
         tcTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));

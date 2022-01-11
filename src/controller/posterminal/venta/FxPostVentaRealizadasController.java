@@ -115,7 +115,6 @@ public class FxPostVentaRealizadasController implements Initializable {
 
         idEmpleado = Session.USER_ID;
         txtVendedor.setText(Session.USER_NAME.toUpperCase());
-
     }
 
     private void loadTableView() {
@@ -133,8 +132,8 @@ public class FxPostVentaRealizadasController implements Initializable {
         tcSerie.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getComprobanteName() + "\n"
                 + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()
-                + (cellData.getValue().getNotaCreditoTB() != null ? " Modificado(" + cellData.getValue().getNotaCreditoTB().getSerie() + "-" + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")" : "")));
-//        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+                + (cellData.getValue().getNotaCreditoTB() != null ? " (NOTA CREDITO: " + cellData.getValue().getNotaCreditoTB().getSerie() + "-" + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")" : "")));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcFechaVenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
@@ -194,7 +193,7 @@ public class FxPostVentaRealizadasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return VentaADO.ListVentasPos(opcion, value, fechaInicial, fechaFinal, comprobante, estado, usuario, (paginacion - 1) * 20, 20);
+                return VentaADO.Listar_Ventas_Pos(opcion, value, fechaInicial, fechaFinal, comprobante, estado, usuario, (paginacion - 1) * 20, 20);
             }
         };
         task.setOnSucceeded(w -> {
@@ -241,7 +240,7 @@ public class FxPostVentaRealizadasController implements Initializable {
     private void openWindowDetalleVenta() throws IOException {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             FXMLLoader fXMLLoader = new FXMLLoader(getClass().getResource(FilesRouters.FX_POS_VENTA_DETALLE));
-            ScrollPane node = fXMLLoader.load();
+            AnchorPane node = fXMLLoader.load();
             //Controlller here
             FxPostVentaDetalleController controller = fXMLLoader.getController();
             controller.setInitVentasController(this, fxPrincipalController);

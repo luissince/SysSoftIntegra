@@ -95,7 +95,7 @@ public class TicketVentaLlevar {
             @Override
             public String call() {
                 if (!Tools.isText(idVenta) && !Tools.isText(idSuministro)) {
-                    Object object = VentaADO.ListarHistorialSuministroLlevar(idVenta, idSuministro);
+                    Object object = VentaADO.Listar_Historial_Suministro_Llevar(idVenta, idSuministro);
 
                     if (object instanceof Object[]) {
                         Object[] objects = (Object[]) object;
@@ -384,7 +384,7 @@ public class TicketVentaLlevar {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                Object object = VentaADO.ListarHistorialSuministroLlevar(idVenta, idSuministro);
+                Object object = VentaADO.Listar_Historial_Suministro_Llevar(idVenta, idSuministro);
 
                 if (object instanceof Object[]) {
                     Object[] objects = (Object[]) object;

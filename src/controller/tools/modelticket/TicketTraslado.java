@@ -23,7 +23,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.TrasladoADO;
 import model.TrasladoTB;
-import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;

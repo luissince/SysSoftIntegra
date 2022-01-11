@@ -343,7 +343,7 @@ public class FxVentaDetalleController implements Initializable {
             controller.setInitVentaDetalle(this);
             controller.setLoadVentaDevolucion(ventaTB, Tools.roundingValue(total, 2));
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Cancelar la venta", apWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Anular la venta", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> principalController.closeFondoModal());

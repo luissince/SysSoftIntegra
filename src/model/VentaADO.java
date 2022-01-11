@@ -1118,7 +1118,7 @@ public class VentaADO {
                         + ",PorLlevar\n"
                         + ",Estado)\n"
                         + "VALUES\n"
-                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
                 suministro_kardex = DBUtil.getConnection().prepareStatement("INSERT INTO "
                         + "KardexSuministroTB("
@@ -1187,9 +1187,9 @@ public class VentaADO {
                     detalle_venta.setDouble(8, sm.getIdImpuesto());
                     detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
                     detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
-                    detalle_venta.setDouble(12, sm.getBonificacion());
-                    detalle_venta.setDouble(13, cantidad);
-                    detalle_venta.setString(14, "C");
+                    detalle_venta.setDouble(11, sm.getBonificacion());
+                    detalle_venta.setDouble(12, cantidad);
+                    detalle_venta.setString(13, "C");
                     detalle_venta.addBatch();
 
                     if (sm.isInventario() && sm.getValorInventario() == 1) {
@@ -1474,7 +1474,7 @@ public class VentaADO {
                         + ",PorLlevar\n"
                         + ",Estado)\n"
                         + "VALUES\n"
-                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
                 suministro_update = DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
 
@@ -2170,7 +2170,7 @@ public class VentaADO {
 
     }
 
-    public static Object ListVentasPos(short opcion, String value, String fechaInicial, String fechaFinal, int comprobante, int estado, String usuario, int posicionPagina, int filasPorPagina) {
+    public static Object Listar_Ventas_Pos(short opcion, String value, String fechaInicial, String fechaFinal, int comprobante, int estado, String usuario, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
 
@@ -2194,16 +2194,19 @@ public class VentaADO {
                 ventaTB.setId(rsEmps.getRow() + posicionPagina);
                 ventaTB.setIdVenta(rsEmps.getString("IdVenta"));
                 ventaTB.setFechaVenta(rsEmps.getDate("FechaVenta").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                ventaTB.setHoraVenta(rsEmps.getTime("HoraVenta").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
-                ventaTB.setClienteTB(new ClienteTB(rsEmps.getString("DocumentoCliente"), rsEmps.getString("Cliente")));
+                ventaTB.setHoraVenta(rsEmps.getTime("HoraVenta").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));                
                 ventaTB.setComprobanteName(rsEmps.getString("Comprobante"));
                 ventaTB.setSerie(rsEmps.getString("Serie"));
                 ventaTB.setNumeracion(rsEmps.getString("Numeracion"));
                 ventaTB.setTipo(rsEmps.getInt("Tipo"));
                 ventaTB.setEstado(rsEmps.getInt("Estado"));
-//                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
-//                ventaTB.setImporteNeto(rsEmps.getDouble("Total"));
+                ventaTB.setTotal(rsEmps.getDouble("Total"));
                 ventaTB.setObservaciones(rsEmps.getString("Observaciones"));
+                
+                ClienteTB clienteTB = new ClienteTB();
+                clienteTB.setNumeroDocumento(rsEmps.getString("DocumentoCliente"));
+                clienteTB.setInformacion(rsEmps.getString("Cliente"));
+                ventaTB.setClienteTB(clienteTB);
 
                 if (rsEmps.getInt("IdNotaCredito") == 1) {
                     NotaCreditoTB notaCreditoTB = new NotaCreditoTB();
@@ -2211,6 +2214,12 @@ public class VentaADO {
                     notaCreditoTB.setNumeracion(rsEmps.getString("NumeracionNotaCredito"));
                     ventaTB.setNotaCreditoTB(notaCreditoTB);
                 }
+
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setNombre(rsEmps.getString("NombreMoneda"));
+                monedaTB.setSimbolo(rsEmps.getString("Simbolo"));
+                monedaTB.setAbreviado(rsEmps.getString("TipoMoneda"));
+                ventaTB.setMonedaTB(monedaTB);
 
                 Label label = new Label();
                 if (ventaTB.getNotaCreditoTB() != null) {
@@ -2394,7 +2403,7 @@ public class VentaADO {
         }
     }
 
-    public static Object ListVentasMostrarPos(int opcion, String search, int posicionPagina, int filasPorPagina) {
+    public static Object Listar_Ventas_Mostrar_Pos(int opcion, String search, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
         try {
@@ -2411,14 +2420,17 @@ public class VentaADO {
             while (rsEmps.next()) {
                 VentaTB ventaTB = new VentaTB();
                 ventaTB.setId(rsEmps.getRow() + posicionPagina);
-                ventaTB.setClienteTB(new ClienteTB(rsEmps.getString("Cliente")));
                 ventaTB.setIdVenta(rsEmps.getString("IdVenta"));
                 ventaTB.setFechaVenta(rsEmps.getDate("FechaVenta").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 ventaTB.setHoraVenta(rsEmps.getTime("HoraVenta").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 ventaTB.setSerie(rsEmps.getString("Serie"));
                 ventaTB.setNumeracion(rsEmps.getString("Numeracion"));
-//                ventaTB.setMonedaName(rsEmps.getString("Simbolo"));
-//                ventaTB.setImporteNeto(rsEmps.getDouble("Total"));
+                ventaTB.setTotal(rsEmps.getDouble("Total"));
+                
+                ClienteTB clienteTB = new ClienteTB();
+                clienteTB.setNumeroDocumento(rsEmps.getString("NumeroDocumento")); 
+                clienteTB.setInformacion(rsEmps.getString("Cliente"));
+                ventaTB.setClienteTB(clienteTB);
 
                 if (rsEmps.getInt("IdNotaCredito") == 1) {
                     NotaCreditoTB notaCreditoTB = new NotaCreditoTB();
@@ -2426,6 +2438,12 @@ public class VentaADO {
                     notaCreditoTB.setNumeracion(rsEmps.getString("NumeracionNotaCredito"));
                     ventaTB.setNotaCreditoTB(notaCreditoTB);
                 }
+                
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setNombre(rsEmps.getString("NombreMoneda"));
+                monedaTB.setSimbolo(rsEmps.getString("Simbolo"));
+                monedaTB.setAbreviado(rsEmps.getString("Abreviado"));
+                ventaTB.setMonedaTB(monedaTB);
 
                 Button btnImprimir = new Button();
                 ImageView imageViewPrint = new ImageView(new Image("/view/image/print.png"));
@@ -3719,7 +3737,7 @@ public class VentaADO {
         }
     }
 
-    public static Object ListarHistorialSuministroLlevar(String idVenta, String idSuministro) {
+    public static Object Listar_Historial_Suministro_Llevar(String idVenta, String idSuministro) {
         PreparedStatement statementVenta = null;
         ResultSet resultSet = null;
         try {

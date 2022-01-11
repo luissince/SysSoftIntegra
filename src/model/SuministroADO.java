@@ -924,12 +924,6 @@ public class SuministroADO {
                     if (preparedSuministro != null) {
                         preparedSuministro.close();
                     }
-//                    if (preparedBusqueda != null) {
-//                        preparedBusqueda.close();
-//                    }
-//                    if (preparedArticulo != null) {
-//                        preparedArticulo.close();
-//                    }
                 } catch (SQLException ex) {
                     result = ex.getLocalizedMessage();
                 }
@@ -943,38 +937,34 @@ public class SuministroADO {
     public static ObservableList<PreciosTB> GetItemPriceList(String idSuministro) {
         PreparedStatement statementVendedor = null;
         ObservableList<PreciosTB> empList = FXCollections.observableArrayList();
-        DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            try {
-                statementVendedor = DBUtil.getConnection().prepareStatement("{CALL Sp_Listar_Precios_By_IdSuministro(?)}");
-                statementVendedor.setString(1, idSuministro);
-                try (ResultSet resultSet = statementVendedor.executeQuery()) {
-                    while (resultSet.next()) {
-                        PreciosTB preciosTB = new PreciosTB();
-                        preciosTB.setId(resultSet.getRow());
-                        preciosTB.setIdPrecios(resultSet.getInt("IdPrecios"));
-                        preciosTB.setNombre(resultSet.getString("Nombre").toUpperCase());
-                        preciosTB.setValor(resultSet.getDouble("Valor"));
-                        preciosTB.setFactor(resultSet.getDouble("Factor") <= 0 ? 1 : resultSet.getDouble("Factor"));
-                        empList.add(preciosTB);
-                    }
-                }
-
-            } catch (SQLException ex) {
-
-            } finally {
-                try {
-                    if (statementVendedor != null) {
-                        statementVendedor.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-
+        try {
+            DBUtil.dbConnect();
+            statementVendedor = DBUtil.getConnection().prepareStatement("{CALL Sp_Listar_Precios_By_IdSuministro(?)}");
+            statementVendedor.setString(1, idSuministro);
+            try (ResultSet resultSet = statementVendedor.executeQuery()) {
+                while (resultSet.next()) {
+                    PreciosTB preciosTB = new PreciosTB();
+                    preciosTB.setId(resultSet.getRow());
+                    preciosTB.setIdPrecios(resultSet.getInt("IdPrecios"));
+                    preciosTB.setNombre(resultSet.getString("Nombre").toUpperCase());
+                    preciosTB.setValor(resultSet.getDouble("Valor"));
+                    preciosTB.setFactor(resultSet.getDouble("Factor") <= 0 ? 1 : resultSet.getDouble("Factor"));
+                    empList.add(preciosTB);
                 }
             }
 
-        }
+        } catch (SQLException ex) {
 
+        } finally {
+            try {
+                if (statementVendedor != null) {
+                    statementVendedor.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+
+            }
+        }
         return empList;
     }
 
@@ -1248,7 +1238,6 @@ public class SuministroADO {
                 suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
                 suministroTB.setEstado(rsEmps.getInt("Estado"));
                 suministroTB.setEstadoName(rsEmps.getString("EstadoName"));
-//                suministroTB.setImporteNeto(rsEmps.getDouble("Total"));
                 suministroTB.setStockMinimo(rsEmps.getDouble("StockMinimo"));
                 suministroTB.setStockMaximo(rsEmps.getDouble("StockMaximo"));
                 suministroTB.setInventario(rsEmps.getBoolean("Inventario"));
@@ -1310,7 +1299,6 @@ public class SuministroADO {
                 suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
                 suministroTB.setEstado(rsEmps.getInt("Estado"));
                 suministroTB.setEstadoName(rsEmps.getString("EstadoName"));
-//                suministroTB.setImporteNeto(rsEmps.getDouble("Total"));
                 suministroTB.setStockMinimo(rsEmps.getDouble("StockMinimo"));
                 suministroTB.setStockMaximo(rsEmps.getDouble("StockMaximo"));
                 suministroTB.setInventario(rsEmps.getBoolean("Inventario"));

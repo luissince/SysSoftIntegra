@@ -79,8 +79,7 @@ public class FxPostVentaLlevarControllerHistorial implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-//                return HistorialSuministroSalidaADO.ListarHistorialSuministroSalida(ventaTB.getIdVenta(), suministroTB.getIdSuministro());
-                return null;
+                return HistorialSuministroSalidaADO.Listar_Historial_Suministro_Salida(ventaTB.getIdVenta(), suministroTB.getIdSuministro());
             }
         };
 
@@ -119,9 +118,9 @@ public class FxPostVentaLlevarControllerHistorial implements Initializable {
     private void printTicket() {
         imprimirController.getTicketVentaLlevar().imprimir(ventaTB.getIdVenta(), suministroTB.getIdSuministro());
     }
-    
-    private void openWindowReporte(){
-//        imprimirController.getTicketVentaLlevar().mostrarReporte(ventaTB, suministroTB, tvList);
+
+    private void openWindowReporte() {
+        imprimirController.getTicketVentaLlevar().mostrarReporte(ventaTB.getIdVenta(), suministroTB.getIdSuministro());
     }
 
     @FXML

@@ -1,7 +1,6 @@
 package model;
 
 import controller.tools.ImageViewTicket;
-import controller.tools.Tools;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -424,13 +424,13 @@ public class FxSuministrosListaController implements Initializable {
             Button button = new Button("X");
             button.getStyleClass().add("buttonDark");
             button.setOnAction(e -> {
-                ventaEstructuraController.getTvList().getItems().remove(suministroTB);
-                ventaEstructuraController.calculateTotales();
+                postVentaEstructuraController.getTvList().getItems().remove(suministroTB);
+                postVentaEstructuraController.calculateTotales();
             });
             button.setOnKeyPressed(e -> {
                 if (e.getCode() == KeyCode.ENTER) {
-                    ventaEstructuraController.getTvList().getItems().remove(suministroTB);
-                    ventaEstructuraController.calculateTotales();
+                    postVentaEstructuraController.getTvList().getItems().remove(suministroTB);
+                    postVentaEstructuraController.calculateTotales();
                 }
             });
             suministroTB.setBtnRemove(button);

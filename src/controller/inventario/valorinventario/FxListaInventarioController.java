@@ -79,14 +79,12 @@ public class FxListaInventarioController implements Initializable {
         tcCategoria.prefWidthProperty().bind(tvLista.widthProperty().multiply(0.15));
         tcMarca.prefWidthProperty().bind(tvLista.widthProperty().multiply(0.15));
 
-        //falta 0.20
         paginacion = 1;
         totalPaginacion = 0;
         opcion = 0;
         existencia = 0;
     }
 
-    //controllerValorInventario.fillInventarioTable("",(short)0,"",(short)0,0,0);
     public void loadData(short tipoExistencia) {
         existencia = tipoExistencia;
         paginacion = 1;

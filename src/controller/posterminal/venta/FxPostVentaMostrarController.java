@@ -69,7 +69,7 @@ public class FxPostVentaMostrarController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
-        tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getInformacion()));
+        tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
         tcFechaHora.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getFechaVenta() + "\n"
                 + cellData.getValue().getHoraVenta()
@@ -77,7 +77,7 @@ public class FxPostVentaMostrarController implements Initializable {
         tcDocumento.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion() + "\n" + (cellData.getValue().getNotaCreditoTB() != null ? " Modificado(" + cellData.getValue().getNotaCreditoTB().getSerie() + "-" + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")" : "")
         ));
-//        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
         tcImprimir.setCellValueFactory(new PropertyValueFactory<>("btnImprimir"));
         tcAgregarVenta.setCellValueFactory(new PropertyValueFactory<>("btnAgregar"));
         tcSumarVenta.setCellValueFactory(new PropertyValueFactory<>("btnSumar"));
@@ -99,7 +99,7 @@ public class FxPostVentaMostrarController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return VentaADO.ListVentasMostrarPos(opcion, value, (paginacion - 1) * 10, 10);
+                return VentaADO.Listar_Ventas_Mostrar_Pos(opcion, value, (paginacion - 1) * 10, 10);
             }
         };
 

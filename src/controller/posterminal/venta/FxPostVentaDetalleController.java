@@ -8,7 +8,6 @@ import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.collections.FXCollections;
@@ -36,8 +35,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.EmpleadoTB;
-import model.ImpuestoADO;
-import model.ImpuestoTB;
 import model.SuministroTB;
 import model.VentaADO;
 import model.VentaTB;
@@ -103,8 +100,6 @@ public class FxPostVentaDetalleController implements Initializable {
 
     private FxPostVentaRealizadasController ventaRealizadasController;
 
-    private ArrayList<ImpuestoTB> arrayImpuestos;
-
     private String idVenta;
 
     private VentaTB ventaTB;
@@ -113,7 +108,6 @@ public class FxPostVentaDetalleController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        arrayImpuestos = new ArrayList<>();
         opcionesImprimirController = new FxOpcionesImprimirController();
         opcionesImprimirController.loadComponents();
         opcionesImprimirController.loadTicketVentaDetalle(apWindow);
@@ -131,10 +125,6 @@ public class FxPostVentaDetalleController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                arrayImpuestos.clear();
-                ImpuestoADO.GetTipoImpuestoCombBox().forEach(e -> {
-                    arrayImpuestos.add(new ImpuestoTB(e.getIdImpuesto(), e.getNombreOperacion(), e.getNombre(), e.getValor(), e.isPredeterminado()));
-                });
                 return VentaADO.Obtener_Venta_ById(idVenta);
             }
         };
@@ -351,9 +341,9 @@ public class FxPostVentaDetalleController implements Initializable {
             //Controlller here
             FxPostVentaDevolucionController controller = fXMLLoader.getController();
             controller.setInitVentaDetalle(this);
-//            controller.setLoadVentaDevolucion(idVenta, arrList, ventaTB.getSerie() + "-" + ventaTB.getNumeracion(), Tools.roundingValue(ventaTB.getImporteNeto(), 2));
+            controller.setLoadVentaDevolucion(ventaTB, Tools.roundingValue(total, 2));
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Cancelar la venta", apWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Anular la venta", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> principalController.closeFondoModal());
@@ -371,12 +361,12 @@ public class FxPostVentaDetalleController implements Initializable {
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
             FxPostVentaLlevarController controller = fXMLLoader.getController();
-            controller.setInitData(idVenta, idSuministro, lblComprobante.getText(), costo);
             controller.setInitVentaDetalleController(this);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Producto a llevar", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
+            stage.setOnShowing(w -> controller.setInitData(idVenta, idSuministro, lblComprobante.getText(), costo));
             stage.setOnHiding(w -> principalController.closeFondoModal());
             stage.show();
 
@@ -394,11 +384,11 @@ public class FxPostVentaDetalleController implements Initializable {
             //Controlller here
             FxPostVentaLlevarControllerHistorial controller = fXMLLoader.getController();
             controller.setInitVentaDetalleController(this);
-            controller.loadData(ventaTB, suministroTB);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Historial de Salida", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
+            stage.setOnShowing(w -> controller.loadData(ventaTB, suministroTB));
             stage.setOnHiding(w -> principalController.closeFondoModal());
             stage.show();
 

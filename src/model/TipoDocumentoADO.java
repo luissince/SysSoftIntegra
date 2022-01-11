@@ -283,42 +283,6 @@ public class TipoDocumentoADO {
         return list;
     }
 
-    private static List<TipoDocumentoTB> GetDocumentoCombBoxNotaCredito() {
-        List<TipoDocumentoTB> list = new ArrayList<>();
-        DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statement = null;
-            ResultSet resultSet = null;
-            try {
-                statement = DBUtil.getConnection().prepareStatement("SELECT IdTipoDocumento,Nombre,Serie, Predeterminado FROM TipoDocumentoTB WHERE NotaCredito = 1");
-                resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    TipoDocumentoTB documentoTB = new TipoDocumentoTB();
-                    documentoTB.setIdTipoDocumento(resultSet.getInt("IdTipoDocumento"));
-                    documentoTB.setNombre(resultSet.getString("Nombre"));
-                    documentoTB.setSerie(resultSet.getString("Serie"));
-                    documentoTB.setPredeterminado(resultSet.getBoolean("Predeterminado"));
-                    list.add(documentoTB);
-                }
-            } catch (SQLException ex) {
-                System.out.println("Error Tipo de documento: " + ex.getLocalizedMessage());
-            } finally {
-                try {
-                    if (statement != null) {
-                        statement.close();
-                    }
-                    if (resultSet != null) {
-                        resultSet.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    System.out.println("Error Tipo de documento: " + ex.getLocalizedMessage());
-                }
-            }
-        }
-        return list;
-    }
-
     public static Object GetTipoDocumentoGuiaRemision() {
         PreparedStatement statement = null;
         ResultSet resultSet = null;

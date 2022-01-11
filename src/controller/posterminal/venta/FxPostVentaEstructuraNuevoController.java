@@ -625,6 +625,7 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
                 ventaTB.setNumeracion(lblNumeracion.getText());
                 ventaTB.setFechaVenta(Tools.getDate());
                 ventaTB.setHoraVenta(Tools.getTime());
+                ventaTB.setTotal(importeNetoTotal);
                 ventaTB.setIdCotizacion("");
 
                 ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
@@ -642,6 +643,8 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
 
                 ArrayList<SuministroTB> suministroTBs = new ArrayList<>();
                 lvProductoAgregados.getItems().forEach(e -> suministroTBs.add(e.getSuministroTB()));
+
+                ventaTB.setSuministroTBs(suministroTBs);
 
                 fxPrincipalController.openFondoModal();
                 URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_PROCESO_NUEVO);

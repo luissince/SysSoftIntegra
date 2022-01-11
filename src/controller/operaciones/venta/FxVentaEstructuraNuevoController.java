@@ -623,6 +623,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
                 ventaTB.setNumeracion(lblNumeracion.getText());
                 ventaTB.setFechaVenta(Tools.getDate());
                 ventaTB.setHoraVenta(Tools.getTime());
+                ventaTB.setTotal(importeNetoTotal);
                 ventaTB.setIdCotizacion("");
 
                 ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
