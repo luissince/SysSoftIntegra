@@ -321,10 +321,9 @@ public class AjusteInventarioADO {
         return result;
     }
 
-    public static Object ListMovimientoInventario(int opcion, int movimiento, String fechaInicial, String fechaFinal, int posicionPagina, int filasPorPagina) {
+    public static Object Listar_Movimiento_Inventario(int opcion, int movimiento, String fechaInicial, String fechaFinal, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
-
         try {
             DBUtil.dbConnect();
             Object[] objects = new Object[2];

@@ -6,7 +6,6 @@ import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,7 +35,6 @@ import model.AjusteInventarioTB;
 import model.PrivilegioTB;
 import model.TipoMovimientoADO;
 import model.TipoMovimientoTB;
-import model.VentaTB;
 
 public class FxMovimientosController implements Initializable {
 
@@ -147,7 +145,7 @@ public class FxMovimientosController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return AjusteInventarioADO.ListMovimientoInventario(opcion, movimiento, fechaInicial, fechaFinal, (paginacion - 1) * 10, 10);
+                return AjusteInventarioADO.Listar_Movimiento_Inventario(opcion, movimiento, fechaInicial, fechaFinal, (paginacion - 1) * 10, 10);
             }
         };
         task.setOnSucceeded((WorkerStateEvent e) -> {
