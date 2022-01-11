@@ -117,8 +117,8 @@ public class FxVentaProcesoNuevoController implements Initializable {
         total_venta = 0;
         vueltoContado = 0.00;
         monedaCadena = new ConvertMonedaCadena();
-        lblVueltoNombre.setText("Su cambio: ");
-        lblVueltoNombreAdelantado.setText("Su cambio: ");
+        lblVueltoNombre.setText("SU CAMBIO: ");
+        lblVueltoNombreAdelantado.setText("SU CAMBIO: ");
     }
 
     public void setInitComponents(VentaTB ventaTB, boolean provilegios) {
@@ -361,6 +361,7 @@ public class FxVentaProcesoNuevoController implements Initializable {
 
                 }
                 break;
+                
             case 2:
                 if (!estadoCobroAdelantado && !cbDepositoAdelantado.isSelected()) {
                     Tools.AlertMessageWarning(window, "Venta", "El monto es menor que el total.");

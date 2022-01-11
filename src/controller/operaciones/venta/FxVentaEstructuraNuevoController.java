@@ -640,8 +640,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
 
                 ArrayList<SuministroTB> suministroTBs = new ArrayList<>();
                 lvProductoAgregados.getItems().forEach(e -> suministroTBs.add(e.getSuministroTB()));
-                
-                ventaTB.setSuministroTBs(suministroTBs); 
+
+                ventaTB.setSuministroTBs(suministroTBs);
 
                 fxPrincipalController.openFondoModal();
                 URL url = getClass().getResource(FilesRouters.FX_VENTA_PROCESO_NUEVO);

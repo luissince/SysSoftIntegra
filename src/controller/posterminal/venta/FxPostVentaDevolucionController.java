@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,8 +15,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.SuministroTB;
 import model.VentaADO;
+import model.VentaTB;
 
 public class FxPostVentaDevolucionController implements Initializable {
 
@@ -38,9 +37,7 @@ public class FxPostVentaDevolucionController implements Initializable {
 
     private FxPostVentaMostrarController ventaMostrarController;
 
-    private String idVenta;
-
-    private ObservableList<SuministroTB> arrList;
+    private VentaTB ventaTB;
 
     private double totalVenta;
 
@@ -49,11 +46,10 @@ public class FxPostVentaDevolucionController implements Initializable {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
     }
 
-    public void setLoadVentaDevolucion(String idVenta, ObservableList<SuministroTB> arrList, String comprobante, String total) {
-        this.idVenta = idVenta;
-        this.arrList = arrList;
+    public void setLoadVentaDevolucion(VentaTB ventaTB, String total) {
+        this.ventaTB = ventaTB;
         this.totalVenta = Double.parseDouble(total);
-        lblComprobante.setText(comprobante);
+        lblComprobante.setText(ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
         lblTotal.setText(total);
         txtEfectivo.setText(Tools.roundingValue(totalVenta, 2));
     }
@@ -74,8 +70,8 @@ public class FxPostVentaDevolucionController implements Initializable {
 
                 Task<String> task = new Task<String>() {
                     @Override
-                    public String call() {                       
-                        return VentaADO.CancelTheSalePosVenta(idVenta, arrList,txtObservacion.getText().trim());
+                    public String call() {
+                        return VentaADO.Anular_PosVenta_ById(ventaTB.getIdVenta(), ventaTB.getSuministroTBs(), txtObservacion.getText().trim());
                     }
                 };
 

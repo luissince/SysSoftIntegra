@@ -286,7 +286,7 @@ public class FxPostVentaProcesoController implements Initializable {
 
                     short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Esta seguro de continuar?");
                     if (confirmation == 1) {
-                        ResultTransaction result = VentaADO.registrarVentaContadoPosVenta(ventaTB, tvList, privilegios);
+                        ResultTransaction result = VentaADO.registrarVentaContadoPosVenta(ventaTB, privilegios);
                         switch (result.getCode()) {
                             case "register":
                                 short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta", "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");
@@ -334,7 +334,7 @@ public class FxPostVentaProcesoController implements Initializable {
 
                     short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Está seguro de continuar?");
                     if (confirmation == 1) {
-                        ResultTransaction result = VentaADO.registrarVentaCreditoPosVenta(ventaTB, tvList, privilegios);
+                        ResultTransaction result = VentaADO.registrarVentaCreditoPosVenta(ventaTB, privilegios);
                         switch (result.getCode()) {
                             case "register":
                                 short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta", "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");
@@ -422,7 +422,7 @@ public class FxPostVentaProcesoController implements Initializable {
 
                     short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Esta seguro de continuar?");
                     if (confirmation == 1) {
-                        ResultTransaction result = VentaADO.registrarVentaAdelantadoPosVenta(ventaTB, tvList);
+                        ResultTransaction result = VentaADO.registrarVentaAdelantadoPosVenta(ventaTB);
                         switch (result.getCode()) {
                             case "register":
                                 short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta", "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");

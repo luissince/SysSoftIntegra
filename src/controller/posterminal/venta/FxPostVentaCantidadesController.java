@@ -80,7 +80,7 @@ public class FxPostVentaCantidadesController implements Initializable {
         suministroTB.setCantidad(primerLlamado ? cantidad : suministroTB.getCantidad() + cantidad);
         
         if (tipoVenta) {
-            ventaEstructuraController.getAddArticulo(suministroTB, ventaEstructuraController.getWindow().getScene().getWindow());
+            ventaEstructuraController.getAddSuministro(suministroTB, ventaEstructuraController.getWindow().getScene().getWindow());
             Tools.Dispose(apWindow);
         } else {
             ventaEstructuraController.getTvList().refresh();
