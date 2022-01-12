@@ -83,6 +83,7 @@ public class SuministroTB {
     private Button btnRemove;
     private boolean cambios;
     private double bonificacion;
+    private String bonificacionTexto;
     private TextField txtMerma;
     private ComboBox<SuministroTB> cbSuministro;
     private SearchComboBox<SuministroTB> searchComboBoxSuministro;
@@ -601,6 +602,14 @@ public class SuministroTB {
 
     public void setBonificacion(double bonificacion) {
         this.bonificacion = bonificacion;
+    }
+
+    public String getBonificacionTexto() {
+        return bonificacionTexto;
+    }
+
+    public void setBonificacionTexto(String bonificacionTexto) {
+        this.bonificacionTexto = bonificacionTexto;
     }
 
     public TextField getTxtMerma() {

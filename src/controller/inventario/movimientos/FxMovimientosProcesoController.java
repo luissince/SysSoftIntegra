@@ -258,9 +258,9 @@ public class FxMovimientosProcesoController implements Initializable {
             t.setDaemon(true);
             return t;
         });
-        Task<SuministroTB> task = new Task<SuministroTB>() {
+        Task<Object> task = new Task<Object>() {
             @Override
-            public SuministroTB call() {
+            public Object call() {
                 return SuministroADO.List_Suministros_Movimiento(idSuministro);
             }
         };
@@ -273,8 +273,9 @@ public class FxMovimientosProcesoController implements Initializable {
             lblLoad.setVisible(false);
         });
         task.setOnSucceeded(t -> {
-            SuministroTB suministroTB = task.getValue();
-            if (suministroTB != null) {
+            Object object = task.getValue();
+            if (object instanceof SuministroTB) {
+                SuministroTB suministroTB = (SuministroTB) object;
                 suministroTB.setId(tvList.getItems().size() + 1);
                 suministroTB.getBtnRemove().setOnAction(event -> {
                     tvList.getItems().remove(suministroTB);
@@ -300,6 +301,7 @@ public class FxMovimientosProcesoController implements Initializable {
                     }
                     tvList.refresh();
                 });
+               
                 suministroTB.getTxtMovimiento().focusedProperty().addListener((obs, oldVal, newVal) -> {
                     if (!newVal) {
                         if (!suministroTB.isCambios()) {

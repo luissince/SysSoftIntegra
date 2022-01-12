@@ -124,9 +124,9 @@ public class FxTrasladoGuiaController implements Initializable {
             t.setDaemon(true);
             return t;
         });
-        Task<SuministroTB> task = new Task<SuministroTB>() {
+        Task<Object> task = new Task<Object>() {
             @Override
-            public SuministroTB call() {
+            public Object call() {
                 return SuministroADO.List_Suministros_Movimiento(idSuministro);
             }
         };
@@ -139,8 +139,9 @@ public class FxTrasladoGuiaController implements Initializable {
             lblLoad.setVisible(false);
         });
         task.setOnSucceeded(t -> {
-            SuministroTB suministroTB = task.getValue();
-            if (suministroTB != null) {
+            Object object = task.getValue();
+            if (object instanceof SuministroTB) {
+                SuministroTB suministroTB = (SuministroTB) object;
                 suministroTB.setId(tvList.getItems().size() + 1);
                 suministroTB.getBtnRemove().setOnAction(event -> {
                     tvList.getItems().remove(suministroTB);
