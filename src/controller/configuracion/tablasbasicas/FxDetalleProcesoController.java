@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -46,11 +45,11 @@ public class FxDetalleProcesoController implements Initializable {
 
     private void toValidateRegister() {
         if (idMantenimiento.equalsIgnoreCase("")) {
-            Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.WARNING, "Detalle", "Problemas en obtener el id, cierre la ventana y abra de otra ves", false);
+            Tools.AlertMessageWarning(window, "Detalle", "Problemas en obtener el id, cierre la ventana y abra de otra ves.");
         } else if (Tools.isText(txtDetalle.getText())) {
-            Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.WARNING, "Detalle", "Ingrese el nombre del detalle", false);
+            Tools.AlertMessageWarning(window, "Detalle", "Ingrese el nombre del detalle.");
         } else {
-            short confirmation = Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.CONFIRMATION, "Detalle", "¿Esta seguro de continuar?", true);
+            short confirmation = Tools.AlertMessageConfirmation(window, "Detalle", "¿Esta seguro de continuar?");
             if (confirmation == 1) {
                 DetalleTB detalleTB = new DetalleTB();
                 detalleTB.setIdDetalle(idDetalle);
@@ -62,24 +61,23 @@ public class FxDetalleProcesoController implements Initializable {
                 detalleTB.setUsuarioRegistro(Session.USER_ID);
                 String result = DetalleADO.CrudEntity(detalleTB);
                 if (result.equalsIgnoreCase("inserted")) {
-                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.INFORMATION, "Detalle", "Registrado correctamente.", false);
+                    Tools.AlertMessageInformation(window, "Detalle", "El registró correctamente el detalle.");
                     listaController.initListDetalle(idMantenimiento, "");
                     Tools.Dispose(window);
                 } else if (result.equalsIgnoreCase("updated")) {
-                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.INFORMATION, "Detalle", "Actualizado correctamente.", false);
+                    Tools.AlertMessageWarning(window, "Detalle", "Se actualizó correctamente el detalle.");
                     Tools.Dispose(window);
                     listaController.initListDetalle(idMantenimiento, "");
                     Tools.Dispose(window);
                 } else if (result.equalsIgnoreCase("duplicate")) {
-                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.WARNING, "Detalle", "No se puede haber 2 detalles con el mismo nombre.", false);
+                    Tools.AlertMessageWarning(window, "Detalle", "No puede haber 2 detalles con el mismo nombre.");
                     txtDetalle.requestFocus();
                 } else {
-                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.ERROR, "Detalle", result, false);
+                    Tools.AlertMessageWarning(window, "Detalle", result);
                 }
             }
-
-        }
-    }
+        }       
+    }       
 
     @FXML
     private void onActionToRegister(ActionEvent event) {
@@ -92,13 +90,13 @@ public class FxDetalleProcesoController implements Initializable {
             toValidateRegister();
         }
     }
-    
-        @FXML
+
+    @FXML
     private void onKeyCancelar(KeyEvent event) {
-        if(event.getCode() == KeyCode.ENTER){
+        if (event.getCode() == KeyCode.ENTER) {
             Tools.Dispose(window);
         }
-    }
+    }   
 
     @FXML
     private void onActionCancelar(ActionEvent event) {
@@ -113,6 +111,5 @@ public class FxDetalleProcesoController implements Initializable {
     public void setControllerDetalleLista(FxDetalleListaController listaController) {
         this.listaController = listaController;
     }
-
 
 }

@@ -85,8 +85,8 @@ public class FxCotizacionRealizadasController implements Initializable {
         tcCliente.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
         tcCotizacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
         tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
-        tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
-        tcTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.11));
+        tcTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         Tools.actualDate(Tools.getDate(), dtFechaInicial);

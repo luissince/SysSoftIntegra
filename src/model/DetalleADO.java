@@ -9,13 +9,12 @@ import javafx.collections.ObservableList;
 public class DetalleADO {
 
     public static ObservableList<DetalleTB> ListDetail(String... value) {
-        String selectStmt = "{call Sp_List_Table_Detalle(?,?)}";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ObservableList<DetalleTB> empList = FXCollections.observableArrayList();
         try {
             DBUtil.dbConnect();
-            preparedStatement = DBUtil.getConnection().prepareStatement(selectStmt);
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_List_Table_Detalle(?,?)}");
             preparedStatement.setString(1, value[0]);
             preparedStatement.setString(2, value[1]);
             resultSet = preparedStatement.executeQuery();
@@ -49,89 +48,86 @@ public class DetalleADO {
     }
 
     public static String CrudEntity(DetalleTB detalleTB) {
-        String result = null;
         PreparedStatement statementValidate = null;
         PreparedStatement statementDetalle = null;
-        DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementValidate = DBUtil.getConnection().prepareStatement("select IdDetalle,IdMantenimiento from DetalleTB where IdDetalle=? and IdMantenimiento=?");
-                statementValidate.setInt(1, detalleTB.getIdDetalle());
-                statementValidate.setString(2, detalleTB.getIdMantenimiento());
-                if (statementValidate.executeQuery().next()) {
 
-                    statementDetalle = DBUtil.getConnection().prepareStatement("select IdDetalle,IdMantenimiento from DetalleTB where IdDetalle<>? and IdMantenimiento=? and Nombre = ?");
-                    statementDetalle.setInt(1, detalleTB.getIdDetalle());
-                    statementDetalle.setString(2, detalleTB.getIdMantenimiento());
-                    statementDetalle.setString(3, detalleTB.getNombre());
-                    if (statementDetalle.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicate";
-                    } else {
-                        statementDetalle = DBUtil.getConnection().prepareStatement("update DetalleTB set IdAuxiliar=UPPER(?),Nombre=UPPER(?),Descripcion=UPPER(?),Estado=? where IdDetalle =? and IdMantenimiento = ?");
-                        statementDetalle.setString(1, detalleTB.getIdAuxiliar());
-                        statementDetalle.setString(2, detalleTB.getNombre());
-                        statementDetalle.setString(3, detalleTB.getDescripcion());
-                        statementDetalle.setString(4, detalleTB.getEstado());
-                        statementDetalle.setInt(5, detalleTB.getIdDetalle());
-                        statementDetalle.setString(6, detalleTB.getIdMantenimiento());
-                        statementDetalle.addBatch();
-
-                        statementDetalle.executeBatch();
-                        DBUtil.getConnection().commit();
-                        result = "updated";
-                    }
+        try {
+            DBUtil.dbConnect();
+            DBUtil.getConnection().setAutoCommit(false);
+            statementValidate = DBUtil.getConnection().prepareStatement("select IdDetalle,IdMantenimiento from DetalleTB where IdDetalle=? and IdMantenimiento=?");
+            statementValidate.setInt(1, detalleTB.getIdDetalle());
+            statementValidate.setString(2, detalleTB.getIdMantenimiento());
+            if (statementValidate.executeQuery().next()) {
+                statementDetalle = DBUtil.getConnection().prepareStatement("select IdDetalle,IdMantenimiento from DetalleTB where IdDetalle<>? and IdMantenimiento=? and Nombre = ?");
+                statementDetalle.setInt(1, detalleTB.getIdDetalle());
+                statementDetalle.setString(2, detalleTB.getIdMantenimiento());
+                statementDetalle.setString(3, detalleTB.getNombre());
+                if (statementDetalle.executeQuery().next()) {
+                    DBUtil.getConnection().rollback();
+                    return "duplicate";
                 } else {
-                    statementDetalle = DBUtil.getConnection().prepareStatement("select Nombre from DetalleTB where IdMantenimiento = ? and Nombre = ?");
-                    statementDetalle.setString(1, detalleTB.getIdMantenimiento());
+                    statementDetalle = DBUtil.getConnection().prepareStatement("update DetalleTB set IdAuxiliar=UPPER(?),Nombre=UPPER(?),Descripcion=UPPER(?),Estado=? where IdDetalle =? and IdMantenimiento = ?");
+                    statementDetalle.setString(1, detalleTB.getIdAuxiliar());
                     statementDetalle.setString(2, detalleTB.getNombre());
-                    if (statementDetalle.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicate";
-                    } else {
-                        statementDetalle = DBUtil.getConnection().prepareStatement("insert into DetalleTB(IdMantenimiento,IdAuxiliar,Nombre,Descripcion,Estado,UsuarioRegistro) values(?,?,?,?,?,?)");
-                        statementDetalle.setString(1, detalleTB.getIdMantenimiento());
-                        statementDetalle.setString(2, detalleTB.getIdAuxiliar());
-                        statementDetalle.setString(3, detalleTB.getNombre().trim().toUpperCase());
-                        statementDetalle.setString(4, detalleTB.getDescripcion().trim().toUpperCase());
-                        statementDetalle.setString(5, detalleTB.getEstado());
-                        statementDetalle.setString(6, detalleTB.getUsuarioRegistro());
-                        statementDetalle.addBatch();
+                    statementDetalle.setString(3, detalleTB.getDescripcion());
+                    statementDetalle.setString(4, detalleTB.getEstado());
+                    statementDetalle.setInt(5, detalleTB.getIdDetalle());
+                    statementDetalle.setString(6, detalleTB.getIdMantenimiento());
+                    statementDetalle.addBatch();
 
-                        statementDetalle.executeBatch();
-                        DBUtil.getConnection().commit();
-                        result = "inserted";
-                    }
-
+                    statementDetalle.executeBatch();
+                    DBUtil.getConnection().commit();
+                    return "updated";
                 }
+            } else {
+                statementDetalle = DBUtil.getConnection().prepareStatement("select Nombre from DetalleTB where IdMantenimiento = ? and Nombre = ?");
+                statementDetalle.setString(1, detalleTB.getIdMantenimiento());
+                statementDetalle.setString(2, detalleTB.getNombre());
+                if (statementDetalle.executeQuery().next()) {
+                    DBUtil.getConnection().rollback();
+                    return "duplicate";
+                } else {
+                    statementDetalle = DBUtil.getConnection().prepareStatement("insert into DetalleTB(IdMantenimiento,IdAuxiliar,Nombre,Descripcion,Estado,UsuarioRegistro) values(?,?,?,?,?,?)");
+                    statementDetalle.setString(1, detalleTB.getIdMantenimiento());
+                    statementDetalle.setString(2, detalleTB.getIdAuxiliar());
+                    statementDetalle.setString(3, detalleTB.getNombre().trim().toUpperCase());
+                    statementDetalle.setString(4, detalleTB.getDescripcion().trim().toUpperCase());
+                    statementDetalle.setString(5, detalleTB.getEstado());
+                    statementDetalle.setString(6, detalleTB.getUsuarioRegistro());
+                    statementDetalle.addBatch();
 
-            } catch (SQLException ex) {
-                result = ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementValidate != null) {
-                        statementValidate.close();
-                    }
-                    if (statementDetalle != null) {
-                        statementDetalle.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
+                    statementDetalle.executeBatch();
+                    DBUtil.getConnection().commit();
+                    return "inserted";
                 }
             }
-        } else {
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
-        }
-        return result;
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+                return ex.getLocalizedMessage();
+            } catch (SQLException e) {
+                return e.getLocalizedMessage();
+            }
 
+        } finally {
+            try {
+                if (statementValidate != null) {
+                    statementValidate.close();
+                }
+                if (statementDetalle != null) {
+                    statementDetalle.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
     }
 
     public static String DeleteDetail(DetalleTB detalleTB) {
         String result = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {           
+        if (DBUtil.getConnection() != null) {
             PreparedStatement preparedStatement = null;
             try {
                 DBUtil.getConnection().setAutoCommit(false);
@@ -273,6 +269,5 @@ public class DetalleADO {
         }
         return empList;
     }
-
 
 }

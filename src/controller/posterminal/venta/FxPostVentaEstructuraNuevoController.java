@@ -388,6 +388,8 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
         suministroTB.setCantidad(1);
         suministroTB.setCostoCompra(a.getCostoCompra());
         suministroTB.setBonificacion(0);
+        suministroTB.setUnidadCompra(a.getUnidadCompra());
+        suministroTB.setUnidadCompraName(a.getUnidadCompraName());
 
         suministroTB.setDescuento(0);
         suministroTB.setDescuentoCalculado(0);

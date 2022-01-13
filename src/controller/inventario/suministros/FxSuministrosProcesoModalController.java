@@ -728,22 +728,6 @@ public class FxSuministrosProcesoModalController implements Initializable {
     }
 
     @FXML
-    private void onKeyTypedClave(KeyEvent event) {
-        char c = event.getCharacter().charAt(0);
-        if ((c < '0' || c > '9') && (c != '\b') && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
-            event.consume();
-        }
-    }
-
-    @FXML
-    private void onKeyTypedClaveAlterna(KeyEvent event) {
-        char c = event.getCharacter().charAt(0);
-        if ((c < '0' || c > '9') && (c != '\b') && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
-            event.consume();
-        }
-    }
-
-    @FXML
     private void onKeyTypedMinimo(KeyEvent event) {
         char c = event.getCharacter().charAt(0);
         if ((c < '0' || c > '9') && (c != '\b') && (c != '.') && (c != '-')) {

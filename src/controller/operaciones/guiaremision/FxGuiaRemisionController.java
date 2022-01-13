@@ -680,13 +680,7 @@ public class FxGuiaRemisionController implements Initializable {
                 txtSerieFactura.setText(ventaTB.getSerie());
                 txtNumeracionFactura.setText(ventaTB.getNumeracion());
                 cbCliente.getItems().clear();
-                cbCliente.getItems().add(new ClienteTB(
-                        ventaTB.getClienteTB().getIdCliente(),
-                        ventaTB.getClienteTB().getNumeroDocumento(),
-                        ventaTB.getClienteTB().getInformacion(),
-                        ventaTB.getClienteTB().getCelular(),
-                        ventaTB.getClienteTB().getEmail(),
-                        ventaTB.getClienteTB().getDireccion()));
+                cbCliente.getItems().add(ventaTB.getClienteTB());
                 if (!cbCliente.getItems().isEmpty()) {
                     cbCliente.getSelectionModel().select(0);
                 }

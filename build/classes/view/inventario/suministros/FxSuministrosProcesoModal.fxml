@@ -24,7 +24,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.suministros.FxSuministrosProcesoModalController">
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.suministros.FxSuministrosProcesoModalController">
    <children>
       <VBox layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -73,7 +73,7 @@
                                                                   </Label>
                                                                   <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
                                                                      <children>
-                                                                        <TextField fx:id="txtClave" maxHeight="1.7976931348623157E308" onAction="#onActionToRegister" onKeyTyped="#onKeyTypedClave" prefHeight="30.0" prefWidth="200.0" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
+                                                                        <TextField fx:id="txtClave" maxHeight="1.7976931348623157E308" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="200.0" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
                                                                         <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionGenerar" prefHeight="30.0" styleClass="buttonLight" text="Crear">
                                                                            <graphic>
                                                                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -96,7 +96,7 @@
                                                                   <Font name="Roboto" size="14.0" />
                                                                </font>
                                                             </Label>
-                                                            <TextField fx:id="txtClaveAlterna" onAction="#onActionToRegister" onKeyTyped="#onKeyTypedClaveAlterna" prefHeight="30.0" prefWidth="200.0" styleClass="text-field-normal" />
+                                                            <TextField fx:id="txtClaveAlterna" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="200.0" styleClass="text-field-normal" />
                                                          </children>
                                                       </VBox>
                                                    </children>

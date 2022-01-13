@@ -13,8 +13,8 @@ import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -34,7 +34,6 @@ import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import javax.print.PrintService;
 import model.BancoADO;
-import model.BancoTB;
 import model.CotizacionADO;
 import model.CotizacionDetalleTB;
 import model.CotizacionTB;
@@ -342,7 +341,8 @@ public class TicketCotizacion {
                             impuestoTotal += impuesto;
                             importeNetoTotal += importeNeto;
                         }
-                        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(array.toJSONString().getBytes());
+                        String json = new String(array.toJSONString().getBytes(), "UTF-8");
+                        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(json.getBytes());
 
                         InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
                         InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
@@ -390,7 +390,7 @@ public class TicketCotizacion {
 
                         JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
                         return jasperPrint;
-                    } catch (JRException ex) {
+                    } catch (JRException | UnsupportedEncodingException ex) {
                         return ex.getLocalizedMessage();
                     }
                 } else {

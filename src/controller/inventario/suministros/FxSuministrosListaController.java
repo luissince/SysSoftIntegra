@@ -351,6 +351,8 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setCantidad(1);
             suministroTB.setCostoCompra(tvList.getSelectionModel().getSelectedItem().getCostoCompra());
             suministroTB.setBonificacion(0);
+            suministroTB.setUnidadCompra(tvList.getSelectionModel().getSelectedItem().getUnidadCompra());
+            suministroTB.setUnidadCompraName(tvList.getSelectionModel().getSelectedItem().getUnidadCompraName());
 
             suministroTB.setDescuento(0);
             suministroTB.setDescuentoCalculado(0);
@@ -380,7 +382,7 @@ public class FxSuministrosListaController implements Initializable {
                 }
             });
             suministroTB.setBtnRemove(button);
-            
+
             if (ventaEstructuraController.isCerar_modal_agregar_item_lista()) {
                 Tools.Dispose(apWindow);
                 ventaEstructuraController.getAddSuministro(suministroTB, ventaEstructuraController.getWindow().getScene().getWindow());
@@ -405,6 +407,8 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setCantidad(1);
             suministroTB.setCostoCompra(tvList.getSelectionModel().getSelectedItem().getCostoCompra());
             suministroTB.setBonificacion(0);
+            suministroTB.setUnidadCompra(tvList.getSelectionModel().getSelectedItem().getUnidadCompra());
+            suministroTB.setUnidadCompraName(tvList.getSelectionModel().getSelectedItem().getUnidadCompraName());
 
             suministroTB.setDescuento(0);
             suministroTB.setDescuentoCalculado(0);

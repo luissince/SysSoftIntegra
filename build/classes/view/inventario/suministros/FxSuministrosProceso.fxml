@@ -83,7 +83,7 @@
                                                       </Label>
                                                       <HBox VBox.vgrow="ALWAYS">
                                                          <children>
-                                                            <TextField fx:id="txtClave" maxHeight="1.7976931348623157E308" onAction="#onActionToRegister" onKeyTyped="#onKeyTypedClave" prefHeight="30.0" prefWidth="200.0" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
+                                                            <TextField fx:id="txtClave" maxHeight="1.7976931348623157E308" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="200.0" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
                                                             <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionGenerar" prefHeight="30.0" styleClass="buttonLight" text="Crear">
                                                                <graphic>
                                                                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
@@ -104,7 +104,7 @@
                                                             <Font name="Roboto" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="txtClaveAlterna" onAction="#onActionToRegister" onKeyTyped="#onKeyTypedClaveAlterna" prefHeight="30.0" prefWidth="200.0" styleClass="text-field-normal" />
+                                                      <TextField fx:id="txtClaveAlterna" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="200.0" styleClass="text-field-normal" />
                                                    </children>
                                                 </VBox>
                                              </children>

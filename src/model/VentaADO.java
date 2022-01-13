@@ -1272,6 +1272,8 @@ public class VentaADO {
                 suministro_update.executeBatch();
                 detalle_venta.executeBatch();
                 suministro_kardex.executeBatch();
+                cotizacion.executeBatch();
+
                 DBUtil.getConnection().commit();
                 resultTransaction.setCode("register");
                 resultTransaction.setResult(id_venta);
@@ -1588,6 +1590,8 @@ public class VentaADO {
                 detalle_venta.executeBatch();
                 suministro_update.executeBatch();
                 suministro_kardex.executeBatch();
+                cotizacion.executeBatch();
+
                 DBUtil.getConnection().commit();
                 resultTransaction.setCode("register");
                 resultTransaction.setResult(id_venta);
@@ -1804,9 +1808,7 @@ public class VentaADO {
             }
 
             for (SuministroTB sm : ventaTB.getSuministroTBs()) {
-
                 double cantidad = sm.getCantidad();
-
 //                double precio = sm.getValorInventario() == 2 ? sm.getPrecioVentaGeneralAuxiliar() : sm.getPrecioVentaGeneral();
                 double precio = sm.getPrecioVentaGeneral();
 
@@ -1867,6 +1869,8 @@ public class VentaADO {
             movimiento_caja.executeBatch();
             comprobante.executeBatch();
             detalle_venta.executeBatch();
+            cotizacion.executeBatch();
+
             DBUtil.getConnection().commit();
             resultTransaction.setCode("register");
             resultTransaction.setResult(id_venta);
@@ -2194,7 +2198,7 @@ public class VentaADO {
                 ventaTB.setId(rsEmps.getRow() + posicionPagina);
                 ventaTB.setIdVenta(rsEmps.getString("IdVenta"));
                 ventaTB.setFechaVenta(rsEmps.getDate("FechaVenta").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                ventaTB.setHoraVenta(rsEmps.getTime("HoraVenta").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));                
+                ventaTB.setHoraVenta(rsEmps.getTime("HoraVenta").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 ventaTB.setComprobanteName(rsEmps.getString("Comprobante"));
                 ventaTB.setSerie(rsEmps.getString("Serie"));
                 ventaTB.setNumeracion(rsEmps.getString("Numeracion"));
@@ -2202,7 +2206,7 @@ public class VentaADO {
                 ventaTB.setEstado(rsEmps.getInt("Estado"));
                 ventaTB.setTotal(rsEmps.getDouble("Total"));
                 ventaTB.setObservaciones(rsEmps.getString("Observaciones"));
-                
+
                 ClienteTB clienteTB = new ClienteTB();
                 clienteTB.setNumeroDocumento(rsEmps.getString("DocumentoCliente"));
                 clienteTB.setInformacion(rsEmps.getString("Cliente"));
@@ -2426,9 +2430,9 @@ public class VentaADO {
                 ventaTB.setSerie(rsEmps.getString("Serie"));
                 ventaTB.setNumeracion(rsEmps.getString("Numeracion"));
                 ventaTB.setTotal(rsEmps.getDouble("Total"));
-                
+
                 ClienteTB clienteTB = new ClienteTB();
-                clienteTB.setNumeroDocumento(rsEmps.getString("NumeroDocumento")); 
+                clienteTB.setNumeroDocumento(rsEmps.getString("NumeroDocumento"));
                 clienteTB.setInformacion(rsEmps.getString("Cliente"));
                 ventaTB.setClienteTB(clienteTB);
 
@@ -2438,7 +2442,7 @@ public class VentaADO {
                     notaCreditoTB.setNumeracion(rsEmps.getString("NumeracionNotaCredito"));
                     ventaTB.setNotaCreditoTB(notaCreditoTB);
                 }
-                
+
                 MonedaTB monedaTB = new MonedaTB();
                 monedaTB.setNombre(rsEmps.getString("NombreMoneda"));
                 monedaTB.setSimbolo(rsEmps.getString("Simbolo"));
@@ -2600,13 +2604,16 @@ public class VentaADO {
                     suministroTB.setId(resultSetLista.getRow());
                     suministroTB.setIdSuministro(resultSetLista.getString("IdSuministro"));
                     suministroTB.setClave(resultSetLista.getString("Clave"));
-                    suministroTB.setNombreMarca(resultSetLista.getString("NombreMarca") + (resultSetLista.getDouble("Bonificacion") <= 0 ? "" : "\nBONIFICACIÓN: " + resultSetLista.getDouble("Bonificacion")));
+                    suministroTB.setNombreMarca(resultSetLista.getString("NombreMarca"));
+                    suministroTB.setBonificacionTexto((resultSetLista.getDouble("Bonificacion") <= 0 ? "" : "BONIFICACIÓN: " + resultSetLista.getDouble("Bonificacion")));
                     suministroTB.setInventario(resultSetLista.getBoolean("Inventario"));
                     suministroTB.setValorInventario(resultSetLista.getShort("ValorInventario"));
+                    suministroTB.setUnidadCompra(resultSetLista.getInt("IdUnidadCompra"));
                     suministroTB.setUnidadCompraName(resultSetLista.getString("UnidadCompra"));
                     suministroTB.setEstadoName(resultSetLista.getString("Estado"));
 
                     suministroTB.setPorLlevar(resultSetLista.getDouble("PorLlevar"));
+                    suministroTB.setDescuento(resultSetLista.getDouble("Descuento"));
                     suministroTB.setCantidad(resultSetLista.getDouble("Cantidad"));
                     suministroTB.setBonificacion(resultSetLista.getDouble("Bonificacion"));
                     suministroTB.setCostoCompra(resultSetLista.getDouble("CostoVenta"));
@@ -2622,10 +2629,6 @@ public class VentaADO {
                     suministroTB.setInventario(resultSetLista.getBoolean("Inventario"));
                     suministroTB.setUnidadVenta(resultSetLista.getInt("UnidadVenta"));
                     suministroTB.setValorInventario(resultSetLista.getShort("ValorInventario"));
-
-                    Button button = new Button("X");
-                    button.getStyleClass().add("buttonDark");
-                    suministroTB.setBtnRemove(button);
 
                     empList.add(suministroTB);
                 }

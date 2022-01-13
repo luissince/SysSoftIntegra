@@ -16,20 +16,23 @@ import static model.DBUtil.getConnection;
 
 public class BancoADO {
 
-    public static ObservableList<BancoTB> Listar_Bancos(String value) {
-        String selectStmt = "{call Sp_Listar_Bancos(?)}";
+    public static Object Listar_Bancos(String buscar, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
-        ObservableList<BancoTB> empList = FXCollections.observableArrayList();
+
         try {
             DBUtil.dbConnect();
-            preparedStatement = DBUtil.getConnection().prepareStatement(selectStmt);
-            preparedStatement.setString(1, value);
-            rsEmps = preparedStatement.executeQuery();
+            Object[] object = new Object[2];
+            ObservableList<BancoTB> empList = FXCollections.observableArrayList();
 
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Bancos(?,?,?)}");
+            preparedStatement.setString(1, buscar);
+            preparedStatement.setInt(2, posicionPagina);
+            preparedStatement.setInt(3, filasPorPagina);
+            rsEmps = preparedStatement.executeQuery();
             while (rsEmps.next()) {
                 BancoTB bancoTB = new BancoTB();
-                bancoTB.setId(rsEmps.getRow());
+                bancoTB.setId(rsEmps.getRow() + posicionPagina);
                 bancoTB.setIdBanco(rsEmps.getString("IdBanco"));
                 bancoTB.setNombreCuenta(rsEmps.getString("NombreCuenta"));
                 bancoTB.setNumeroCuenta(rsEmps.getString("NumeroCuenta"));
@@ -41,9 +44,20 @@ public class BancoADO {
                 bancoTB.setMostrar(rsEmps.getBoolean("Mostrar"));
                 empList.add(bancoTB);
             }
-        } catch (SQLException e) {
-            System.out.println("Listar_Bancos - La operación de selección de SQL ha fallado: " + e);
+            object[0] = empList;
 
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Bancos_Count(?)}");
+            preparedStatement.setString(1, buscar);
+            rsEmps = preparedStatement.executeQuery();
+            Integer total = 0;
+            if (rsEmps.next()) {
+                total = rsEmps.getInt("Total");
+            }
+            object[1] = total;
+
+            return object;
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (preparedStatement != null) {
@@ -54,10 +68,9 @@ public class BancoADO {
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-
+                return ex.getLocalizedMessage();
             }
         }
-        return empList;
     }
 
     public static BancoTB Obtener_Banco_Por_Id(String value) {

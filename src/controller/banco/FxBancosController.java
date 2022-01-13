@@ -52,12 +52,21 @@ public class FxBancosController implements Initializable {
     private TableColumn<BancoTB, String> tcSaldo;
     @FXML
     private TableColumn<BancoTB, String> tcForma;
+    @FXML
+    private Label lblPaginaActual;
+    @FXML
+    private Label lblPaginaSiguiente;
 
     private FxPrincipalController fxPrincipalController;
 
+    private int paginacion;
+
+    private int totalPaginacion;
+
+    private short opcion;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
         tcNombreCuenta.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getNombreCuenta().toUpperCase()));
         tcNumeroCuenta.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getNumeroCuenta()));
@@ -73,33 +82,56 @@ public class FxBancosController implements Initializable {
         tcForma.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcMostrar.prefWidthProperty().bind(tvList.widthProperty().multiply(0.11));
         tcSaldo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
+        paginacion = 1;
+        opcion = 0;
     }
 
-    public void loadTableViewBanco(String value) {
+    public void loadTableViewBanco(String buscar) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
             return t;
         });
 
-        Task<ObservableList<BancoTB>> task = new Task<ObservableList<BancoTB>>() {
+        Task<Object> task = new Task<Object>() {
             @Override
-            public ObservableList<BancoTB> call() {
-                return BancoADO.Listar_Bancos(value);
+            public Object call() {
+                return BancoADO.Listar_Bancos(buscar, (paginacion - 1) * 20, 20);
             }
         };
 
         task.setOnSucceeded((WorkerStateEvent e) -> {
-            tvList.setItems(task.getValue());
+            Object object = task.getValue();
+            if (object instanceof Object[]) {
+                Object[] objects = (Object[]) object;
+                ObservableList<BancoTB> bancoTBs = (ObservableList<BancoTB>) objects[0];
+                if (!bancoTBs.isEmpty()) {
+                    tvList.setItems(bancoTBs);
+                    totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));
+                    lblPaginaActual.setText(paginacion + "");
+                    lblPaginaSiguiente.setText(totalPaginacion + "");
+                } else {
+                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                    lblPaginaActual.setText("0");
+                    lblPaginaSiguiente.setText("0");
+                }
+            } else {
+                tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
+            }
             lblLoad.setVisible(false);
         });
         task.setOnFailed((WorkerStateEvent event) -> {
             lblLoad.setVisible(false);
+            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
         });
 
         task.setOnScheduled((WorkerStateEvent event) -> {
             lblLoad.setVisible(true);
+            tvList.getItems().clear();
+            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            totalPaginacion = 0;
         });
         exec.execute(task);
 
@@ -203,6 +235,14 @@ public class FxBancosController implements Initializable {
         }
     }
 
+    private void onEventPaginacion() {
+        switch (opcion) {
+            case 0:
+                loadTableViewBanco("");
+                break;
+        }
+    }
+
     private void onEventReloadBanco() {
         if (!lblLoad.isVisible()) {
             loadTableViewBanco("");
@@ -210,8 +250,7 @@ public class FxBancosController implements Initializable {
     }
 
     @FXML
-    private void onMouseClickedList(MouseEvent event
-    ) {
+    private void onMouseClickedList(MouseEvent event) {
         if (event.getClickCount() == 2) {
             if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
                 eventViewBanco();
@@ -220,8 +259,7 @@ public class FxBancosController implements Initializable {
     }
 
     @FXML
-    private void onKeyPressedView(KeyEvent event
-    ) {
+    private void onKeyPressedView(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             if (tvList.getSelectionModel().getSelectedIndex() < 0) {
                 tvList.requestFocus();
@@ -235,8 +273,7 @@ public class FxBancosController implements Initializable {
     }
 
     @FXML
-    private void onActionView(ActionEvent event
-    ) {
+    private void onActionView(ActionEvent event) {
         if (tvList.getSelectionModel().getSelectedIndex() < 0) {
             tvList.requestFocus();
             if (!tvList.getItems().isEmpty()) {
@@ -248,64 +285,95 @@ public class FxBancosController implements Initializable {
     }
 
     @FXML
-    private void onKeyPressedNew(KeyEvent event
-    ) {
+    private void onKeyPressedNew(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             eventNewBanco();
         }
     }
 
     @FXML
-    private void onActionNew(ActionEvent event
-    ) {
+    private void onActionNew(ActionEvent event) {
         eventNewBanco();
     }
 
     @FXML
-    private void onKeyPressedEdit(KeyEvent event
-    ) {
+    private void onKeyPressedEdit(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             eventEditBanco();
         }
     }
 
     @FXML
-    private void onActionEdit(ActionEvent event
-    ) {
+    private void onActionEdit(ActionEvent event) {
         eventEditBanco();
     }
 
     @FXML
-    private void onActionRemove(ActionEvent event
-    ) {
+    private void onActionRemove(ActionEvent event) {
         eventRemoveBanco();
     }
 
     @FXML
-    private void onKeyPressedRemove(KeyEvent event
-    ) {
+    private void onKeyPressedRemove(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             eventRemoveBanco();
         }
     }
 
     @FXML
-    private void onKeyPressedReload(KeyEvent event
-    ) {
+    private void onKeyPressedReload(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             onEventReloadBanco();
         }
     }
 
     @FXML
-    private void onActionReload(ActionEvent event
-    ) {
+    private void onActionReload(ActionEvent event) {
         onEventReloadBanco();
     }
 
     @FXML
-    private void onKeyReleasedWindow(KeyEvent event) {
-        System.out.println(event);
+    private void onKeyPressedAnterior(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion > 1) {
+                    paginacion--;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionAnterior(ActionEvent event) {
+        if (!lblLoad.isVisible()) {
+            if (paginacion > 1) {
+                paginacion--;
+                onEventPaginacion();
+            }
+        }
+    }
+
+    @FXML
+    private void onKeyPressedSiguiente(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion < totalPaginacion) {
+                    paginacion++;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionSiguiente(ActionEvent event) {
+        if (!lblLoad.isVisible()) {
+            if (paginacion < totalPaginacion) {
+                paginacion++;
+                onEventPaginacion();
+            }
+        }
     }
 
     public HBox getHbWindow() {

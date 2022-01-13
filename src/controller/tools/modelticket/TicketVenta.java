@@ -19,6 +19,7 @@ import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -243,7 +244,7 @@ public class TicketVenta {
                                             "",
                                             "");
                                 }
-                                
+
                                 billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
                                 PrintService printService = billPrintable.findPrintService(printerName, PrinterJob.lookupPrintServices());
                                 if (printService != null) {
@@ -546,7 +547,8 @@ public class TicketVenta {
                             impuestoTotal += impuesto;
                             importeNetoTotal += importeNeto;
                         }
-                        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(array.toJSONString().getBytes());
+                        String json = new String(array.toJSONString().getBytes(), "UTF-8");
+                        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(json.getBytes());
 
                         InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
                         InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
@@ -594,7 +596,7 @@ public class TicketVenta {
                         fileName = ventaTB.getComprobanteName() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion();
                         JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
                         return jasperPrint;
-                    } catch (JRException | WriterException ex) {
+                    } catch (JRException | WriterException | UnsupportedEncodingException ex) {
                         return ex.getLocalizedMessage();
                     }
                 } else {

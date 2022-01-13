@@ -70,7 +70,7 @@ public class FxDetalleMantenimientoController implements Initializable {
 
     private boolean onAnimationStart, onAnimationFinished;
 
-    private  FxPrincipalController fxPrincipalController;
+    private FxPrincipalController fxPrincipalController;
 
     private String validarProceso;
 
@@ -94,11 +94,9 @@ public class FxDetalleMantenimientoController implements Initializable {
 
     private void initMaintenance(String... value) {
         lvMaintenance.getItems().clear();
-        ObservableList<MantenimientoTB> listMaintenance = ListMantenimiento(value[0]);
-        listMaintenance.forEach(e
-                -> lvMaintenance.getItems().add(e)
-        );
-        lblItems.setText(listMaintenance.isEmpty() == true ? "Items (0)" : "Items (" + listMaintenance.size() + ")");
+        lvMaintenance.getItems().addAll(ListMantenimiento(value[0]));
+
+        lblItems.setText(lvMaintenance.getItems().isEmpty() == true ? "Items (0)" : "Items (" + lvMaintenance.getItems().size() + ")");
         if (!lvMaintenance.getItems().isEmpty()) {
             lvMaintenance.getSelectionModel().select(0);
             MantenimientoTB mtb = lvMaintenance.getSelectionModel().getSelectedItem();
@@ -133,7 +131,7 @@ public class FxDetalleMantenimientoController implements Initializable {
     @FXML
     private void onMouseClickedEditar(MouseEvent event) throws IOException {
         if (lvMaintenance.getSelectionModel().getSelectedIndex() >= 0 && lvMaintenance.isFocused()) {
-          fxPrincipalController.openFondoModal();
+            fxPrincipalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_MENTANIMIENTO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
@@ -275,7 +273,7 @@ public class FxDetalleMantenimientoController implements Initializable {
     @FXML
     private void onActionAdd(ActionEvent event) throws IOException {
         if (lvMaintenance.getSelectionModel().getSelectedIndex() >= 0 && validarProceso.equals("0")) {
-           fxPrincipalController.openFondoModal();
+            fxPrincipalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_DETALLE);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
@@ -333,7 +331,7 @@ public class FxDetalleMantenimientoController implements Initializable {
 
     }
 
-    public void setContent( FxPrincipalController fxPrincipalController) {
+    public void setContent(FxPrincipalController fxPrincipalController) {
         this.fxPrincipalController = fxPrincipalController;
     }
 

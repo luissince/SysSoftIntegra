@@ -987,7 +987,7 @@ public class SuministroADO {
                 suministroTB.setCantidad(rsEmps.getDouble("Cantidad"));
                 suministroTB.setCostoCompra(rsEmps.getDouble("PrecioCompra"));
                 suministroTB.setPrecioVentaGeneral(rsEmps.getDouble("PrecioVentaGeneral"));
-
+                suministroTB.setUnidadCompra(rsEmps.getInt("IdUnidadCompra"));
                 suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
                 suministroTB.setUnidadVenta(rsEmps.getInt("UnidadVenta"));
                 suministroTB.setLote(rsEmps.getBoolean("Lote"));
@@ -1121,18 +1121,17 @@ public class SuministroADO {
         }
     }
 
-    public static SuministroTB List_Suministros_Movimiento(String idSuministro) {
+    public static Object List_Suministros_Movimiento(String idSuministro) {
         String selectStmt = "{call Sp_Get_Suministro_For_Movimiento(?)}";
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
-        SuministroTB suministroTB = null;
         try {
             DBUtil.dbConnect();
             preparedStatement = DBUtil.getConnection().prepareStatement(selectStmt);
             preparedStatement.setString(1, idSuministro);
             rsEmps = preparedStatement.executeQuery();
             if (rsEmps.next()) {
-                suministroTB = new SuministroTB();
+                SuministroTB suministroTB = new SuministroTB();
                 suministroTB.setId(rsEmps.getRow());
                 suministroTB.setIdSuministro(rsEmps.getString("IdSuministro"));
                 suministroTB.setClave(rsEmps.getString("Clave"));
@@ -1157,7 +1156,6 @@ public class SuministroADO {
                         event.consume();
                     }
                 });
-
                 suministroTB.setTxtMovimiento(tf);
 
                 TextField tfp = new TextField(Tools.roundingValue(1.00, 0));
@@ -1171,13 +1169,13 @@ public class SuministroADO {
                         event.consume();
                     }
                 });
-
                 suministroTB.setTxtPeso(tfp);
 
                 CheckBox checkbox = new CheckBox("");
                 checkbox.getStyleClass().add("check-box-contenido");
                 checkbox.setSelected(true);
                 checkbox.setDisable(true);
+                suministroTB.setValidar(checkbox);
 
                 Button button = new Button();
                 button.getStyleClass().add("buttonDark");
@@ -1187,14 +1185,13 @@ public class SuministroADO {
                 button.setGraphic(view);
                 suministroTB.setBtnRemove(button);
 
-                suministroTB.setValidar(checkbox);
-
+                return suministroTB;
+            } else {
+                return "No se encontro un producto relacionado, intente nuevamente.";
             }
-
-        } catch (SQLException e) {
-            System.out.println("La operacion de selecciona de SQl ha fallado" + e);
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
         } finally {
-
             try {
                 if (preparedStatement != null) {
                     preparedStatement.close();
@@ -1203,10 +1200,10 @@ public class SuministroADO {
                     rsEmps.close();
                 }
                 DBUtil.dbDisconnect();
-            } catch (SQLException e) {
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
             }
         }
-        return suministroTB;
     }
 
     public static Object GetReporteGeneralInventario(int idInventario, int idUnidad, int idCategoria, int idMarca, int idPresentacion, int existencia) {
