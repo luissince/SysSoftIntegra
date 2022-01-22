@@ -176,7 +176,7 @@ public class FxCotizacionController implements Initializable {
         });
 
         tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
-        tcProducto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.32));
+        tcProducto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));
         tcCantidad.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcMedida.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcPrecio.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));

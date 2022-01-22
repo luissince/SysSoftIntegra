@@ -191,9 +191,11 @@ public class FxCotizacionListaController implements Initializable {
     @FXML
     private void onKeyReleasedBuscar(KeyEvent event) {
         if (!lblLoad.isVisible()) {
-            paginacion = 1;
-            fillTableCotizacion(1, txtBuscar.getText().trim(), "", "");
-            opcion = 1;
+            if (!txtBuscar.getText().isEmpty()) {
+                paginacion = 1;
+                fillTableCotizacion(1, txtBuscar.getText().trim(), "", "");
+                opcion = 1;
+            }
         }
     }
 

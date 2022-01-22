@@ -62,7 +62,7 @@ public class FxCotizacionRealizadasController implements Initializable {
     @FXML
     private Label lblPaginaSiguiente;
 
-    private FxPrincipalController fxPrincipalController;
+    private FxPrincipalController principalController;
 
     private int paginacion;
 
@@ -81,8 +81,8 @@ public class FxCotizacionRealizadasController implements Initializable {
         tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
-        tcFecha.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
-        tcCliente.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcFecha.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
+        tcCliente.prefWidthProperty().bind(tvList.widthProperty().multiply(0.17));
         tcCotizacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
         tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
         tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.11));
@@ -159,14 +159,14 @@ public class FxCotizacionRealizadasController implements Initializable {
             AnchorPane node = fXMLLoader.load();
             //Controlller here
             FxCotizacionDetalleController controller = fXMLLoader.getController();
-            controller.setInitCotizacionesRealizadasController(this, fxPrincipalController);
+            controller.setInitCotizacionesRealizadasController(this, principalController);
             //
-            fxPrincipalController.getVbContent().getChildren().clear();
+            principalController.getVbContent().getChildren().clear();
             AnchorPane.setLeftAnchor(node, 0d);
             AnchorPane.setTopAnchor(node, 0d);
             AnchorPane.setRightAnchor(node, 0d);
             AnchorPane.setBottomAnchor(node, 0d);
-            fxPrincipalController.getVbContent().getChildren().add(node);
+            principalController.getVbContent().getChildren().add(node);
             controller.setInitComponents(tvList.getSelectionModel().getSelectedItem().getIdCotizacion());
         } else {
             Tools.AlertMessageWarning(hbWindow, "Cotizaciones", "Debe seleccionar una compra de la lista");
@@ -250,9 +250,11 @@ public class FxCotizacionRealizadasController implements Initializable {
     @FXML
     private void onKeyRelasedSearch(KeyEvent event) {
         if (!lblLoad.isVisible()) {
-            paginacion = 1;
-            fillTableCotizacion(1, txtSearch.getText().trim(), "", "");
-            opcion = 1;
+            if (!txtSearch.getText().isEmpty()) {
+                paginacion = 1;
+                fillTableCotizacion(1, txtSearch.getText().trim(), "", "");
+                opcion = 1;
+            }
         }
     }
 
@@ -344,8 +346,8 @@ public class FxCotizacionRealizadasController implements Initializable {
         return hbWindow;
     }
 
-    public void setContent(FxPrincipalController fxPrincipalController) {
-        this.fxPrincipalController = fxPrincipalController;
+    public void setContent(FxPrincipalController principalController) {
+        this.principalController = principalController;
     }
 
 }

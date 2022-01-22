@@ -14,7 +14,6 @@
 	<parameter name="CLIENTE_EMAIL" class="java.lang.String"/>
 	<parameter name="COMPROBANTE" class="java.lang.String"/>
 	<parameter name="FECHA" class="java.lang.String"/>
-	<parameter name="TIPO_ESTADO" class="java.lang.String"/>
 	<parameter name="PRODUCTO" class="java.lang.String"/>
 	<parameter name="CANTIDAD" class="java.lang.String"/>
 	<field name="id" class="java.lang.Integer"/>
@@ -149,14 +148,6 @@
 				</textElement>
 				<text><![CDATA[SALIDA DEL PRODUCTO]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement x="447" y="78" width="108" height="13" forecolor="#FFFFFF" uuid="848adee9-f41f-4c0a-a549-e2efa7f6da1a"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
-					<paragraph leftIndent="5" rightIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{TIPO_ESTADO}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="129" width="274" height="12" forecolor="#FFFFFF" backcolor="#020203" uuid="127b28c8-9ad8-482b-ad30-a45813bca926"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -217,14 +208,6 @@
 					<pen lineWidth="0.0"/>
 				</graphicElement>
 			</rectangle>
-			<staticText>
-				<reportElement mode="Transparent" x="332" y="78" width="114" height="12" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="089ff75b-96f0-4a55-932a-a60936a7a060"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
-					<paragraph leftIndent="5" rightIndent="5"/>
-				</textElement>
-				<text><![CDATA[TIPO Y ESTADO:]]></text>
-			</staticText>
 		</band>
 	</title>
 	<columnHeader>
@@ -296,11 +279,11 @@
 			<textField isStretchWithOverflow="true">
 				<reportElement x="30" y="0" width="81" height="18" uuid="7213f2ee-be5a-4a88-9721-4127cd21b0fe"/>
 				<box>
-					<pen lineWidth="0.5" lineColor="#020203"/>
-					<topPen lineWidth="0.5" lineColor="#020203"/>
-					<leftPen lineWidth="0.5" lineColor="#020203"/>
-					<bottomPen lineWidth="0.5" lineColor="#020203"/>
-					<rightPen lineWidth="0.5" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#373B46"/>
+					<topPen lineWidth="0.25" lineColor="#373B46"/>
+					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
+					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="6"/>
@@ -311,11 +294,11 @@
 			<textField isStretchWithOverflow="true">
 				<reportElement x="111" y="0" width="114" height="18" uuid="229f0669-5810-4e98-ad39-f2c6da1c6b30"/>
 				<box>
-					<pen lineWidth="0.5" lineColor="#020203"/>
-					<topPen lineWidth="0.5" lineColor="#020203"/>
-					<leftPen lineWidth="0.5" lineColor="#020203"/>
-					<bottomPen lineWidth="0.5" lineColor="#020203"/>
-					<rightPen lineWidth="0.5" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#373B46"/>
+					<topPen lineWidth="0.25" lineColor="#373B46"/>
+					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
+					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="6"/>
@@ -326,11 +309,11 @@
 			<textField isStretchWithOverflow="true">
 				<reportElement x="225" y="0" width="330" height="18" uuid="c7651d3d-0dbc-44e4-80b2-1b764c0e75d2"/>
 				<box>
-					<pen lineWidth="0.5" lineColor="#020203"/>
-					<topPen lineWidth="0.5" lineColor="#020203"/>
-					<leftPen lineWidth="0.5" lineColor="#020203"/>
-					<bottomPen lineWidth="0.5" lineColor="#020203"/>
-					<rightPen lineWidth="0.5" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#373B46"/>
+					<topPen lineWidth="0.25" lineColor="#373B46"/>
+					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
+					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="6"/>
@@ -341,11 +324,11 @@
 			<textField isStretchWithOverflow="true">
 				<reportElement x="0" y="0" width="30" height="18" uuid="039f4561-50a2-4ba4-a170-a7f094c2881f"/>
 				<box>
-					<pen lineWidth="0.5" lineColor="#020203"/>
-					<topPen lineWidth="0.5" lineColor="#020203"/>
-					<leftPen lineWidth="0.5" lineColor="#020203"/>
-					<bottomPen lineWidth="0.5" lineColor="#020203"/>
-					<rightPen lineWidth="0.5" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#373B46"/>
+					<topPen lineWidth="0.25" lineColor="#373B46"/>
+					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
+					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isStrikeThrough="false"/>

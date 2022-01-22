@@ -355,6 +355,7 @@ public class TicketCaja {
                         map.put("LOGO", imgInputStream);
                         map.put("ICON", imgInputStreamIcon);
                         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
+                        map.put("DOCUMENTOEMPRESA", Session.COMPANY_NUMERO_DOCUMENTO);
                         map.put("DIRECCION", Session.COMPANY_DOMICILIO);
                         map.put("EMAIL", Session.COMPANY_EMAIL);
                         map.put("TELEFONOCELULAR", Session.COMPANY_TELEFONO + " - " + Session.COMPANY_CELULAR);

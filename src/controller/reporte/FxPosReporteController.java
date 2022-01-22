@@ -890,7 +890,7 @@ public class FxPosReporteController implements Initializable {
                 if (object instanceof ArrayList) {
                     ArrayList<Double> arrayList = (ArrayList<Double>) object;
                     double montoBase = arrayList.get(0);
-                    
+
                     double ventaEfectivo = arrayList.get(1);
                     double ventaTarjeta = arrayList.get(2);
                     double ventaDeposito = arrayList.get(3);
@@ -902,8 +902,8 @@ public class FxPosReporteController implements Initializable {
                     double salidaEfectivo = arrayList.get(7);
                     double salidaTarjeta = arrayList.get(8);
                     double salidaDeposito = arrayList.get(9);
-                    
-                    double sumaEfectivo = (montoBase + ventaEfectivo +ingresoEfectivo) - salidaEfectivo;
+
+                    double sumaEfectivo = (montoBase + ventaEfectivo + ingresoEfectivo) - salidaEfectivo;
 
                     try {
                         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
@@ -1051,18 +1051,18 @@ public class FxPosReporteController implements Initializable {
                             cell.setCellType(Cell.CELL_TYPE_NUMERIC);
                             cell.setCellValue(Double.parseDouble(Tools.roundingValue(salidaDeposito, 2)));
                             //-------------------------------------------------------------------------
-                            
+
                             Font fontSuma = workbook.createFont();
                             fontSuma.setFontHeightInPoints((short) 12);
                             fontSuma.setBold(true);
                             fontSuma.setColor(HSSFColor.WHITE.index);
-                            
+
                             XSSFCellStyle cellStyleSuma = workbook.createCellStyle();
                             cellStyleSuma.setFillForegroundColor(new XSSFColor(new java.awt.Color(0, 0, 0)));
                             cellStyleSuma.setAlignment(CellStyle.ALIGN_CENTER);
                             cellStyleSuma.setFillPattern(CellStyle.SOLID_FOREGROUND);
                             cellStyleSuma.setFont(fontSuma);
-                            
+
                             header = sheet.createRow(13);
                             cell = header.createCell(0);
                             cell.setCellValue("TOTAL EFECTIVO");
@@ -1136,7 +1136,7 @@ public class FxPosReporteController implements Initializable {
 
         if (object instanceof ArrayList) {
             ArrayList<Double> arrayList = (ArrayList<Double>) object;
-            if(arrayList.isEmpty()){
+            if (arrayList.isEmpty()) {
                 return "No hay datos para mostrar.";
             }
             InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_ICON);
@@ -1165,6 +1165,7 @@ public class FxPosReporteController implements Initializable {
             map.put("LOGO", imgInputStream);
             map.put("ICON", imgInputStreamIcon);
             map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
+            map.put("DOCUMENTOEMPRESA", Session.COMPANY_NUMERO_DOCUMENTO);
             map.put("DIRECCION", Session.COMPANY_DOMICILIO);
             map.put("EMAIL", Session.COMPANY_EMAIL);
             map.put("TELEFONOCELULAR", Session.COMPANY_TELEFONO + " - " + Session.COMPANY_CELULAR);

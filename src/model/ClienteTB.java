@@ -212,7 +212,7 @@ public class ClienteTB {
 
     @Override
     public String toString() {
-        return informacion;
+        return numeroDocumento+" - "+informacion;
     }
 
 }

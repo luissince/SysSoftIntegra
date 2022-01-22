@@ -38,6 +38,8 @@ public final class FilesRouters {
 
     public static final String FX_BIENVENIDA = "/view/preloader/FxBienvenida.fxml";
 
+    public static final String FX_CONFIGURACION_CONEXION = "/view/preloader/FxConfiguracion.fxml";
+
     public static final String FX_VALIDAR_ACCESO = "/view/login/FxValidarAcceso.fxml";
 
     public static final String FX_PRELOADER = "/view/preloader/FxPreloader.fxml";

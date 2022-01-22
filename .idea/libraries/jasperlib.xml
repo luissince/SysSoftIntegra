@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="jasperlib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/commons-javaflow-20060411.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/iText-2.1.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/jasperreports-javaflow-4.7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/commons-logging-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/commons-digester-2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/png-encoder-1.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/commons-collections-3.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/rtextpr.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/jasperreports-fonts-4.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/groovy-all-1.7.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/jasperreports-4.7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/jasperlib/commons-beanutils-1.8.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

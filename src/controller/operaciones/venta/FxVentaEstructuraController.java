@@ -370,7 +370,9 @@ public class FxVentaEstructuraController implements Initializable {
             tcPrecio.setCellFactory(TextFieldTableCell.forTableColumn());
             tcPrecio.setOnEditCommit(data -> {
                 final Double value = Tools.isNumeric(data.getNewValue())
-                        ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.parseDouble(data.getOldValue()) : Double.parseDouble(data.getNewValue()))
+                        ? (Double.parseDouble(data.getNewValue()) <= 0 
+                        ? Double.parseDouble(data.getOldValue()) 
+                        : Double.parseDouble(data.getNewValue()))
                         : Double.parseDouble(data.getOldValue());
                 SuministroTB suministroTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
 
@@ -408,7 +410,7 @@ public class FxVentaEstructuraController implements Initializable {
 
         vender_con_cantidades_negativas = privilegioTBs.get(34).getIdPrivilegio() != 0 && !privilegioTBs.get(34).isEstado();
 
-        tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.08));
+        tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcArticulo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));
         tcCantidad.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcPrecio.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));

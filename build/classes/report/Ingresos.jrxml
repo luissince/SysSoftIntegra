@@ -26,34 +26,80 @@
 	<field name="tarjeta" class="java.lang.Double"/>
 	<field name="deposito" class="java.lang.Double"/>
 	<title>
-		<band height="147" splitType="Stretch">
+		<band height="92" splitType="Stretch">
+			<rectangle>
+				<reportElement x="333" y="63" width="222" height="29" backcolor="#020203" uuid="e4cf757f-9935-4cb8-814d-b23ee5c33667"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
 			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle">
-				<reportElement x="5" y="5" width="90" height="85" uuid="aa7a02b5-470f-4543-a907-64382270c0de"/>
+				<reportElement x="5" y="5" width="91" height="86" uuid="aa7a02b5-470f-4543-a907-64382270c0de"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="95" y="0" width="460" height="81" forecolor="#020203" uuid="4cadfbf4-bdd5-49c5-a7c8-286fc12c53b6"/>
+				<reportElement x="332" y="76" width="223" height="16" forecolor="#FFFFFF" uuid="4db2f4d9-969a-4f02-b3c6-b1a939083cd9"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="11" isBold="true"/>
+					<font fontName="Arial" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{EMPRESA}+"\n"+$P{DIRECCION}+"\n"+$P{EMAIL}+"\n"+$P{TELEFONOCELULAR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{FECHAS}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="0" y="80" width="555" height="16" forecolor="#020203" uuid="c9559247-3135-466c-bfeb-971ed73cba4d"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToBandHeight" x="96" y="0" width="237" height="39" forecolor="#000000" uuid="063152cc-6408-475a-8b84-03567b221a2c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="11" isBold="true"/>
+					<font fontName="Arial" size="9" isBold="true"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EMPRESA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToBandHeight" x="96" y="38" width="237" height="53" forecolor="#000000" uuid="2c3aac23-7bbd-4615-bd90-f745c6d16087"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="5" rightIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DIRECCION}+"\n"+$P{TELEFONOCELULAR}+"\n"+$P{EMAIL}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="333" y="58" width="222" height="5" backcolor="#576767" uuid="edd35568-798c-4177-9ce0-698cac1718df"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="333" y="52" width="222" height="6" backcolor="#B5B5B5" uuid="660feb62-3837-42ce-9a62-404103596799"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="332" y="62" width="223" height="15" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="b08f0fa0-3d9b-4806-a090-4657eef6f1c1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="false"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<text><![CDATA[PEDIODO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="333" y="16" width="222" height="36" forecolor="#FFFFFF" backcolor="#FE3152" uuid="a3796bd3-512a-4784-a425-344c109bb9ad"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[RESUMEN DE INGRESOS/EGRESOS]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="95" width="555" height="16" uuid="4db2f4d9-969a-4f02-b3c6-b1a939083cd9"/>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="333" y="0" width="222" height="16" forecolor="#FFFFFF" backcolor="#FE3152" uuid="5ec36515-bf42-4a52-a7bd-9845c373d748"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{FECHAS}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DOCUMENTOEMPRESA}]]></textFieldExpression>
 			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20">
 			<staticText>
-				<reportElement mode="Transparent" x="205" y="121" width="80" height="26" forecolor="#020203" backcolor="#FFFFFF" uuid="ec57bc47-9595-47f4-9855-8cab07532759"/>
+				<reportElement mode="Opaque" x="205" y="0" width="80" height="20" forecolor="#FFFFFF" backcolor="#020203" uuid="ec57bc47-9595-47f4-9855-8cab07532759"/>
 				<box>
 					<pen lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -62,12 +108,12 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CANT.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="375" y="121" width="90" height="26" forecolor="#020203" backcolor="#FFFFFF" uuid="34dae642-5c3b-4ea6-9bed-459d927e1998"/>
+				<reportElement mode="Opaque" x="375" y="0" width="90" height="20" forecolor="#FFFFFF" backcolor="#020203" uuid="34dae642-5c3b-4ea6-9bed-459d927e1998"/>
 				<box>
 					<pen lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -76,12 +122,12 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TARJETA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="40" y="121" width="165" height="26" forecolor="#020203" backcolor="#FFFFFF" uuid="0fd9c6fb-d9f4-4129-8013-79297bd4ad4e"/>
+				<reportElement mode="Opaque" x="40" y="0" width="165" height="20" forecolor="#FFFFFF" backcolor="#020203" uuid="0fd9c6fb-d9f4-4129-8013-79297bd4ad4e"/>
 				<box>
 					<pen lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -90,12 +136,12 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TRANSACCIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="285" y="121" width="90" height="26" forecolor="#020203" backcolor="#FFFFFF" uuid="a64c78fe-5624-436a-a2c0-deb528a57c15"/>
+				<reportElement mode="Opaque" x="285" y="0" width="90" height="20" forecolor="#FFFFFF" backcolor="#020203" uuid="a64c78fe-5624-436a-a2c0-deb528a57c15"/>
 				<box>
 					<pen lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -104,12 +150,12 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[EFECTIVO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="0" y="121" width="40" height="26" forecolor="#020203" backcolor="#FFFFFF" uuid="e18ec9f9-2076-467c-a053-fc2a3d7db65c"/>
+				<reportElement mode="Opaque" x="0" y="0" width="40" height="20" forecolor="#FFFFFF" backcolor="#020203" uuid="e18ec9f9-2076-467c-a053-fc2a3d7db65c"/>
 				<box>
 					<pen lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -118,12 +164,12 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[N°]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="465" y="121" width="90" height="26" forecolor="#020203" backcolor="#FFFFFF" uuid="3a632105-8a85-4a34-bcce-262f0143a7e5"/>
+				<reportElement mode="Opaque" x="465" y="0" width="90" height="20" forecolor="#FFFFFF" backcolor="#020203" uuid="3a632105-8a85-4a34-bcce-262f0143a7e5"/>
 				<box>
 					<pen lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -132,12 +178,12 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DEPOSITO]]></text>
 			</staticText>
 		</band>
-	</title>
+	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField>
@@ -150,7 +196,7 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="8"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new BigDecimal(new Double($F{efectivo})).setScale(2, RoundingMode.HALF_UP)]]></textFieldExpression>
@@ -165,7 +211,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="8"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new BigDecimal(new Double($F{tarjeta})).setScale(2, RoundingMode.HALF_UP)]]></textFieldExpression>
@@ -180,7 +226,7 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="8"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
@@ -195,7 +241,7 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="8"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transaccion}]]></textFieldExpression>
@@ -208,7 +254,7 @@
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
 			</textField>
@@ -222,7 +268,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="8"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new BigDecimal(new Double($F{deposito})).setScale(2, RoundingMode.HALF_UP)]]></textFieldExpression>
@@ -241,7 +287,7 @@
 			<textField>
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="20" forecolor="#020203" uuid="68108059-25b2-4bbf-9c1b-62bd5ae992a1"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="true"/>
+					<font fontName="Arial" size="6" isBold="true"/>
 					<paragraph lineSpacing="AtLeast" leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}+" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
@@ -249,7 +295,7 @@
 			<textField pattern="dd/MM/yyyy h:mm a">
 				<reportElement stretchType="RelativeToTallestObject" x="415" y="0" width="140" height="20" forecolor="#020203" uuid="ad0a08e8-8ee0-40ce-974e-4d9f98ff4eb0"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="true"/>
+					<font fontName="Arial" size="6" isBold="true"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
@@ -257,16 +303,16 @@
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="90">
+		<band height="91">
 			<staticText>
 				<reportElement x="0" y="10" width="147" height="20" forecolor="#020203" uuid="57536d34-c6ec-4253-8238-e3664372f629"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RESUMEN GENERAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="30" width="150" height="20" forecolor="#020203" uuid="58540738-e249-415b-946d-a17e188bad88"/>
+				<reportElement mode="Opaque" x="0" y="30" width="150" height="15" forecolor="#FFFFFF" backcolor="#020203" uuid="58540738-e249-415b-946d-a17e188bad88"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -275,13 +321,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[EFECTIVO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="80" y="50" width="70" height="20" forecolor="#020203" uuid="f4762808-09e2-46e5-a2d8-5771d5e02400"/>
+				<reportElement x="75" y="45" width="75" height="20" forecolor="#020203" uuid="f4762808-09e2-46e5-a2d8-5771d5e02400"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -290,13 +336,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="false"/>
+					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[SALIDA]]></text>
 			</staticText>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="70" width="70" height="20" forecolor="#020203" uuid="73b2995d-7df3-48ca-8a97-cd506e3b0846"/>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="65" width="75" height="20" forecolor="#020203" uuid="73b2995d-7df3-48ca-8a97-cd506e3b0846"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -305,13 +351,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="7"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{INGRESO_EFECTIVO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="50" width="70" height="20" forecolor="#020203" uuid="36bd6960-e082-4a87-ac8c-c5a92088f6c7"/>
+				<reportElement x="0" y="45" width="75" height="20" forecolor="#020203" uuid="36bd6960-e082-4a87-ac8c-c5a92088f6c7"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -320,13 +366,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="false"/>
+					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[INGRESO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="160" y="30" width="150" height="20" forecolor="#020203" uuid="320757ec-67f9-4c7f-86b3-e740b27df08f"/>
+				<reportElement mode="Opaque" x="160" y="30" width="150" height="15" forecolor="#FFFFFF" backcolor="#020203" uuid="320757ec-67f9-4c7f-86b3-e740b27df08f"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -335,13 +381,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[TARJETA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="240" y="50" width="70" height="20" forecolor="#020203" uuid="28b29f7a-46a1-4a17-a6c2-392add117d6a"/>
+				<reportElement x="235" y="45" width="75" height="20" forecolor="#020203" uuid="28b29f7a-46a1-4a17-a6c2-392add117d6a"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -350,13 +396,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="false"/>
+					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[SALIDA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="160" y="50" width="70" height="20" forecolor="#020203" uuid="1e39d8c1-45e5-4bbe-b3f4-97fb5e62ad06"/>
+				<reportElement x="160" y="45" width="75" height="20" forecolor="#020203" uuid="1e39d8c1-45e5-4bbe-b3f4-97fb5e62ad06"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -365,13 +411,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="false"/>
+					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[INGRESO]]></text>
 			</staticText>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="80" y="70" width="70" height="20" forecolor="#020203" uuid="da73ea43-5d4d-4ea6-a75c-9a54005f31bb"/>
+				<reportElement stretchType="RelativeToBandHeight" x="75" y="65" width="75" height="20" forecolor="#020203" uuid="da73ea43-5d4d-4ea6-a75c-9a54005f31bb"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -380,13 +426,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="7"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SALIDA_EFECTIVO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="160" y="70" width="70" height="20" forecolor="#020203" uuid="5d91337a-b6bb-447a-a2bf-0c39171f087d"/>
+				<reportElement stretchType="RelativeToBandHeight" x="160" y="65" width="75" height="20" forecolor="#020203" uuid="5d91337a-b6bb-447a-a2bf-0c39171f087d"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -395,13 +441,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="7"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{INGRESO_TARJETA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="240" y="70" width="70" height="20" forecolor="#020203" uuid="2a7ecef0-fe78-4e5f-a206-6d5f162be249"/>
+				<reportElement stretchType="RelativeToBandHeight" x="235" y="65" width="75" height="20" forecolor="#020203" uuid="2a7ecef0-fe78-4e5f-a206-6d5f162be249"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -410,13 +456,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="7"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SALIDA_TARJETA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="320" y="30" width="150" height="20" forecolor="#020203" uuid="e0f32af8-edfe-4e75-a7e5-e127af97b21a"/>
+				<reportElement mode="Opaque" x="320" y="30" width="150" height="15" forecolor="#FFFFFF" backcolor="#020203" uuid="e0f32af8-edfe-4e75-a7e5-e127af97b21a"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -425,13 +471,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[DEPOSITO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="320" y="50" width="70" height="20" forecolor="#020203" uuid="f2e8e805-5205-47ae-8527-7266f185c176"/>
+				<reportElement x="320" y="45" width="75" height="20" forecolor="#020203" uuid="f2e8e805-5205-47ae-8527-7266f185c176"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -440,13 +486,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="false"/>
+					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[INGRESO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="400" y="50" width="70" height="20" forecolor="#020203" uuid="9bd0cbea-5621-4e3a-8102-e2c382289cca"/>
+				<reportElement x="395" y="45" width="75" height="20" forecolor="#020203" uuid="9bd0cbea-5621-4e3a-8102-e2c382289cca"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -455,13 +501,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="false"/>
+					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[SALIDA]]></text>
 			</staticText>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="320" y="70" width="70" height="20" forecolor="#020203" uuid="6666694c-2ac3-4df5-a130-2d245a256764"/>
+				<reportElement stretchType="RelativeToBandHeight" x="320" y="65" width="75" height="20" forecolor="#020203" uuid="6666694c-2ac3-4df5-a130-2d245a256764"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -470,13 +516,13 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="7"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{INGRESO_DEPOSITO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="400" y="70" width="70" height="20" forecolor="#020203" uuid="9781818e-658a-4075-87d5-332ac3e85a1b"/>
+				<reportElement stretchType="RelativeToBandHeight" x="395" y="65" width="75" height="20" forecolor="#020203" uuid="9781818e-658a-4075-87d5-332ac3e85a1b"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
 					<topPen lineWidth="1.0" lineColor="#020203"/>
@@ -485,7 +531,7 @@
 					<rightPen lineWidth="1.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="7"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SALIDA_DEPOSITO}]]></textFieldExpression>

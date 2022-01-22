@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.venta.FxVentaListaController">
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.venta.FxVentaListaController">
    <children>
       <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -104,7 +104,7 @@
                         <TableView fx:id="tvList" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="300.0" prefWidth="850.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
                            <columns>
                               <TableColumn fx:id="tcNumero" prefWidth="50.0" style="-fx-alignment: center;" text="N°" />
-                              <TableColumn fx:id="tcFecha" prefWidth="120.0" style="-fx-alignment: center;" text="Fecha" />
+                              <TableColumn fx:id="tcFecha" prefWidth="110.0" style="-fx-alignment: center;" text="Fecha" />
                               <TableColumn fx:id="tcComprobante" prefWidth="150.0" style="-fx-alignment: center-left;" text="Comprobante" />
                               <TableColumn fx:id="tcCliente" prefWidth="240.0" style="-fx-alignment: center-left;" text="Cliente" />
                               <TableColumn fx:id="tcEstado" prefWidth="150.0" style="-fx-alignment: center-left;" text="Estado" />

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SysSoftIntegra">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/SysSoftIntegra.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

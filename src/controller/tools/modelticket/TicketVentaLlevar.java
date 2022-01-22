@@ -402,15 +402,15 @@ public class TicketVentaLlevar {
                             imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
                         }
 
-                        InputStream dir = getClass().getResourceAsStream("/report/ReporteHistorialMoivimiento.jasper");
+                        InputStream dir = getClass().getResourceAsStream("/report/ReporteHistorialMovimiento.jasper");
 
                         Map map = new HashMap();
                         map.put("LOGO", imgInputStream);
                         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
                         map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-                        map.put("TELEFONOCELULAR", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
-                        map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
-                        map.put("DOCUMENTOEMPRESA", "R.U.C " + Session.COMPANY_NUMERO_DOCUMENTO);
+                        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
+                        map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL));
+                        map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
 
                         map.put("CLIENTE_INFORMACION", ventaTB.getClienteTB().getInformacion());
                         map.put("CLIENTE_CELULAR", ventaTB.getClienteTB().getCelular());
@@ -419,7 +419,6 @@ public class TicketVentaLlevar {
 
                         map.put("COMPROBANTE", ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
                         map.put("FECHA", ventaTB.getFechaVenta() + " " + ventaTB.getHoraVenta());
-                        map.put("TIPO_ESTADO", ventaTB.getTipoName() + " " + ventaTB.getEstadoName());
                         map.put("CANTIDAD", Tools.roundingValue(cantidad, 2));
 
                         fileName = "HISTORIAL DE MOVIMIENTOS DE " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion();

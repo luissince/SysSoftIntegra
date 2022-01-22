@@ -59,6 +59,9 @@ public class FxVentaLlevarController implements Initializable {
             if (!Tools.isNumeric(txtCantidad.getText().trim())) {
                 Tools.AlertMessageWarning(apWindow, "Venta detalle", "Ingreso un valor númerico, por favor.");
                 txtCantidad.requestFocus();
+            } else if (Double.parseDouble(txtCantidad.getText().trim()) <= 0) {
+               Tools.AlertMessageWarning(apWindow, "Venta detalle", "La cantidad no puede ser menor o igual que 0.");
+                txtCantidad.requestFocus();
             } else {
                 executeQuery(Double.parseDouble(txtCantidad.getText().trim()), txtObservacion.getText().trim());
             }

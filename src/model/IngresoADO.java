@@ -9,12 +9,14 @@ import java.util.ArrayList;
 
 public class IngresoADO {
 
-    public static ArrayList<IngresoTB> GetResumenIngresos(String fechaInicio, String fechaFinal, int usuario, String idUusuario) {
+    public static Object GetResumenIngresos(String fechaInicio, String fechaFinal, int usuario, String idUusuario) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        ArrayList<IngresoTB> ingresoTBs = new ArrayList<>();
+
         try {
             DBUtil.dbConnect();
+            ArrayList<IngresoTB> ingresoTBs = new ArrayList<>();
+
             preparedStatement = DBUtil.getConnection().prepareStatement("{CALL Sp_Reporte_Ingresos(?,?,?,?)}");
             preparedStatement.setString(1, fechaInicio);
             preparedStatement.setString(2, fechaFinal);
@@ -29,11 +31,13 @@ public class IngresoADO {
                 ingresoTB.setFormaIngreso(resultSet.getString("FormaIngreso"));
                 ingresoTB.setEfectivo(resultSet.getDouble("Efectivo"));
                 ingresoTB.setTarjeta(resultSet.getDouble("Tarjeta"));
-                ingresoTB.setDeposito(resultSet.getDouble("Deposito")); 
+                ingresoTB.setDeposito(resultSet.getDouble("Deposito"));
                 ingresoTBs.add(ingresoTB);
             }
+
+            return ingresoTBs;
         } catch (SQLException ex) {
-            Tools.println("Error Ingresos ADO: " + ex.getLocalizedMessage());
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (preparedStatement != null) {
@@ -43,9 +47,9 @@ public class IngresoADO {
                     resultSet.close();
                 }
             } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
             }
         }
-        return ingresoTBs;
     }
 
     public static ArrayList<IngresoTB> GetListaIngresos(String fechaInicio, String fechaFinal, int usuario, String idUusuario) {
@@ -66,7 +70,7 @@ public class IngresoADO {
                 EmpleadoTB empleadoTB = new EmpleadoTB();
                 empleadoTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
                 empleadoTB.setApellidos(resultSet.getString("Apellidos"));
-                empleadoTB.setNombres(resultSet.getString("Nombres"));               
+                empleadoTB.setNombres(resultSet.getString("Nombres"));
                 ingresoTB.setEmpleadoTB(empleadoTB);
                 ingresoTB.setTransaccion(resultSet.getString("Transaccion"));
                 ingresoTB.setDetalle(resultSet.getString("Detalle"));

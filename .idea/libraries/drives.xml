@@ -1,0 +1,25 @@
+<component name="libraryTable">
+  <library name="drives">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/drives/Arial.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/barbecue-1.5-beta1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/RobotoBold.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/sqljdbc4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/RobotoMedium.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/iText-5.0.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/Util.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/TrayTester.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/mysql-connector-java-5.1.23-bin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/controlsfx-8.40.13.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/core-3.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/javase-3.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/Monospace.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/Consola.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/RobotoRegular.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/json-simple-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/drives/itextpdf-5.5.13.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

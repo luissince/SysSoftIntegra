@@ -196,13 +196,14 @@ public class FxPostVentaDetalleController implements Initializable {
         gpList.add(addHeadGridPane("N#"), 0, 0);
         gpList.add(addHeadGridPane("Descripción"), 1, 0);
         gpList.add(addHeadGridPane("Cantidad"), 2, 0);
-        gpList.add(addHeadGridPane("Medida"), 3, 0);
-        gpList.add(addHeadGridPane("Impuesto"), 4, 0);
-        gpList.add(addHeadGridPane("Precio"), 5, 0);
-        gpList.add(addHeadGridPane("Descuento"), 6, 0);
-        gpList.add(addHeadGridPane("Importe"), 7, 0);
-        gpList.add(addHeadGridPane("Por Llevar"), 8, 0);
-        gpList.add(addHeadGridPane("Historial"), 9, 0);
+        gpList.add(addHeadGridPane("Bonificación"), 3, 0);
+        gpList.add(addHeadGridPane("Medida"), 4, 0);
+        gpList.add(addHeadGridPane("Impuesto"), 5, 0);
+        gpList.add(addHeadGridPane("Precio"), 6, 0);
+        gpList.add(addHeadGridPane("Descuento"), 7, 0);
+        gpList.add(addHeadGridPane("Importe"), 8, 0);
+        gpList.add(addHeadGridPane("Por Llevar"), 9, 0);
+        gpList.add(addHeadGridPane("Historial"), 10, 0);
     }
 
     private void createBodyTable(ObservableList<SuministroTB> empList) {
@@ -210,16 +211,17 @@ public class FxPostVentaDetalleController implements Initializable {
             gpList.add(addElementGridPaneLabel("l1" + (i + 1), empList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
             gpList.add(addElementGridPaneLabel("l2" + (i + 1), empList.get(i).getClave() + "\n" + empList.get(i).getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
             gpList.add(addElementGridPaneLabel("l3" + (i + 1), Tools.roundingValue(empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpList.add(addElementGridPaneLabel("l4" + (i + 1), empList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
-            gpList.add(addElementGridPaneLabel("l5" + (i + 1), empList.get(i).getImpuestoTB().getNombreImpuesto(), Pos.CENTER_RIGHT), 4, (i + 1));
-            gpList.add(addElementGridPaneLabel("l6" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpList.add(addElementGridPaneLabel("l7" + (i + 1), Tools.roundingValue(empList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPaneLabel("l8" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral() * empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpList.add(addElementGridPaneLabel("l4" + (i + 1), Tools.roundingValue(empList.get(i).getBonificacion(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
+            gpList.add(addElementGridPaneLabel("l5" + (i + 1), empList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 4, (i + 1));
+            gpList.add(addElementGridPaneLabel("l6" + (i + 1), empList.get(i).getImpuestoTB().getNombreImpuesto(), Pos.CENTER_RIGHT), 5, (i + 1));
+            gpList.add(addElementGridPaneLabel("l7" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
+            gpList.add(addElementGridPaneLabel("l8" + (i + 1), Tools.roundingValue(empList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpList.add(addElementGridPaneLabel("l9" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral() * empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 8, (i + 1));
             gpList.add(empList.get(i).getEstadoName().equalsIgnoreCase("C")
-                    ? addElementGridPaneLabel("l9" + (i + 1), "COMPLETADO", Pos.CENTER_LEFT)
-                    : addElementGridPaneButtonLlevar("l9" + (i + 1), "LLEVAR \n" + Tools.roundingValue(empList.get(i).getPorLlevar(), 2), empList.get(i).getIdSuministro(), empList.get(i).getCostoCompra(), Pos.CENTER_LEFT),
-                    8, (i + 1));
-            gpList.add(addElementGridPaneButtonHistorial("l10" + (i + 1), "HISTORIAL", empList.get(i), Pos.CENTER_LEFT), 9, (i + 1));
+                    ? addElementGridPaneLabel("l10" + (i + 1), "COMPLETADO", Pos.CENTER_LEFT)
+                    : addElementGridPaneButtonLlevar("l11" + (i + 1), "LLEVAR \n" + Tools.roundingValue(empList.get(i).getPorLlevar(), 2), empList.get(i).getIdSuministro(), empList.get(i).getCostoCompra(), Pos.CENTER_LEFT),
+                    9, (i + 1));
+            gpList.add(addElementGridPaneButtonHistorial("l12" + (i + 1), "HISTORIAL", empList.get(i), Pos.CENTER_LEFT), 10, (i + 1));
         }
         calcularTotales();
     }

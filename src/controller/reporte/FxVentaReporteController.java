@@ -713,77 +713,87 @@ public class FxVentaReporteController implements Initializable {
         }
     }
 
-    private JasperPrint reportGenerateIngresos() throws JRException {
-        ArrayList<IngresoTB> ingresoTBs = IngresoADO.GetResumenIngresos(
+    private Object reportGenerateIngresos() throws JRException {
+        Object object = IngresoADO.GetResumenIngresos(
                 Tools.getDatePicker(dpFechaInicialDos),
                 Tools.getDatePicker(dpFechaFinalDos),
                 cbVendedorSelectDos.isSelected() ? 0 : 1,
                 idVendedor);
+        if (object instanceof ArrayList) {
+            ArrayList<IngresoTB> ingresoTBs = (ArrayList<IngresoTB>) object;
 
-        double totalEfectivoIngreso = 0;
-        double totalEfectivoSalida = 0;
-        double totalTarjetaIngreso = 0;
-        double totalTarjetaSalida = 0;
-        double totalDepositoIngreso = 0;
-        double totalDepositoSalida = 0;
+            if (ingresoTBs.isEmpty()) {
+                return "No hay datos para mostrar";
+            }
 
-        for (IngresoTB ingresoTB : ingresoTBs) {
-            if (ingresoTB.getFormaIngreso().equalsIgnoreCase("EFECTIVO")) {
-                if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
-                        || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESO LIBRE")
-                        || ingresoTB.getTransaccion().equalsIgnoreCase("CUENTAS POR PAGAR")) {
-                    totalEfectivoIngreso += 0;
-                    totalEfectivoSalida += ingresoTB.getEfectivo();
+            double totalEfectivoIngreso = 0;
+            double totalEfectivoSalida = 0;
+            double totalTarjetaIngreso = 0;
+            double totalTarjetaSalida = 0;
+            double totalDepositoIngreso = 0;
+            double totalDepositoSalida = 0;
+
+            for (IngresoTB ingresoTB : ingresoTBs) {
+                if (ingresoTB.getFormaIngreso().equalsIgnoreCase("EFECTIVO")) {
+                    if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
+                            || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESO LIBRE")
+                            || ingresoTB.getTransaccion().equalsIgnoreCase("CUENTAS POR PAGAR")) {
+                        totalEfectivoIngreso += 0;
+                        totalEfectivoSalida += ingresoTB.getEfectivo();
+                    } else {
+                        totalEfectivoIngreso += ingresoTB.getEfectivo();
+                        totalEfectivoSalida += 0;
+                    }
+                } else if (ingresoTB.getFormaIngreso().equalsIgnoreCase("TARJETA")) {
+                    if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
+                            || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESO LIBRE")
+                            || ingresoTB.getTransaccion().equalsIgnoreCase("CUENTAS POR PAGAR")) {
+                        totalTarjetaIngreso += 0;
+                        totalTarjetaSalida += ingresoTB.getTarjeta();
+                    } else {
+                        totalTarjetaIngreso += ingresoTB.getTarjeta();
+                        totalTarjetaSalida += 0;
+                    }
                 } else {
-                    totalEfectivoIngreso += ingresoTB.getEfectivo();
-                    totalEfectivoSalida += 0;
-                }
-            } else if (ingresoTB.getFormaIngreso().equalsIgnoreCase("TARJETA")) {
-                if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
-                        || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESO LIBRE")
-                        || ingresoTB.getTransaccion().equalsIgnoreCase("CUENTAS POR PAGAR")) {
-                    totalTarjetaIngreso += 0;
-                    totalTarjetaSalida += ingresoTB.getTarjeta();
-                } else {
-                    totalTarjetaIngreso += ingresoTB.getTarjeta();
-                    totalTarjetaSalida += 0;
-                }
-            } else {
-                if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
-                        || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESO LIBRE")
-                        || ingresoTB.getTransaccion().equalsIgnoreCase("CUENTAS POR PAGAR")) {
-                    totalDepositoIngreso += 0;
-                    totalDepositoSalida += ingresoTB.getDeposito();
-                } else {
-                    totalDepositoIngreso += ingresoTB.getDeposito();
-                    totalDepositoSalida += 0;
+                    if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
+                            || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESO LIBRE")
+                            || ingresoTB.getTransaccion().equalsIgnoreCase("CUENTAS POR PAGAR")) {
+                        totalDepositoIngreso += 0;
+                        totalDepositoSalida += ingresoTB.getDeposito();
+                    } else {
+                        totalDepositoIngreso += ingresoTB.getDeposito();
+                        totalDepositoSalida += 0;
+                    }
                 }
             }
-        }
 
-        InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-        InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-        if (Session.COMPANY_IMAGE != null) {
-            imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
-        }
-        InputStream dir = getClass().getResourceAsStream("/report/Ingresos.jasper");
-        Map map = new HashMap();
-        map.put("LOGO", imgInputStream);
-        map.put("ICON", imgInputStreamIcon);
-        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
-        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-        map.put("TELEFONOCELULAR", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
-        map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
-        map.put("FECHAS", "DEL " + Tools.formatDate(Tools.getDatePicker(dpFechaInicialDos)) + " al " + Tools.formatDate(Tools.getDatePicker(dpFechaFinalDos)));
-        map.put("INGRESO_EFECTIVO", Tools.roundingValue(totalEfectivoIngreso, 2));
-        map.put("SALIDA_EFECTIVO", Tools.roundingValue(totalEfectivoSalida, 2));
-        map.put("INGRESO_TARJETA", Tools.roundingValue(totalTarjetaIngreso, 2));
-        map.put("SALIDA_TARJETA", Tools.roundingValue(totalTarjetaSalida, 2));
-        map.put("INGRESO_DEPOSITO", Tools.roundingValue(totalDepositoIngreso, 2));
-        map.put("SALIDA_DEPOSITO", Tools.roundingValue(totalDepositoSalida, 2));
+            InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+            InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+            if (Session.COMPANY_IMAGE != null) {
+                imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
+            }
+            InputStream dir = getClass().getResourceAsStream("/report/Ingresos.jasper");
+            Map map = new HashMap();
+            map.put("LOGO", imgInputStream);
+            map.put("ICON", imgInputStreamIcon);
+            map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
+            map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
+            map.put("DIRECCION", Session.COMPANY_DOMICILIO);
+            map.put("TELEFONOCELULAR", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
+            map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
+            map.put("FECHAS", "DEL " + Tools.formatDate(Tools.getDatePicker(dpFechaInicialDos)) + " al " + Tools.formatDate(Tools.getDatePicker(dpFechaFinalDos)));
+            map.put("INGRESO_EFECTIVO", Tools.roundingValue(totalEfectivoIngreso, 2));
+            map.put("SALIDA_EFECTIVO", Tools.roundingValue(totalEfectivoSalida, 2));
+            map.put("INGRESO_TARJETA", Tools.roundingValue(totalTarjetaIngreso, 2));
+            map.put("SALIDA_TARJETA", Tools.roundingValue(totalTarjetaSalida, 2));
+            map.put("INGRESO_DEPOSITO", Tools.roundingValue(totalDepositoIngreso, 2));
+            map.put("SALIDA_DEPOSITO", Tools.roundingValue(totalDepositoSalida, 2));
 
-        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(ingresoTBs));
-        return jasperPrint;
+            return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(ingresoTBs));
+
+        } else {
+            return object;
+        }
     }
 
     private void openViewVisualizarIngresos() {

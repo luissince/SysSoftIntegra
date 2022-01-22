@@ -369,7 +369,7 @@ public class FxVentaProcesoController implements Initializable {
                 } else {
                     ventaTB.setTipo(1);
                     ventaTB.setEstado(4);
-                    ventaTB.setVuelto(0);
+                    ventaTB.setVuelto(vueltoAdelantado);
                     ventaTB.setObservaciones("");
 
                     ventaTB.setEfectivo(0);

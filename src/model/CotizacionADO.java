@@ -310,7 +310,7 @@ public class CotizacionADO {
 
                 EmpleadoTB empleadoTB = new EmpleadoTB();
                 empleadoTB.setIdEmpleado(result.getString("IdEmpleado"));
-                empleadoTB.setNumeroDocumento(result.getString("NumeroDocumento"));
+                empleadoTB.setNumeroDocumento(result.getString("NumDocEmpleado"));
                 empleadoTB.setApellidos(result.getString("Apellidos"));
                 empleadoTB.setNombres(result.getString("Nombres"));
                 cotizacionTB.setEmpleadoTB(empleadoTB);

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox fx:id="hbWindow" onKeyReleased="#onKeyReleasedWindow" style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.banco.FxBancosController">
+<HBox fx:id="hbWindow" style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.banco.FxBancosController">
    <children>
       <VBox style="-fx-background-color: white;" stylesheets="@../style/principal.css" HBox.hgrow="ALWAYS">
          <children>
@@ -106,6 +106,53 @@
                         </HBox>
                      </children>
                   </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" style="-fx-border-width: 1 0 0 0; -fx-border-color: #cccccc; -fx-padding: 0.8333333333333334em;">
+               <children>
+                  <HBox alignment="CENTER" style="-fx-background-color: #cccccc; -fx-spacing: 0.8333333333333334em;">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onActionAnterior" onKeyPressed="#onKeyPressedAnterior" styleClass="buttonLight" text="Anterior">
+                           <font>
+                              <Font name="Calibri" size="14.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/left.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Label fx:id="lblPaginaActual" styleClass="labelBorder" text="0" textFill="#020203">
+                           <font>
+                              <Font name="Calibri" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label styleClass="labelForm" text="de" textFill="#020203">
+                           <font>
+                              <Font name="Calibri" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblPaginaSiguiente" styleClass="labelBorder" text="0" textFill="#020203">
+                           <font>
+                              <Font name="Calibri" size="14.0" />
+                           </font>
+                        </Label>
+                        <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onActionSiguiente" onKeyPressed="#onKeyPressedSiguiente" styleClass="buttonLight" text="Siguiente">
+                           <font>
+                              <Font name="Calibri" size="14.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/right.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
             </HBox>
          </children>

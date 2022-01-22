@@ -387,18 +387,20 @@ public class SuministroADO {
                                 + "IdAlmacen, "
                                 + "IdEmpleado) "
                                 + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
-                        preparedKardex.setString(1, idSuministro);
-                        preparedKardex.setString(2, Tools.getDate());
-                        preparedKardex.setString(3, Tools.getTime());
-                        preparedKardex.setShort(4, (short) 1);
-                        preparedKardex.setInt(5, 2);
-                        preparedKardex.setString(6, "INVENTARIO INICIAL");
-                        preparedKardex.setDouble(7, suministroTB.getCantidad());
-                        preparedKardex.setDouble(8, suministroTB.getCostoCompra());
-                        preparedKardex.setDouble(9, suministroTB.getCantidad() * suministroTB.getCostoCompra());
-                        preparedKardex.setInt(10, 0);
-                        preparedKardex.setString(11, Session.USER_ID);
-                        preparedKardex.addBatch();
+                        if (suministroTB.getCantidad() > 0) {
+                            preparedKardex.setString(1, idSuministro);
+                            preparedKardex.setString(2, Tools.getDate());
+                            preparedKardex.setString(3, Tools.getTime());
+                            preparedKardex.setShort(4, (short) 1);
+                            preparedKardex.setInt(5, 2);
+                            preparedKardex.setString(6, "INVENTARIO INICIAL");
+                            preparedKardex.setDouble(7, suministroTB.getCantidad());
+                            preparedKardex.setDouble(8, suministroTB.getCostoCompra());
+                            preparedKardex.setDouble(9, suministroTB.getCantidad() * suministroTB.getCostoCompra());
+                            preparedKardex.setInt(10, 0);
+                            preparedKardex.setString(11, Session.USER_ID);
+                            preparedKardex.addBatch();
+                        }
                         preparedKardex.executeBatch();
 
                         DBUtil.getConnection().commit();

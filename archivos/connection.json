@@ -1,10 +1,1 @@
-{
-    "body":{
-        "addres":"127.0.0.1",
-        "port":"1433",
-        "dbname":"FerreteriaDiamanante",
-        "user":"sa",
-        "password":"Qz0966lb"
-    }
-}
-
+{"body":{"password":"Qz0966lb","dbname":"SysSoftIntegra","port":"1433","addres":"localhost","user":"sa"}}

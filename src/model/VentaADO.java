@@ -682,11 +682,9 @@ public class VentaADO {
                 if (comprobante != null) {
                     comprobante.close();
                 }
-
                 if (detalle_venta != null) {
                     detalle_venta.close();
                 }
-
                 if (suministro_update != null) {
                     suministro_update.close();
                 }
@@ -696,7 +694,6 @@ public class VentaADO {
                 if (codigo_venta != null) {
                     codigo_venta.close();
                 }
-
                 DBUtil.dbDisconnect();
             } catch (SQLException e) {
             }
@@ -1955,7 +1952,6 @@ public class VentaADO {
                 ventaTB.setEstado(rsEmps.getInt("Estado"));
                 ventaTB.setTotal(rsEmps.getDouble("Total"));
                 ventaTB.setObservaciones(rsEmps.getString("Observaciones"));
-                Tools.println(rsEmps.getDouble("Total"));
 
                 MonedaTB monedaTB = new MonedaTB();
                 monedaTB.setIdMoneda(rsEmps.getInt("Moneda"));
@@ -3549,6 +3545,7 @@ public class VentaADO {
 
     public static String Update_Producto_Para_Llevar(String idVenta, String idSuministro, String comprobante, double cantidad, double costo, String observacion, boolean completo) {
         PreparedStatement statementVenta = null;
+        PreparedStatement statementValidar = null;
         PreparedStatement statementHistorial = null;
         PreparedStatement statementSuministro = null;
         PreparedStatement statementActualizar = null;
@@ -3616,15 +3613,29 @@ public class VentaADO {
                         statementHistorial.setString(6, observacion);
                         statementHistorial.addBatch();
 
+                        statementValidar = DBUtil.getConnection().prepareStatement("SELECT Estado FROM DetalleVentaTB WHERE IdVenta = ? AND IdArticulo <> ?");
+                        statementValidar.setString(1, idVenta);
+                        statementValidar.setString(2, idSuministro);
+                        resultSet = statementValidar.executeQuery();
+
+                        int allenviado = 0;
+                        while (resultSet.next()) {
+                            if (resultSet.getString("Estado").equalsIgnoreCase("L")) {
+                                allenviado++;
+                            }
+                        }
+
                         statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = 1 WHERE IdVenta = ?");
-                        statementVenta.setString(1, idVenta);
-                        statementVenta.addBatch();
+                        if (allenviado == 0) {
+                            statementVenta.setString(1, idVenta);
+                            statementVenta.addBatch();
+                        }
 
                         statementSuministro.executeBatch();
                         statementActualizar.executeBatch();
                         statementKardex.executeBatch();
                         statementHistorial.executeBatch();
-                        statementVenta.executeBatch();
+                        statementVenta.executeBatch();                     
                         DBUtil.getConnection().commit();
                         return "update";
                     }
@@ -3640,6 +3651,8 @@ public class VentaADO {
                     }
 
                     statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = 1 WHERE IdVenta = ?");
+                    statementValidar = DBUtil.getConnection().prepareStatement("SELECT Estado FROM DetalleVentaTB WHERE IdVenta = ? AND IdArticulo <> ?");
+
                     if ((cantidad + cantidadActual) >= cantidadTotal) {
                         statementSuministro = DBUtil.getConnection().prepareStatement("UPDATE DetalleVentaTB SET PorLlevar = PorLlevar + ?, Estado = 'C' WHERE IdVenta = ? AND IdArticulo = ?");
                         statementSuministro.setDouble(1, cantidad);
@@ -3647,8 +3660,21 @@ public class VentaADO {
                         statementSuministro.setString(3, idSuministro);
                         statementSuministro.addBatch();
 
-                        statementVenta.setString(1, idVenta);
-                        statementVenta.addBatch();
+                        statementValidar.setString(1, idVenta);
+                        statementValidar.setString(2, idSuministro);
+                        resultSet = statementValidar.executeQuery();
+
+                        int allenviado = 0;
+                        while (resultSet.next()) {
+                            if (resultSet.getString("Estado").equalsIgnoreCase("L")) {
+                                allenviado++;
+                            }
+                        }
+
+                        if (allenviado == 0) {
+                            statementVenta.setString(1, idVenta);
+                            statementVenta.addBatch();
+                        }
                     } else {
                         statementSuministro = DBUtil.getConnection().prepareStatement("UPDATE DetalleVentaTB SET PorLlevar = PorLlevar + ? WHERE IdVenta = ? AND IdArticulo = ?");
                         statementSuministro.setDouble(1, cantidad);
@@ -3700,7 +3726,7 @@ public class VentaADO {
                     statementActualizar.executeBatch();
                     statementKardex.executeBatch();
                     statementHistorial.executeBatch();
-                    statementVenta.executeBatch();
+                    statementVenta.executeBatch();                   
                     DBUtil.getConnection().commit();
                     return "update";
                 }
@@ -3723,6 +3749,9 @@ public class VentaADO {
                 }
                 if (statementActualizar != null) {
                     statementActualizar.close();
+                }
+                if (statementValidar != null) {
+                    statementValidar.close();
                 }
                 if (statementVenta != null) {
                     statementVenta.close();

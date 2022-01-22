@@ -126,7 +126,7 @@
                                           <Text fx:id="lblNegativos" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
                                           <Button mnemonicParsing="false" onAction="#onActionNegativos" onKeyPressed="#onKeyPressedNegativos" styleClass="buttonLight" text="Visualizar">
                                              <graphic>
-                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../image/search_caja.png" />
                                                    </image>
@@ -154,7 +154,7 @@
                                           <Text fx:id="lblIntermedios" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
                                           <Button mnemonicParsing="false" onAction="#onActionIntermedios" onKeyPressed="#onKeyPressedIntermedios" styleClass="buttonLight" text="Visualizar">
                                              <graphic>
-                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../image/search_caja.png" />
                                                    </image>
@@ -182,7 +182,7 @@
                                           <Text fx:id="lblNecesarias" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
                                           <Button mnemonicParsing="false" onAction="#onActionNecesarios" onKeyPressed="#onKeyPressedNecesarios" styleClass="buttonLight" text="Visualizar">
                                              <graphic>
-                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../image/search_caja.png" />
                                                    </image>
@@ -210,7 +210,7 @@
                                           <Text fx:id="lblExcentes" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
                                           <Button mnemonicParsing="false" onAction="#onActionExcedentes" onKeyPressed="#onKeyPressedExcedentes" styleClass="buttonLight" text="Visualizar">
                                              <graphic>
-                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../image/search_caja.png" />
                                                    </image>
@@ -233,12 +233,12 @@
                                  <children>
                                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../image/articles.png" />
+                                          <Image url="@../image/producto.png" />
                                        </image>
                                     </ImageView>
                                     <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="Artículos" />
+                                          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="Productos" />
                                           <Text fx:id="lblArticulo" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold17" text="0" />
                                        </children>
                                     </VBox>
