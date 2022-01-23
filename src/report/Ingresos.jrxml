@@ -26,74 +26,41 @@
 	<field name="tarjeta" class="java.lang.Double"/>
 	<field name="deposito" class="java.lang.Double"/>
 	<title>
-		<band height="92" splitType="Stretch">
-			<rectangle>
-				<reportElement x="333" y="63" width="222" height="29" backcolor="#020203" uuid="e4cf757f-9935-4cb8-814d-b23ee5c33667"/>
-				<graphicElement>
-					<pen lineWidth="0.0"/>
-				</graphicElement>
-			</rectangle>
+		<band height="96" splitType="Stretch">
 			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle">
 				<reportElement x="5" y="5" width="91" height="86" uuid="aa7a02b5-470f-4543-a907-64382270c0de"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="332" y="76" width="223" height="16" forecolor="#FFFFFF" uuid="4db2f4d9-969a-4f02-b3c6-b1a939083cd9"/>
+				<reportElement x="96" y="76" width="459" height="16" forecolor="#020203" uuid="4db2f4d9-969a-4f02-b3c6-b1a939083cd9"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{FECHAS}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="96" y="0" width="237" height="39" forecolor="#000000" uuid="063152cc-6408-475a-8b84-03567b221a2c"/>
+				<reportElement stretchType="RelativeToBandHeight" x="96" y="0" width="459" height="44" forecolor="#000000" uuid="063152cc-6408-475a-8b84-03567b221a2c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{EMPRESA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DOCUMENTOEMPRESA}+"\n"+$P{EMPRESA}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="96" y="38" width="237" height="53" forecolor="#000000" uuid="2c3aac23-7bbd-4615-bd90-f745c6d16087"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="true" isPdfEmbedded="true"/>
-					<paragraph leftIndent="5" rightIndent="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{DIRECCION}+"\n"+$P{TELEFONOCELULAR}+"\n"+$P{EMAIL}]]></textFieldExpression>
-			</textField>
-			<rectangle>
-				<reportElement x="333" y="58" width="222" height="5" backcolor="#576767" uuid="edd35568-798c-4177-9ce0-698cac1718df"/>
-				<graphicElement>
-					<pen lineWidth="0.0"/>
-				</graphicElement>
-			</rectangle>
-			<rectangle>
-				<reportElement x="333" y="52" width="222" height="6" backcolor="#B5B5B5" uuid="660feb62-3837-42ce-9a62-404103596799"/>
-				<graphicElement>
-					<pen lineWidth="0.0"/>
-				</graphicElement>
-			</rectangle>
 			<staticText>
-				<reportElement mode="Transparent" x="332" y="62" width="223" height="15" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="b08f0fa0-3d9b-4806-a090-4657eef6f1c1"/>
+				<reportElement mode="Transparent" x="96" y="62" width="459" height="15" forecolor="#020203" backcolor="#FFFFFF" uuid="b08f0fa0-3d9b-4806-a090-4657eef6f1c1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[PEDIODO]]></text>
+				<text><![CDATA[PERIODO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="333" y="16" width="222" height="36" forecolor="#FFFFFF" backcolor="#FE3152" uuid="a3796bd3-512a-4784-a425-344c109bb9ad"/>
+				<reportElement mode="Transparent" x="96" y="43" width="459" height="20" forecolor="#020203" backcolor="#FE3152" uuid="a3796bd3-512a-4784-a425-344c109bb9ad"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[RESUMEN DE INGRESOS/EGRESOS]]></text>
 			</staticText>
-			<textField>
-				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="333" y="0" width="222" height="16" forecolor="#FFFFFF" backcolor="#FE3152" uuid="5ec36515-bf42-4a52-a7bd-9845c373d748"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{DOCUMENTOEMPRESA}]]></textFieldExpression>
-			</textField>
 		</band>
 	</title>
 	<columnHeader>
@@ -190,10 +157,10 @@
 				<reportElement stretchType="RelativeToBandHeight" x="285" y="0" width="90" height="20" forecolor="#020203" uuid="7989eece-58e4-484a-96aa-476ac9aa1bc8"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.0" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
@@ -205,10 +172,10 @@
 				<reportElement stretchType="RelativeToBandHeight" x="375" y="0" width="90" height="20" forecolor="#020203" uuid="b68c96fe-e7d3-40a8-9c28-0597915ecfc3"/>
 				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
@@ -220,9 +187,9 @@
 				<reportElement stretchType="RelativeToBandHeight" x="205" y="0" width="80" height="20" forecolor="#020203" uuid="ba8e0173-120e-4134-8578-b1dadffc9c0e"/>
 				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -235,9 +202,9 @@
 				<reportElement stretchType="RelativeToBandHeight" x="40" y="0" width="165" height="20" forecolor="#020203" uuid="225c15f0-b193-4217-b16b-e5df4c7fbcbc"/>
 				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -249,9 +216,9 @@
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="40" height="20" forecolor="#020203" uuid="9c218449-3864-474a-999e-e322b86f4053"/>
 				<box>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
@@ -262,10 +229,10 @@
 				<reportElement stretchType="RelativeToBandHeight" x="465" y="0" width="90" height="20" forecolor="#020203" uuid="4ef264a2-e72a-4bd1-8efe-685137e914b3"/>
 				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
@@ -329,11 +296,11 @@
 			<staticText>
 				<reportElement x="75" y="45" width="75" height="20" forecolor="#020203" uuid="f4762808-09e2-46e5-a2d8-5771d5e02400"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
@@ -344,11 +311,11 @@
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="0" y="65" width="75" height="20" forecolor="#020203" uuid="73b2995d-7df3-48ca-8a97-cd506e3b0846"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
@@ -359,11 +326,11 @@
 			<staticText>
 				<reportElement x="0" y="45" width="75" height="20" forecolor="#020203" uuid="36bd6960-e082-4a87-ac8c-c5a92088f6c7"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
@@ -389,11 +356,11 @@
 			<staticText>
 				<reportElement x="235" y="45" width="75" height="20" forecolor="#020203" uuid="28b29f7a-46a1-4a17-a6c2-392add117d6a"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
@@ -404,11 +371,11 @@
 			<staticText>
 				<reportElement x="160" y="45" width="75" height="20" forecolor="#020203" uuid="1e39d8c1-45e5-4bbe-b3f4-97fb5e62ad06"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
@@ -419,11 +386,11 @@
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="75" y="65" width="75" height="20" forecolor="#020203" uuid="da73ea43-5d4d-4ea6-a75c-9a54005f31bb"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
@@ -434,11 +401,11 @@
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="160" y="65" width="75" height="20" forecolor="#020203" uuid="5d91337a-b6bb-447a-a2bf-0c39171f087d"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
@@ -449,11 +416,11 @@
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="235" y="65" width="75" height="20" forecolor="#020203" uuid="2a7ecef0-fe78-4e5f-a206-6d5f162be249"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
@@ -479,11 +446,11 @@
 			<staticText>
 				<reportElement x="320" y="45" width="75" height="20" forecolor="#020203" uuid="f2e8e805-5205-47ae-8527-7266f185c176"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
@@ -494,11 +461,11 @@
 			<staticText>
 				<reportElement x="395" y="45" width="75" height="20" forecolor="#020203" uuid="9bd0cbea-5621-4e3a-8102-e2c382289cca"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
@@ -509,11 +476,11 @@
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="320" y="65" width="75" height="20" forecolor="#020203" uuid="6666694c-2ac3-4df5-a130-2d245a256764"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
@@ -524,11 +491,11 @@
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="395" y="65" width="75" height="20" forecolor="#020203" uuid="9781818e-658a-4075-87d5-332ac3e85a1b"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#020203"/>
-					<topPen lineWidth="1.0" lineColor="#020203"/>
-					<leftPen lineWidth="1.0" lineColor="#020203"/>
-					<bottomPen lineWidth="1.0" lineColor="#020203"/>
-					<rightPen lineWidth="1.0" lineColor="#020203"/>
+					<pen lineWidth="0.25" lineColor="#020203"/>
+					<topPen lineWidth="0.25" lineColor="#020203"/>
+					<leftPen lineWidth="0.25" lineColor="#020203"/>
+					<bottomPen lineWidth="0.25" lineColor="#020203"/>
+					<rightPen lineWidth="0.25" lineColor="#020203"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>

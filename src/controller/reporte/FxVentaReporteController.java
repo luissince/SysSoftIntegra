@@ -714,7 +714,7 @@ public class FxVentaReporteController implements Initializable {
     }
 
     private Object reportGenerateIngresos() throws JRException {
-        Object object = IngresoADO.GetResumenIngresos(
+        Object object = IngresoADO.Reporte_Ingresos(
                 Tools.getDatePicker(dpFechaInicialDos),
                 Tools.getDatePicker(dpFechaFinalDos),
                 cbVendedorSelectDos.isSelected() ? 0 : 1,

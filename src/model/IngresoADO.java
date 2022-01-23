@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class IngresoADO {
 
-    public static Object GetResumenIngresos(String fechaInicio, String fechaFinal, int usuario, String idUusuario) {
+    public static Object Reporte_Ingresos(String fechaInicio, String fechaFinal, int usuario, String idUusuario) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
