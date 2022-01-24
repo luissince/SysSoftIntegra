@@ -98,6 +98,8 @@ public class FxMovimientosProcesoController implements Initializable {
 
     private FxMovimientosController movimientosController;
 
+
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tcAccion.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));

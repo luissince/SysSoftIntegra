@@ -102,16 +102,11 @@ public class FxConfiguracionController implements Initializable {
             txtBaseDatos.requestFocus();
         } else {
 //cineplanet
-            ObjectGlobal.ADDRES = txtDireccion.getText().trim();
-            ObjectGlobal.PORT = txtPuerto.getText().trim();
-            ObjectGlobal.DATABASENAME = txtBaseDatos.getText().trim();
-            ObjectGlobal.USER = txtUsuario.getText().trim();
-            ObjectGlobal.PASSWORD = txtClave.getText().trim();
-            DBUtil.dbConnect();
-            if (DBUtil.getConnection() != null) {
+            if (DBUtil.validateConnect(txtDireccion.getText().trim(), txtPuerto.getText().trim(), txtBaseDatos.getText().trim(), txtUsuario.getText().trim(), txtClave.getText().trim()).equals("ok")) {
                 Tools.AlertMessageInformation(apWindow, "Conexión", "Se completo la conexión correctamente.");
             } else {
                 Tools.AlertMessageError(apWindow, "Conexión", "Error de conexión en: " + DBUtil.dbConnect());
+                Tools.println(DBUtil.dbConnect());
             }
         }
     }

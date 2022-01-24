@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.movimientos.FxMovimientosProcesoController">
+<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.movimientos.FxMovimientosProcesoController">
    <children>
       <HBox fx:id="hbBody" onKeyReleased="#onKeyReleasedWindow" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -109,9 +109,9 @@
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelOpenSansRegular13" text="Tipo de Ajuste:" textFill="#020203" />
-                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelOpenSansRegular13" text="Metodo de Ajuste:" textFill="#020203" GridPane.rowIndex="1" />
-                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelOpenSansRegular13" text="Observación:" textFill="#020203" GridPane.columnIndex="2" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Tipo de Ajuste:" textFill="#020203" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Metodo de Ajuste:" textFill="#020203" GridPane.rowIndex="1" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Observación:" textFill="#020203" GridPane.columnIndex="2" />
                                           <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;" GridPane.columnIndex="1">
                                              <children>
                                                 <RadioButton fx:id="rbIncremento" mnemonicParsing="false" onAction="#onActionTipo" onKeyPressed="#onKeyPressedTipo" prefHeight="30.0" selected="true" styleClass="labelOpenSansRegular13" text="Incremento" textFill="#1a2226">
@@ -138,6 +138,8 @@
                                           <TextField fx:id="txtObservacion" maxHeight="1.7976931348623157E308" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" text="N/D" GridPane.columnIndex="3" />
                                           <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelOpenSansRegular14" text="Envío directo para venta:" visible="false" GridPane.columnIndex="2" />
                                           <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelOpenSansRegular14" text="Estado del Movimiento:" textFill="#1a2226" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Almacen:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                          <ComboBox fx:id="cbAlmacen" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="ALMACEN PRINCIPAL" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
                                  </children>
