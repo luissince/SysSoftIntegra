@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.movimientos.FxMovimientosDetalleController">
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.movimientos.FxMovimientosDetalleController">
    <children>
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -46,7 +46,7 @@
                   <GridPane style="-fx-vgap: 0.8333333333333334em; -fx-hgap: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
                     <columnConstraints>
                       <ColumnConstraints minWidth="10.0" />
-                      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                      <ColumnConstraints minWidth="10.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
@@ -61,7 +61,7 @@
                         <Label fx:id="lblHoraFecha" styleClass="labelRoboto13" text="--" textFill="#006ac1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Observación:" textFill="#020203" GridPane.rowIndex="2" />
                         <Label fx:id="lblObservacion" styleClass="labelRoboto13" text="--" textFill="#006ac1" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Estado del ajuste:" textFill="#020203" GridPane.rowIndex="3" />
+                        <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Estado:" textFill="#020203" GridPane.rowIndex="3" />
                         <Label fx:id="lblEstado" styleClass="labelRoboto13" text="--" textFill="#006ac1" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
@@ -106,7 +106,7 @@
                           <columns>
                             <TableColumn fx:id="tcNumero" prefWidth="60.0" style="-fx-alignment: TOP-CENTER;" text="N°" />
                             <TableColumn fx:id="tcDescripcion" prefWidth="340.0" style="-fx-alignment: TOP-LEFT;" text="Descripción" />
-                              <TableColumn fx:id="tcCantidad" prefWidth="150.0" style="-fx-alignment: TOP-RIGHT;" text="Cantidad" />
+                              <TableColumn fx:id="tcCantidad" prefWidth="150.0" style="-fx-alignment: CENTER-LEFT;" text="Cantidad" />
                               <TableColumn fx:id="tcVerificar" minWidth="0.0" prefWidth="37.0" style="-fx-alignment: CENTER;" text="Verificar" visible="false" />
                               <TableColumn fx:id="tcPrecio" minWidth="0.0" prefWidth="0.0" style="-fx-alignment: CENTER;" text="Precio" visible="false" />
                           </columns>

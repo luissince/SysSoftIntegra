@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle; 
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,12 +23,10 @@ public class CompraADO extends DBUtil {
     public static String Compra_Contado(IngresoTB ingresoTB, MovimientoCajaTB movimientoCajaTB, CompraTB compraTB, TableView<DetalleCompraTB> tableView, ObservableList<LoteTB> loteTBs) {
 
         CallableStatement codigo_compra = null;
-        PreparedStatement validate = null;
         PreparedStatement compra = null;
         PreparedStatement detalle_compra = null;
         PreparedStatement suministro_precios_remover = null;
         PreparedStatement suministro_precios_insertar = null;
-        PreparedStatement suministro_almacen_insertar = null;
         PreparedStatement suministro_almacen_actualizar = null;
         PreparedStatement suministro_cantidad = null;
         PreparedStatement suministro_costo = null;
@@ -96,8 +94,6 @@ public class CompraADO extends DBUtil {
                 suministro_cantidad = getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?");
 
                 suministro_precio = getConnection().prepareStatement("UPDATE SuministroTB SET Impuesto=?, PrecioVentaGeneral=?, TipoPrecio=? WHERE IdSuministro = ?");
-
-                suministro_almacen_insertar = getConnection().prepareStatement("INSERT INTO CantidadTB(IdAlmacen,IdSuministro,StockMinimo,StockMaximo,Cantidad) VALUES(?,?,?,?,?)");
 
                 suministro_almacen_actualizar = getConnection().prepareStatement("UPDATE CantidadTB SET Cantidad = Cantidad + ? WHERE IdAlmacen = ? AND IdSuministro = ?");
 
@@ -222,22 +218,10 @@ public class CompraADO extends DBUtil {
                         suministro_kardex.setInt(10, compraTB.getIdAlmacen());
                         suministro_kardex.addBatch();
                     } else {
-                        validate = getConnection().prepareStatement("SELECT * FROM CantidadTB WHERE IdAlmacen = ? AND IdSuministro = ? ");
-                        validate.setInt(1, compraTB.getIdAlmacen());
-                        validate.setString(2, dc.getIdSuministro());
-                        if (validate.executeQuery().next()) {
-                            suministro_almacen_actualizar.setDouble(1, dc.getCantidad());
-                            suministro_almacen_actualizar.setInt(2, compraTB.getIdAlmacen());
-                            suministro_almacen_actualizar.setString(3, dc.getIdSuministro());
-                            suministro_almacen_actualizar.addBatch();
-                        } else {
-                            suministro_almacen_insertar.setInt(1, compraTB.getIdAlmacen());
-                            suministro_almacen_insertar.setString(2, dc.getIdSuministro());
-                            suministro_almacen_insertar.setDouble(3, 1);
-                            suministro_almacen_insertar.setDouble(4, 10);
-                            suministro_almacen_insertar.setDouble(5, dc.getCantidad());
-                            suministro_almacen_insertar.addBatch();
-                        }
+                        suministro_almacen_actualizar.setDouble(1, dc.getCantidad());
+                        suministro_almacen_actualizar.setInt(2, compraTB.getIdAlmacen());
+                        suministro_almacen_actualizar.setString(3, dc.getIdSuministro());
+                        suministro_almacen_actualizar.addBatch();
 
                         suministro_kardex.setString(1, dc.getIdSuministro());
                         suministro_kardex.setString(2, Tools.getDate());
@@ -294,7 +278,6 @@ public class CompraADO extends DBUtil {
                 suministro_costo.executeBatch();
                 suministro_precios_remover.executeBatch();
                 suministro_precios_insertar.executeBatch();
-                suministro_almacen_insertar.executeBatch();
                 suministro_almacen_actualizar.executeBatch();
 //                preparedBanco.executeBatch();
 //                preparedBancoHistorial.executeBatch();
@@ -319,17 +302,11 @@ public class CompraADO extends DBUtil {
                     if (detalle_compra != null) {
                         detalle_compra.close();
                     }
-                    if (suministro_almacen_insertar != null) {
-                        suministro_almacen_insertar.close();
-                    }
                     if (suministro_almacen_actualizar != null) {
                         suministro_almacen_actualizar.close();
                     }
                     if (suministro_costo != null) {
                         suministro_costo.close();
-                    }
-                    if (validate != null) {
-                        validate.close();
                     }
 //                    if (preparedBanco != null) {
 //                        preparedBanco.close();
@@ -373,13 +350,11 @@ public class CompraADO extends DBUtil {
 
     public static String Compra_Credito(CompraTB compraTB, TableView<DetalleCompraTB> tableView, ObservableList<LoteTB> loteTBs) {
         CallableStatement codigo_compra = null;
-        PreparedStatement validate = null;
         CallableStatement codigo_credito = null;
         PreparedStatement compra = null;
         PreparedStatement detalle_compra = null;
         PreparedStatement suministro_precios_remover = null;
         PreparedStatement suministro_precios_insertar = null;
-        PreparedStatement suministro_almacen_insertar = null;
         PreparedStatement suministro_almacen_actualizar = null;
         PreparedStatement suministro_cantidad = null;
         PreparedStatement suministro_costo = null;
@@ -441,8 +416,6 @@ public class CompraADO extends DBUtil {
                 suministro_cantidad = getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?");
 
                 suministro_precio = getConnection().prepareStatement("UPDATE SuministroTB SET Impuesto=?, PrecioVentaGeneral=?, TipoPrecio=? WHERE IdSuministro = ?");
-
-                suministro_almacen_insertar = getConnection().prepareStatement("INSERT INTO CantidadTB(IdAlmacen,IdSuministro,StockMinimo,StockMaximo,Cantidad) VALUES(?,?,?,?,?)");
 
                 suministro_almacen_actualizar = getConnection().prepareStatement("UPDATE CantidadTB SET Cantidad = Cantidad + ? WHERE IdAlmacen = ? AND IdSuministro = ?");
 
@@ -525,22 +498,11 @@ public class CompraADO extends DBUtil {
                         suministro_kardex.setInt(10, compraTB.getIdAlmacen());
                         suministro_kardex.addBatch();
                     } else {
-                        validate = getConnection().prepareStatement("SELECT * FROM CantidadTB WHERE IdAlmacen = ? AND IdSuministro = ? ");
-                        validate.setInt(1, compraTB.getIdAlmacen());
-                        validate.setString(2, dc.getIdSuministro());
-                        if (validate.executeQuery().next()) {
-                            suministro_almacen_actualizar.setDouble(1, dc.getCantidad());
-                            suministro_almacen_actualizar.setInt(2, compraTB.getIdAlmacen());
-                            suministro_almacen_actualizar.setString(3, dc.getIdSuministro());
-                            suministro_almacen_actualizar.addBatch();
-                        } else {
-                            suministro_almacen_insertar.setInt(1, compraTB.getIdAlmacen());
-                            suministro_almacen_insertar.setString(2, dc.getIdSuministro());
-                            suministro_almacen_insertar.setDouble(3, 1);
-                            suministro_almacen_insertar.setDouble(4, 10);
-                            suministro_almacen_insertar.setDouble(5, dc.getCantidad());
-                            suministro_almacen_insertar.addBatch();
-                        }
+                        suministro_almacen_actualizar.setDouble(1, dc.getCantidad());
+                        suministro_almacen_actualizar.setInt(2, compraTB.getIdAlmacen());
+                        suministro_almacen_actualizar.setString(3, dc.getIdSuministro());
+                        suministro_almacen_actualizar.addBatch();
+
                         suministro_kardex.setString(1, dc.getIdSuministro());
                         suministro_kardex.setString(2, Tools.getDate());
                         suministro_kardex.setString(3, Tools.getTime());
@@ -583,8 +545,7 @@ public class CompraADO extends DBUtil {
                 suministro_kardex.executeBatch();
                 suministro_costo.executeBatch();
                 suministro_precios_remover.executeBatch();
-                suministro_precios_insertar.executeBatch();
-                suministro_almacen_insertar.executeBatch();
+                suministro_precios_insertar.executeBatch();            
                 suministro_almacen_actualizar.executeBatch();
 //                lote_compra.executeBatch();
                 getConnection().commit();
@@ -606,10 +567,7 @@ public class CompraADO extends DBUtil {
                     }
                     if (detalle_compra != null) {
                         detalle_compra.close();
-                    }
-                    if (suministro_almacen_insertar != null) {
-                        suministro_almacen_insertar.close();
-                    }
+                    }                   
                     if (suministro_almacen_actualizar != null) {
                         suministro_almacen_actualizar.close();
                     }
@@ -630,10 +588,7 @@ public class CompraADO extends DBUtil {
                     }
                     if (suministro_kardex != null) {
                         suministro_kardex.close();
-                    }
-                    if (validate != null) {
-                        validate.close();
-                    }
+                    }                    
 //                    if (lote_compra != null) {
 //                        lote_compra.close();
 //                    }

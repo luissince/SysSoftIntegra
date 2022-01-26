@@ -4,12 +4,14 @@ import controller.operaciones.compras.FxComprasListaController;
 import controller.inventario.suministros.FxSuministrosListaController;
 import controller.menus.FxPrincipalController;
 import controller.tools.FilesRouters;
+import controller.tools.SearchComboBox;
 import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.awt.HeadlessException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -45,6 +47,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import model.AjusteInventarioADO;
 import model.AjusteInventarioTB;
+import model.AlmacenADO;
+import model.AlmacenTB;
 import model.SuministroADO;
 import model.SuministroTB;
 import model.TipoMovimientoADO;
@@ -86,6 +90,8 @@ public class FxMovimientosProcesoController implements Initializable {
     @FXML
     private TextField txtObservacion;
     @FXML
+    private ComboBox<AlmacenTB> cbAlmacen;
+    @FXML
     private HBox hbBotones;
     @FXML
     private HBox hbLoad;
@@ -98,15 +104,15 @@ public class FxMovimientosProcesoController implements Initializable {
 
     private FxMovimientosController movimientosController;
 
-
+    private SearchComboBox<AlmacenTB> searchComboBoxAlmacen;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tcAccion.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
         tcClave.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClave() + "\n" + cellData.getValue().getNombreMarca()));
         tcNuevaExistencia.setCellValueFactory(new PropertyValueFactory<>("txtMovimiento"));
-        tcExistenciaActual.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getCantidad(), 2) + " " + cellData.getValue().getUnidadCompraName()));
-        tcDiferencia.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getDiferencia(), 2)));
+        tcExistenciaActual.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
+        tcDiferencia.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getUnidadCompraName()));
 
         tcAccion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
         tcClave.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));
@@ -119,6 +125,58 @@ public class FxMovimientosProcesoController implements Initializable {
         rbDecremento.setToggleGroup(groupAjuste);
 
         TipoMovimientoADO.Get_list_Tipo_Movimiento(rbIncremento.isSelected(), false).forEach(e -> cbAjuste.getItems().add(e));
+
+        filterCbAlmacen();
+    }
+
+    private void filterCbAlmacen() {
+        searchComboBoxAlmacen = new SearchComboBox<>(cbAlmacen, true);
+        searchComboBoxAlmacen.setFilter((item, text) -> item.getNombre().toLowerCase().contains(text.toLowerCase()));
+        searchComboBoxAlmacen.getComboBox().getItems().addAll(AlmacenADO.GetSearchComboBoxAlmacen());
+        searchComboBoxAlmacen.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
+            if (t.getCode() == KeyCode.ENTER) {
+                if (!searchComboBoxAlmacen.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
+                    searchComboBoxAlmacen.getSearchComboBoxSkin().getItemView().getSelectionModel().select(0);
+                    searchComboBoxAlmacen.getSearchComboBoxSkin().getItemView().requestFocus();
+                }
+            } else if (t.getCode() == KeyCode.ESCAPE) {
+                searchComboBoxAlmacen.getComboBox().hide();
+            }
+        });
+        searchComboBoxAlmacen.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
+            if (null == t.getCode()) {
+                searchComboBoxAlmacen.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                searchComboBoxAlmacen.getSearchComboBoxSkin().getSearchBox().selectAll();
+            } else {
+                switch (t.getCode()) {
+                    case ENTER:
+                    case SPACE:
+                    case ESCAPE:
+                        searchComboBoxAlmacen.getComboBox().hide();
+                        break;
+                    case UP:
+                    case DOWN:
+                    case LEFT:
+                    case RIGHT:
+                        break;
+                    default:
+                        searchComboBoxAlmacen.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                        searchComboBoxAlmacen.getSearchComboBoxSkin().getSearchBox().selectAll();
+                        break;
+                }
+            }
+        });
+        searchComboBoxAlmacen.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty().addListener((p, o, item) -> {
+            if (item != null) {
+                searchComboBoxAlmacen.getComboBox().getSelectionModel().select(item);
+                if (searchComboBoxAlmacen.getSearchComboBoxSkin().isClickSelection()) {
+                    searchComboBoxAlmacen.getComboBox().hide();
+                }
+            }
+        });
+        if (!searchComboBoxAlmacen.getComboBox().getItems().isEmpty()) {
+            searchComboBoxAlmacen.getComboBox().getSelectionModel().select(0);
+        }
     }
 
     private void registrarMovimiento() {
@@ -133,8 +191,10 @@ public class FxMovimientosProcesoController implements Initializable {
             } else if (Tools.isText(txtObservacion.getText().trim())) {
                 Tools.AlertMessageWarning(apWindow, "Movimiento", "Ingrese una observación, por favor.");
                 txtObservacion.requestFocus();
+            } else if (cbAlmacen.getSelectionModel().getSelectedIndex() < 0) {
+                Tools.AlertMessageWarning(apWindow, "Movimiento", "Seleccione el almacen.");
+                cbAlmacen.requestFocus();
             } else {
-
                 short validate = Tools.AlertMessageConfirmation(apWindow, "Movimiento", "¿Está seguro de continuar?");
                 if (validate == 1) {
                     ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
@@ -154,7 +214,9 @@ public class FxMovimientosProcesoController implements Initializable {
                             inventarioTB.setObservacion(txtObservacion.getText().trim());
                             inventarioTB.setSuministro(true);
                             inventarioTB.setEstado(1);
-                            return AjusteInventarioADO.Crud_Movimiento_Inventario(inventarioTB, tvList);
+                            inventarioTB.setIdAlmacen(cbAlmacen.getSelectionModel().getSelectedItem().getIdAlmacen());
+                            inventarioTB.setSuministroTBs(new ArrayList<>(tvList.getItems()));
+                            return AjusteInventarioADO.Crud_Movimiento_Inventario(inventarioTB);
                         }
                     };
                     task.setOnScheduled(t -> {
@@ -237,6 +299,12 @@ public class FxMovimientosProcesoController implements Initializable {
         TipoMovimientoADO.Get_list_Tipo_Movimiento(rbIncremento.isSelected(), false).forEach(e -> cbAjuste.getItems().add(e));
         txtObservacion.setText("N/D");
         tvList.getItems().clear();
+
+        searchComboBoxAlmacen.getComboBox().getItems().clear();
+        searchComboBoxAlmacen.getComboBox().getItems().addAll(AlmacenADO.GetSearchComboBoxAlmacen());
+        if (!searchComboBoxAlmacen.getComboBox().getItems().isEmpty()) {
+            searchComboBoxAlmacen.getComboBox().getSelectionModel().select(0);
+        }
     }
 
     private boolean validateDuplicate(String idSuministro) {
@@ -303,7 +371,7 @@ public class FxMovimientosProcesoController implements Initializable {
                     }
                     tvList.refresh();
                 });
-               
+
                 suministroTB.getTxtMovimiento().focusedProperty().addListener((obs, oldVal, newVal) -> {
                     if (!newVal) {
                         if (!suministroTB.isCambios()) {
@@ -392,7 +460,6 @@ public class FxMovimientosProcesoController implements Initializable {
                 Tools.AlertMessageWarning(apWindow, "Ajuste de Inventario - Movimiento", "Seleccione el tipo de movimiento.");
                 cbAjuste.requestFocus();
             } else {
-
                 if (tvList.getItems().isEmpty()) {
                     Tools.AlertMessageWarning(apWindow, "Ajuste de Inventario - Movimiento", "No hay registros para mostrar en el reporte.");
                     return;

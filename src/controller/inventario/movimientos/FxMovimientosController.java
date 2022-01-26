@@ -91,16 +91,16 @@ public class FxMovimientosController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
         tcTipoMovimiento.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getTipoMovimientoName()));
-        tcFecha.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFecha() + " " + cellData.getValue().getHora()));
+        tcFecha.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFecha() + "\n" + cellData.getValue().getHora()));
         tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservacion()));
         tcInformacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getInformacion()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("lblEstado"));
         tcOpcion.setCellValueFactory(new PropertyValueFactory<>("validar"));
 
-        tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
+        tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
         tcTipoMovimiento.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
-        tcFecha.prefWidthProperty().bind(tvList.widthProperty().multiply(0.16));
-        tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
+        tcFecha.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
+        tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.22));
         tcInformacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
         tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
         tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));

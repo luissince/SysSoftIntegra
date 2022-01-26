@@ -1417,9 +1417,12 @@
  ******************************************************************************/
 
 .table-view-secundario{
-    -fx-background-color: white,white,white, white;
-    -fx-border-color: #999999;
+    -fx-background-color: transparent,transparent,transparent, transparent; 
+    -fx-background-radius: 5px;
     -fx-padding: 0;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-border-width: 1px;
 }
 
 .table-view-secundario:focused {
@@ -1430,11 +1433,11 @@
 
 /****** Column Header ******/
 .table-view-secundario .column-header:last-visible {
-    -fx-border-color: transparent transparent #999999 transparent;
+    -fx-border-color: transparent transparent #cccccc transparent;
 }
 
 .table-view-secundario .filler {
-    -fx-border-color: transparent transparent #999999 transparent;
+    -fx-border-color: transparent transparent #cccccc transparent;
 }
 
 .table-view-secundario .column-header .label{
@@ -1460,7 +1463,7 @@
 
 .table-view-secundario .column-header, .table-view-secundario .filler{
     -fx-background-color: white;
-    -fx-border-color: transparent transparent #999999 transparent;
+    -fx-border-color: transparent transparent #cccccc transparent;
 }
 
 .table-view-secundario .filler {

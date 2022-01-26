@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
@@ -18,6 +19,8 @@ public class AjusteInventarioTB {
     private int estado;
     private String estadoName;
     private String codigoVerificacion;
+    private int idAlmacen;
+    private ArrayList<SuministroTB>  suministroTBs;
 
     private Button validar;
     private Label lblEstado;
@@ -127,6 +130,22 @@ public class AjusteInventarioTB {
 
     public void setCodigoVerificacion(String codigoVerificacion) {
         this.codigoVerificacion = codigoVerificacion;
+    }
+
+    public int getIdAlmacen() {
+        return idAlmacen;
+    }
+
+    public void setIdAlmacen(int idAlmacen) {
+        this.idAlmacen = idAlmacen;
+    }
+
+    public ArrayList<SuministroTB> getSuministroTBs() {
+        return suministroTBs;
+    }
+
+    public void setSuministroTBs(ArrayList<SuministroTB> suministroTBs) {
+        this.suministroTBs = suministroTBs;
     }
 
     public Button getValidar() {

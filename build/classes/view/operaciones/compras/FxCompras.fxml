@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fx:id="spWindow" fitToHeight="true" fitToWidth="true" onKeyReleased="#onKeyReleasedWindow" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.compras.FxComprasController">
+<ScrollPane fx:id="spWindow" fitToHeight="true" fitToWidth="true" onKeyReleased="#onKeyReleasedWindow" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.compras.FxComprasController">
    <content>
       <VBox style="-fx-background-color: white;">
          <children>
@@ -118,7 +118,7 @@
                                           </ImageView>
                                        </graphic></Label>
                                     <ComboBox fx:id="cbProveedor" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="- Buscar -" GridPane.columnIndex="1" />
-                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Proveedor(F8):" textFill="#020203" GridPane.rowIndex="1">
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Almacen(F8)" textFill="#020203" GridPane.rowIndex="1">
                                        <graphic>
                                           <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                              <image>

@@ -1,6 +1,7 @@
 package controller.menus;
 
 import controller.inventario.valorinventario.FxListaInventarioController;
+import controller.tools.DoughnutChart;
 import controller.tools.FilesRouters;
 import controller.tools.Session;
 import controller.tools.Tools;
@@ -10,7 +11,11 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.animation.Animation;
@@ -24,8 +29,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Parent;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -42,6 +52,8 @@ import javafx.util.Duration;
 import model.GlobalADO;
 import model.SuministroTB;
 import org.controlsfx.control.Notifications;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class FxInicioController implements Initializable {
 
@@ -50,7 +62,7 @@ public class FxInicioController implements Initializable {
     @FXML
     private Text lblFechaActual;
     @FXML
-    private Text lblArticulo;
+    private Text lblProducto;
     @FXML
     private Text lblCliente;
     @FXML
@@ -61,8 +73,6 @@ public class FxInicioController implements Initializable {
     private Text lblVentasTotales;
     @FXML
     private Text lblComprasTotales;
-    @FXML
-    private PieChart pcInventario;
     @FXML
     private Text lblVentasPagar;
     @FXML
@@ -76,21 +86,18 @@ public class FxInicioController implements Initializable {
     @FXML
     private Text lblExcentes;
     @FXML
-    private VBox vbProductoMasVendidos;
-    @FXML
     private HBox hbLoad;
-
-    private ObservableList<PieChart.Data> datas = FXCollections.observableArrayList(
-            new PieChart.Data("Productos Negativos", 0),
-            new PieChart.Data("Productos Intermedios", 0),
-            new PieChart.Data("Productos Necesarios", 0),
-            new PieChart.Data("Productos Excedentes", 0)
-    );
+    @FXML
+    private VBox vbVentas;
+    @FXML
+    private VBox vbInventario;
+    @FXML
+    private VBox vbTipoVenta;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         initClock();
-        initGraphics();
     }
 
     private void initClock() {
@@ -109,15 +116,14 @@ public class FxInicioController implements Initializable {
             return t;
         });
 
-        Task<ArrayList<Object>> task = new Task<ArrayList<Object>>() {
+        Task<Object> task = new Task<Object>() {
             @Override
-            protected ArrayList<Object> call() throws Exception {
+            protected Object call() throws Exception {
                 return GlobalADO.DashboardLoad(Tools.getDate());
             }
         };
         task.setOnScheduled(e -> {
             hbLoad.setVisible(true);
-
         });
 
         task.setOnFailed(e -> {
@@ -125,24 +131,39 @@ public class FxInicioController implements Initializable {
         });
 
         task.setOnSucceeded(e -> {
-            ArrayList<Object> arrayList = task.getValue();
-            lblVentasTotales.setText(Session.MONEDA_SIMBOLO + " " + arrayList.get(0));
-            lblComprasTotales.setText(Session.MONEDA_SIMBOLO + " " + arrayList.get(1));
-            lblArticulo.setText((String) arrayList.get(2));
-            lblCliente.setText((String) arrayList.get(3));
-            lblProveedor.setText((String) arrayList.get(4));
-            lblTrabajador.setText((String) arrayList.get(5));
+            Object object = task.getValue();
+            if (object instanceof ArrayList) {
+                ArrayList<Object> arrayList = (ArrayList<Object>) object;
 
-            ArrayList<SuministroTB> listaProductos = (ArrayList<SuministroTB>) arrayList.get(10);
+                lblVentasTotales.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue((double) arrayList.get(0), 2));
+                lblComprasTotales.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue((double) arrayList.get(1), 2));
+                lblVentasPagar.setText(Tools.roundingValue((int) arrayList.get(2), 0));
+                lblComprasPagar.setText(Tools.roundingValue((int) arrayList.get(3), 0));
 
-            loadGraphics((int) arrayList.get(6), (int) arrayList.get(7), (int) arrayList.get(8), (int) arrayList.get(9), listaProductos);
+                lblProducto.setText(Tools.roundingValue((double) arrayList.get(4), 0));
+                lblCliente.setText(Tools.roundingValue((double) arrayList.get(5), 0));
+                lblProveedor.setText(Tools.roundingValue((double) arrayList.get(6), 0));
+                lblTrabajador.setText(Tools.roundingValue((double) arrayList.get(7), 0));
 
-            lblVentasPagar.setText(Tools.roundingValue((int) arrayList.get(11), 0));
-            lblComprasPagar.setText(Tools.roundingValue((int) arrayList.get(12), 0));
+                lblNegativos.setText(Tools.roundingValue((int) arrayList.get(8), 0));
+                lblIntermedios.setText(Tools.roundingValue((int) arrayList.get(9), 0));
+                lblNecesarias.setText(Tools.roundingValue((int) arrayList.get(10), 0));
+                lblExcentes.setText(Tools.roundingValue((int) arrayList.get(11), 0));
+
+                loadBarChartGraphics((JSONArray) arrayList.get(12));
+                loadPieChartGraphics();
+                loadDoughnutChartGraphics();
+//  
+//            ArrayList<SuministroTB> listaProductos = (ArrayList<SuministroTB>) arrayList.get(10);
+//
+//            loadGraphics((int) arrayList.get(6), (int) arrayList.get(7), (int) arrayList.get(8), (int) arrayList.get(9), listaProductos);
+//
 //                    notificationState("Estado del producto","Tiene 15 días para su prueba, despues de ello\n se va bloquear el producto, gracias por elegirnos.","warning_large.png",Pos.TOP_RIGHT);
 //                    notificationState("Estado del inventario","Tiene un total de "+((int) arrayList.get(6))+" producto negativos,\n actualize su inventario por favor.","warning_large.png",Pos.TOP_RIGHT);
 //                    notificationState("SysSoftIntegra","Usa la AppSysSoftIntegra para realizar consular\n en tiempo real de sus tiendas.","logo.png",Pos.TOP_LEFT);
+            }
             hbLoad.setVisible(false);
+
         });
 
         executor.execute(task);
@@ -152,34 +173,75 @@ public class FxInicioController implements Initializable {
 
     }
 
-    public void initGraphics() {
-        datas = FXCollections.observableArrayList(
-                new PieChart.Data("Productos Negativos", 0),
-                new PieChart.Data("Productos Intermedios", 0),
-                new PieChart.Data("Productos Necesarios", 0),
-                new PieChart.Data("Productos Excedentes", 0)
-        );
-        pcInventario.setData(datas);
+    private void loadBarChartGraphics(JSONArray array) {
+        JSONArray arrayVentas = array;
+
+        ObservableList<String> list = FXCollections.observableArrayList(
+                Arrays.asList(
+                        "ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SET", "OCT", "NOV", "DIC"
+                ));
+
+        CategoryAxis xAxis = new CategoryAxis();
+        xAxis.setCategories(list);
+        xAxis.setLabel("category");
+
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("score");
+
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        barChart.setLegendSide(Side.TOP);
+
+        XYChart.Series<String, Number> series1 = new XYChart.Series<>();
+        series1.setName("Fiat");
+
+        for (int i = 0; i < list.size(); i++) {
+            String mes = list.get(i);
+            double monto = 0;
+            for (int j = 0; j < arrayVentas.size(); j++) {
+                JSONObject object = (JSONObject) arrayVentas.get(j);
+                if (Integer.parseInt(object.get("mes").toString()) == (i + 1)) {
+                    monto = Double.parseDouble(object.get("monto").toString());
+                    break;
+                }
+            }
+            series1.getData().add(new XYChart.Data<>(mes, monto));
+        }
+        barChart.getData().addAll(series1);
+
+        vbVentas.getChildren().clear();
+        vbVentas.getChildren().add(barChart);
     }
 
-    private void loadGraphics(double negativas, double intermedias, double necesarias, double excedentes, ArrayList<SuministroTB> arrayList) {
-        lblNegativos.setText("" + Tools.roundingValue(negativas, 0));
-        lblIntermedios.setText("" + Tools.roundingValue(intermedias, 0));
-        lblNecesarias.setText("" + Tools.roundingValue(necesarias, 0));
-        lblExcentes.setText("" + Tools.roundingValue(excedentes, 0));
+    private void loadPieChartGraphics() {
+        ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
+        data.add(new PieChart.Data("Negativos", 20));
+        data.add(new PieChart.Data("Intermedios", 40));
+        data.add(new PieChart.Data("Necesarios", 10));
+        data.add(new PieChart.Data("Excedentes", 15));
 
-        datas = FXCollections.observableArrayList(
-                new PieChart.Data("Productos Negativos", negativas),
-                new PieChart.Data("Productos Intermedios", intermedias),
-                new PieChart.Data("Productos Necesarios", necesarias),
-                new PieChart.Data("Productos Excedentes", excedentes)
-        );
-        pcInventario.setData(datas);
+        PieChart pie = new PieChart(data);
+        pie.setLegendSide(Side.TOP);
+        pie.setTitleSide(Side.BOTTOM);
+        pie.setLabelLineLength(60);
+        pie.setLabelsVisible(true);
 
-        vbProductoMasVendidos.getChildren().clear();
-        arrayList.forEach(e -> {
-            productoModel(e.getNombreMarca(), Tools.roundingValue(e.getPrecioVentaGeneral(), 2), Tools.roundingValue(e.getCantidad(), 2));
-        });
+        vbInventario.getChildren().clear();
+        vbInventario.getChildren().add(pie);
+    }
+
+    private void loadDoughnutChartGraphics() {
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+                new PieChart.Data("Grapefruit", 13),
+                new PieChart.Data("Oranges", 25),
+                new PieChart.Data("Plums", 10),
+                new PieChart.Data("Pears", 22),
+                new PieChart.Data("Apples", 30));
+
+        DoughnutChart chart = new DoughnutChart(pieChartData);
+        chart.setLegendSide(Side.TOP);
+
+        vbTipoVenta.getChildren().clear();
+        vbTipoVenta.getChildren().add(chart);
     }
 
     private void productoModel(String product, String price, String quantity) {
@@ -233,7 +295,7 @@ public class FxInicioController implements Initializable {
         hBoxContent.getChildren().addAll(vBoxProduct, vBoxQuantity);
 
         hBoxDetail.getChildren().addAll(hBoxImage, hBoxContent);
-        vbProductoMasVendidos.getChildren().add(hBoxDetail);
+//        vbProductoMasVendidos.getChildren().add(hBoxDetail);
     }
 
     private void onEventInventario(short existencia) {
@@ -311,7 +373,6 @@ public class FxInicioController implements Initializable {
         if (event.getCode() == KeyCode.ENTER) {
             onEventInventario((short) 3);
         }
-
     }
 
     @FXML
@@ -324,19 +385,11 @@ public class FxInicioController implements Initializable {
         if (event.getCode() == KeyCode.ENTER) {
             onEventInventario((short) 4);
         }
-
     }
 
     @FXML
     private void onActionExcedentes(ActionEvent event) {
         onEventInventario((short) 4);
     }
-
-    private void onKeyPressedAceptarLoad(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-
-        }
-    }
-
 
 }
