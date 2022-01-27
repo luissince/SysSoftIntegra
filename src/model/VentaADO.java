@@ -1827,7 +1827,6 @@ public class VentaADO {
 
             movimiento_caja = DBUtil.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB(IdCaja,FechaMovimiento,HoraMovimiento,Comentario,TipoMovimiento,Monto,IdProcedencia)VALUES(?,?,?,?,?,?,?)");
             if (ventaTB.getDeposito() > 0) {
-
                 movimiento_caja.setString(1, Session.CAJA_ID);
                 movimiento_caja.setString(2, ventaTB.getFechaVenta());
                 movimiento_caja.setString(3, ventaTB.getHoraVenta());
@@ -1836,7 +1835,6 @@ public class VentaADO {
                 movimiento_caja.setDouble(6, ventaTB.getDeposito());
                 movimiento_caja.setString(7, id_venta);
                 movimiento_caja.addBatch();
-
             } else {
                 if (ventaTB.getEfectivo() > 0) {
                     movimiento_caja.setString(1, Session.CAJA_ID);
@@ -2844,7 +2842,7 @@ public class VentaADO {
                     DBUtil.getConnection().rollback();
                     return "ventacredito";
                 } else {
-                    statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ? and FechaVenta = CAST(GETDATE() AS DATE)");
+                    statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ? and MONTH(FechaVenta) = MONTH(GETDATE())");
                     statementValidar.setString(1, idVenta);
                     ResultSet resultSet = statementValidar.executeQuery();
                     if (resultSet.next()) {

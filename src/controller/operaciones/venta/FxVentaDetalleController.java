@@ -261,8 +261,8 @@ public class FxVentaDetalleController implements Initializable {
     private Label addHeadGridPane(String nombre) {
         Label label = new Label(nombre);
         label.setTextFill(Color.web("#FFFFFF"));
-        label.setStyle("-fx-background-color:  #020203;-fx-padding:  0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;-fx-font-weight:100;");
         label.getStyleClass().add("labelRoboto13");
+        label.setStyle("-fx-background-color:  #020203;-fx-padding:  0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;-fx-font-weight:100;");
         label.setAlignment(Pos.CENTER);
         label.setWrapText(true);
         label.setPrefWidth(Control.USE_COMPUTED_SIZE);
@@ -275,8 +275,8 @@ public class FxVentaDetalleController implements Initializable {
     private Label addElementGridPaneLabel(String id, String nombre, Pos pos) {
         Label label = new Label(nombre);
         label.setId(id);
-        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.getStyleClass().add("labelRoboto13");
+        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.setAlignment(pos);
         label.setWrapText(true);
         label.setPrefWidth(Control.USE_COMPUTED_SIZE);

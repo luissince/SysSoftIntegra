@@ -125,6 +125,8 @@ public class TicketCompra {
                         map.put("SIMBOLO", compraTB.getMonedaNombre());
                         map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(compraTB.getTotal(), 2), true, compraTB.getMonedaTB().getNombre()));
 
+                        map.put("VALOR_VENTA", Tools.roundingValue(0, 2));
+                        map.put("DESCUENTO", Tools.roundingValue(0, 2));
                         map.put("SUB_IMPORTE", Tools.roundingValue(subImporteNeto, 2));
                         map.put("IMPUESTO_TOTAL", Tools.roundingValue(impuesto, 2));
                         map.put("IMPORTE_TOTAL", Tools.roundingValue(importeNeto, 2));

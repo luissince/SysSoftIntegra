@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5aa49b8b-1bb2-4be2-945b-96f1decae4ba">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="176"/>
-	<property name="ireport.y" value="96"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="PERIODO" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -330,12 +330,12 @@
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="193" splitType="Stretch">
+		<band height="101" splitType="Stretch">
 			<line>
 				<reportElement x="0" y="0" width="555" height="1" forecolor="#000000" uuid="c4f6d1f5-6174-450e-9d41-65be0dc86651"/>
 			</line>
 			<textField>
-				<reportElement x="0" y="169" width="204" height="23" forecolor="#020203" uuid="81a5cdee-11ba-4f97-8d65-7e5619851fa3"/>
+				<reportElement x="0" y="27" width="223" height="23" forecolor="#020203" uuid="81a5cdee-11ba-4f97-8d65-7e5619851fa3"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -343,47 +343,31 @@
 				<textFieldExpression><![CDATA[$P{TOTALCONTADO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="49" width="204" height="23" forecolor="#020203" uuid="2dd6aa18-220e-440b-a4d6-77e3eaa6ef14"/>
+				<reportElement x="332" y="5" width="223" height="23" forecolor="#020203" uuid="2dd6aa18-220e-440b-a4d6-77e3eaa6ef14"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[VENTAS AL CRÉDITO]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="98" width="204" height="23" forecolor="#020203" uuid="7843e25c-8b69-4817-a1ef-f3c9532cd017"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<text><![CDATA[VENTAS ANULADAS]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="0" y="71" width="204" height="23" forecolor="#020203" uuid="ea26dc06-1080-432e-814c-46f00962a190"/>
+				<reportElement x="332" y="27" width="223" height="23" forecolor="#020203" uuid="ea26dc06-1080-432e-814c-46f00962a190"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{TOTALCREDITO}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="0" y="120" width="204" height="23" forecolor="#020203" uuid="489a6bbf-04ec-4067-9128-14fecacb9ac6"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="true"/>
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{TOTAANULADO}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="204" height="23" forecolor="#020203" uuid="b7f33343-38bb-4565-9a09-ab5470ef7919"/>
+				<reportElement x="332" y="56" width="223" height="23" forecolor="#020203" uuid="b7f33343-38bb-4565-9a09-ab5470ef7919"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<text><![CDATA[VENTAS COBRADAS]]></text>
+				<text><![CDATA[CRÉDITO COBRADO]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="22" width="204" height="23" forecolor="#020203" uuid="7155ed22-e300-4e93-9a4a-df9940d3ba6a"/>
+				<reportElement x="332" y="78" width="223" height="23" forecolor="#020203" uuid="7155ed22-e300-4e93-9a4a-df9940d3ba6a"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -391,7 +375,7 @@
 				<textFieldExpression><![CDATA[$P{TOTALCREDITOCOBRADO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="147" width="204" height="23" forecolor="#020203" uuid="e8a57bd0-2230-4c88-81f6-ce88503aee24"/>
+				<reportElement x="0" y="5" width="223" height="23" forecolor="#020203" uuid="e8a57bd0-2230-4c88-81f6-ce88503aee24"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
@@ -399,7 +383,7 @@
 				<text><![CDATA[VENTAS AL CONTADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="351" y="0" width="204" height="23" forecolor="#020203" uuid="4d7a6820-7739-4ce3-9d03-19d10749491f"/>
+				<reportElement x="0" y="55" width="75" height="23" forecolor="#020203" uuid="4d7a6820-7739-4ce3-9d03-19d10749491f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
@@ -407,7 +391,7 @@
 				<text><![CDATA[EFECTIVO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="351" y="49" width="204" height="23" forecolor="#020203" uuid="7024dd6b-53b6-4abb-b1f9-e0c3ff06b876"/>
+				<reportElement x="74" y="55" width="75" height="23" forecolor="#020203" uuid="7024dd6b-53b6-4abb-b1f9-e0c3ff06b876"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
@@ -415,7 +399,7 @@
 				<text><![CDATA[TARJETA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="351" y="98" width="204" height="23" forecolor="#020203" uuid="5f0e2661-2cc8-464b-8129-e39dda164919"/>
+				<reportElement x="148" y="55" width="75" height="23" forecolor="#020203" uuid="5f0e2661-2cc8-464b-8129-e39dda164919"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
 					<paragraph leftIndent="5"/>
@@ -423,7 +407,7 @@
 				<text><![CDATA[DEPOSITO]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="351" y="22" width="204" height="23" forecolor="#020203" uuid="f816bb14-6eb3-42b9-bef5-992d5a5b1a7d"/>
+				<reportElement x="0" y="77" width="75" height="23" forecolor="#020203" uuid="f816bb14-6eb3-42b9-bef5-992d5a5b1a7d"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -431,7 +415,7 @@
 				<textFieldExpression><![CDATA[$P{EFECTIVO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="351" y="71" width="204" height="23" forecolor="#020203" uuid="2911610d-4a5a-465a-b596-c131c02e0a86"/>
+				<reportElement x="74" y="77" width="75" height="23" forecolor="#020203" uuid="2911610d-4a5a-465a-b596-c131c02e0a86"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -439,13 +423,19 @@
 				<textFieldExpression><![CDATA[$P{TARJETA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="351" y="120" width="204" height="23" forecolor="#020203" uuid="0138923f-4f9a-4aaf-b413-f21f65cd1ac4"/>
+				<reportElement x="148" y="77" width="75" height="23" forecolor="#020203" uuid="0138923f-4f9a-4aaf-b413-f21f65cd1ac4"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DEPOSITO}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="0" y="55" width="223" height="1" uuid="393adc80-b78c-4f4b-a8e3-88ae2ca849d2"/>
+			</line>
+			<line>
+				<reportElement x="332" y="55" width="223" height="1" uuid="46d39382-a9ac-4d77-b4ae-08d98b27e071"/>
+			</line>
 		</band>
 	</summary>
 </jasperReport>

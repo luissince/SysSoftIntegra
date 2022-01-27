@@ -300,8 +300,152 @@ public class GlobalADO {
                 arrayHVentas.add(jsono);
             }
             ptHistorialVentas.close();
-            
-         
+
+            PreparedStatement ptHistorialVentasTipos = DBUtil.getConnection().prepareStatement("SELECT \n"
+                    + "MONTH(vt.FechaVenta) AS Mes, \n"
+                    + "case td.Facturacion when 1 then SUM(dv.Cantidad * (dv.PrecioVenta-dv.Descuento)) else 0 end Sunat,\n"
+                    + "case td.Facturacion when 0 then SUM(dv.Cantidad * (dv.PrecioVenta-dv.Descuento)) else 0 end Libre\n"
+                    + "FROM VentaTB AS vt \n"
+                    + "INNER JOIN TipoDocumentoTB AS td on td.IdTipoDocumento = vt.Comprobante\n"
+                    + "LEFT JOIN NotaCreditoTB AS nc ON nc.IdVenta = vt.IdVenta\n"
+                    + "INNER JOIN DetalleVentaTB AS dv ON dv.IdVenta = vt.IdVenta\n"
+                    + "WHERE \n"
+                    + "vt.Estado <> 3 AND nc.IdNotaCredito IS NULL AND YEAR(vt.FechaVenta) = YEAR(GETDATE()) \n"
+                    + "or\n"
+                    + "vt.Estado <> 3 AND nc.IdNotaCredito IS NULL AND YEAR(vt.FechaVenta) = YEAR(GETDATE()) AND td.Facturacion = 1\n"
+                    + "GROUP BY \n"
+                    + "MONTH(vt.FechaVenta),\n"
+                    + "td.Facturacion");
+            resultLista = ptHistorialVentasTipos.executeQuery();
+            JSONArray arrayHVentasTipos = new JSONArray();
+            while (resultLista.next()) {
+                JSONObject jsono = new JSONObject();
+                jsono.put("mes", resultLista.getInt("Mes"));
+                jsono.put("sunat", resultLista.getDouble("Sunat"));
+                jsono.put("libre", resultLista.getDouble("Libre"));
+                arrayHVentasTipos.add(jsono);
+            }
+            ptHistorialVentasTipos.close();
+
+            PreparedStatement ptTipoVenta = DBUtil.getConnection().prepareStatement("SELECT \n"
+                    + "CASE \n"
+                    + "WHEN v.Estado <> 2 AND v.Efectivo > 0 AND v.Tarjeta = 0 THEN 'EFECTIVO' \n"
+                    + "WHEN v.Estado <> 2 AND v.Tarjeta  > 0 AND v.Efectivo = 0 THEN 'TARJETA'\n"
+                    + "WHEN v.Estado <> 2 AND v.Efectivo > 0 AND v.Tarjeta > 0 THEN 'MIXTO'\n"
+                    + "WHEN v.Estado <> 2 AND v.Deposito > 0 THEN 'DEPOSITO' \n"
+                    + "ELSE 'NINGUNO' END AS FormaName,\n"
+                    + "v.Tipo,\n"
+                    + "v.Estado,\n"
+                    + "v.Efectivo,\n"
+                    + "v.Tarjeta,\n"
+                    + "v.Deposito,\n"
+                    + "sum(dv.Cantidad * (dv.PrecioVenta-dv.Descuento)) AS Total,\n"
+                    + "iif(n.IdNotaCredito IS NULL,0,1) AS IdNotaCredito\n"
+                    + "FROM VentaTB AS v\n"
+                    + "LEFT JOIN NotaCreditoTB AS n ON v.IdVenta = n.IdVenta\n"
+                    + "INNER JOIN DetalleVentaTB AS dv ON dv.IdVenta = v.IdVenta\n"
+                    + "WHERE MONTH(v.FechaVenta) = MONTH(GETDATE())\n"
+                    + "GROUP BY             \n"
+                    + "v.Tipo,\n"
+                    + "v.Estado,\n"
+                    + "v.Efectivo,\n"
+                    + "v.Tarjeta,\n"
+                    + "v.Deposito,\n"
+                    + "v.Estado,\n"
+                    + "v.FechaVenta,\n"
+                    + "v.HoraVenta,\n"
+                    + "n.IdNotaCredito");
+            resultLista = ptTipoVenta.executeQuery();
+            JSONArray arrayTipoVenta = new JSONArray();
+            while (resultLista.next()) {
+                JSONObject jsono = new JSONObject();
+                jsono.put("FormaName", resultLista.getString("FormaName"));
+                jsono.put("Tipo", resultLista.getInt("Tipo"));
+                jsono.put("Estado", resultLista.getInt("Estado"));
+                jsono.put("Efectivo", resultLista.getDouble("Efectivo"));
+                jsono.put("Tarjeta", resultLista.getDouble("Tarjeta"));
+                jsono.put("Deposito", resultLista.getDouble("Deposito"));
+                jsono.put("Total", resultLista.getDouble("Total"));
+                jsono.put("IdNotaCredito", resultLista.getInt("IdNotaCredito"));
+                arrayTipoVenta.add(jsono);
+            }
+            ptTipoVenta.close();
+
+            PreparedStatement ptProductosMasVecesVendidos = DBUtil.getConnection().prepareStatement("SELECT \n"
+                    + "TOP 10\n"
+                    + "s.IdSuministro,\n"
+                    + "s.Clave,\n"
+                    + "s.NombreMarca,\n"
+                    + "isnull(dc.Nombre,'') AS Categoria,\n"
+                    + "isnull(dm.Nombre,'') AS Marca,\n"
+                    + "isnull(du.Nombre,'') AS Medida,\n"
+                    + "count(s.IdSuministro) as Cantidad\n"
+                    + "FROM DetalleVentaTB dv \n"
+                    + "INNER JOIN VentaTB AS v ON v.IdVenta = dv.IdVenta\n"
+                    + "INNER JOIN SuministroTB AS s ON s.IdSuministro = dv.IdArticulo\n"
+                    + "LEFT JOIN DetalleTB AS dc ON dc.IdDetalle = s.Categoria AND dc.IdMantenimiento = '0006'\n"
+                    + "LEFT JOIN DetalleTB AS dm ON dm.IdDetalle = s.Marca AND dm.IdMantenimiento = '0007'\n"
+                    + "LEFT JOIN DetalleTB AS du ON du.IdDetalle = s.UnidadCompra AND du.IdMantenimiento = '0013'\n"
+                    + "WHERE MONTH(FechaVenta) = MONTH(GETDATE())\n"
+                    + "GROUP BY\n"
+                    + "s.IdSuministro,\n"
+                    + "s.Clave,\n"
+                    + "s.NombreMarca,\n"
+                    + "dc.Nombre,\n"
+                    + "dm.Nombre,\n"
+                    + "du.Nombre\n"
+                    + "ORDER BY Cantidad DESC");
+            resultLista = ptProductosMasVecesVendidos.executeQuery();
+            JSONArray arrayProductosMasVecesVendidos = new JSONArray();
+            while (resultLista.next()) {
+                JSONObject jsono = new JSONObject();
+                jsono.put("Clave", resultLista.getString("Clave"));
+                jsono.put("NombreMarca", resultLista.getString("NombreMarca"));
+                jsono.put("Categoria", resultLista.getString("Categoria"));
+                jsono.put("Marca", resultLista.getString("Marca"));
+                jsono.put("Medida", resultLista.getString("Medida"));
+                jsono.put("Cantidad", resultLista.getString("Cantidad"));
+                arrayProductosMasVecesVendidos.add(jsono);
+            }
+            ptProductosMasVecesVendidos.close();
+
+            PreparedStatement ptProductosMasCantidadesVendidos = DBUtil.getConnection().prepareStatement("SELECT \n"
+                    + "TOP 10\n"
+                    + "s.IdSuministro,\n"
+                    + "s.Clave,\n"
+                    + "s.NombreMarca,\n"
+                    + "isnull(dc.Nombre,'') AS Categoria,\n"
+                    + "isnull(dm.Nombre,'') AS Marca,\n"
+                    + "isnull(du.Nombre,'') AS Medida,\n"
+                    + "sum(dv.Cantidad) AS Suma\n"
+                    + "FROM DetalleVentaTB dv \n"
+                    + "INNER JOIN VentaTB AS v ON v.IdVenta = dv.IdVenta\n"
+                    + "INNER JOIN SuministroTB as s ON s.IdSuministro = dv.IdArticulo\n"
+                    + "LEFT JOIN DetalleTB AS dc ON dc.IdDetalle = s.Categoria AND dc.IdMantenimiento = '0006'\n"
+                    + "LEFT JOIN DetalleTB AS dm ON dm.IdDetalle = s.Marca AND dm.IdMantenimiento = '0007'\n"
+                    + "LEFT JOIN DetalleTB AS du ON du.IdDetalle = s.UnidadCompra AND du.IdMantenimiento = '0013'\n"
+                    + "WHERE MONTH(FechaVenta) = MONTH(GETDATE())\n"
+                    + "GROUP BY\n"
+                    + "s.IdSuministro,\n"
+                    + "s.Clave,\n"
+                    + "s.NombreMarca,\n"
+                    + "dc.Nombre,\n"
+                    + "dm.Nombre,\n"
+                    + "du.Nombre\n"
+                    + "ORDER BY Suma DESC");
+            resultLista = ptProductosMasCantidadesVendidos.executeQuery();
+            JSONArray arrayProductosMasCantidadVendidos = new JSONArray();
+            while (resultLista.next()) {
+                JSONObject jsono = new JSONObject();
+                jsono.put("Clave", resultLista.getString("Clave"));
+                jsono.put("NombreMarca", resultLista.getString("NombreMarca"));
+                jsono.put("Categoria", resultLista.getString("Categoria"));
+                jsono.put("Marca", resultLista.getString("Marca"));
+                jsono.put("Medida", resultLista.getString("Medida"));
+                jsono.put("Suma", resultLista.getString("Suma"));
+                arrayProductosMasCantidadVendidos.add(jsono);
+            }
+            ptProductosMasCantidadesVendidos.close();
 
             //
             arrayList.add(ventasTotales);
@@ -322,6 +466,11 @@ public class GlobalADO {
             arrayList.add(cantidad_excedentes);
 
             arrayList.add(arrayHVentas);
+            arrayList.add(arrayHVentasTipos);
+            arrayList.add(arrayTipoVenta);
+
+            arrayList.add(arrayProductosMasVecesVendidos);
+            arrayList.add(arrayProductosMasCantidadVendidos);
 
             return arrayList;
         } catch (SQLException ex) {

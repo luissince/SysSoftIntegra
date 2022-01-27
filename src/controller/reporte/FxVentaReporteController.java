@@ -238,8 +238,8 @@ public class FxVentaReporteController implements Initializable {
                 }
 
                 if (vt.getNotaCreditoTB() == null && vt.getEstado() != 3) {
-                    if (vt.getTipo() == 2 && vt.getEstado() == 1) {
-                        efectivo += vt.getTotal();
+                    if (vt.getTipo() == 2 || vt.getTipo() == 2 && vt.getEstado() == 1) {
+//                        efectivo += vt.getTotal();
                     } else if (vt.getEstado() == 1 || vt.getEstado() == 4) {
                         if (vt.getFormaName().equalsIgnoreCase("EFECTIVO")) {
                             efectivo += vt.getTotal();
@@ -265,10 +265,12 @@ public class FxVentaReporteController implements Initializable {
             map.put("METODO", cbMetodoPagoSeleccionar.isSelected() ? "TODOS" : rbEfectivo.isSelected() ? "EFECTIVO" : rbTarjeta.isSelected() ? "TARJETA" : rbMixto.isSelected() ? "MIXTO" : "DEPÓSITO");
 
             map.put("VENDEDOR", cbVendedoresSeleccionar.isSelected() ? "TODOS" : txtVendedores.getText().toUpperCase());
-            map.put("TOTAANULADO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(totalanulado, 2));
+
             map.put("TOTALCREDITO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(totalcredito, 2));
-            map.put("TOTALCREDITOCOBRADO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(totalcreditopagado, 2));
             map.put("TOTALCONTADO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(totalcontado, 2));
+
+            map.put("TOTAANULADO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(totalanulado, 2));
+            map.put("TOTALCREDITOCOBRADO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(totalcreditopagado, 2));
 
             map.put("EFECTIVO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(efectivo, 2));
             map.put("TARJETA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(tarjeta, 2));

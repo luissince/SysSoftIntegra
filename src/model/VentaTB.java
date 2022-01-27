@@ -32,7 +32,7 @@ public class VentaTB {
     private String fechaVencimiento;
     
     private String horaVencimiento;
-    
+        
     private double total;
     
     private int tipo;

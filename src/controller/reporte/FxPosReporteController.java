@@ -641,8 +641,8 @@ public class FxPosReporteController implements Initializable {
                 }
 
                 if (vt.getNotaCreditoTB() == null && vt.getEstado() != 3) {
-                    if (vt.getTipo() == 2 && vt.getEstado() == 1) {
-                        efectivo += vt.getTotal();
+                    if (vt.getTipo() == 2 || vt.getTipo() == 2 && vt.getEstado() == 1) {
+//                        efectivo += vt.getTotal();
                     } else if (vt.getEstado() == 1 || vt.getEstado() == 4) {
                         if (vt.getFormaName().equalsIgnoreCase("EFECTIVO")) {
                             efectivo += vt.getTotal();
