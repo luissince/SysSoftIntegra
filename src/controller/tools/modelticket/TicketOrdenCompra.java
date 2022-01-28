@@ -52,6 +52,8 @@ public class TicketOrdenCompra {
 
     private final AnchorPane hbPie;
 
+    private String fileName = "";
+
     public TicketOrdenCompra(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
         this.billPrintable = billPrintable;
@@ -295,7 +297,38 @@ public class TicketOrdenCompra {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return OrdenCompraADO.ObtenerOrdenCompraId(idOrdenCompra);
+                try {
+                    Object object = OrdenCompraADO.ObtenerOrdenCompraId(idOrdenCompra);
+                    if (object instanceof OrdenCompraTB) {
+                        OrdenCompraTB ordenCompraTB = (OrdenCompraTB) object;
+                        InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+
+                        InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+
+                        if (Session.COMPANY_IMAGE != null) {
+                            imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
+                        }
+
+                        InputStream dir = getClass().getResourceAsStream("/report/OrdendeCompra.jasper");
+
+                        Map map = new HashMap();
+                        map.put("LOGO", imgInputStream);
+                        map.put("ICON", imgInputStreamIcon);
+                        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
+                        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
+                        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
+                        map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
+                        map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
+
+                        fileName = "ORDEN DE COMRA N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion());
+
+                        return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(ordenCompraTB.getOrdenCompraDetalleTBs()));
+                    } else {
+                        return (String) object;
+                    }
+                } catch (JRException ex) {
+                    return ex.getLocalizedMessage();
+                }
             }
         };
         task.setOnScheduled(w -> {
@@ -315,9 +348,19 @@ public class TicketOrdenCompra {
         task.setOnSucceeded(w -> {
             try {
                 Object object = task.getValue();
-                if (object instanceof OrdenCompraTB) {
-                    OrdenCompraTB ordenCompraTB = (OrdenCompraTB) object;
-                    printA4WithDesingOrdenCompra(ordenCompraTB);
+                if (object instanceof JasperPrint) {
+                    URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
+                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                    Parent parent = fXMLLoader.load(url.openStream());
+                    //Controlller here
+                    FxReportViewController controller = fXMLLoader.getController();
+                    controller.setFileName(fileName);
+                    controller.setJasperPrint((JasperPrint) object);
+                    controller.show();
+                    Stage stage = WindowStage.StageLoader(parent, "Orden de Compra");
+                    stage.setResizable(true);
+                    stage.show();
+                    stage.requestFocus();
                     Tools.showAlertNotification("/view/image/succes_large.png",
                             "Generando reporte",
                             Tools.newLineString("Se genero correctamente el reporte."),
@@ -331,7 +374,7 @@ public class TicketOrdenCompra {
                             Duration.seconds(10),
                             Pos.BOTTOM_RIGHT);
                 }
-            } catch (IOException | JRException ex) {
+            } catch (IOException ex) {
                 Tools.showAlertNotification("/view/image/error_large.png",
                         "Generando reporte",
                         Tools.newLineString("Error en mostrar el contenido: " + ex.getLocalizedMessage()),
@@ -343,67 +386,6 @@ public class TicketOrdenCompra {
         if (!exec.isShutdown()) {
             exec.shutdown();
         }
-    }
-
-    private void printA4WithDesingOrdenCompra(OrdenCompraTB ordenCompraTB) throws JRException, IOException {
-        InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-
-        InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-
-        if (Session.COMPANY_IMAGE != null) {
-            imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
-        }
-
-        InputStream dir = getClass().getResourceAsStream("/report/OrdendeCompra.jasper");
-
-        Map map = new HashMap();
-        map.put("LOGO", imgInputStream);
-        map.put("ICON", imgInputStreamIcon);
-        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
-        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
-        map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
-        map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
-//
-//        map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
-//        map.put("NOMBREDOCUMENTO", "COTIZACIÓN");
-//        map.put("NUMERODOCUMENTO", Tools.textShow("N°-", Tools.formatNumber(cotizacionTB.getIdCotizacion())));
-//
-//        map.put("DATOSCLIENTE", cotizacionTB.getClienteTB().getInformacion());
-//        map.put("DOCUMENTOCLIENTE", "");
-//        map.put("NUMERODOCUMENTOCLIENTE", cotizacionTB.getClienteTB().getNumeroDocumento());
-//        map.put("CELULARCLIENTE", cotizacionTB.getClienteTB().getCelular());
-//        map.put("EMAILCLIENTE", cotizacionTB.getClienteTB().getEmail());
-//        map.put("DIRECCIONCLIENTE", cotizacionTB.getClienteTB().getDireccion());
-//
-//        map.put("FECHAEMISION", cotizacionTB.getFechaCotizacion());
-//        map.put("MONEDA", cotizacionTB.getMonedaTB().getNombre());
-//        map.put("CONDICIONPAGO", "");
-//
-//        map.put("SIMBOLO", cotizacionTB.getMonedaTB().getSimbolo());
-//        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(cotizacionTB.getImporteNeto(), 2), true, cotizacionTB.getMonedaTB().getNombre()));
-//
-//        map.put("VALOR_VENTA", Tools.roundingValue(cotizacionTB.getImporteBruto(), 2));
-//        map.put("DESCUENTO", Tools.roundingValue(cotizacionTB.getDescuento(), 2));
-//        map.put("SUB_IMPORTE", Tools.roundingValue(cotizacionTB.getSubImporteNeto(), 2));
-//        map.put("IMPUESTO_TOTAL", Tools.roundingValue(cotizacionTB.getImpuesto(), 2));
-//        map.put("IMPORTE_TOTAL", Tools.roundingValue(cotizacionTB.getImporteNeto(), 2));
-//        map.put("OBSERVACION", cotizacionTB.getObservaciones());
-
-        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(ordenCompraTB.getOrdenCompraDetalleTBs()));
-
-        URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
-        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-        Parent parent = fXMLLoader.load(url.openStream());
-        //Controlller here
-        FxReportViewController controller = fXMLLoader.getController();
-        controller.setFileName("ORDEN DE COMRA N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion()));
-        controller.setJasperPrint(jasperPrint);
-        controller.show();
-        Stage stage = WindowStage.StageLoader(parent, "Orden de Compra");
-        stage.setResizable(true);
-        stage.show();
-        stage.requestFocus();
     }
 
 }

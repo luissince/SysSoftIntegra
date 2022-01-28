@@ -264,11 +264,10 @@ public class FxInicioController implements Initializable {
             double sunat = 0;
             double libre = 0;
             for (int j = 0; j < array.size(); j++) {
-                JSONObject object = (JSONObject) array.get(j);
+                JSONObject object = (JSONObject) array.get(j);            
                 if (Integer.parseInt(object.get("mes").toString()) == (i + 1)) {
-                    sunat = Double.parseDouble(object.get("sunat").toString());
-                    libre = Double.parseDouble(object.get("libre").toString());
-                    break;
+                    sunat += Double.parseDouble(object.get("sunat").toString());
+                    libre += Double.parseDouble(object.get("libre").toString());                   
                 }
             }
             String background = (i % 2 != 0 ? "white" : "#dee2e6");

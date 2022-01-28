@@ -276,9 +276,9 @@ public class NotaCreditoADO {
             statementNotaCredito = DBUtil.getConnection().prepareStatement("{CALL Sp_Obtener_NotaCredito_ById(?)}");
             statementNotaCredito.setString(1, idNotaCredito);
             resultSet = statementNotaCredito.executeQuery();
-            NotaCreditoTB notaCreditoTB = null;
+
             if (resultSet.next()) {
-                notaCreditoTB = new NotaCreditoTB();
+                NotaCreditoTB notaCreditoTB = new NotaCreditoTB();
                 notaCreditoTB.setId(resultSet.getRow());
                 notaCreditoTB.setIdVenta(resultSet.getString("IdVenta"));
                 notaCreditoTB.setCodigoAlterno(resultSet.getString("CodigoAlterno"));
@@ -328,17 +328,21 @@ public class NotaCreditoADO {
                     notaCreditoDetalleTB.setCantidad(resultSet.getDouble("Cantidad"));
                     notaCreditoDetalleTB.setPrecio(resultSet.getDouble("Precio"));
                     notaCreditoDetalleTB.setDescuento(resultSet.getDouble("Descuento"));
-                    notaCreditoDetalleTB.setValorImpuesto(resultSet.getDouble("ValorImpuesto"));
-                    notaCreditoDetalleTB.setNombreImpuesto(resultSet.getString("NombreImpuesto"));
-                    notaCreditoDetalleTB.setImporte(notaCreditoDetalleTB.getCantidad() * (notaCreditoDetalleTB.getPrecio() - notaCreditoDetalleTB.getDescuento()));
+
+                    ImpuestoTB impuestoTB = new ImpuestoTB();
+                    impuestoTB.setNombre(resultSet.getString("NombreImpuesto"));
+                    impuestoTB.setValor(resultSet.getDouble("ValorImpuesto"));
+                    notaCreditoDetalleTB.setImpuestoTB(impuestoTB);
 
                     notaCreditoDetalleTB.setSuministroTB(suministroTB);
                     creditoDetalleTBs.add(notaCreditoDetalleTB);
                 }
                 notaCreditoTB.setNotaCreditoDetalleTBs(creditoDetalleTBs);
-            }
 
-            return notaCreditoTB;
+                return notaCreditoTB;
+            } else {
+                return "No se pudo cargar correctamente los datos, intente nuevamente.";
+            }
         } catch (SQLException ex) {
             return ex.getLocalizedMessage();
         } finally {
@@ -458,7 +462,7 @@ public class NotaCreditoADO {
                     statementDetalle.setDouble(4, detalleTB.getPrecio());
                     statementDetalle.setDouble(5, detalleTB.getDescuento());
                     statementDetalle.setInt(6, detalleTB.getIdImpuesto());
-                    statementDetalle.setDouble(7, detalleTB.getValorImpuesto());
+                    statementDetalle.setDouble(7, detalleTB.getImpuestoTB().getValor());
                     statementDetalle.addBatch();
 
                     if (detalleTB.getSuministroTB().isInventario() && detalleTB.getSuministroTB().getValorInventario() == 1) {

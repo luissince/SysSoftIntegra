@@ -3,11 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/model/GlobalADO.java</file>
+            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/report/VentaRealizada.jrxml</file>
+            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/report/NotaCredito.jrxml</file>
             <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/tools/modelticket/TicketVenta.java</file>
-            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/menus/FxInicioController.java</file>
-            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/configuracion/almacen/FxAlmacenController.java</file>
-            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/model/VentaTB.java</file>
+            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/tools/modelticket/TicketNotaCredito.java</file>
+            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/operaciones/notacredito/FxNotaCreditoDetalleController.java</file>
+            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/operaciones/notacredito/FxNotaCreditoRealizadasController.java</file>
         </group>
     </open-files>
 </project-private>

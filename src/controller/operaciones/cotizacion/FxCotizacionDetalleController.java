@@ -202,8 +202,7 @@ public class FxCotizacionDetalleController implements Initializable {
         lblImporteNeto.setText(simbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
     }
 
-    @FXML
-    private void onMouseClickedBehind(MouseEvent event) {
+    private void closeWindow() {
         fxPrincipalController.getVbContent().getChildren().remove(apWindow);
         fxPrincipalController.getVbContent().getChildren().clear();
         AnchorPane.setLeftAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
@@ -211,6 +210,11 @@ public class FxCotizacionDetalleController implements Initializable {
         AnchorPane.setRightAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
         AnchorPane.setBottomAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
         fxPrincipalController.getVbContent().getChildren().add(cotizacionRealizadasController.getHbWindow());
+    }
+
+    @FXML
+    private void onMouseClickedBehind(MouseEvent event) {
+        closeWindow();
     }
 
     @FXML
@@ -240,25 +244,13 @@ public class FxCotizacionDetalleController implements Initializable {
     @FXML
     private void onKeyPressedAceptarLoad(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            fxPrincipalController.getVbContent().getChildren().remove(apWindow);
-            fxPrincipalController.getVbContent().getChildren().clear();
-            AnchorPane.setLeftAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
-            AnchorPane.setTopAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
-            AnchorPane.setRightAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
-            AnchorPane.setBottomAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
-            fxPrincipalController.getVbContent().getChildren().add(cotizacionRealizadasController.getHbWindow());
+            closeWindow();
         }
     }
 
     @FXML
     private void onActionAceptarLoad(ActionEvent event) {
-        fxPrincipalController.getVbContent().getChildren().remove(apWindow);
-        fxPrincipalController.getVbContent().getChildren().clear();
-        AnchorPane.setLeftAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
-        AnchorPane.setTopAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
-        AnchorPane.setRightAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
-        AnchorPane.setBottomAnchor(cotizacionRealizadasController.getHbWindow(), 0d);
-        fxPrincipalController.getVbContent().getChildren().add(cotizacionRealizadasController.getHbWindow());
+        closeWindow();
     }
 
     public void setInitCotizacionesRealizadasController(FxCotizacionRealizadasController cotizacionRealizadasController, FxPrincipalController fxPrincipalController) {

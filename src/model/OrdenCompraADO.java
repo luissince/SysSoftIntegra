@@ -178,24 +178,24 @@ public class OrdenCompraADO {
         CallableStatement statementCodigo = null;
         try {
             DBUtil.dbConnect();
-            DBUtil.getConnection().setAutoCommit(true);
+            DBUtil.getConnection().setAutoCommit(false);
 
             statementCodigo = DBUtil.getConnection().prepareCall("{? = call Fc_OrdenCompra_Codigo_Alfanumerico()}");
             statementCodigo.registerOutParameter(1, java.sql.Types.VARCHAR);
             statementCodigo.execute();
             String idOrdenCompra = statementCodigo.getString(1);
 
-            statementNumeracion = DBUtil.getConnection().prepareStatement("SELECT MAX(Numeracion) AS Total FROM OrdenCompra");
+            statementNumeracion = DBUtil.getConnection().prepareStatement("SELECT MAX(Numeracion) AS Total FROM OrdenCompraTB");
             ResultSet resultSet = statementNumeracion.executeQuery();
 
-            int numeracion = 0;
+            int numeracion;
             if (resultSet.next()) {
                 numeracion = resultSet.getInt("Total") + 1;
             } else {
                 numeracion = 1;
             }
 
-            statementOrdenCompra = DBUtil.getConnection().prepareStatement("INSERT INTO OrdenCompra("
+            statementOrdenCompra = DBUtil.getConnection().prepareStatement("INSERT INTO OrdenCompraTB("
                     + "IdOrdenCompra,"
                     + "Numeracion,"
                     + "IdProveedor,"
@@ -218,7 +218,7 @@ public class OrdenCompraADO {
             statementOrdenCompra.addBatch();
             statementOrdenCompra.executeBatch();
 
-            statementOrdenDealle = DBUtil.getConnection().prepareStatement("INSERT INTO OrdenCompraDatalle("
+            statementOrdenDealle = DBUtil.getConnection().prepareStatement("INSERT INTO OrdenCompraDatalleTB("
                     + "IdOrdenCompra,"
                     + "IdSuministro,"
                     + "Cantidad,"

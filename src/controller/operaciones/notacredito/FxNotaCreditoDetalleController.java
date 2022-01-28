@@ -1,29 +1,19 @@
 package controller.operaciones.notacredito;
 
+import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
-import controller.reporte.FxReportViewController;
-import controller.tools.ConvertMonedaCadena;
-import controller.tools.FilesRouters;
-import controller.tools.Session;
 import controller.tools.Tools;
-import controller.tools.WindowStage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -32,21 +22,19 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import model.NotaCreditoADO;
 import model.NotaCreditoDetalleTB;
 import model.NotaCreditoTB;
-import model.SuministroTB;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 public class FxNotaCreditoDetalleController implements Initializable {
 
     @FXML
-    private ScrollPane spWindow;
+    private AnchorPane apWindow;
+    @FXML
+    private ScrollPane spBody;
     @FXML
     private Label lblLoad;
     @FXML
@@ -81,32 +69,30 @@ public class FxNotaCreditoDetalleController implements Initializable {
     private Label lblImporteNeto;
     @FXML
     private Label lblImpuesto;
+    @FXML
+    private HBox hbLoad;
+    @FXML
+    private Label lblMessageLoad;
+    @FXML
+    private Button btnAceptarLoad;
 
     private FxNotaCreditoRealizadasController creditoRealizadasController;
 
     private FxPrincipalController fxPrincipalController;
 
-    private NotaCreditoTB notaCreditoTB;
+    private FxOpcionesImprimirController fxOpcionesImprimirController;
 
-    private ConvertMonedaCadena monedaCadena;
-
-    private double importeBruto = 0;
-
-    private double descuentoBruto = 0;
-
-    private double sumImporteNeto = 0;
-
-    private double impuestoNeto = 0;
-
-    private double importeNeto = 0;
+    private String idNotaCredito;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        monedaCadena = new ConvertMonedaCadena();
-        importeBruto = descuentoBruto = sumImporteNeto = impuestoNeto = importeNeto = 0;
+        fxOpcionesImprimirController = new FxOpcionesImprimirController();
+        fxOpcionesImprimirController.loadComponents();
+        fxOpcionesImprimirController.loadTicketNotaCredito(apWindow);
     }
 
     public void loadInitData(String idNotaCredito) {
+        this.idNotaCredito = idNotaCredito;
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -120,10 +106,26 @@ public class FxNotaCreditoDetalleController implements Initializable {
             }
         };
 
+        task.setOnScheduled(w -> {
+            lblLoad.setVisible(true);
+            spBody.setDisable(true);
+            hbLoad.setVisible(true);
+            lblMessageLoad.setText("Cargando datos...");
+            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+            btnAceptarLoad.setVisible(false);
+        });
+
+        task.setOnFailed(w -> {
+            lblLoad.setVisible(false);
+            lblMessageLoad.setText(task.getException().getLocalizedMessage());
+            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+            btnAceptarLoad.setVisible(true);
+        });
+
         task.setOnSucceeded(w -> {
             Object object = task.getValue();
             if (object instanceof NotaCreditoTB) {
-                notaCreditoTB = (NotaCreditoTB) object;
+                NotaCreditoTB notaCreditoTB = (NotaCreditoTB) object;
 
                 lblFechaRegistro.setText(notaCreditoTB.getFechaRegistro() + " " + notaCreditoTB.getHoraRegistro());
                 lblCliente.setText(notaCreditoTB.getClienteTB().getNumeroDocumento() + " - " + notaCreditoTB.getClienteTB().getInformacion());
@@ -132,70 +134,78 @@ public class FxNotaCreditoDetalleController implements Initializable {
                 lbDireccion.setText(notaCreditoTB.getClienteTB().getDireccion());
 
                 lblNotaCredito.setText(notaCreditoTB.getNombreComprobante());
-                lblNotaCreditoSerieNumeracion.setText(notaCreditoTB.getSerie() + "-" + notaCreditoTB.getNumeracion());
+                lblNotaCreditoSerieNumeracion.setText(notaCreditoTB.getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getNumeracion()));
 
                 lblComprobanteReferencia.setText(notaCreditoTB.getVentaTB().getComprobanteName());
                 lblSerieNumeracionReferencia.setText(notaCreditoTB.getVentaTB().getSerie() + "-" + notaCreditoTB.getVentaTB().getNumeracion());
                 lblMotivoAnulacion.setText(notaCreditoTB.getNombreMotivo());
 
-                fillNotaCreditoDetalle(notaCreditoTB.getNotaCreditoDetalleTBs());
-            } else if (object instanceof String) {
-                Tools.println(object);
+                fillNotaCreditoDetalle(notaCreditoTB.getNotaCreditoDetalleTBs(), notaCreditoTB.getMonedaTB().getSimbolo());
+
+                spBody.setDisable(false);
+                hbLoad.setVisible(false);
             } else {
-                Tools.println("Verga");
+                lblMessageLoad.setText((String) object);
+                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+                btnAceptarLoad.setVisible(true);
             }
             lblLoad.setVisible(false);
         });
-        task.setOnFailed(w -> {
-            lblLoad.setVisible(false);
-        });
-        task.setOnScheduled(w -> {
-            lblLoad.setVisible(true);
-        });
+
         exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();
         }
     }
 
-    private void fillNotaCreditoDetalle(ArrayList<NotaCreditoDetalleTB> creditoDetalleTBs) {
-        importeBruto = descuentoBruto = sumImporteNeto = impuestoNeto = importeNeto = 0;
+    private void fillNotaCreditoDetalle(ArrayList<NotaCreditoDetalleTB> creditoDetalleTBs, String simbolo) {
         for (int i = 0; i < creditoDetalleTBs.size(); i++) {
             gpList.add(addElementGridPane("l1" + (i + 1), creditoDetalleTBs.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
             gpList.add(addElementGridPane("l2" + (i + 1), creditoDetalleTBs.get(i).getSuministroTB().getClave() + "\n" + creditoDetalleTBs.get(i).getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
             gpList.add(addElementGridPane("l3" + (i + 1), Tools.roundingValue(creditoDetalleTBs.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
             gpList.add(addElementGridPane("l4" + (i + 1), creditoDetalleTBs.get(i).getSuministroTB().getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
-            gpList.add(addElementGridPane("l5" + (i + 1), creditoDetalleTBs.get(i).getNombreImpuesto(), Pos.CENTER_RIGHT), 4, (i + 1));
-            gpList.add(addElementGridPane("l6" + (i + 1), Tools.roundingValue(creditoDetalleTBs.get(i).getPrecio(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpList.add(addElementGridPane("l7" + (i + 1), "-" + Tools.roundingValue(creditoDetalleTBs.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPane("l8" + (i + 1), Tools.roundingValue(creditoDetalleTBs.get(i).getImporte(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(creditoDetalleTBs.get(i).getImpuestoTB().getValor(), 2) + "%", Pos.CENTER_RIGHT), 4, (i + 1));
+            gpList.add(addElementGridPane("l6" + (i + 1), simbolo + " " + Tools.roundingValue(creditoDetalleTBs.get(i).getPrecio(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
+            gpList.add(addElementGridPane("l7" + (i + 1), Tools.roundingValue(creditoDetalleTBs.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
+            gpList.add(addElementGridPane("l8" + (i + 1), simbolo + " " + Tools.roundingValue(creditoDetalleTBs.get(i).getCantidad() * (creditoDetalleTBs.get(i).getPrecio() - creditoDetalleTBs.get(i).getDescuento()), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+        }
+        calculateTotales(creditoDetalleTBs, simbolo);
+    }
 
-            double valorCantidad = creditoDetalleTBs.get(i).getCantidad();
-            double valorBruto = Tools.calculateTaxBruto(creditoDetalleTBs.get(i).getValorImpuesto(), creditoDetalleTBs.get(i).getPrecio());
-            double valorDescuento = creditoDetalleTBs.get(i).getDescuento();
-            double valorSubNeto = valorBruto - valorDescuento;
-            double valorImpuesto = Tools.calculateTax(creditoDetalleTBs.get(i).getValorImpuesto(), valorSubNeto);
-            double valorNeto = valorSubNeto + valorImpuesto;
+    public void calculateTotales(ArrayList<NotaCreditoDetalleTB> empList, String simbolo) {
+        double importeBrutoTotal = 0;
+        double descuentoTotal = 0;
+        double subImporteNetoTotal = 0;
+        double impuestoTotal = 0;
+        double importeNetoTotal = 0;
 
-            importeBruto += (valorCantidad * valorBruto);
-            descuentoBruto += (valorCantidad * valorDescuento);
-            sumImporteNeto += (valorCantidad * valorSubNeto);
-            impuestoNeto += (valorCantidad * valorImpuesto);
-            importeNeto += (valorCantidad * valorNeto);
+        for (NotaCreditoDetalleTB ocdtb : empList) {
+            double importeBruto = ocdtb.getPrecio() * ocdtb.getCantidad();
+            double descuento = ocdtb.getDescuento();
+            double subImporteBruto = importeBruto - descuento;
+            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+            double importeNeto = subImporteNeto + impuesto;
+
+            importeBrutoTotal += importeBruto;
+            descuentoTotal += descuento;
+            subImporteNetoTotal += subImporteNeto;
+            impuestoTotal += impuesto;
+            importeNetoTotal += importeNeto;
         }
 
-        lblValorVenta.setText(notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBruto, 2));
-        lblDescuento.setText(notaCreditoTB.getMonedaTB().getSimbolo() + " " + "-" + Tools.roundingValue(descuentoBruto, 2));
-        lblSubImporteNeto.setText(notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(sumImporteNeto, 2));
-        lblImpuesto.setText(notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoNeto, 2));
-        lblImporteNeto.setText(notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNeto, 2));
+        lblValorVenta.setText(simbolo + " " + Tools.roundingValue(importeBrutoTotal, 2));
+        lblDescuento.setText(simbolo + " " + "-" + Tools.roundingValue(descuentoTotal, 2));
+        lblSubImporteNeto.setText(simbolo + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+        lblImpuesto.setText(simbolo + " " + Tools.roundingValue(impuestoTotal, 2));
+        lblImporteNeto.setText(simbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
     }
 
     private Label addElementGridPane(String id, String nombre, Pos pos) {
         Label label = new Label(nombre);
         label.setId(id);
-        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.getStyleClass().add("labelRoboto13");
+        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.setAlignment(pos);
         label.setWrapText(true);
         label.setPrefWidth(Control.USE_COMPUTED_SIZE);
@@ -205,93 +215,8 @@ public class FxNotaCreditoDetalleController implements Initializable {
         return label;
     }
 
-    private JasperPrint reportA4() throws JRException {
-
-        InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-
-        InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-
-        if (Session.COMPANY_IMAGE != null) {
-            imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
-        }
-
-        InputStream dir = getClass().getResourceAsStream("/report/NotaCredito.jasper");
-
-        ArrayList<SuministroTB> arrayList = new ArrayList();
-        notaCreditoTB.getNotaCreditoDetalleTBs().forEach(e -> {
-            SuministroTB suministroTB = new SuministroTB();
-            suministroTB.setId(e.getId());
-            suministroTB.setCantidad(e.getCantidad());
-            suministroTB.setUnidadCompraName(e.getSuministroTB().getUnidadCompraName());
-            suministroTB.setNombreMarca(e.getSuministroTB().getClave() + "\n" + e.getSuministroTB().getNombreMarca());
-            suministroTB.setPrecioVentaGeneral(e.getPrecio());
-            suministroTB.setDescuento(e.getDescuento());
-//            suministroTB.setImporteNeto(e.getImporte());
-            arrayList.add(suministroTB);
-        });
-
-        Map map = new HashMap();
-        map.put("LOGO", imgInputStream);
-        map.put("ICON", imgInputStreamIcon);
-        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
-        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-        map.put("TELEFONOCELULAR", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
-        map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
-
-        map.put("DOCUMENTOEMPRESA", "R.U.C " + Session.COMPANY_NUMERO_DOCUMENTO);
-        map.put("NOMBREDOCUMENTO", notaCreditoTB.getNombreComprobante());
-        map.put("NUMERODOCUMENTO", notaCreditoTB.getSerie() + "-" + notaCreditoTB.getNumeracion());
-
-        map.put("DOCUMENTOCLIENTE", notaCreditoTB.getClienteTB().getTipoDocumentoName() + ":");
-        map.put("NUMERODOCUMENTOCLIENTE", notaCreditoTB.getClienteTB().getNumeroDocumento());
-        map.put("DATOSCLIENTE", notaCreditoTB.getClienteTB().getInformacion());
-        map.put("DIRECCIONCLIENTE", notaCreditoTB.getClienteTB().getDireccion());
-        map.put("CELULARCLIENTE", notaCreditoTB.getClienteTB().getCelular());
-        map.put("EMAILCLIENTE", notaCreditoTB.getClienteTB().getEmail());
-
-        map.put("FECHAEMISION", notaCreditoTB.getFechaRegistro());
-        map.put("MONEDA", notaCreditoTB.getMonedaTB().getNombre() + "-" + notaCreditoTB.getMonedaTB().getAbreviado());
-
-        map.put("DOCUMENTO_REFERENCIA", notaCreditoTB.getVentaTB().getSerie() + "-" + notaCreditoTB.getVentaTB().getNumeracion());
-        map.put("MOTIVO_ANULACION", notaCreditoTB.getNombreMotivo());
-
-        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNeto, 2), true, notaCreditoTB.getMonedaTB().getNombre()));
-        map.put("QRDATA", Session.COMPANY_NUMERO_DOCUMENTO + "|" + notaCreditoTB.getCodigoAlterno() + "|" + notaCreditoTB.getSerie() + "|" + notaCreditoTB.getNumeracion() + "|" + Tools.roundingValue(impuestoNeto, 2) + "|" + Tools.roundingValue(importeNeto, 2) + "|" + notaCreditoTB.getFechaRegistro() + "|" + notaCreditoTB.getClienteTB().getIdAuxiliar() + "|" + notaCreditoTB.getClienteTB().getNumeroDocumento() + "|");
-
-        map.put("VALOR_VENTA", notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBruto, 2));
-        map.put("DESCUENTO", notaCreditoTB.getMonedaTB().getSimbolo() + " " + "-" + Tools.roundingValue(descuentoBruto, 2));
-        map.put("SUB_IMPORTE", notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(sumImporteNeto, 2));
-        map.put("IMPUESTO_TOTAL", notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoNeto, 2));
-        map.put("IMPORTE_TOTAL", notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNeto, 2));
-
-        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(arrayList));
-        return jasperPrint;
-    }
-
-    private void openWindowReporte() {
-        try {
-
-            URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
-            FxReportViewController controller = fXMLLoader.getController();
-            controller.setFileName(notaCreditoTB.getNombreComprobante().toUpperCase() + " " + notaCreditoTB.getSerie() + "-" + notaCreditoTB.getNumeracion());
-            controller.setJasperPrint(reportA4());
-            controller.show();
-            Stage stage = WindowStage.StageLoader(parent, "Nota de Crédito");
-            stage.setResizable(true);
-            stage.show();
-            stage.requestFocus();
-
-        } catch (IOException | JRException ex) {
-            Tools.AlertMessageError(spWindow, "Reporte de Nota de Crédito", "Error al generar el reporte : " + ex.getLocalizedMessage());
-        }
-    }
-
-    @FXML
-    private void onMouseClickedBehind(MouseEvent event) {
-        fxPrincipalController.getVbContent().getChildren().remove(spWindow);
+    private void closeWindow() {
+        fxPrincipalController.getVbContent().getChildren().remove(apWindow);
         fxPrincipalController.getVbContent().getChildren().clear();
         AnchorPane.setLeftAnchor(creditoRealizadasController.getVbWindow(), 0d);
         AnchorPane.setTopAnchor(creditoRealizadasController.getVbWindow(), 0d);
@@ -301,15 +226,20 @@ public class FxNotaCreditoDetalleController implements Initializable {
     }
 
     @FXML
+    private void onMouseClickedBehind(MouseEvent event) {
+        closeWindow();
+    }
+
+    @FXML
     private void onKeyPressedReporte(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            openWindowReporte();
+            fxOpcionesImprimirController.getTicketNotaCredito().mostrarReporte(idNotaCredito);
         }
     }
 
     @FXML
     private void onActionReporte(ActionEvent event) {
-        openWindowReporte();
+        fxOpcionesImprimirController.getTicketNotaCredito().mostrarReporte(idNotaCredito);
     }
 
     @FXML
@@ -322,6 +252,18 @@ public class FxNotaCreditoDetalleController implements Initializable {
     @FXML
     private void onActionImprimir(ActionEvent event) {
         Tools.println("i");
+    }
+
+    @FXML
+    private void onKeyPressedAceptarLoad(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            closeWindow();
+        }
+    }
+
+    @FXML
+    private void onActionAceptarLoad(ActionEvent event) {
+        closeWindow();
     }
 
     public void setInitNotaCreditoRealizadasController(FxNotaCreditoRealizadasController creditoRealizadasController, FxPrincipalController fxPrincipalController) {

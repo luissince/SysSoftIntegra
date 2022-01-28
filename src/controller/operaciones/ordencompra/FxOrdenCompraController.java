@@ -37,7 +37,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.ClienteTB;
 import model.OrdenCompraADO;
 import model.OrdenCompraDetalleTB;
 import model.OrdenCompraTB;
@@ -131,11 +130,11 @@ public class FxOrdenCompraController implements Initializable {
         tcImporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
 
-        loadComboBoxProveedor();
+        loadComboBoxCliente();
     }
 
-    private void loadComboBoxProveedor() {
-        SearchComboBox<ClienteTB> searchComboBoxCliente = new SearchComboBox<>(cbProveedor, false);
+    private void loadComboBoxCliente() {
+        SearchComboBox<ProveedorTB> searchComboBoxCliente = new SearchComboBox<>(cbProveedor, false);
         searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
             if (t.getCode() == KeyCode.ENTER) {
                 if (!searchComboBoxCliente.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
@@ -229,7 +228,7 @@ public class FxOrdenCompraController implements Initializable {
             tvList.getItems().remove(compraDetalleTB);
             calculateTotales();
         });
-        
+
         compraDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 tvList.getItems().remove(compraDetalleTB);
@@ -351,6 +350,7 @@ public class FxOrdenCompraController implements Initializable {
                     if (result.equalsIgnoreCase("inserted")) {
                         lblMessageLoad.setText("Registro correctamente la orden de compra.");
                         lblMessageLoad.setTextFill(Color.web("#ffffff"));
+                        btnAceptarLoad.setVisible(true);
                         btnAceptarLoad.setOnAction(event -> {
                             hbBody.setDisable(false);
                             hbLoad.setVisible(false);

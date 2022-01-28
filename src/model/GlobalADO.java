@@ -318,7 +318,7 @@ public class GlobalADO {
                     + "td.Facturacion");
             resultLista = ptHistorialVentasTipos.executeQuery();
             JSONArray arrayHVentasTipos = new JSONArray();
-            while (resultLista.next()) {
+            while (resultLista.next()) {              
                 JSONObject jsono = new JSONObject();
                 jsono.put("mes", resultLista.getInt("Mes"));
                 jsono.put("sunat", resultLista.getDouble("Sunat"));

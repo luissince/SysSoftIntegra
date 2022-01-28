@@ -10,6 +10,7 @@ import controller.tools.modelticket.TicketCotizacion;
 import controller.tools.modelticket.TicketCuentasPorCobrar;
 import controller.tools.modelticket.TicketCuentasPorPagar;
 import controller.tools.modelticket.TicketGuiaRemision;
+import controller.tools.modelticket.TicketNotaCredito;
 import controller.tools.modelticket.TicketOrdenCompra;
 import controller.tools.modelticket.TicketPreVenta;
 import controller.tools.modelticket.TicketTraslado;
@@ -67,6 +68,8 @@ public class FxOpcionesImprimirController implements Initializable {
 
     private TicketOrdenCompra ticketOrdenCompra;
 
+    private TicketNotaCredito ticketNotaCredito;
+
     private String idVenta;
 
     private String idVentaCredito;
@@ -88,6 +91,8 @@ public class FxOpcionesImprimirController implements Initializable {
     private String idTraslado;
 
     private String idOrdenCompra;
+
+    private String idNotaCredito;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -175,6 +180,10 @@ public class FxOpcionesImprimirController implements Initializable {
         ticketOrdenCompra = new TicketOrdenCompra(node, billPrintable, hbEncabezado, hbDetalleCabecera, hbPie, monedaCadena);
     }
 
+    public void loadTicketNotaCredito(Node node) {
+        ticketNotaCredito = new TicketNotaCredito(node, billPrintable, hbEncabezado, hbDetalleCabecera, hbPie, monedaCadena);
+    }
+
     private void onEventAceptar() {
         if (ticketCotizacion != null) {
             Tools.Dispose(apWindow);
@@ -194,7 +203,7 @@ public class FxOpcionesImprimirController implements Initializable {
             Tools.Dispose(apWindow);
         } else if (ticketCompra != null) {
             Tools.Dispose(apWindow);
-        }else if(ticketOrdenCompra != null){
+        } else if (ticketOrdenCompra != null) {
             Tools.Dispose(apWindow);
         }
     }
@@ -224,7 +233,7 @@ public class FxOpcionesImprimirController implements Initializable {
             ticketTraslado.imprimir(idTraslado);
         } else if (ticketCompra != null) {
             Tools.Dispose(apWindow);
-        }else if(ticketOrdenCompra != null){
+        } else if (ticketOrdenCompra != null) {
             Tools.Dispose(apWindow);
         }
     }
@@ -254,7 +263,7 @@ public class FxOpcionesImprimirController implements Initializable {
         } else if (ticketCompra != null) {
             Tools.Dispose(apWindow);
             ticketCompra.mostrarReporte(idCompra);
-        }else if(ticketOrdenCompra != null){
+        } else if (ticketOrdenCompra != null) {
             Tools.Dispose(apWindow);
         }
     }
@@ -335,6 +344,10 @@ public class FxOpcionesImprimirController implements Initializable {
         return ticketOrdenCompra;
     }
 
+    public TicketNotaCredito getTicketNotaCredito() {
+        return ticketNotaCredito;
+    }
+
     public AnchorPane getApWindow() {
         return apWindow;
     }
@@ -381,6 +394,10 @@ public class FxOpcionesImprimirController implements Initializable {
 
     public void setIdOrdenCompra(String idOrdenCompra) {
         this.idOrdenCompra = idOrdenCompra;
+    }
+
+    public void setIdNotaCredito(String idNotaCredito) {
+        this.idNotaCredito = idNotaCredito;
     }
 
     public void setInitOpcionesImprimirCaja(FxCajaController cajaController) {

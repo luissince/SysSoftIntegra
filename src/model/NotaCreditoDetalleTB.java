@@ -12,10 +12,8 @@ public class NotaCreditoDetalleTB {
     private double precio;
     private double descuento;
     private int idImpuesto;
-    private String nombreImpuesto;
-    private double valorImpuesto;
-    private double importe;
     private SuministroTB suministroTB;
+    private ImpuestoTB impuestoTB;
     
     public NotaCreditoDetalleTB() {
     }
@@ -76,22 +74,6 @@ public class NotaCreditoDetalleTB {
         this.idImpuesto = idImpuesto;
     }
 
-    public String getNombreImpuesto() {
-        return nombreImpuesto;
-    }
-
-    public void setNombreImpuesto(String nombreImpuesto) {
-        this.nombreImpuesto = nombreImpuesto;
-    }
-
-    public double getValorImpuesto() {
-        return valorImpuesto;
-    }
-
-    public void setValorImpuesto(double valorImpuesto) {
-        this.valorImpuesto = valorImpuesto;
-    }
-
     public SuministroTB getSuministroTB() {
         return suministroTB;
     }
@@ -100,12 +82,13 @@ public class NotaCreditoDetalleTB {
         this.suministroTB = suministroTB;
     }   
 
-    public double getImporte() {
-        return importe;
+    public ImpuestoTB getImpuestoTB() {
+        return impuestoTB;
     }
 
-    public void setImporte(double importe) {
-        this.importe = importe;
+    public void setImpuestoTB(ImpuestoTB impuestoTB) {
+        this.impuestoTB = impuestoTB;
     }
+
     
 }
