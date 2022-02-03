@@ -216,6 +216,10 @@ public class TicketCotizacion {
                     "",
                     "",
                     "",
+                    "",
+                    "",
+                    "",
+                    "",
                     "");
         }
 
@@ -276,7 +280,7 @@ public class TicketCotizacion {
                     cotizacionTB.getObservaciones());
         }
 
-        billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
         PrintService printService = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices());
         if (printService != null) {
             DocPrintJob job = printService.createPrintJob();

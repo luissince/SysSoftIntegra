@@ -36,7 +36,7 @@ public class DBUtil {
     public static String validateConnect(String addres, String port, String database, String user, String password) {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            Connection valid = DriverManager.getConnection("jdbc:sqlserver://" + addres + ":" + port + ";databaseName=" + DATABASENAME, user, password);
+            Connection valid = DriverManager.getConnection("jdbc:sqlserver://" + addres + ":" + port + ";databaseName=" + database, user, password);
             valid.close();
             return "ok";
         } catch (SQLException | ClassNotFoundException ex) {

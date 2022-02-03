@@ -12,7 +12,6 @@ import controller.configuracion.roles.FxRolesController;
 import controller.configuracion.tablasbasicas.FxDetalleMantenimientoController;
 import controller.configuracion.tickets.FxTicketController;
 import controller.tools.FilesRouters;
-import controller.tools.Tools;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -268,8 +267,7 @@ public class FxConfiguracionController implements Initializable {
             AnchorPane.setTopAnchor(node, 0d);
             AnchorPane.setRightAnchor(node, 0d);
             AnchorPane.setBottomAnchor(node, 0d);
-            fxPrincipalController.getVbContent().getChildren().add(node);
-            controller.fillEmpleadosTable("");
+            fxPrincipalController.getVbContent().getChildren().add(node);           
         } catch (IOException ex) {
             System.out.println("Error en la view configuración:" + ex.getLocalizedMessage());
         }

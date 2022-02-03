@@ -50,7 +50,7 @@ public class FxImprimirController implements Initializable {
         if (cbImpresoras.getSelectionModel().getSelectedIndex() >= 0) {
             if (ticketController != null) {
                 billPrintable.setSheetWidth(ticketController.getSheetWidth());
-                billPrintable.generatePDFPrint(ticketController.getHbEncabezado(), ticketController.getHbDetalleCabecera(), ticketController.getHbPie());
+                billPrintable.generateTicketPrint(ticketController.getHbEncabezado(), ticketController.getHbDetalleCabecera(), ticketController.getHbPie());
                 try {
                     DocPrintJob job = billPrintable.findPrintService(cbImpresoras.getSelectionModel().getSelectedItem(), PrinterJob.lookupPrintServices()).createPrintJob();
                     if (job != null) {

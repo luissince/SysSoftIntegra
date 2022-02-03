@@ -556,7 +556,7 @@ public class GlobalADO {
             statementMoneda.setString(2, monedaTB.getAbreviado());
             statementMoneda.setString(3, monedaTB.getSimbolo());
             statementMoneda.setDouble(4, monedaTB.getTipoCambio());
-            statementMoneda.setBoolean(5, monedaTB.getPredeterminado());
+            statementMoneda.setBoolean(5, monedaTB.isPredeterminado());
             statementMoneda.setBoolean(6, monedaTB.getSistema());
             statementMoneda.addBatch();
 

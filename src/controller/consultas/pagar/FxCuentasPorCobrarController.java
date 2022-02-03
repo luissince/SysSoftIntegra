@@ -39,6 +39,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.SuministroTB;
 import model.VentaADO;
 import model.VentaTB;
 import net.sf.jasperreports.engine.JRException;
@@ -46,7 +47,10 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class FxCuentasPorCobrarController implements Initializable {
 
@@ -228,18 +232,29 @@ public class FxCuentasPorCobrarController implements Initializable {
 
     private void onEventReporte() {
         try {
-
             if (tvList.getItems().isEmpty()) {
                 Tools.AlertMessageWarning(vbWindow, "Reporte Cuentas por Cobrar", "No hay páginas para mostrar en el reporte.");
                 return;
             }
 
+            JSONArray array = new JSONArray();
+            for (VentaTB ocdtb : tvList.getItems()) {
+                JSONObject jsono = new JSONObject();
+                jsono.put("id", ocdtb.getId());
+                jsono.put("fecha", ocdtb.getFechaVenta());
+                jsono.put("cliente", ocdtb.getClienteTB().getNumeroDocumento()+"\n"+ocdtb.getClienteTB().getInformacion());
+                jsono.put("comprobante", ocdtb.getSerie()+"-"+Tools.formatNumber(ocdtb.getNumeracion()));
+                jsono.put("montoTotal", Tools.roundingValue(ocdtb.getMontoTotal(), 2));
+                jsono.put("montoCobrado", Tools.roundingValue(ocdtb.getMontoCobrado(), 2));
+                jsono.put("deferencia", Tools.roundingValue(ocdtb.getMontoRestante(), 2));
+                array.add(jsono);
+            }
+            ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(array.toJSONString().getBytes());
+            
             InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-
             if (Session.COMPANY_IMAGE != null) {
                 imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
             }
-
             InputStream dir = getClass().getResourceAsStream("/report/CuentasPorCobrar.jasper");
 
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(dir);
@@ -249,7 +264,7 @@ public class FxCuentasPorCobrarController implements Initializable {
             map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
             map.put("DIRECCION", Session.COMPANY_DOMICILIO);
 
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, new JRBeanCollectionDataSource(tvList.getItems()));
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, new JsonDataSource(jsonDataStream));
 
             URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);

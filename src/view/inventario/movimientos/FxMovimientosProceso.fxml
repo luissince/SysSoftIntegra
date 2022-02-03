@@ -154,8 +154,9 @@
                                                 <TableColumn fx:id="tcAccion" prefWidth="105.99996948242188" style="-fx-alignment: CENTER;" text="Quitar" />
                                                 <TableColumn fx:id="tcClave" prefWidth="229.0" style="-fx-alignment: CENTER-LEFT;" text="Clave/Nombre" />
                                                 <TableColumn fx:id="tcNuevaExistencia" prefWidth="169.0" style="-fx-alignment: CENTER;" text="Nueva Existencia" />
-                                                <TableColumn fx:id="tcExistenciaActual" prefWidth="169.0" style="-fx-alignment: CENTER;" text="Existencia Actual" />
-                                                <TableColumn fx:id="tcDiferencia" prefWidth="169.0" style="-fx-alignment: CENTER;" text="Medida" />
+                                                <TableColumn fx:id="tcExistenciaActual" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Existencia Actual" />
+                                                <TableColumn fx:id="tcDiferencia" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Diferencia" />
+                                                <TableColumn fx:id="tcMedida" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Medida" />
                                              </columns>
                                           </TableView>
                                        </children>

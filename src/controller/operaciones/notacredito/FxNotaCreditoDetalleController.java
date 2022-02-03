@@ -137,7 +137,7 @@ public class FxNotaCreditoDetalleController implements Initializable {
                 lblNotaCreditoSerieNumeracion.setText(notaCreditoTB.getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getNumeracion()));
 
                 lblComprobanteReferencia.setText(notaCreditoTB.getVentaTB().getComprobanteName());
-                lblSerieNumeracionReferencia.setText(notaCreditoTB.getVentaTB().getSerie() + "-" + notaCreditoTB.getVentaTB().getNumeracion());
+                lblSerieNumeracionReferencia.setText(notaCreditoTB.getVentaTB().getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getVentaTB().getNumeracion()));
                 lblMotivoAnulacion.setText(notaCreditoTB.getNombreMotivo());
 
                 fillNotaCreditoDetalle(notaCreditoTB.getNotaCreditoDetalleTBs(), notaCreditoTB.getMonedaTB().getSimbolo());
@@ -243,15 +243,15 @@ public class FxNotaCreditoDetalleController implements Initializable {
     }
 
     @FXML
-    private void onKeyPressedImprimir(KeyEvent event) {
+    private void onKeyPressedTicket(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            Tools.println("i");
+            fxOpcionesImprimirController.getTicketNotaCredito().imprimir(idNotaCredito);
         }
     }
 
     @FXML
-    private void onActionImprimir(ActionEvent event) {
-        Tools.println("i");
+    private void onActionTicket(ActionEvent event) {
+        fxOpcionesImprimirController.getTicketNotaCredito().imprimir(idNotaCredito);
     }
 
     @FXML

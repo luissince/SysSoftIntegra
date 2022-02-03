@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7d62a643-4a95-442f-a890-0f620d0c0de2">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="NUMEROCOMPRA" class="java.lang.String"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
 	<parameter name="ICON" class="java.io.InputStream"/>
@@ -46,8 +46,8 @@
 	</background>
 	<title>
 		<band height="184">
-			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
-				<reportElement x="5" y="5" width="90" height="85" uuid="8bb31660-d501-40c8-bd08-5d8311c1056f"/>
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle">
+				<reportElement x="5" y="5" width="91" height="86" uuid="8bb31660-d501-40c8-bd08-5d8311c1056f"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 			<textField>
@@ -187,7 +187,7 @@
 				<text><![CDATA[N° Documento]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="96" y="38" width="237" height="53" uuid="48fcedbd-3933-46a6-b53f-ba5f604593a1"/>
+				<reportElement x="96" y="38" width="237" height="53" forecolor="#020203" uuid="48fcedbd-3933-46a6-b53f-ba5f604593a1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph lineSpacing="1_1_2" leftIndent="5" rightIndent="5"/>
@@ -195,7 +195,7 @@
 				<textFieldExpression><![CDATA[$P{DIRECCION}+"\n"+$P{TELEFONOCELULAR}+"\n"+$P{EMAIL}+"\n"+$P{PAGINAWEB}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="96" y="0" width="237" height="39" uuid="823b91a9-5d79-436b-848c-d73b28573924"/>
+				<reportElement x="96" y="0" width="237" height="39" forecolor="#020203" uuid="823b91a9-5d79-436b-848c-d73b28573924"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>

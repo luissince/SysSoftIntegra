@@ -80,47 +80,6 @@ public class FxAmortizarPagosController implements Initializable {
             Tools.AlertMessageWarning(apWindow, "Amortizar", "Ingrese alguna observación para la amortización.");
             txtObservacion.requestFocus();
         } else {
-//            if (rbBancos.isSelected()) {
-//                if (cbCuenta.getSelectionModel().getSelectedIndex() < 0) {
-//                    Tools.AlertMessageWarning(apWindow, "Amortizar", "Seleccione la cuenta.");
-//                    cbCuenta.requestFocus();
-//                } else {
-//                    short value = Tools.AlertMessageConfirmation(apWindow, "Amortizar", "¿Está seguro de continuar?");
-//                    if (value == 1) {
-//                        btnGuardar.setDisable(true);
-//                        CompraCreditoTB compraCreditoTB = new CompraCreditoTB();
-//                        compraCreditoTB.setIdCompra(compraTB.getIdCompra());
-//                        compraCreditoTB.setMonto(Double.parseDouble(txtMonto.getText()));
-//                        compraCreditoTB.setFechaPago(Tools.getDate());
-//                        compraCreditoTB.setHoraPago(Tools.getTime());
-//                        compraCreditoTB.setEstado(true);
-//                        compraCreditoTB.setIdEmpleado(Session.USER_ID);
-//                        compraCreditoTB.setObservacion(txtObservacion.getText().trim());
-//
-//                        BancoHistorialTB bancoHistorialTB = new BancoHistorialTB();
-//                        bancoHistorialTB.setIdBanco(cbCuenta.getSelectionModel().getSelectedItem().getIdBanco());
-//                        bancoHistorialTB.setDescripcion("SALIDA DE DINERO POR CUENTAS POR PAGAR DEL COMPROBANTE "+compraTB.getSerie()+"-"+compraTB.getNumeracion());
-//                        bancoHistorialTB.setFecha(Tools.getDate());
-//                        bancoHistorialTB.setHora(Tools.getTime());
-//                        bancoHistorialTB.setEntrada(0);
-//                        bancoHistorialTB.setSalida(Double.parseDouble(txtMonto.getText()));
-//
-//                        ModeloObject result = CompraADO.Registrar_Amortizacion(compraCreditoTB, bancoHistorialTB, null, null);
-//                        if (result.getState().equalsIgnoreCase("inserted")) {
-//                            Tools.Dispose(apWindow);
-//                            cuentasPorPagarVisualizarController.openModalImpresion(compraTB.getIdCompra(), result.getIdResult());
-//                            cuentasPorPagarVisualizarController.loadTableCompraCredito(compraTB.getIdCompra());
-//                        } else if (result.getState().equalsIgnoreCase("error")) {
-//                            Tools.AlertMessageWarning(apWindow, "Amortizar", result.getMessage());
-//                            btnGuardar.setDisable(false);
-//                        } else {
-//                            Tools.AlertMessageError(apWindow, "Amortizar", "No se completo el proceso por problemas de conexión.");
-//                            btnGuardar.setDisable(false);
-//                        }
-//                    }
-//                }
-//            } else 
-
             if (rbEgreso.isSelected()) {
                 short value = Tools.AlertMessageConfirmation(apWindow, "Amortizar", "¿Está seguro de continuar?");
                 if (value == 1) {

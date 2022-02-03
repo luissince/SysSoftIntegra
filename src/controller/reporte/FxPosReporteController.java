@@ -630,12 +630,14 @@ public class FxPosReporteController implements Initializable {
                     if (vt.getEstado() == 3) {
                         totalanulado += vt.getTotal();
                     } else {
-                        if (vt.getTipo() == 1 && vt.getEstado() == 1 || vt.getTipo() == 1 && vt.getEstado() == 4) {
+                         if (vt.getTipo() == 1 && vt.getEstado() == 1
+                                || vt.getTipo() == 1 && vt.getEstado() == 4) {
                             totalcontado += vt.getTotal();
-                        } else if (vt.getTipo() == 2 && vt.getEstado() == 1) {
-                            totalcreditopagado += vt.getTotal();
                         } else {
                             totalcredito += vt.getTotal();
+                            if (vt.getTipo() == 2 && vt.getEstado() == 1) {
+                                totalcreditopagado += vt.getTotal();
+                            }
                         }
                     }
                 }

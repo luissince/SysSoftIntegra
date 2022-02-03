@@ -223,6 +223,10 @@ public class TicketCaja {
                     "",
                     "",
                     "",
+                    "",
+                    "",
+                    "",
+                    "",
                     ""
             );
         }
@@ -253,7 +257,7 @@ public class TicketCaja {
                     "");
         }
 
-        billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
 
         PrintService printService = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices());
         if (printService != null) {

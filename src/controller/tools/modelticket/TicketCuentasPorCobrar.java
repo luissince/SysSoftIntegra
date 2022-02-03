@@ -104,8 +104,6 @@ public class TicketCuentasPorCobrar {
                                 return printTicketWithDesingCuentaCobrarUnico(ventaCreditoTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
                             } else {
                                 return "empty";
-//                                billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
-//                                return printTicketNoDesingCuentaCobrarUnico(ventaCreditoTB, nombreImpresora, cortaPapel);
                             }
                         } catch (PrinterException | IOException | PrintException ex) {
                             return "Error en imprimir: " + ex.getLocalizedMessage();
@@ -122,8 +120,6 @@ public class TicketCuentasPorCobrar {
                                 return printTicketWithDesingCuentaCobrar(ventaTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
                             } else {
                                 return "empty";
-//                                billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
-//                                return printTicketNoDesingCuentaCobrar(ventaTB, nombreImpresora, cortaPapel);
                             }
                         } catch (PrinterException | IOException | PrintException ex) {
                             return "Error en imprimir: " + ex.getLocalizedMessage();
@@ -230,6 +226,10 @@ public class TicketCuentasPorCobrar {
                     "",
                     "",
                     "",
+                    "",
+                    "",
+                    "",
+                    "",
                     "");
         }
 
@@ -269,7 +269,7 @@ public class TicketCuentasPorCobrar {
                     "");
         }
 
-        billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
 
         PrintService printService = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices());
         if (printService != null) {
@@ -336,6 +336,10 @@ public class TicketCuentasPorCobrar {
                     "",
                     "",
                     "",
+                    "",
+                    "",
+                    "",
+                    "",
                     "");
         }
 
@@ -375,7 +379,7 @@ public class TicketCuentasPorCobrar {
                     "");
         }
 
-        billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
 
         PrintService printService = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices());
         if (printService != null) {
@@ -506,162 +510,4 @@ public class TicketCuentasPorCobrar {
         stage.requestFocus();
     }
 
-//    private String printTicketNoDesingCuentaCobrarUnico(VentaCreditoTB ventaCreditoTB, String nombreImpresora, boolean cortaPapel) {
-//        ArrayList<HBox> object = new ArrayList<>();
-//        int rows = 0;
-//        int lines = 0;
-//        for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
-//            object.add((HBox) hbEncabezado.getChildren().get(i));
-//            HBox box = ((HBox) hbEncabezado.getChildren().get(i));
-//            rows++;
-//            lines += billPrintable.hbEncebezado(box,
-//                    "ABONO",
-//                    ventaCreditoTB.getIdVentaCredito(),
-//                    ventaCreditoTB.getVentaTB().getClienteTB().getNumeroDocumento(),
-//                    ventaCreditoTB.getVentaTB().getClienteTB().getInformacion(),
-//                    ventaCreditoTB.getVentaTB().getClienteTB().getCelular(),
-//                    ventaCreditoTB.getVentaTB().getClienteTB().getDireccion(),
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    Tools.roundingValue(ventaCreditoTB.getVentaTB().getMontoTotal(), 2),
-//                    Tools.roundingValue(ventaCreditoTB.getVentaTB().getMontoCobrado(), 2),
-//                    Tools.roundingValue(ventaCreditoTB.getVentaTB().getMontoRestante(), 2),
-//                    "",
-//                    "0",
-//                    "0",
-//                    "0",
-//                    "0",
-//                    "0");
-//        }
-//
-//        ObservableList<VentaCreditoTB> arrList = FXCollections.observableArrayList(ventaCreditoTB);
-//        for (int m = 0; m < arrList.size(); m++) {
-//            for (int i = 0; i < hbDetalleCabecera.getChildren().size(); i++) {
-//                HBox hBox = new HBox();
-//                hBox.setId("dc_" + m + "" + i);
-//                HBox box = ((HBox) hbDetalleCabecera.getChildren().get(i));
-//                rows++;
-//                lines += billPrintable.hbDetalleCuentaCobrar(hBox, box, arrList, m);
-//                object.add(hBox);
-//            }
-//        }
-//
-//        for (int i = 0; i < hbPie.getChildren().size(); i++) {
-//            object.add((HBox) hbPie.getChildren().get(i));
-//            HBox box = ((HBox) hbPie.getChildren().get(i));
-//            rows++;
-//            lines += billPrintable.hbPie(box,
-//                    "M",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    ventaCreditoTB.getVentaTB().getClienteTB().getNumeroDocumento(),
-//                    ventaCreditoTB.getVentaTB().getClienteTB().getInformacion(),
-//                    "",
-//                    ventaCreditoTB.getVentaTB().getClienteTB().getCelular(),
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "");
-//        }
-//        return billPrintable.modelTicket(rows + lines + 1 + 10, lines, object, nombreImpresora, cortaPapel);
-//    }
-//    private String printTicketNoDesingCuentaCobrar(VentaTB ventaTB, String nombreImpresora, boolean cortaPapel) {
-//        ArrayList<HBox> object = new ArrayList<>();
-//        int rows = 0;
-//        int lines = 0;
-//        for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
-//            object.add((HBox) hbEncabezado.getChildren().get(i));
-//            HBox box = ((HBox) hbEncabezado.getChildren().get(i));
-//            rows++;
-//            lines += billPrintable.hbEncebezado(box,
-//                    "ABONO",
-//                    "VC",
-//                    ventaTB.getClienteTB().getNumeroDocumento(),
-//                    ventaTB.getClienteTB().getInformacion(),
-//                    ventaTB.getClienteTB().getCelular(),
-//                    ventaTB.getClienteTB().getDireccion(),
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    Tools.roundingValue(ventaTB.getMontoTotal(), 2),
-//                    Tools.roundingValue(ventaTB.getMontoCobrado(), 2),
-//                    Tools.roundingValue(ventaTB.getMontoRestante(), 2),
-//                    "",
-//                    "0",
-//                    "0",
-//                    "0",
-//                    "0",
-//                    "0");
-//        }
-//
-//        ObservableList<VentaCreditoTB> arrList = FXCollections.observableArrayList(ventaTB.getVentaCreditoTBs());
-//        for (int m = 0; m < arrList.size(); m++) {
-//            for (int i = 0; i < hbDetalleCabecera.getChildren().size(); i++) {
-//                HBox hBox = new HBox();
-//                hBox.setId("dc_" + m + "" + i);
-//                HBox box = ((HBox) hbDetalleCabecera.getChildren().get(i));
-//                rows++;
-//                lines += billPrintable.hbDetalleCuentaCobrar(hBox, box, arrList, m);
-//                object.add(hBox);
-//            }
-//        }
-//
-//        for (int i = 0; i < hbPie.getChildren().size(); i++) {
-//            object.add((HBox) hbPie.getChildren().get(i));
-//            HBox box = ((HBox) hbPie.getChildren().get(i));
-//            rows++;
-//            lines += billPrintable.hbPie(box,
-//                    "M",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    ventaTB.getClienteTB().getNumeroDocumento(),
-//                    ventaTB.getClienteTB().getInformacion(),
-//                    "",
-//                    ventaTB.getClienteTB().getCelular(),
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "");
-//        }
-//        return billPrintable.modelTicket(rows + lines + 1 + 10, lines, object, nombreImpresora, cortaPapel);
-//    }
 }

@@ -170,6 +170,10 @@ public class TicketPreVenta {
                                     "",
                                     "",
                                     "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
                                     "");
                         }
 
@@ -188,7 +192,7 @@ public class TicketPreVenta {
                             HBox box = ((HBox) hbPie.getChildren().get(i));
                             billPrintable.hbPie(box, monedaSimbolo,
                                     Tools.roundingValue(importeBruto, 2),
-                                   Tools.roundingValue(descuentoBruto, 2),
+                                    Tools.roundingValue(descuentoBruto, 2),
                                     Tools.roundingValue(subImporteNeto, 2),
                                     Tools.roundingValue(impuestoNeto, 2),
                                     Tools.roundingValue(importeNeto, 2),
@@ -207,7 +211,7 @@ public class TicketPreVenta {
                                     "");
                         }
 
-                        billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+                        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
                         PrintService printService = billPrintable.findPrintService(printerName, PrinterJob.lookupPrintServices());
                         if (printService == null) {
                             return "error_name";
@@ -265,6 +269,10 @@ public class TicketPreVenta {
                                     "0",
                                     "0",
                                     "0",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
                                     "",
                                     "",
                                     "",

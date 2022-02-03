@@ -12,6 +12,9 @@ import controller.tools.Session;
 import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.awt.image.BufferedImage;
+import java.awt.print.Book;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -28,7 +33,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.util.Duration;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.PrintService;
 import model.NotaCreditoADO;
 import model.NotaCreditoDetalleTB;
 import model.NotaCreditoTB;
@@ -62,6 +71,246 @@ public class TicketNotaCredito {
         this.hbDetalleCabecera = hbDetalleCabecera;
         this.hbPie = hbPie;
         this.monedaCadena = monedaCadena;
+    }
+
+    public void imprimir(String idNotaCredito) {
+        if (!Session.ESTADO_IMPRESORA_NOTA_CREDITO && Tools.isText(Session.NOMBRE_IMPRESORA_NOTA_CREDITO) && Tools.isText(Session.FORMATO_IMPRESORA_NOTA_CREDITO)) {
+            Tools.AlertMessageWarning(node, "Venta", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+            return;
+        }
+
+        if (Session.FORMATO_IMPRESORA_NOTA_CREDITO.equalsIgnoreCase("ticket")) {
+            if (Session.TICKET_NOTA_CREDITO_ID == 0 && Tools.isText(Session.TICKET_NOTA_CREDITO_RUTA)) {
+                Tools.AlertMessageWarning(node, "Venta", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
+            } else {
+                executeProcessPrinterNotaCredito(
+                        idNotaCredito,
+                        Session.DESING_IMPRESORA_NOTA_CREDITO,
+                        Session.TICKET_NOTA_CREDITO_ID,
+                        Session.TICKET_NOTA_CREDITO_RUTA,
+                        Session.NOMBRE_IMPRESORA_NOTA_CREDITO,
+                        Session.CORTAPAPEL_IMPRESORA_NOTA_CREDITO);
+            }
+        } else if (Session.FORMATO_IMPRESORA_NOTA_CREDITO.equalsIgnoreCase("a4")) {
+//            executeProcessPrinterVenta(idNotaCredito, Session.NOMBRE_IMPRESORA_VENTA, Session.CORTAPAPEL_IMPRESORA_VENTA, Session.FORMATO_IMPRESORA_VENTA);
+        } else {
+            Tools.AlertMessageWarning(node, "Venta", "Error al validar el formato de impresión, configure en la sección configuración/impresora.");
+        }
+    }
+
+    private void executeProcessPrinterNotaCredito(String idNotaCredito, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) {
+        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<String> task = new Task<String>() {
+            @Override
+            public String call() {
+                Object object = NotaCreditoADO.DetalleNotaCreditoById(idNotaCredito);
+                if (object instanceof NotaCreditoTB) {
+                    try {
+                        NotaCreditoTB notaCreditoTB = (NotaCreditoTB) object;
+                        if (desing.equalsIgnoreCase("withdesing")) {
+                            return printTicketWithDesingCotizacion(notaCreditoTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
+                        } else {
+                            return "empty";
+                        }
+                    } catch (PrinterException | IOException | PrintException ex) {
+                        return "Error en imprimir: " + ex.getLocalizedMessage();
+                    }
+                } else {
+                    return (String) object;
+                }
+            }
+        };
+
+        task.setOnSucceeded(w -> {
+            String result = task.getValue();
+            if (result.equalsIgnoreCase("completed")) {
+                Tools.showAlertNotification("/view/image/information_large.png",
+                        "Envío de impresión",
+                        Tools.newLineString("Se completo el proceso de impresión correctamente."),
+                        Duration.seconds(5),
+                        Pos.BOTTOM_RIGHT);
+            } else if (result.equalsIgnoreCase("error_name")) {
+                Tools.showAlertNotification("/view/image/warning_large.png",
+                        "Envío de impresión",
+                        Tools.newLineString("Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
+                        Duration.seconds(10),
+                        Pos.BOTTOM_RIGHT);
+            } else if (result.equalsIgnoreCase("no_config")) {
+                Tools.showAlertNotification("/view/image/warning_large.png",
+                        "Envío de impresión",
+                        Tools.newLineString("Error al validar el tipo de impresión, cofigure nuevamente la impresora."),
+                        Duration.seconds(10),
+                        Pos.BOTTOM_RIGHT);
+            } else if (result.equalsIgnoreCase("empty")) {
+                Tools.showAlertNotification("/view/image/warning_large.png",
+                        "Envío de impresión",
+                        Tools.newLineString("No hay registros para mostrar en el reporte."),
+                        Duration.seconds(10),
+                        Pos.BOTTOM_RIGHT);
+            } else {
+                Tools.showAlertNotification("/view/image/error_large.png",
+                        "Envío de impresión",
+                        Tools.newLineString("Se producto un problema por problemas de la impresora: " + result),
+                        Duration.seconds(10),
+                        Pos.BOTTOM_RIGHT);
+            }
+        });
+
+        task.setOnFailed(w -> {
+            Tools.showAlertNotification("/view/image/warning_large.png",
+                    "Envío de impresión",
+                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Duration.seconds(10),
+                    Pos.BOTTOM_RIGHT);
+        });
+
+        task.setOnScheduled(w -> {
+            Tools.showAlertNotification("/view/image/print.png",
+                    "Envío de impresión",
+                    Tools.newLineString("Se envió la impresión a la cola, este proceso puede tomar unos segundos."),
+                    Duration.seconds(5),
+                    Pos.BOTTOM_RIGHT);
+        });
+
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+
+    private String printTicketWithDesingCotizacion(NotaCreditoTB notaCreditoTB, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
+        billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
+
+        for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
+            HBox box = ((HBox) hbEncabezado.getChildren().get(i));
+            billPrintable.hbEncebezado(box,
+                    "",
+                    notaCreditoTB.getNombreComprobante(),
+                    notaCreditoTB.getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getNumeracion()),
+                    notaCreditoTB.getClienteTB().getNumeroDocumento(),
+                    notaCreditoTB.getClienteTB().getInformacion(),
+                    notaCreditoTB.getClienteTB().getCelular(),
+                    notaCreditoTB.getClienteTB().getDireccion(),
+                    "CODIGO PROCESO",
+                    "IMPORTE EN LETRAS",
+                    notaCreditoTB.getFechaRegistro(),
+                    notaCreditoTB.getHoraRegistro(),
+                    notaCreditoTB.getFechaRegistro(),
+                    notaCreditoTB.getHoraRegistro(),
+                    "0",
+                    "0",
+                    "0",
+                    "-",
+                    notaCreditoTB.getEmpleadoTB().getApellidos() + " " + notaCreditoTB.getEmpleadoTB().getNombres(),
+                    "-",
+                    "-",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    notaCreditoTB.getVentaTB().getComprobanteName(),
+                    notaCreditoTB.getVentaTB().getSerie(),
+                    notaCreditoTB.getVentaTB().getNumeracion(),
+                    notaCreditoTB.getNombreMotivo());
+        }
+
+        AnchorPane hbDetalle = new AnchorPane();
+        ObservableList<NotaCreditoDetalleTB> arrList = FXCollections.observableArrayList(notaCreditoTB.getNotaCreditoDetalleTBs());
+        for (int m = 0; m < arrList.size(); m++) {
+            for (int i = 0; i < hbDetalleCabecera.getChildren().size(); i++) {
+                HBox hBox = new HBox();
+                hBox.setId("dc_" + m + "" + i);
+                HBox box = ((HBox) hbDetalleCabecera.getChildren().get(i));
+                billPrintable.hbDetalleNotaCredito(hBox, box, arrList, m);
+                hbDetalle.getChildren().add(hBox);
+            }
+        }
+
+        double totalBruto = 0;
+        double totalDescuento = 0;
+        double totalSubTotal = 0;
+        double totalImpuesto = 0;
+        double totalNeto = 0;
+
+        for (NotaCreditoDetalleTB ocdtb : notaCreditoTB.getNotaCreditoDetalleTBs()) {
+            double importeBruto = ocdtb.getPrecio() * ocdtb.getCantidad();
+            double descuento = ocdtb.getDescuento();
+            double subImporteBruto = importeBruto - descuento;
+            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+            double importeNeto = subImporteNeto + impuesto;
+
+            totalBruto += importeBruto;
+            totalDescuento += descuento;
+            totalSubTotal += subImporteNeto;
+            totalImpuesto += impuesto;
+            totalNeto += importeNeto;
+        }
+
+        for (int i = 0; i < hbPie.getChildren().size(); i++) {
+            HBox box = ((HBox) hbPie.getChildren().get(i));
+            billPrintable.hbPie(box,
+                    notaCreditoTB.getMonedaTB().getSimbolo(),
+                    Tools.roundingValue(totalBruto, 2),
+                    Tools.roundingValue(totalDescuento, 2),
+                    Tools.roundingValue(totalSubTotal, 2),
+                    Tools.roundingValue(totalImpuesto, 2),
+                    Tools.roundingValue(totalNeto, 2),
+                    "TARJETA",
+                    "EFECTIVO",
+                    "VUELTO",
+                    notaCreditoTB.getClienteTB().getNumeroDocumento(),
+                    notaCreditoTB.getClienteTB().getInformacion(),
+                    "CODIGO VENTA",
+                    notaCreditoTB.getClienteTB().getCelular(),
+                    "IMPORTE EN LETRAS",
+                    "DOCUMENTO EMPLEADO",
+                    notaCreditoTB.getEmpleadoTB().getApellidos() + " " + notaCreditoTB.getEmpleadoTB().getNombres(),
+                    "CELULAR EMPLEADO",
+                    "DIRECCION EMPLEADO",
+                    "");
+        }
+
+        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
+        PrintService printService = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices());
+        if (printService != null) {
+            DocPrintJob job = printService.createPrintJob();
+            PrinterJob pj = PrinterJob.getPrinterJob();
+            pj.setPrintService(job.getPrintService());
+            pj.setJobName(nombreImpresora);
+            Book book = new Book();
+            book.append(billPrintable, billPrintable.getPageFormat(pj));
+            pj.setPageable(book);
+            pj.print();
+            if (cortaPapel) {
+                billPrintable.printCortarPapel(nombreImpresora);
+            }
+            return "completed";
+        } else {
+            return "error_name";
+        }
     }
 
     public void mostrarReporte(String idNotaCredito) {
@@ -143,7 +392,7 @@ public class TicketNotaCredito {
 
                         map.put("DOCUMENTOEMPRESA", "R.U.C " + Session.COMPANY_NUMERO_DOCUMENTO);
                         map.put("NOMBREDOCUMENTO", notaCreditoTB.getNombreComprobante());
-                        map.put("NUMERODOCUMENTO", notaCreditoTB.getSerie() + "-" + notaCreditoTB.getNumeracion());
+                        map.put("NUMERODOCUMENTO", notaCreditoTB.getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getNumeracion()));
 
                         map.put("DOCUMENTOCLIENTE", notaCreditoTB.getClienteTB().getTipoDocumentoName() + ":");
                         map.put("NUMERODOCUMENTOCLIENTE", notaCreditoTB.getClienteTB().getNumeroDocumento());
@@ -155,7 +404,7 @@ public class TicketNotaCredito {
                         map.put("FECHAEMISION", notaCreditoTB.getFechaRegistro());
                         map.put("MONEDA", notaCreditoTB.getMonedaTB().getNombre() + "-" + notaCreditoTB.getMonedaTB().getAbreviado());
 
-                        map.put("DOCUMENTO_REFERENCIA", notaCreditoTB.getVentaTB().getSerie() + "-" + notaCreditoTB.getVentaTB().getNumeracion());
+                        map.put("DOCUMENTO_REFERENCIA", notaCreditoTB.getVentaTB().getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getVentaTB().getNumeracion()));
                         map.put("MOTIVO_ANULACION", notaCreditoTB.getNombreMotivo());
 
                         map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(0, 2), true, notaCreditoTB.getMonedaTB().getNombre()));

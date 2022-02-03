@@ -208,6 +208,10 @@ public class TicketVenta {
                                             "",
                                             "",
                                             "",
+                                            "",
+                                            "",
+                                            "",
+                                            "",
                                             "");
                                 }
 
@@ -245,7 +249,7 @@ public class TicketVenta {
                                             "");
                                 }
 
-                                billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+                                billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
                                 PrintService printService = billPrintable.findPrintService(printerName, PrinterJob.lookupPrintServices());
                                 if (printService != null) {
                                     DocPrintJob job = printService.createPrintJob();
@@ -304,6 +308,10 @@ public class TicketVenta {
                                             "0",
                                             "0",
                                             "0",
+                                            "",
+                                            "",
+                                            "",
+                                            "",
                                             "",
                                             "",
                                             "",
@@ -423,7 +431,7 @@ public class TicketVenta {
         }
     }
 
-    private JasperPrint reportA4(VentaTB ventaTB) throws JRException, WriterException {
+    private JasperPrint reportA4(VentaTB ventaTB) throws JRException, WriterException,UnsupportedEncodingException {
         double importeBrutoTotal = 0;
         double descuentoTotal = 0;
         double subImporteNetoTotal = 0;
@@ -455,7 +463,8 @@ public class TicketVenta {
             impuestoTotal += impuesto;
             importeNetoTotal += importeNeto;
         }
-        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(array.toJSONString().getBytes());
+        String json = new String(array.toJSONString().getBytes(), "UTF-8");
+        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(json.getBytes());
 
         InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
         InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);

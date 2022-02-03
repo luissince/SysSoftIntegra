@@ -44,7 +44,7 @@
             </HBox>
             <HBox style="-fx-padding: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
                <children>
-                  <TableView fx:id="tvList" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="360.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
+                  <TableView fx:id="tvList" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="320.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
                      <columns>
                         <TableColumn fx:id="tcId" prefWidth="70.0" style="-fx-alignment: CENTER;" text="N°" />
                         <TableColumn fx:id="tcDocumento" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Documento" />

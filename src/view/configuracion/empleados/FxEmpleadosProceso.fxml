@@ -122,30 +122,6 @@
                                                 </VBox>
                                              </children>
                                           </HBox>
-                                          <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;">
-                                             <children>
-                                                <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                                   <children>
-                                                      <Label styleClass="labelRoboto13" text="Puesto:" textFill="#020203">
-                                                         <font>
-                                                            <Font name="Roboto" size="14.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <ComboBox fx:id="cbPuesto" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="210.0" styleClass="comboBox" />
-                                                   </children>
-                                                </VBox>
-                                                <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                                   <children>
-                                                      <Label styleClass="labelRoboto13" text="Estado:" textFill="#020203">
-                                                         <font>
-                                                            <Font name="Roboto" size="14.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <ComboBox fx:id="cbEstado" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="210.0" styleClass="comboBox" />
-                                                   </children>
-                                                </VBox>
-                                             </children>
-                                          </HBox>
                                        </children>
                                        <padding>
                                           <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -264,6 +240,12 @@
                                                          </font>
                                                       </Label>
                                                       <ComboBox fx:id="cbRol" maxWidth="1.7976931348623157E308" prefWidth="240.0" />
+                                                      <Label styleClass="labelRoboto13" text="Estado:" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <ComboBox fx:id="cbEstado" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="210.0" styleClass="comboBox" />
                                                    </children>
                                                 </VBox>
                                              </children>

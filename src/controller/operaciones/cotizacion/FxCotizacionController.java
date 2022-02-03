@@ -127,7 +127,7 @@ public class FxCotizacionController implements Initializable {
         cbMoneda.getItems().addAll(MonedaADO.GetMonedasComboBox());
         if (!cbMoneda.getItems().isEmpty()) {
             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
-                if (cbMoneda.getItems().get(i).getPredeterminado()) {
+                if (cbMoneda.getItems().get(i).isPredeterminado()) {
                     cbMoneda.getSelectionModel().select(i);
                     monedaSimbolo = cbMoneda.getItems().get(i).getSimbolo();
                     break;
@@ -452,7 +452,7 @@ public class FxCotizacionController implements Initializable {
         cbMoneda.getItems().clear();
         cbMoneda.getItems().addAll(MonedaADO.GetMonedasComboBox());
         for (int i = 0; i < cbMoneda.getItems().size(); i++) {
-            if (cbMoneda.getItems().get(i).getPredeterminado()) {
+            if (cbMoneda.getItems().get(i).isPredeterminado()) {
                 cbMoneda.getSelectionModel().select(i);
                 monedaSimbolo = cbMoneda.getItems().get(i).getSimbolo();
                 break;

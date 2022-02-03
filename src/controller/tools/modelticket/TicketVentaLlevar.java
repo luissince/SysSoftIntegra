@@ -219,6 +219,10 @@ public class TicketVentaLlevar {
                     "",
                     "",
                     "",
+                    "",
+                    "",
+                    "",
+                    "",
                     ""
             );
         }
@@ -259,7 +263,7 @@ public class TicketVentaLlevar {
                     "");
         }
 
-        billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
         DocPrintJob job = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices()).createPrintJob();
         if (job != null) {
             PrinterJob pj = PrinterJob.getPrinterJob();
@@ -321,6 +325,10 @@ public class TicketVentaLlevar {
                     "0",
                     "0",
                     "0",
+                    "",
+                    "",
+                    "",
+                    "",
                     "",
                     "",
                     "",

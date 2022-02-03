@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a8fcc85-bb64-405d-8ebb-a9f118fce454">
-	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="216"/>
-	<property name="ireport.y" value="432"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="144"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="style1" mode="Opaque" backcolor="#CCCCCC" fill="Solid" isBold="true"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
@@ -139,7 +139,7 @@
 				</textElement>
 				<text><![CDATA[FORMA PAGO]]></text>
 			</staticText>
-			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle">
 				<reportElement x="5" y="5" width="91" height="86" uuid="b8640659-d697-4e26-907f-c6cd60d1870c"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
@@ -159,12 +159,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DIRECCION}+"\n"+$P{EMAIL}+"\n"+$P{TELEFONOCELULAR}+"\n"+$P{PAGINAWEB}]]></textFieldExpression>
 			</textField>
-			<rectangle>
-				<reportElement x="333" y="58" width="222" height="5" backcolor="#576767" uuid="6a4bcd6d-09fe-4710-91c9-57d8c4847fea"/>
-				<graphicElement>
-					<pen lineWidth="0.0"/>
-				</graphicElement>
-			</rectangle>
 			<textField isStretchWithOverflow="true">
 				<reportElement mode="Opaque" x="333" y="16" width="222" height="20" forecolor="#FFFFFF" backcolor="#FE3152" uuid="5cfb7879-9434-491a-81b6-6c56a0c89bec"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -172,12 +166,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{NOMBREDOCUMENTO}]]></textFieldExpression>
 			</textField>
-			<rectangle>
-				<reportElement x="333" y="63" width="222" height="29" backcolor="#020203" uuid="bcf89a11-d683-4098-89e8-e8fa8ab4c5f2"/>
-				<graphicElement>
-					<pen lineWidth="0.0"/>
-				</graphicElement>
-			</rectangle>
 			<textField isStretchWithOverflow="true">
 				<reportElement mode="Opaque" x="333" y="36" width="222" height="16" forecolor="#FFFFFF" backcolor="#FE3152" uuid="e442535a-430b-40df-ad6a-497f23e3e044"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -185,14 +173,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{NUMERODOCUMENTO}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement mode="Transparent" x="333" y="77" width="101" height="15" forecolor="#F0F3FC" backcolor="#020203" uuid="4c7e52a9-2e3c-4648-b65c-90adf30ca728"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="true"/>
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<text><![CDATA[MONEDA:]]></text>
-			</staticText>
 			<textField isStretchWithOverflow="true">
 				<reportElement mode="Opaque" x="333" y="0" width="222" height="16" forecolor="#FFFFFF" backcolor="#FE3152" uuid="6e4ea618-1286-43c4-b399-09e990636954"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -206,6 +186,26 @@
 					<pen lineWidth="0.0"/>
 				</graphicElement>
 			</rectangle>
+			<rectangle>
+				<reportElement x="333" y="58" width="222" height="5" backcolor="#576767" uuid="6a4bcd6d-09fe-4710-91c9-57d8c4847fea"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="333" y="63" width="222" height="29" backcolor="#020203" uuid="bcf89a11-d683-4098-89e8-e8fa8ab4c5f2"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="333" y="77" width="101" height="15" forecolor="#F0F3FC" backcolor="#020203" uuid="4c7e52a9-2e3c-4648-b65c-90adf30ca728"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[MONEDA:]]></text>
+			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="333" y="62" width="101" height="15" forecolor="#F0F3FC" backcolor="#020203" uuid="33d65441-daf2-4c44-9b9a-5c49ec75231f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">

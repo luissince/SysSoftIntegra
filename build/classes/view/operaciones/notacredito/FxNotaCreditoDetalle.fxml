@@ -16,7 +16,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane fx:id="apWindow" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.notacredito.FxNotaCreditoDetalleController">
    <children>
       <ScrollPane fx:id="spBody" fitToWidth="true" styleClass="scroll-pane-secundario" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -64,11 +63,11 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#onActionImprimir" onKeyPressed="#onKeyPressedImprimir" styleClass="buttonLight" text="Imprimir">
+                        <Button mnemonicParsing="false" onAction="#onActionTicket" onKeyPressed="#onKeyPressedTicket" styleClass="buttonLight" text="Ticket">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../image/print.png" />
+                                    <Image url="@../../image/ticket.png" />
                                  </image>
                               </ImageView>
                            </graphic>

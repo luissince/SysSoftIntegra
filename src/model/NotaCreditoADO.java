@@ -306,6 +306,15 @@ public class NotaCreditoADO {
                 clienteTB.setEmail(resultSet.getString("Email"));
                 clienteTB.setDireccion(resultSet.getString("Direccion"));
                 notaCreditoTB.setClienteTB(clienteTB);
+                
+                EmpleadoTB empleadoTB = new EmpleadoTB();
+                empleadoTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
+                empleadoTB.setApellidos(resultSet.getString("Apellidos"));
+                empleadoTB.setNombres(resultSet.getString("Nombres"));
+                empleadoTB.setCelular(resultSet.getString("Celular"));
+                empleadoTB.setTelefono(resultSet.getString("Telefono"));
+                empleadoTB.setDireccion(resultSet.getString("Direccion"));
+                notaCreditoTB.setEmpleadoTB(empleadoTB);
 
                 VentaTB ventaTB = new VentaTB();
                 ventaTB.setComprobanteName(resultSet.getString("VentaComprobante"));

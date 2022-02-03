@@ -17,7 +17,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import static model.DBUtil.getConnection;
 
 public class VentaADO {
 
@@ -3315,168 +3314,137 @@ public class VentaADO {
         }
     }
 
-    public static ModeloObject RegistrarAbono(VentaCreditoTB ventaCreditoTB,/* BancoHistorialTB bancoHistorialTB,*/ IngresoTB ingresoTB, MovimientoCajaTB movimientoCajaTB) {
+    public static ModeloObject RegistrarAbono(VentaCreditoTB ventaCreditoTB, IngresoTB ingresoTB, MovimientoCajaTB movimientoCajaTB) {
         ModeloObject result = new ModeloObject();
-        DBUtil.dbConnect();
-        if (getConnection() != null) {
-            PreparedStatement statementValidate = null;
-            PreparedStatement statementVenta = null;
-            PreparedStatement statementAbono = null;
-//            PreparedStatement statementBanco = null;
-//            PreparedStatement statementBancoHistorial = null;
-            PreparedStatement statementIngreso = null;
-            CallableStatement statementCodigo = null;
-            PreparedStatement statementMovimientoCaja = null;
-            try {
+        PreparedStatement statementValidate = null;
+        PreparedStatement statementVenta = null;
+        PreparedStatement statementAbono = null;
+        PreparedStatement statementIngreso = null;
+        CallableStatement statementCodigo = null;
+        PreparedStatement statementMovimientoCaja = null;
+        try {
+            DBUtil.dbConnect();
+            DBUtil.getConnection().setAutoCommit(false);
 
-                DBUtil.getConnection().setAutoCommit(false);
+            statementValidate = DBUtil.getConnection().prepareStatement("select\n"
+                    + "sum(dv.Cantidad*(dv.PrecioVenta - dv.Descuento)) as Total from VentaTB as v \n"
+                    + "inner join DetalleVentaTB as dv on dv.IdVenta = v.IdVenta\n"
+                    + "where v.IdVenta = ?");
+            statementValidate.setString(1, ventaCreditoTB.getIdVenta());
+            ResultSet resultSet = statementValidate.executeQuery();
+            if (resultSet.next()) {
+                double total = Double.parseDouble(Tools.roundingValue(resultSet.getDouble("Total"), 2));
 
-                statementValidate = DBUtil.getConnection().prepareStatement("select\n"
-                        + "sum(dv.Cantidad*(dv.PrecioVenta - dv.Descuento)) as Total from VentaTB as v \n"
-                        + "inner join DetalleVentaTB as dv on dv.IdVenta = v.IdVenta\n"
-                        + "where v.IdVenta = ?");
+                statementCodigo = DBUtil.getConnection().prepareCall("{? = call Fc_Venta_Credito_Codigo_Alfanumerico()}");
+                statementCodigo.registerOutParameter(1, java.sql.Types.VARCHAR);
+                statementCodigo.execute();
+                String idVentaCredito = statementCodigo.getString(1);
+
+                statementAbono = DBUtil.getConnection().prepareStatement("INSERT INTO VentaCreditoTB(IdVenta,IdVentaCredito,Monto,FechaPago,HoraPago,Estado,IdUsuario,Observacion)VALUES(?,?,?,?,?,?,?,?)");
+                statementAbono.setString(1, ventaCreditoTB.getIdVenta());
+                statementAbono.setString(2, idVentaCredito);
+                statementAbono.setDouble(3, ventaCreditoTB.getMonto());
+                statementAbono.setString(4, ventaCreditoTB.getFechaPago());
+                statementAbono.setString(5, ventaCreditoTB.getHoraPago());
+                statementAbono.setShort(6, ventaCreditoTB.getEstado());
+                statementAbono.setString(7, ventaCreditoTB.getIdUsuario());
+                statementAbono.setString(8, ventaCreditoTB.getObservacion());
+                statementAbono.addBatch();
+
+                statementIngreso = DBUtil.getConnection().prepareStatement("INSERT INTO IngresoTB(IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)VALUES(?,?,?,?,?,?,?,?)");
+                if (ingresoTB != null) {
+                    statementIngreso.setString(1, idVentaCredito);
+                    statementIngreso.setString(2, ingresoTB.getIdUsuario());
+                    statementIngreso.setString(3, ingresoTB.getDetalle());
+                    statementIngreso.setInt(4, ingresoTB.getProcedencia());
+                    statementIngreso.setString(5, ingresoTB.getFecha());
+                    statementIngreso.setString(6, ingresoTB.getHora());
+                    statementIngreso.setInt(7, ingresoTB.getForma());
+                    statementIngreso.setDouble(8, ingresoTB.getMonto());
+                    statementIngreso.addBatch();
+                }
+
+                statementMovimientoCaja = DBUtil.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB(IdCaja,FechaMovimiento,HoraMovimiento,Comentario,TipoMovimiento,Monto,IdProcedencia)VALUES(?,?,?,?,?,?,?)");
+                if (movimientoCajaTB != null) {
+                    statementMovimientoCaja.setString(1, movimientoCajaTB.getIdCaja());
+                    statementMovimientoCaja.setString(2, movimientoCajaTB.getFechaMovimiento());
+                    statementMovimientoCaja.setString(3, movimientoCajaTB.getHoraMovimiento());
+                    statementMovimientoCaja.setString(4, movimientoCajaTB.getComentario());
+                    statementMovimientoCaja.setInt(5, movimientoCajaTB.getTipoMovimiento());
+                    statementMovimientoCaja.setDouble(6, movimientoCajaTB.getMonto());
+                    statementMovimientoCaja.setString(7, idVentaCredito);
+                    statementMovimientoCaja.addBatch();
+                }
+
+                statementValidate = DBUtil.getConnection().prepareStatement("SELECT Monto FROM VentaCreditoTB WHERE IdVenta = ?");
                 statementValidate.setString(1, ventaCreditoTB.getIdVenta());
-                ResultSet resultSet = statementValidate.executeQuery();
-                if (resultSet.next()) {
-                    double total = Double.parseDouble(Tools.roundingValue(resultSet.getDouble("Total"), 2));
+                resultSet = statementValidate.executeQuery();
 
-                    statementCodigo = DBUtil.getConnection().prepareCall("{? = call Fc_Venta_Credito_Codigo_Alfanumerico()}");
-                    statementCodigo.registerOutParameter(1, java.sql.Types.VARCHAR);
-                    statementCodigo.execute();
-                    String idVentaCredito = statementCodigo.getString(1);
-
-                    statementAbono = DBUtil.getConnection().prepareStatement("INSERT INTO VentaCreditoTB(IdVenta,IdVentaCredito,Monto,FechaPago,HoraPago,Estado,IdUsuario,Observacion)VALUES(?,?,?,?,?,?,?,?)");
-                    statementAbono.setString(1, ventaCreditoTB.getIdVenta());
-                    statementAbono.setString(2, idVentaCredito);
-                    statementAbono.setDouble(3, ventaCreditoTB.getMonto());
-                    statementAbono.setString(4, ventaCreditoTB.getFechaPago());
-                    statementAbono.setString(5, ventaCreditoTB.getHoraPago());
-                    statementAbono.setShort(6, ventaCreditoTB.getEstado());
-                    statementAbono.setString(7, ventaCreditoTB.getIdUsuario());
-                    statementAbono.setString(8, ventaCreditoTB.getObservacion());
-                    statementAbono.addBatch();
-
-//                    statementBanco = getConnection().prepareStatement("UPDATE Banco SET SaldoInicial = SaldoInicial + ? WHERE IdBanco = ?");
-//                    statementBancoHistorial = getConnection().prepareStatement("INSERT INTO BancoHistorialTB(IdBanco,IdProcedencia,Descripcion,Fecha,Hora,Entrada,Salida)VALUES(?,?,?,?,?,?,?)");
-//                    if (bancoHistorialTB != null) {
-//                        statementBanco.setDouble(1, bancoHistorialTB.getEntrada());
-//                        statementBanco.setString(2, bancoHistorialTB.getIdBanco());
-//                        statementBanco.addBatch();
-//
-//                        statementBancoHistorial.setString(1, bancoHistorialTB.getIdBanco());
-//                        statementBancoHistorial.setString(2, "");
-//                        statementBancoHistorial.setString(3, bancoHistorialTB.getDescripcion());
-//                        statementBancoHistorial.setString(4, bancoHistorialTB.getFecha());
-//                        statementBancoHistorial.setString(5, bancoHistorialTB.getHora());
-//                        statementBancoHistorial.setDouble(6, bancoHistorialTB.getEntrada());
-//                        statementBancoHistorial.setDouble(7, bancoHistorialTB.getSalida());
-//                        statementBancoHistorial.addBatch();
-//                    }
-                    statementIngreso = DBUtil.getConnection().prepareStatement("INSERT INTO IngresoTB(IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)VALUES(?,?,?,?,?,?,?,?)");
-                    if (ingresoTB != null) {
-                        statementIngreso.setString(1, idVentaCredito);
-                        statementIngreso.setString(2, ingresoTB.getIdUsuario());
-                        statementIngreso.setString(3, ingresoTB.getDetalle());
-                        statementIngreso.setInt(4, ingresoTB.getProcedencia());
-                        statementIngreso.setString(5, ingresoTB.getFecha());
-                        statementIngreso.setString(6, ingresoTB.getHora());
-                        statementIngreso.setInt(7, ingresoTB.getForma());
-                        statementIngreso.setDouble(8, ingresoTB.getMonto());
-                        statementIngreso.addBatch();
-                    }
-
-                    statementMovimientoCaja = DBUtil.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB(IdCaja,FechaMovimiento,HoraMovimiento,Comentario,TipoMovimiento,Monto)VALUES(?,?,?,?,?,?)");
-                    if (movimientoCajaTB != null) {
-                        statementMovimientoCaja.setString(1, movimientoCajaTB.getIdCaja());
-                        statementMovimientoCaja.setString(2, movimientoCajaTB.getFechaMovimiento());
-                        statementMovimientoCaja.setString(3, movimientoCajaTB.getHoraMovimiento());
-                        statementMovimientoCaja.setString(4, movimientoCajaTB.getComentario());
-                        statementMovimientoCaja.setInt(5, movimientoCajaTB.getTipoMovimiento());
-                        statementMovimientoCaja.setDouble(6, movimientoCajaTB.getMonto());
-                        statementMovimientoCaja.addBatch();
-                    }
-
-                    statementValidate = DBUtil.getConnection().prepareStatement("SELECT Monto FROM VentaCreditoTB WHERE IdVenta = ?");
-                    statementValidate.setString(1, ventaCreditoTB.getIdVenta());
-                    resultSet = statementValidate.executeQuery();
-
-                    double montoTotal = 0;
-                    while (resultSet.next()) {
-                        montoTotal += resultSet.getDouble("Monto");
-                    }
-
-                    statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = 1 WHERE IdVenta = ?");
-                    if ((montoTotal + ventaCreditoTB.getMonto()) >= total) {
-                        statementVenta.setString(1, ventaCreditoTB.getIdVenta());
-                        statementVenta.addBatch();
-                    }
-
-                    statementAbono.executeBatch();
-//                    statementBanco.executeBatch();
-//                    statementBancoHistorial.executeBatch();
-                    statementIngreso.executeBatch();
-                    statementVenta.executeBatch();
-                    statementMovimientoCaja.executeBatch();
-                    DBUtil.getConnection().commit();
-
-                    result.setId((short) 1);
-                    result.setIdResult(idVentaCredito);
-                    result.setMessage("Se completo correctamente el proceso.");
-                    result.setState("inserted");
-                } else {
-                    DBUtil.getConnection().rollback();
-                    result.setId((short) 2);
-                    result.setMessage("Problemas al encontrar le venta con el id indicado " + ventaCreditoTB.getIdVenta());
-                    result.setState("error");
-
+                double montoTotal = 0;
+                while (resultSet.next()) {
+                    montoTotal += resultSet.getDouble("Monto");
                 }
-            } catch (SQLException | NullPointerException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
 
+                statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = 1 WHERE IdVenta = ?");
+                if ((montoTotal + ventaCreditoTB.getMonto()) >= total) {
+                    statementVenta.setString(1, ventaCreditoTB.getIdVenta());
+                    statementVenta.addBatch();
                 }
+
+                statementAbono.executeBatch();
+                statementIngreso.executeBatch();
+                statementVenta.executeBatch();
+                statementMovimientoCaja.executeBatch();
+                DBUtil.getConnection().commit();
+
+                result.setId((short) 1);
+                result.setIdResult(idVentaCredito);
+                result.setMessage("Se completo correctamente el proceso.");
+                result.setState("inserted");
+                return result;
+            } else {
+                DBUtil.getConnection().rollback();
                 result.setId((short) 2);
-                result.setMessage(ex.getLocalizedMessage());
+                result.setMessage("Problemas al encontrar le venta con el id indicado " + ventaCreditoTB.getIdVenta());
                 result.setState("error");
-            } finally {
-                try {
-                    if (statementAbono != null) {
-                        statementAbono.close();
-                    }
-//                    if (statementBanco != null) {
-//                        statementBanco.close();
-//                    }
-//                    if (statementBancoHistorial != null) {
-//                        statementBancoHistorial.close();
-//                    }
-                    if (statementIngreso != null) {
-                        statementIngreso.close();
-                    }
-                    if (statementCodigo != null) {
-                        statementCodigo.close();
-                    }
-                    if (statementValidate != null) {
-                        statementValidate.close();
-                    }
-                    if (statementVenta != null) {
-                        statementVenta.close();
-                    }
-                    if (statementMovimientoCaja != null) {
-                        statementMovimientoCaja.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-
-                }
+                return result;
             }
-        } else {
-            result.setId((short) 3);
-            result.setMessage("No se pudo conectar el servidor, intente nuevamente.");
-            result.setState("conexion");
+        } catch (SQLException | NullPointerException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
 
+            }
+            result.setId((short) 2);
+            result.setMessage(ex.getLocalizedMessage());
+            result.setState("error");
+            return result;
+        } finally {
+            try {
+                if (statementAbono != null) {
+                    statementAbono.close();
+                }
+                if (statementIngreso != null) {
+                    statementIngreso.close();
+                }
+                if (statementCodigo != null) {
+                    statementCodigo.close();
+                }
+                if (statementValidate != null) {
+                    statementValidate.close();
+                }
+                if (statementVenta != null) {
+                    statementVenta.close();
+                }
+                if (statementMovimientoCaja != null) {
+                    statementMovimientoCaja.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+
+            }
         }
-        return result;
+
     }
 
     public static Object Imprimir_Venta_Credito_ById(String idVenta, String idVentaCredito) {
@@ -3633,7 +3601,7 @@ public class VentaADO {
                         statementActualizar.executeBatch();
                         statementKardex.executeBatch();
                         statementHistorial.executeBatch();
-                        statementVenta.executeBatch();                     
+                        statementVenta.executeBatch();
                         DBUtil.getConnection().commit();
                         return "update";
                     }
@@ -3724,7 +3692,7 @@ public class VentaADO {
                     statementActualizar.executeBatch();
                     statementKardex.executeBatch();
                     statementHistorial.executeBatch();
-                    statementVenta.executeBatch();                   
+                    statementVenta.executeBatch();
                     DBUtil.getConnection().commit();
                     return "update";
                 }

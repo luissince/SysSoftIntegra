@@ -102,12 +102,12 @@ public class FxTipoDocumentoController implements Initializable {
     public void initLoad() {
         if (!lblLoad.isVisible()) {
             paginacion = 1;
-            fillTabletTipoDocumento(paginacion);
+            fillTabletTipoDocumento(0, "");
             opcion = 0;
         }
     }
 
-    private void fillTabletTipoDocumento(int posicionPagina) {
+    private void fillTabletTipoDocumento(int opcion, String buscar) {
         ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -117,7 +117,7 @@ public class FxTipoDocumentoController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return TipoDocumentoADO.ListTipoDocumento((posicionPagina - 1) * 10, 10);
+                return TipoDocumentoADO.ListTipoDocumento(opcion, buscar, (paginacion - 1) * 10, 10);
             }
         };
         task.setOnSucceeded(w -> {
@@ -175,7 +175,7 @@ public class FxTipoDocumentoController implements Initializable {
     private void onEventPaginacion() {
         switch (opcion) {
             case 0:
-                fillTabletTipoDocumento(paginacion);
+                fillTabletTipoDocumento(0, "");
                 break;
 
         }

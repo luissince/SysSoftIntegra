@@ -80,46 +80,6 @@ public class FxVentaAbonoProcesoController implements Initializable {
             Tools.AlertMessageWarning(window, "Abonar", "Ingrese alguna observación del abono.");
             txtObservacion.requestFocus();
         } else {
-//            if (rbBancos.isSelected()) {
-//                if (cbCuenta.getSelectionModel().getSelectedIndex() < 0) {
-//                    Tools.AlertMessageWarning(window, "Abonar", "Seleccione la cuenta.");
-//                    cbCuenta.requestFocus();
-//                } else {
-//                    short value = Tools.AlertMessageConfirmation(window, "Abonor", "¿Está seguro de continuar?");
-//                    if (value == 1) {
-//                        btnAceptar.setDisable(true);
-//                        VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
-//                        ventaCreditoTB.setIdVenta(ventaTB.getIdVenta());
-//                        ventaCreditoTB.setMonto(Double.parseDouble(txtMonto.getText()));
-//                        ventaCreditoTB.setFechaPago(Tools.getDate());
-//                        ventaCreditoTB.setHoraPago(Tools.getTime());
-//                        ventaCreditoTB.setEstado((short) 1);
-//                        ventaCreditoTB.setIdUsuario(Session.USER_ID);
-//                        ventaCreditoTB.setObservacion(txtObservacion.getText().trim());
-//
-//                        BancoHistorialTB bancoHistorialTB = new BancoHistorialTB();
-//                        bancoHistorialTB.setIdBanco(cbCuenta.getSelectionModel().getSelectedItem().getIdBanco());
-//                        bancoHistorialTB.setDescripcion("INGRESO DE DINERO POR CUENTAS POR COBRAR DEL COMPROBANTE " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-//                        bancoHistorialTB.setFecha(Tools.getDate());
-//                        bancoHistorialTB.setHora(Tools.getTime());
-//                        bancoHistorialTB.setEntrada(Double.parseDouble(txtMonto.getText()));
-//                        bancoHistorialTB.setSalida(0);
-//
-//                        ModeloObject result = VentaADO.RegistrarAbono(ventaCreditoTB, bancoHistorialTB, null, null);
-//                        if (result.getState().equalsIgnoreCase("inserted")) {
-//                            Tools.Dispose(window);
-//                            cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(), result.getIdResult());
-//                            cuentasPorCobrarVisualizarController.loadData(ventaTB.getIdVenta());
-//                        } else if (result.getState().equalsIgnoreCase("error")) {
-//                            Tools.AlertMessageWarning(window, "Abonar", result.getMessage());
-//                        } else {
-//                            Tools.AlertMessageError(window, "Abonar", "No se completo el proceso por problemas de conexión.");
-//                            btnAceptar.setDisable(false);
-//                        }
-//                    }
-//                }
-//            } else 
-
             if (rbIngreso.isSelected()) {
                 short value = Tools.AlertMessageConfirmation(window, "Abonor", "¿Está seguro de continuar?");
                 if (value == 1) {
@@ -244,7 +204,6 @@ public class FxVentaAbonoProcesoController implements Initializable {
         }
     }
 
-
     @FXML
     private void onActionAceptar(ActionEvent event) {
         saveAbono();
@@ -276,6 +235,5 @@ public class FxVentaAbonoProcesoController implements Initializable {
     public void setInitVentaAbonarController(FxCuentasPorCobrarVisualizarController cuentasPorCobrarVisualizarController) {
         this.cuentasPorCobrarVisualizarController = cuentasPorCobrarVisualizarController;
     }
-
 
 }

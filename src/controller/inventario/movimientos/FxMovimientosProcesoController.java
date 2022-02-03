@@ -82,6 +82,8 @@ public class FxMovimientosProcesoController implements Initializable {
     @FXML
     private TableColumn<SuministroTB, String> tcDiferencia;
     @FXML
+    private TableColumn<SuministroTB, String> tcMedida;
+    @FXML
     private RadioButton rbIncremento;
     @FXML
     private RadioButton rbDecremento;
@@ -112,13 +114,15 @@ public class FxMovimientosProcesoController implements Initializable {
         tcClave.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClave() + "\n" + cellData.getValue().getNombreMarca()));
         tcNuevaExistencia.setCellValueFactory(new PropertyValueFactory<>("txtMovimiento"));
         tcExistenciaActual.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
-        tcDiferencia.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getUnidadCompraName()));
+        tcDiferencia.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getDiferencia()));
+        tcMedida.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getUnidadCompraName()));
 
         tcAccion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
-        tcClave.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));
-        tcNuevaExistencia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
-        tcExistenciaActual.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
-        tcDiferencia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.19));
+        tcClave.prefWidthProperty().bind(tvList.widthProperty().multiply(0.28));
+        tcNuevaExistencia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcExistenciaActual.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcDiferencia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcMedida.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
 
         ToggleGroup groupAjuste = new ToggleGroup();
         rbIncremento.setToggleGroup(groupAjuste);

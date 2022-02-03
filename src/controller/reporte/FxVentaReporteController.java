@@ -229,10 +229,11 @@ public class FxVentaReporteController implements Initializable {
                         if (vt.getTipo() == 1 && vt.getEstado() == 1
                                 || vt.getTipo() == 1 && vt.getEstado() == 4) {
                             totalcontado += vt.getTotal();
-                        } else if (vt.getTipo() == 2 && vt.getEstado() == 1) {
-                            totalcreditopagado += vt.getTotal();
                         } else {
                             totalcredito += vt.getTotal();
+                            if (vt.getTipo() == 2 && vt.getEstado() == 1) {
+                                totalcreditopagado += vt.getTotal();
+                            }
                         }
                     }
                 }
@@ -295,7 +296,6 @@ public class FxVentaReporteController implements Initializable {
             Tools.AlertMessageWarning(window, "Reporte General de Ventas", "Ingrese un empleado para generar el reporte.");
             btnVendedor.requestFocus();
         } else {
-
             ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
                 Thread t = new Thread(runnable);
                 t.setDaemon(true);
@@ -880,9 +880,7 @@ public class FxVentaReporteController implements Initializable {
             if (!exec.isShutdown()) {
                 exec.shutdown();
             }
-
         }
-
     }
 
     private void onEventPdfIngresos() {

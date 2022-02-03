@@ -250,7 +250,11 @@ public class TicketGuiaRemision {
                     guiaRemisionTB.getNombreConductor(),
                     guiaRemisionTB.getMarcaVehiculo(),
                     guiaRemisionTB.getNumeroPlaca(),
-                    guiaRemisionTB.getMotivoTrasladoDescripcion()
+                    guiaRemisionTB.getMotivoTrasladoDescripcion(),
+                    "",
+                    "",
+                    "",
+                    ""
             );
         }
 
@@ -269,7 +273,7 @@ public class TicketGuiaRemision {
         for (int i = 0; i < hbPie.getChildren().size(); i++) {
             HBox box = ((HBox) hbPie.getChildren().get(i));
             billPrintable.hbPie(box,
-                    "M",             
+                    "M",
                     "0.00",
                     "0.00",
                     "0.00",
@@ -290,7 +294,7 @@ public class TicketGuiaRemision {
                     "");
         }
 
-        billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
 
         PrintService printService = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices());
         if (printService != null) {
@@ -454,7 +458,7 @@ public class TicketGuiaRemision {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object object =  VentaADO.Obtener_Venta_ById(idVenta);
+                Object object = VentaADO.Obtener_Venta_ById(idVenta);
                 if (object instanceof VentaTB) {
                     try {
                         VentaTB ventaTB = (VentaTB) object;
@@ -563,7 +567,6 @@ public class TicketGuiaRemision {
 //
 //        map.put("DIRECCION_LLEGAGA", guiaRemisionTB.getDireccionLlegada());
 //        map.put("UBIGEO_LLEGADA", guiaRemisionTB.getUbigeoLlegadaDescripcion());
-
         map.put("NOMBRE_COMERCIAL", Session.COMPANY_NOMBRE_COMERCIAL);
         map.put("RUC_EMPRESA", Session.COMPANY_NUMERO_DOCUMENTO);
 
@@ -576,7 +579,6 @@ public class TicketGuiaRemision {
 //        map.put("NUMERO_PLACA", guiaRemisionTB.getNumeroPlaca());
 //
 //        map.put("MOTIVO_TRANSPORTE", guiaRemisionTB.getMotivoTrasladoDescripcion());
-
         JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(ventaTB.getSuministroTBs()));
         return jasperPrint;
     }

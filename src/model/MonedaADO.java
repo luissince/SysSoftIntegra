@@ -36,7 +36,7 @@ public class MonedaADO {
                         statementMoneda.setString(2, monedaTB.getAbreviado());
                         statementMoneda.setString(3, monedaTB.getSimbolo());
                         statementMoneda.setDouble(4, monedaTB.getTipoCambio());
-                        statementMoneda.setBoolean(5, monedaTB.getPredeterminado());
+                        statementMoneda.setBoolean(5, monedaTB.isPredeterminado());
                         statementMoneda.setInt(6, monedaTB.getIdMoneda());
                         statementMoneda.addBatch();
                         statementMoneda.executeBatch();
@@ -55,7 +55,7 @@ public class MonedaADO {
                         statementMoneda.setString(2, monedaTB.getAbreviado());
                         statementMoneda.setString(3, monedaTB.getSimbolo());
                         statementMoneda.setDouble(4, monedaTB.getTipoCambio());
-                        statementMoneda.setBoolean(5, monedaTB.getPredeterminado());
+                        statementMoneda.setBoolean(5, monedaTB.isPredeterminado());
                         statementMoneda.setBoolean(6, monedaTB.getSistema());
                         statementMoneda.addBatch();
                         statementMoneda.executeBatch();
@@ -87,18 +87,23 @@ public class MonedaADO {
         return result;
     }
 
-    public static Object ListMonedas() {
+    public static Object ListMonedas(int opcion, String buscar, int posicionPagina, int filasPorPagina) {
         PreparedStatement statementList = null;
+        ResultSet resultSet = null;
         try {
             DBUtil.dbConnect();
-            statementList = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Monedas()}");
             Object[] objects = new Object[2];
             ObservableList<MonedaTB> observableList = FXCollections.observableArrayList();
-            
-            ResultSet resultSet = statementList.executeQuery();
+
+            statementList = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Monedas(?,?,?,?)}");
+            statementList.setInt(1, opcion);
+            statementList.setString(2, buscar);
+            statementList.setInt(3, posicionPagina);
+            statementList.setInt(4, filasPorPagina);
+            resultSet = statementList.executeQuery();
             while (resultSet.next()) {
                 MonedaTB monedaTB = new MonedaTB();
-                monedaTB.setId(resultSet.getRow());
+                monedaTB.setId(resultSet.getRow() + posicionPagina);
                 monedaTB.setIdMoneda(resultSet.getInt("IdMoneda"));
                 monedaTB.setNombre(resultSet.getString("Nombre"));
                 monedaTB.setAbreviado(resultSet.getString("Abreviado"));
@@ -111,7 +116,17 @@ public class MonedaADO {
                 observableList.add(monedaTB);
             }
             objects[0] = observableList;
-            
+
+            statementList = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Monedas_Count(?)}");
+            statementList.setInt(1, opcion);
+            statementList.setString(2, buscar);
+            resultSet = statementList.executeQuery();
+            Integer total = 0;
+            if (resultSet.next()) {
+                total = resultSet.getInt("Total");
+            }
+            objects[1] = total;
+
             return objects;
         } catch (SQLException ex) {
             return ex.getLocalizedMessage();
@@ -119,6 +134,9 @@ public class MonedaADO {
             try {
                 if (statementList != null) {
                     statementList.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {

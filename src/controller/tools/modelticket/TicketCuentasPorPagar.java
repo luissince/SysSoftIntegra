@@ -233,6 +233,10 @@ public class TicketCuentasPorPagar {
                     "",
                     "",
                     "",
+                    "",
+                    "",
+                    "",
+                    "",
                     "");
         }
 
@@ -273,7 +277,7 @@ public class TicketCuentasPorPagar {
                     "");
         }
 
-        billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
 
         PrintService printService = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices());
         if (printService != null) {
@@ -340,6 +344,10 @@ public class TicketCuentasPorPagar {
                     "",
                     "",
                     "",
+                    "",
+                    "",
+                    "",
+                    "",
                     "");
         }
 
@@ -380,7 +388,7 @@ public class TicketCuentasPorPagar {
                     "");
         }
 
-        billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
 
         PrintService printService = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices());
         if (printService != null) {

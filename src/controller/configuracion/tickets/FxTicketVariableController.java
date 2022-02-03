@@ -112,6 +112,11 @@ public class FxTicketVariableController implements Initializable {
             listCabecera.add(new TicketTB("Marca del vehículo guía", "MARCA VEHICULO GUIA", "marcavehiguia"));
             listCabecera.add(new TicketTB("Número de placa del vehículo guía", "N° PLATA VEHICULO GUIA", "numeroplacaguia"));
             listCabecera.add(new TicketTB("Motivo del traslado guía", "MOTIVO TRASLADO GUIA", "motivotrasguia"));
+
+            listCabecera.add(new TicketTB("Nombre del comprobante anulado por una nota de crédito", "NOMBRE COMPROBANTE MODIFICADO", "nomcompronulanc"));
+            listCabecera.add(new TicketTB("Serie del comprobante anulado por una nota de crédito", "SERIE COMPROBANTE MODIFICADO", "sericomproanulanc"));
+            listCabecera.add(new TicketTB("Numeración del comprobante anulado por una nota de crédito", "NUMERACION COMPROBANTE MODIFICADO", "numcomproanulanc"));
+            listCabecera.add(new TicketTB("Motivo de la anulación de la nota de crédito", "MOTIVO ANULACIÓN", "motivoanulacionnc"));
             lvLista.getItems().addAll(listCabecera);
         } else if (hBox.getId().substring(0, 2).equalsIgnoreCase("dr")) {
             listDetalleCuerpo.add(new TicketTB("Numeración de las filas", "1", "numfilas"));

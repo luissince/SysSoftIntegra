@@ -13,6 +13,7 @@ import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,9 @@ import model.OrdenCompraTB;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class TicketOrdenCompra {
 
@@ -69,13 +72,12 @@ public class TicketOrdenCompra {
             return;
         }
         if (Session.FORMATO_IMPRESORA_ORDEN_COMPRA.equalsIgnoreCase("ticket")) {
-            if (Session.TICKET_ORDERN_COMPRA_ID == 0 && Session.TICKET_ORDEN_COMPRA_RUTA.equalsIgnoreCase("")) {
+            if (Session.TICKET_ORDEN_COMPRA_ID == 0 && Session.TICKET_ORDEN_COMPRA_RUTA.equalsIgnoreCase("")) {
                 Tools.AlertMessageWarning(node, "Orden de Compra", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
             } else {
-                executeProcessOrdenCompraTicket(
-                        idOrdenCompra,
+                executeProcessOrdenCompraTicket(idOrdenCompra,
                         Session.DESING_IMPRESORA_ORDEN_COMPRA,
-                        Session.TICKET_ORDERN_COMPRA_ID,
+                        Session.TICKET_ORDEN_COMPRA_ID,
                         Session.TICKET_ORDEN_COMPRA_RUTA,
                         Session.NOMBRE_IMPRESORA_ORDEN_COMPRA,
                         Session.CORTAPAPEL_IMPRESORA_ORDEN_COMPRA
@@ -209,6 +211,10 @@ public class TicketOrdenCompra {
                     "",
                     "",
                     "",
+                    "",
+                    "",
+                    "",
+                    "",
                     "");
         }
 
@@ -268,7 +274,7 @@ public class TicketOrdenCompra {
                     ordenCompraTB.getObservacion());
         }
 
-        billPrintable.generatePDFPrint(hbEncabezado, hbDetalle, hbPie);
+        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
         PrintService printService = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices());
         if (printService != null) {
             DocPrintJob job = printService.createPrintJob();
@@ -301,8 +307,41 @@ public class TicketOrdenCompra {
                     Object object = OrdenCompraADO.ObtenerOrdenCompraId(idOrdenCompra);
                     if (object instanceof OrdenCompraTB) {
                         OrdenCompraTB ordenCompraTB = (OrdenCompraTB) object;
-                        InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+                        double importeBrutoTotal = 0;
+                        double descuentoTotal = 0;
+                        double subImporteNetoTotal = 0;
+                        double impuestoTotal = 0;
+                        double importeNetoTotal = 0;
+                        JSONArray array = new JSONArray();
 
+                        for (OrdenCompraDetalleTB ocdtb : ordenCompraTB.getOrdenCompraDetalleTBs()) {
+                            JSONObject jsono = new JSONObject();
+                            jsono.put("id", ocdtb.getId());
+                            jsono.put("cantidad", Tools.roundingValue(ocdtb.getCantidad(), 2));
+                            jsono.put("unidad", ocdtb.getSuministroTB().getUnidadCompraName());
+                            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n" + ocdtb.getSuministroTB().getNombreMarca());
+                            jsono.put("costo", Tools.roundingValue(ocdtb.getCosto(), 2));
+                            jsono.put("descuento", Tools.roundingValue(ocdtb.getDescuento(), 0));
+                            jsono.put("importe", Tools.roundingValue(ocdtb.getCosto() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
+                            array.add(jsono);
+
+                            double importeBruto = ocdtb.getCosto() * ocdtb.getCantidad();
+                            double descuento = ocdtb.getDescuento();
+                            double subImporteBruto = importeBruto - descuento;
+                            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+                            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+                            double importeNeto = subImporteNeto + impuesto;
+
+                            importeBrutoTotal += importeBruto;
+                            descuentoTotal += descuento;
+                            subImporteNetoTotal += subImporteNeto;
+                            impuestoTotal += impuesto;
+                            importeNetoTotal += importeNeto;
+                        }
+                        String json = new String(array.toJSONString().getBytes(), "UTF-8");
+                        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(json.getBytes());
+
+                        InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
                         InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
 
                         if (Session.COMPANY_IMAGE != null) {
@@ -320,13 +359,34 @@ public class TicketOrdenCompra {
                         map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
                         map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
 
+                        map.put("DOCUMENTOEMPRESA", Session.COMPANY_NUMERO_DOCUMENTO);
+                        map.put("NOMBREDOCUMENTO", "ORDEN DE COMPRA");
+                        map.put("NUMERODOCUMENTO", "N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion()));
+                        map.put("FECHA_REGISTRO", ordenCompraTB.getFechaRegistro());
+                        map.put("FECHA_VENCIMIENTO", ordenCompraTB.getFechaVencimiento());
+
+                        map.put("NUMERODOCUMENTO_PROVEEDOR", ordenCompraTB.getProveedorTB().getNumeroDocumento());
+                        map.put("INFORMACION_PROVEEDOR", ordenCompraTB.getProveedorTB().getRazonSocial());
+                        map.put("EMAIL_PROVEEDOR", ordenCompraTB.getProveedorTB().getEmail());
+                        map.put("CELULAR_PROVEEDOR", ordenCompraTB.getProveedorTB().getCelular());
+                        map.put("DIRECCION_PROVEEDOR", ordenCompraTB.getProveedorTB().getDireccion());
+
+                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, Session.MONEDA_NOMBRE));
+                        map.put("OBSERVACION", ordenCompraTB.getObservacion());
+
+                        map.put("IMPORTE_BRUTO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(importeBrutoTotal, 2));
+                        map.put("DESCUENTO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(descuentoTotal, 2));
+                        map.put("SUB_IMPORTE", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+                        map.put("IMPUESTO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(impuestoTotal, 2));
+                        map.put("IMPORTE_NETO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(importeNetoTotal, 2));
+
                         fileName = "ORDEN DE COMRA N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion());
 
-                        return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(ordenCompraTB.getOrdenCompraDetalleTBs()));
+                        return JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
                     } else {
                         return (String) object;
                     }
-                } catch (JRException ex) {
+                } catch (JRException | UnsupportedEncodingException ex) {
                     return ex.getLocalizedMessage();
                 }
             }

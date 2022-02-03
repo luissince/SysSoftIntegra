@@ -189,6 +189,19 @@ public class SplashScreen extends Preloader {
                                 Session.ESTADO_IMPRESORA_PEDIDO = false;
                             }
 
+                            String rutaGuiaRemision = "./archivos/GUIA DE REMISION.properties";
+                            try (InputStream input = new FileInputStream(rutaGuiaRemision)) {
+                                Properties prop = new Properties();
+                                prop.load(input);
+                                Session.ESTADO_IMPRESORA_GUIA_REMISION = true;
+                                Session.NOMBRE_IMPRESORA_GUIA_REMISION = prop.getProperty("printerNameGuiaRemision");
+                                Session.CORTAPAPEL_IMPRESORA_GUIA_REMISION = Boolean.parseBoolean(prop.getProperty("printerCutPaperGuiaRemision"));
+                                Session.FORMATO_IMPRESORA_GUIA_REMISION = prop.getProperty("printerTypeFormatGuiaRemision");
+                                Session.DESING_IMPRESORA_GUIA_REMISION = prop.getProperty("printerTypeDesingGuiaRemision");
+                            } catch (IOException ex) {
+                                Session.ESTADO_IMPRESORA_GUIA_REMISION = false;
+                            }
+
                             String rutaOrdenCompra = "./archivos/ORDEN DE COMPRA.properties";
                             try (InputStream input = new FileInputStream(rutaOrdenCompra)) {
                                 Properties prop = new Properties();
@@ -202,17 +215,17 @@ public class SplashScreen extends Preloader {
                                 Session.ESTADO_IMPRESORA_ORDEN_COMPRA = false;
                             }
 
-                            String rutaGuiaRemision = "./archivos/GUIA DE REMISION.properties";
-                            try (InputStream input = new FileInputStream(rutaGuiaRemision)) {
+                            String rutaNotaCredito = "./archivos/NOTA DE CREDITO.properties";
+                            try (InputStream input = new FileInputStream(rutaNotaCredito)) {
                                 Properties prop = new Properties();
                                 prop.load(input);
-                                Session.ESTADO_IMPRESORA_GUIA_REMISION = true;
-                                Session.NOMBRE_IMPRESORA_GUIA_REMISION = prop.getProperty("printerNameGuiaRemision");
-                                Session.CORTAPAPEL_IMPRESORA_GUIA_REMISION = Boolean.parseBoolean(prop.getProperty("printerCutPaperGuiaRemision"));
-                                Session.FORMATO_IMPRESORA_GUIA_REMISION = prop.getProperty("printerTypeFormatGuiaRemision");
-                                Session.DESING_IMPRESORA_GUIA_REMISION = prop.getProperty("printerTypeDesingGuiaRemision");
+                                Session.ESTADO_IMPRESORA_NOTA_CREDITO = true;
+                                Session.NOMBRE_IMPRESORA_NOTA_CREDITO = prop.getProperty("printerNameNotaCredito");
+                                Session.CORTAPAPEL_IMPRESORA_NOTA_CREDITO = Boolean.parseBoolean(prop.getProperty("printerCutPaperNotaCredito"));
+                                Session.FORMATO_IMPRESORA_NOTA_CREDITO = prop.getProperty("printerTypeFormatNotaCredito");
+                                Session.DESING_IMPRESORA_NOTA_CREDITO = prop.getProperty("printerTypeDesingNotaCredito");
                             } catch (IOException ex) {
-                                Session.ESTADO_IMPRESORA_GUIA_REMISION = false;
+                                Session.ESTADO_IMPRESORA_NOTA_CREDITO = false;
                             }
 
                             LoadFont loadFont = new LoadFont();
@@ -297,6 +310,24 @@ public class SplashScreen extends Preloader {
                             } else {
                                 Session.TICKET_PEDIDO_ID = 0;
                                 Session.TICKET_PEDIDO_RUTA = "";
+                            }
+
+                            TicketTB ticketOrdenCompra = TicketADO.GetTicketRuta(14);
+                            if (ticketOrdenCompra != null) {
+                                Session.TICKET_ORDEN_COMPRA_ID = ticketOrdenCompra.getId();
+                                Session.TICKET_ORDEN_COMPRA_RUTA = ticketOrdenCompra.getRuta();
+                            } else {
+                                Session.TICKET_ORDEN_COMPRA_ID = 0;
+                                Session.TICKET_ORDEN_COMPRA_RUTA = "";
+                            }
+
+                            TicketTB ticketNotaCredito = TicketADO.GetTicketRuta(15);
+                            if (ticketNotaCredito != null) {
+                                Session.TICKET_NOTA_CREDITO_ID = ticketNotaCredito.getId();
+                                Session.TICKET_NOTA_CREDITO_RUTA = ticketNotaCredito.getRuta();
+                            } else {
+                                Session.TICKET_NOTA_CREDITO_ID = 0;
+                                Session.TICKET_NOTA_CREDITO_RUTA = "";
                             }
 
                             EmpresaTB list = EmpresaADO.GetEmpresa();
