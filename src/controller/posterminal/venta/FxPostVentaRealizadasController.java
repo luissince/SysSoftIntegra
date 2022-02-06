@@ -24,7 +24,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -271,8 +270,8 @@ public class FxPostVentaRealizadasController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w -> controller.loadInit());
             stage.show();
-            controller.fillEmpleadosTable("");
         } catch (IOException ex) {
             System.out.println("Venta reporte controller:" + ex.getLocalizedMessage());
         }

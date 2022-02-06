@@ -222,19 +222,19 @@
                                                 </ImageView>
                                                 <VBox alignment="CENTER_LEFT" spacing="10.0">
                                                    <children>
-                                                      <Label styleClass="labelRoboto13" text="Usuario" textFill="#020203">
+                                                      <Label styleClass="labelRoboto13" text="Usuario:" textFill="#020203">
                                                          <font>
                                                             <Font name="Roboto" size="14.0" />
                                                          </font>
                                                       </Label>
                                                       <TextField fx:id="txtUsuario" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" />
-                                                      <Label styleClass="labelRoboto13" text="Contraseña" textFill="#020203">
+                                                      <Label styleClass="labelRoboto13" text="Contraseña:" textFill="#020203">
                                                          <font>
                                                             <Font name="Roboto" size="14.0" />
                                                          </font>
                                                       </Label>
                                                       <TextField fx:id="txtClave" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" />
-                                                      <Label styleClass="labelRoboto13" text="Rol" textFill="#020203">
+                                                      <Label styleClass="labelRoboto13" text="Rol:" textFill="#020203">
                                                          <font>
                                                             <Font name="Roboto" size="14.0" />
                                                          </font>

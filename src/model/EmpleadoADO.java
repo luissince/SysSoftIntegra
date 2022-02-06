@@ -26,8 +26,25 @@ public class EmpleadoADO {
             codigo_empleado.execute();
             String id_empleado = codigo_empleado.getString(1);
 
-            empleado = DBUtil.getConnection().prepareStatement("INSERT INTO EmpleadoTB(IdEmpleado,TipoDocumento,NumeroDocumento,Apellidos,Nombres,Sexo,FechaNacimiento,Puesto,Rol,Estado,Telefono,Celular,Email,Direccion,Usuario,Clave)\n"
-                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            empleado = DBUtil.getConnection().prepareStatement("INSERT INTO EmpleadoTB( "
+                    + "IdEmpleado,"
+                    + "TipoDocumento,"
+                    + "NumeroDocumento,"
+                    + "Apellidos,Nombres,"
+                    + "Sexo,"
+                    + "FechaNacimiento,"
+                    + "Puesto,"
+                    + "Rol,"
+                    + "Estado,"
+                    + "Telefono,"
+                    + "Celular,"
+                    + "Email,"
+                    + "Direccion,"
+                    + "Usuario,"
+                    + "Clave,"
+                    + "Sistema,"
+                    + "Huella)\n"
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             empleado.setString(1, id_empleado);
             empleado.setInt(2, empleadoTB.getTipoDocumento());
@@ -45,6 +62,8 @@ public class EmpleadoADO {
             empleado.setString(14, empleadoTB.getDireccion());
             empleado.setString(15, empleadoTB.getUsuario());
             empleado.setString(16, empleadoTB.getClave());
+            empleado.setBoolean(17, empleadoTB.isSistema());
+            empleado.setString(18, empleadoTB.getHuella());
             empleado.addBatch();
 
             empleado.executeBatch();

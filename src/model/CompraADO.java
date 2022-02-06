@@ -1475,12 +1475,12 @@ public class CompraADO extends DBUtil {
                 detalleCompraTB.setId(resultSet.getRow());
                 detalleCompraTB.setDescripcion(resultSet.getString("NumeroDocumento") + "\n" + resultSet.getString("RazonSocial"));
                 detalleCompraTB.setPrecioCompra(resultSet.getDouble("PrecioCompra"));
+                detalleCompraTB.setCantidad(resultSet.getDouble("Cantidad"));
                 detalleCompraTB.setFechaRegistro(resultSet.getDate("FechaCompra").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 detalleCompraTB.setHoraRegistro(resultSet.getTime("HoraCompra").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 detalleCompraTB.setObservacion(resultSet.getString("Serie").toUpperCase() + "-" + resultSet.getString("Numeracion"));
                 detalleCompraTBs.add(detalleCompraTB);
             }
-
             return detalleCompraTBs;
         } catch (SQLException ex) {
             return ex.getLocalizedMessage();

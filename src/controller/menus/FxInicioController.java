@@ -183,14 +183,12 @@ public class FxInicioController implements Initializable {
                 Tools.println((String) object);
             }
             hbLoad.setVisible(false);
-
         });
 
         executor.execute(task);
         if (!executor.isShutdown()) {
             executor.shutdown();
         }
-
     }
 
     private void loadBarChartGraphics(JSONArray array) {
@@ -264,10 +262,10 @@ public class FxInicioController implements Initializable {
             double sunat = 0;
             double libre = 0;
             for (int j = 0; j < array.size(); j++) {
-                JSONObject object = (JSONObject) array.get(j);            
+                JSONObject object = (JSONObject) array.get(j);
                 if (Integer.parseInt(object.get("mes").toString()) == (i + 1)) {
                     sunat += Double.parseDouble(object.get("sunat").toString());
-                    libre += Double.parseDouble(object.get("libre").toString());                   
+                    libre += Double.parseDouble(object.get("libre").toString());
                 }
             }
             String background = (i % 2 != 0 ? "white" : "#dee2e6");
@@ -283,7 +281,7 @@ public class FxInicioController implements Initializable {
         double credito = 0;
         double tarjeta = 0;
         double deposito = 0;
-        double total = 0;
+        double total;
 
         for (int i = 0; i < array.size(); i++) {
             JSONObject object = (JSONObject) array.get(i);

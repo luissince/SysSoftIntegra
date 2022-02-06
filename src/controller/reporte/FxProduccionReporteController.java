@@ -115,8 +115,8 @@ public class FxProduccionReporteController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w -> controller.loadInit());
             stage.show();
-            controller.fillEmpleadosTable("");
         } catch (IOException ex) {
             System.out.println("Venta reporte controller:" + ex.getLocalizedMessage());
         }
@@ -169,7 +169,7 @@ public class FxProduccionReporteController implements Initializable {
 
     private void onEventVisualizar() {
         if (!cbEncagadoSeleccionar.isSelected() && idEmpleado.equalsIgnoreCase("")) {
-              Tools.AlertMessageWarning(vbWindow, "Producción", "Ingrese el encargado para continuar.");
+            Tools.AlertMessageWarning(vbWindow, "Producción", "Ingrese el encargado para continuar.");
             cbEstado.requestFocus();
         } else if (!cbEstadoSeleccionar.isSelected() && cbEstado.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(vbWindow, "Producción", "Seleccione el estado de la producción.");

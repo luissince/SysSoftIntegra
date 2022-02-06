@@ -60,7 +60,7 @@
                      <children>
                         <HBox alignment="CENTER" style="-fx-background-color: #cccccc;">
                            <children>
-                              <Button mnemonicParsing="false" styleClass="buttonLight" text="Anterior">
+                              <Button mnemonicParsing="false" onAction="#onActionAnterior" onKeyPressed="#onKeyPressedAnterior" styleClass="buttonLight" text="Anterior">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -69,10 +69,10 @@
                                     </ImageView>
                                  </graphic>
                               </Button>
-                              <Label styleClass="labelBorder" text="0" textFill="#020203" />
+                              <Label fx:id="lblPaginaActual" styleClass="labelBorder" text="0" textFill="#020203" />
                               <Label styleClass="labelForm" text="de" textFill="#020203" />
-                              <Label styleClass="labelBorder" text="0" textFill="#020203" />
-                              <Button contentDisplay="RIGHT" mnemonicParsing="false" styleClass="buttonLight" text="Siguiente">
+                              <Label fx:id="lblPaginaSiguiente" styleClass="labelBorder" text="0" textFill="#020203" />
+                              <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onActionSiguiente" onKeyPressed="#onKeyPressedSiguiente" styleClass="buttonLight" text="Siguiente">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>

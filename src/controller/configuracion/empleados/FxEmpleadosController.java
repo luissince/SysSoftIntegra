@@ -96,9 +96,11 @@ public class FxEmpleadosController implements Initializable {
     }
 
     public void loadInit() {
-        paginacion = 1;
-        fillEmpleadosTable(0, "");
-        opcion = 0;
+        if (!lblLoad.isVisible()) {
+            paginacion = 1;
+            fillEmpleadosTable(0, "");
+            opcion = 0;
+        }
     }
 
     private void fillEmpleadosTable(int opcion, String buscar) {
@@ -121,12 +123,12 @@ public class FxEmpleadosController implements Initializable {
             tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
             totalPaginacion = 0;
         });
-        
+
         task.setOnFailed((WorkerStateEvent event) -> {
             lblLoad.setVisible(false);
             tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
         });
-        
+
         task.setOnSucceeded((WorkerStateEvent e) -> {
             Object object = task.getValue();
             if (object instanceof Object[]) {
@@ -192,8 +194,9 @@ public class FxEmpleadosController implements Initializable {
                 String resultado = EmpleadoADO.DeleteEmpleadoById(tvList.getSelectionModel().getSelectedItem().getIdEmpleado());
                 if (resultado.equalsIgnoreCase("deleted")) {
                     Tools.AlertMessageInformation(window, "Empleado", "Se eliminó el empleado correctamente.");
+                    loadInit();
                 } else if (resultado.equalsIgnoreCase("caja")) {
-                    Tools.AlertMessageWarning(window, "Empleado", "No se puede eliminar el empleado, porque tiene historial de cajas..");
+                    Tools.AlertMessageWarning(window, "Empleado", "No se puede eliminar el empleado, porque tiene historial de cajas.");
                 } else if (resultado.equalsIgnoreCase("compra")) {
                     Tools.AlertMessageWarning(window, "Empleado", "No se puede eliminar el empleado, porque tiene un historial de compras.");
                 } else if (resultado.equalsIgnoreCase("sistema")) {

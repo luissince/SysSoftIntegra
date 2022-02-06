@@ -71,7 +71,7 @@ public class FxEmpleadosProcesoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
         cbTipoDocumento.getItems().addAll(DetalleADO.Get_Detail_IdName("1", "0003", "RUC"));
-        cbSexo.getItems().addAll(DetalleADO.GetDetailId("0004"));       
+        cbSexo.getItems().addAll(DetalleADO.GetDetailId("0004"));
         cbRol.getItems().addAll(RolADO.RolList());
         cbEstado.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0001", ""));
         cbEstado.getSelectionModel().select(0);
@@ -111,7 +111,6 @@ public class FxEmpleadosProcesoController implements Initializable {
             if (empleadoTB.getFechaNacimiento() != null) {
                 Tools.actualDate(empleadoTB.getFechaNacimiento().toString(), dpFechaNacimiento);
             }
-
 
             if (empleadoTB.getEstado() != 0) {
                 ObservableList<DetalleTB> lstest = cbEstado.getItems();
@@ -157,7 +156,8 @@ public class FxEmpleadosProcesoController implements Initializable {
         } else if (Tools.isText(txtNombres.getText())) {
             Tools.AlertMessageWarning(window, "Empleado", "Ingrese los nombres del empleado");
             txtNombres.requestFocus();
-        } if (cbEstado.getSelectionModel().getSelectedIndex() < 0) {
+        }
+        if (cbEstado.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(window, "Empleado", "Seleccione el estado del empleado");
             cbEstado.requestFocus();
         } else {
@@ -194,6 +194,9 @@ public class FxEmpleadosProcesoController implements Initializable {
                 empleadoTB.setRol(cbRol.getSelectionModel().getSelectedIndex() >= 0
                         ? cbRol.getSelectionModel().getSelectedItem().getIdRol()
                         : 0);
+                empleadoTB.setSistema(false);
+                empleadoTB.setHuella("");
+                
                 if (idEmpleado.equalsIgnoreCase("")) {
                     String result = EmpleadoADO.InsertEmpleado(empleadoTB);
                     switch (result) {

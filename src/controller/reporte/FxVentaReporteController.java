@@ -185,8 +185,8 @@ public class FxVentaReporteController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w -> controller.loadInit());
             stage.show();
-            controller.fillEmpleadosTable("");
         } catch (IOException ex) {
             System.out.println("Venta reporte controller:" + ex.getLocalizedMessage());
         }
@@ -708,8 +708,9 @@ public class FxVentaReporteController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w -> controller.loadInit());
             stage.show();
-            controller.fillEmpleadosTable("");
+
         } catch (IOException ex) {
             System.out.println("Venta reporte controller:" + ex.getLocalizedMessage());
         }
