@@ -320,7 +320,7 @@
                   </HBox>
                </children>
             </VBox>
-            <HBox fx:id="hbLoadModulos" layoutX="10.0" layoutY="10.0" style="-fx-background-color: rgba(255,255,255,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <HBox fx:id="hbLoadModulos" layoutX="10.0" layoutY="10.0" style="-fx-background-color: rgba(255,255,255,0.7);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <VBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
                      <children>
@@ -337,7 +337,7 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox fx:id="hbLoadMessage" alignment="CENTER" layoutX="20.0" layoutY="20.0" style="-fx-background-color: rgba(0,0,0,0.7);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <HBox fx:id="hbLoadMessage" alignment="CENTER" layoutX="20.0" layoutY="20.0" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <VBox alignment="CENTER" maxHeight="400.0" prefWidth="600.0" style="-fx-padding: 0.8333333333333334em; -fx-background-color: white; -fx-spacing: 0.8333333333333334em;">
                      <children>
