@@ -526,8 +526,12 @@ public class FxTicketController implements Initializable {
                                     Session.TICKET_PEDIDO_RUTA = sampleObject.toJSONString();
                                     break;
                                 case 14:
-                                    Session.TICKET_ORDERN_COMPRA_ID = idTicket;
+                                    Session.TICKET_ORDEN_COMPRA_ID = idTicket;
                                     Session.TICKET_ORDEN_COMPRA_RUTA = sampleObject.toJSONString();
+                                    break;
+                                case 15:
+                                    Session.TICKET_NOTA_CREDITO_ID = idTicket;
+                                    Session.TICKET_NOTA_CREDITO_RUTA = sampleObject.toJSONString();
                                     break;
                                 default:
                                     break;
@@ -1545,8 +1549,12 @@ public class FxTicketController implements Initializable {
                             Session.TICKET_PEDIDO_RUTA = ruta;
                             break;
                         case 14:
-                            Session.TICKET_ORDERN_COMPRA_ID = idTicket;
+                            Session.TICKET_ORDEN_COMPRA_ID = idTicket;
                             Session.TICKET_ORDEN_COMPRA_RUTA = ruta;
+                            break;
+                        case 15:
+                            Session.TICKET_NOTA_CREDITO_ID = idTicket;
+                            Session.TICKET_NOTA_CREDITO_RUTA = ruta;
                             break;
                         default:
                             break;
@@ -1606,8 +1614,12 @@ public class FxTicketController implements Initializable {
                             Session.TICKET_PEDIDO_RUTA = "";
                             break;
                         case 14:
-                            Session.TICKET_ORDERN_COMPRA_ID = 0;
+                            Session.TICKET_ORDEN_COMPRA_ID = 0;
                             Session.TICKET_ORDEN_COMPRA_RUTA = "";
+                            break;
+                        case 15:
+                            Session.TICKET_NOTA_CREDITO_ID = 0;
+                            Session.TICKET_NOTA_CREDITO_RUTA = "";
                             break;
                         default:
                             break;
@@ -1623,7 +1635,7 @@ public class FxTicketController implements Initializable {
     }
 
     private void onEventClonar() {
-        if(idTicket == 0){
+        if (idTicket == 0) {
             Tools.AlertMessageWarning(vbWindow, "Ticket", "No se puede clonar un ticket recien creado.");
             return;
         }

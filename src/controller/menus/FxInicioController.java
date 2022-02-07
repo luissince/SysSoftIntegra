@@ -1,15 +1,19 @@
 package controller.menus;
 
 import controller.inventario.valorinventario.FxListaInventarioController;
+import controller.tools.DoughnutChart;
 import controller.tools.FilesRouters;
 import controller.tools.Session;
 import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,8 +28,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Parent;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -33,15 +42,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.GlobalADO;
-import model.SuministroTB;
 import org.controlsfx.control.Notifications;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class FxInicioController implements Initializable {
 
@@ -50,7 +60,7 @@ public class FxInicioController implements Initializable {
     @FXML
     private Text lblFechaActual;
     @FXML
-    private Text lblArticulo;
+    private Text lblProducto;
     @FXML
     private Text lblCliente;
     @FXML
@@ -61,8 +71,6 @@ public class FxInicioController implements Initializable {
     private Text lblVentasTotales;
     @FXML
     private Text lblComprasTotales;
-    @FXML
-    private PieChart pcInventario;
     @FXML
     private Text lblVentasPagar;
     @FXML
@@ -76,21 +84,39 @@ public class FxInicioController implements Initializable {
     @FXML
     private Text lblExcentes;
     @FXML
-    private VBox vbProductoMasVendidos;
-    @FXML
     private HBox hbLoad;
-
-    private ObservableList<PieChart.Data> datas = FXCollections.observableArrayList(
-            new PieChart.Data("Productos Negativos", 0),
-            new PieChart.Data("Productos Intermedios", 0),
-            new PieChart.Data("Productos Necesarios", 0),
-            new PieChart.Data("Productos Excedentes", 0)
-    );
+    @FXML
+    private VBox vbVentas;
+    @FXML
+    private VBox vbInventario;
+    @FXML
+    private VBox vbTipoVenta;
+    @FXML
+    private GridPane gpListVentas;
+    @FXML
+    private GridPane gpListVecesVendidos;
+    @FXML
+    private GridPane gpListVentasCantidadVendidos;
+    @FXML
+    private Label lblPorEfectivo;
+    @FXML
+    private Label lblEfectivoSuma;
+    @FXML
+    private Label lblProCredito;
+    @FXML
+    private Label lblCreditoSuma;
+    @FXML
+    private Label lblPorTarjeta;
+    @FXML
+    private Label lblTarjetaSuma;
+    @FXML
+    private Label lblPorDeposito;
+    @FXML
+    private Label lblDepositoSuma;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initClock();
-        initGraphics();
     }
 
     private void initClock() {
@@ -109,15 +135,14 @@ public class FxInicioController implements Initializable {
             return t;
         });
 
-        Task<ArrayList<Object>> task = new Task<ArrayList<Object>>() {
+        Task<Object> task = new Task<Object>() {
             @Override
-            protected ArrayList<Object> call() throws Exception {
+            protected Object call() throws Exception {
                 return GlobalADO.DashboardLoad(Tools.getDate());
             }
         };
         task.setOnScheduled(e -> {
             hbLoad.setVisible(true);
-
         });
 
         task.setOnFailed(e -> {
@@ -125,23 +150,38 @@ public class FxInicioController implements Initializable {
         });
 
         task.setOnSucceeded(e -> {
-            ArrayList<Object> arrayList = task.getValue();
-            lblVentasTotales.setText(Session.MONEDA_SIMBOLO + " " + arrayList.get(0));
-            lblComprasTotales.setText(Session.MONEDA_SIMBOLO + " " + arrayList.get(1));
-            lblArticulo.setText((String) arrayList.get(2));
-            lblCliente.setText((String) arrayList.get(3));
-            lblProveedor.setText((String) arrayList.get(4));
-            lblTrabajador.setText((String) arrayList.get(5));
+            Object object = task.getValue();
+            if (object instanceof ArrayList) {
+                ArrayList<Object> arrayList = (ArrayList<Object>) object;
 
-            ArrayList<SuministroTB> listaProductos = (ArrayList<SuministroTB>) arrayList.get(10);
+                lblVentasTotales.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue((double) arrayList.get(0), 2));
+                lblComprasTotales.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue((double) arrayList.get(1), 2));
+                lblVentasPagar.setText(Tools.roundingValue((int) arrayList.get(2), 0));
+                lblComprasPagar.setText(Tools.roundingValue((int) arrayList.get(3), 0));
 
-            loadGraphics((int) arrayList.get(6), (int) arrayList.get(7), (int) arrayList.get(8), (int) arrayList.get(9), listaProductos);
+                lblProducto.setText(Tools.roundingValue((double) arrayList.get(4), 0));
+                lblCliente.setText(Tools.roundingValue((double) arrayList.get(5), 0));
+                lblProveedor.setText(Tools.roundingValue((double) arrayList.get(6), 0));
+                lblTrabajador.setText(Tools.roundingValue((double) arrayList.get(7), 0));
 
-            lblVentasPagar.setText(Tools.roundingValue((int) arrayList.get(11), 0));
-            lblComprasPagar.setText(Tools.roundingValue((int) arrayList.get(12), 0));
+                lblNegativos.setText(Tools.roundingValue((int) arrayList.get(8), 0));
+                lblIntermedios.setText(Tools.roundingValue((int) arrayList.get(9), 0));
+                lblNecesarias.setText(Tools.roundingValue((int) arrayList.get(10), 0));
+                lblExcentes.setText(Tools.roundingValue((int) arrayList.get(11), 0));
+
+                loadBarChartGraphics((JSONArray) arrayList.get(12));
+                loadPieChartGraphics((int) arrayList.get(8), (int) arrayList.get(9), (int) arrayList.get(10), (int) arrayList.get(11));
+                loadTableVentasTipos((JSONArray) arrayList.get(13));
+                loadDoughnutChartGraphics((JSONArray) arrayList.get(14));
+                loadTableVecesVendidos((JSONArray) arrayList.get(15));
+                loadTableCantidadVendidos((JSONArray) arrayList.get(16));
+
 //                    notificationState("Estado del producto","Tiene 15 días para su prueba, despues de ello\n se va bloquear el producto, gracias por elegirnos.","warning_large.png",Pos.TOP_RIGHT);
 //                    notificationState("Estado del inventario","Tiene un total de "+((int) arrayList.get(6))+" producto negativos,\n actualize su inventario por favor.","warning_large.png",Pos.TOP_RIGHT);
 //                    notificationState("SysSoftIntegra","Usa la AppSysSoftIntegra para realizar consular\n en tiempo real de sus tiendas.","logo.png",Pos.TOP_LEFT);
+            } else {
+                Tools.println((String) object);
+            }
             hbLoad.setVisible(false);
         });
 
@@ -149,91 +189,221 @@ public class FxInicioController implements Initializable {
         if (!executor.isShutdown()) {
             executor.shutdown();
         }
-
     }
 
-    public void initGraphics() {
-        datas = FXCollections.observableArrayList(
-                new PieChart.Data("Productos Negativos", 0),
-                new PieChart.Data("Productos Intermedios", 0),
-                new PieChart.Data("Productos Necesarios", 0),
-                new PieChart.Data("Productos Excedentes", 0)
-        );
-        pcInventario.setData(datas);
+    private void loadBarChartGraphics(JSONArray array) {
+        ObservableList<String> list = FXCollections.observableArrayList(
+                Arrays.asList(
+                        "ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SET", "OCT", "NOV", "DIC"
+                ));
+
+        CategoryAxis xAxis = new CategoryAxis();
+        xAxis.setCategories(list);
+        xAxis.setLabel("Meses");
+
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Monto");
+
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        barChart.setLegendSide(Side.TOP);
+
+        XYChart.Series<String, Number> series1 = new XYChart.Series<>();
+        LocalDate current_date = LocalDate.now();
+        series1.setName("" + current_date.getYear());
+
+        for (int i = 0; i < list.size(); i++) {
+            String mes = list.get(i);
+            double monto = 0;
+            for (int j = 0; j < array.size(); j++) {
+                JSONObject object = (JSONObject) array.get(j);
+                if (Integer.parseInt(object.get("mes").toString()) == (i + 1)) {
+                    monto = Double.parseDouble(object.get("monto").toString());
+                    break;
+                }
+            }
+            series1.getData().add(new XYChart.Data<>(mes, monto));
+        }
+        barChart.getData().addAll(series1);
+
+        vbVentas.getChildren().clear();
+        vbVentas.getChildren().add(barChart);
     }
 
-    private void loadGraphics(double negativas, double intermedias, double necesarias, double excedentes, ArrayList<SuministroTB> arrayList) {
-        lblNegativos.setText("" + Tools.roundingValue(negativas, 0));
-        lblIntermedios.setText("" + Tools.roundingValue(intermedias, 0));
-        lblNecesarias.setText("" + Tools.roundingValue(necesarias, 0));
-        lblExcentes.setText("" + Tools.roundingValue(excedentes, 0));
+    private void loadPieChartGraphics(int ng, int in, int ne, int ex) {
+        ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
+        data.add(new PieChart.Data("Negativos", ng));
+        data.add(new PieChart.Data("Intermedios", in));
+        data.add(new PieChart.Data("Necesarios", ne));
+        data.add(new PieChart.Data("Excedentes", ex));
 
-        datas = FXCollections.observableArrayList(
-                new PieChart.Data("Productos Negativos", negativas),
-                new PieChart.Data("Productos Intermedios", intermedias),
-                new PieChart.Data("Productos Necesarios", necesarias),
-                new PieChart.Data("Productos Excedentes", excedentes)
-        );
-        pcInventario.setData(datas);
+        PieChart pie = new PieChart(data);
+        pie.setLegendSide(Side.TOP);
+        pie.setTitleSide(Side.BOTTOM);
+        pie.setLabelLineLength(60);
+        pie.setLabelsVisible(true);
 
-        vbProductoMasVendidos.getChildren().clear();
-        arrayList.forEach(e -> {
-            productoModel(e.getNombreMarca(), Tools.roundingValue(e.getPrecioVentaGeneral(), 2), Tools.roundingValue(e.getCantidad(), 2));
-        });
+        vbInventario.getChildren().clear();
+        vbInventario.getChildren().add(pie);
     }
 
-    private void productoModel(String product, String price, String quantity) {
-        HBox hBoxDetail = new HBox();
-        hBoxDetail.setStyle("-fx-border-color: #cccccc;-fx-border-width: 0px 0px 1px 0px;");
+    private void loadTableVentasTipos(JSONArray array) {
 
-        HBox hBoxImage = new HBox();
-        HBox.setHgrow(hBoxImage, Priority.SOMETIMES);
-        hBoxImage.setStyle("-fx-padding: 0.6666666666666666em;");
-        ImageView imageView = new ImageView(new Image("/view/image/noimage.jpg"));
-        imageView.setFitWidth(80);
-        imageView.setFitHeight(80);
-        imageView.setPreserveRatio(false);
-        hBoxImage.getChildren().add(imageView);
+        gpListVentas.getChildren().clear();
+        gpListVentas.add(addHeadGridPane("Mes"), 0, 0);
+        gpListVentas.add(addHeadGridPane("Venta Sunat"), 1, 0);
+        gpListVentas.add(addHeadGridPane("Venta Libre"), 2, 0);
+        gpListVentas.add(addHeadGridPane("Venta Total"), 3, 0);
 
-        HBox hBoxContent = new HBox();
-        HBox.setHgrow(hBoxContent, Priority.ALWAYS);
+        List<String> meses = new ArrayList<>(Arrays.asList("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Setiembre", "Octubre", "Noviembre", "Diciembre"));
 
-        VBox vBoxProduct = new VBox();
-        HBox.setHgrow(vBoxProduct, Priority.ALWAYS);
-        vBoxProduct.setAlignment(Pos.CENTER_LEFT);
-        vBoxProduct.setStyle("-fx-padding: 0.6666666666666666em;");
-        Label lblProducto = new Label(product);
-        lblProducto.setStyle("-fx-text-fill:#020203;");
-        lblProducto.getStyleClass().add("labelRobotoBold15");
-        Label lblPrice = new Label("Precio: " + price);
-        lblPrice.setStyle("-fx-text-fill:#545050;");
-        lblPrice.getStyleClass().add("labelRoboto13");
-        lblPrice.setMinWidth(Control.USE_COMPUTED_SIZE);
-        lblPrice.setMinHeight(Control.USE_COMPUTED_SIZE);
-        lblPrice.setPrefWidth(Control.USE_COMPUTED_SIZE);
-        lblPrice.setPrefHeight(Control.USE_COMPUTED_SIZE);
-        lblPrice.setMaxWidth(Control.USE_COMPUTED_SIZE);
-        lblPrice.setMaxHeight(Control.USE_COMPUTED_SIZE);
-        vBoxProduct.getChildren().addAll(lblProducto, lblPrice);
+        for (int i = 0; i < meses.size(); i++) {
 
-        VBox vBoxQuantity = new VBox();
-        HBox.setHgrow(vBoxQuantity, Priority.SOMETIMES);
-        vBoxQuantity.setAlignment(Pos.CENTER_RIGHT);
-        vBoxQuantity.setStyle("-fx-padding:0.6666666666666666em;");
-        Label lblQuantity = new Label("Cantidad: " + quantity);
-        lblQuantity.setStyle("-fx-background-color: #0766cc;-fx-text-fill: #ffffff;-fx-padding: 10px 15px;-fx-border-radius: 0.25em;-fx-border-color: #0766cc;-fx-background-radius: 0.25em;");
-        lblQuantity.getStyleClass().add("labelRoboto13");
-        lblQuantity.setMinWidth(Control.USE_COMPUTED_SIZE);
-        lblQuantity.setMinHeight(Control.USE_COMPUTED_SIZE);
-        lblQuantity.setPrefWidth(Control.USE_COMPUTED_SIZE);
-        lblQuantity.setPrefHeight(Control.USE_COMPUTED_SIZE);
-        lblQuantity.setMaxWidth(Control.USE_COMPUTED_SIZE);
-        lblQuantity.setMaxHeight(Control.USE_COMPUTED_SIZE);
-        vBoxQuantity.getChildren().add(lblQuantity);
-        hBoxContent.getChildren().addAll(vBoxProduct, vBoxQuantity);
+            String mes = meses.get(i);
+            double sunat = 0;
+            double libre = 0;
+            for (int j = 0; j < array.size(); j++) {
+                JSONObject object = (JSONObject) array.get(j);
+                if (Integer.parseInt(object.get("mes").toString()) == (i + 1)) {
+                    sunat += Double.parseDouble(object.get("sunat").toString());
+                    libre += Double.parseDouble(object.get("libre").toString());
+                }
+            }
+            String background = (i % 2 != 0 ? "white" : "#dee2e6");
+            gpListVentas.add(addElementGridPaneLabel("l1" + (i + 1), mes, Pos.CENTER, background), 0, (i + 1));
+            gpListVentas.add(addElementGridPaneLabel("l2" + (i + 1), "S/ " + Tools.roundingValue(sunat, 2), Pos.CENTER_RIGHT, background), 1, (i + 1));
+            gpListVentas.add(addElementGridPaneLabel("l3" + (i + 1), "S/ " + Tools.roundingValue(libre, 2), Pos.CENTER_RIGHT, background), 2, (i + 1));
+            gpListVentas.add(addElementGridPaneLabel("l4" + (i + 1), "S/ " + Tools.roundingValue(sunat + libre, 2), Pos.CENTER_RIGHT, background), 3, (i + 1));
+        }
+    }
 
-        hBoxDetail.getChildren().addAll(hBoxImage, hBoxContent);
-        vbProductoMasVendidos.getChildren().add(hBoxDetail);
+    private void loadDoughnutChartGraphics(JSONArray array) {
+        double efectivo = 0;
+        double credito = 0;
+        double tarjeta = 0;
+        double deposito = 0;
+        double total;
+
+        for (int i = 0; i < array.size(); i++) {
+            JSONObject object = (JSONObject) array.get(i);
+            if (Integer.parseInt(object.get("IdNotaCredito").toString()) == 0 && Integer.parseInt(object.get("Estado").toString()) != 3) {
+                if (Integer.parseInt(object.get("Estado").toString()) == 2 || Integer.parseInt(object.get("Tipo").toString()) == 2 && Integer.parseInt(object.get("Estado").toString()) == 1) {
+                    credito += Double.parseDouble(object.get("Total").toString());
+                } else if (Integer.parseInt(object.get("Estado").toString()) == 1 || Integer.parseInt(object.get("Estado").toString()) == 4) {
+                    if ("EFECTIVO".equals(String.valueOf(object.get("FormaName").toString()))) {
+                        efectivo += Double.parseDouble(object.get("Total").toString());
+                    } else if ("TARJETA".equals(String.valueOf(object.get("FormaName").toString()))) {
+                        tarjeta += Double.parseDouble(object.get("Total").toString());
+                    } else if ("MIXTO".equals(String.valueOf(object.get("FormaName").toString()))) {
+                        efectivo += Double.parseDouble(object.get("Efectivo").toString());
+                        tarjeta += Double.parseDouble(object.get("Tarjeta").toString());
+                    } else {
+                        deposito += Double.parseDouble(object.get("Total").toString());
+                    }
+                }
+            }
+        }
+
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+                new PieChart.Data("Efectivo", efectivo),
+                new PieChart.Data("Crédito", credito),
+                new PieChart.Data("Tarjeta", tarjeta),
+                new PieChart.Data("Deposito", deposito));
+
+        DoughnutChart chart = new DoughnutChart(pieChartData);
+        chart.setLegendSide(Side.TOP);
+
+        total = efectivo + credito + tarjeta + deposito;
+        lblEfectivoSuma.setText("S/ " + Tools.roundingValue(efectivo, 2));
+        lblCreditoSuma.setText("S/ " + Tools.roundingValue(credito, 2));
+        lblTarjetaSuma.setText("S/ " + Tools.roundingValue(tarjeta, 2));
+        lblDepositoSuma.setText("S/ " + Tools.roundingValue(deposito, 2));
+
+        lblPorEfectivo.setText(Math.round(round(total, efectivo)) + " %");
+        lblProCredito.setText(Math.round(round(total, credito)) + " %");
+        lblPorTarjeta.setText(Math.round(round(total, tarjeta)) + " %");
+        lblPorDeposito.setText(Math.round(round(total, deposito)) + " %");
+
+        vbTipoVenta.getChildren().clear();
+        vbTipoVenta.getChildren().add(chart);
+    }
+
+    private double round(double total, double valor) {
+        return (valor * 100) / total;
+    }
+
+    private void loadTableVecesVendidos(JSONArray array) {
+        gpListVecesVendidos.getChildren().clear();
+        gpListVecesVendidos.add(addHeadGridPane("N°"), 0, 0);
+        gpListVecesVendidos.add(addHeadGridPane("Producto"), 1, 0);
+        gpListVecesVendidos.add(addHeadGridPane("Categoría/Marca"), 2, 0);
+        gpListVecesVendidos.add(addHeadGridPane("Veces"), 3, 0);
+
+        for (int i = 0; i < array.size(); i++) {
+            JSONObject object = (JSONObject) array.get(i);
+            String background = (i % 2 != 0 ? "white" : "#dee2e6");
+            gpListVecesVendidos.add(addElementGridPaneLabelTwo("l1" + (i + 1), "" + (i + 1), Pos.CENTER, background), 0, (i + 1));
+            gpListVecesVendidos.add(addElementGridPaneLabelTwo("l2" + (i + 1), String.valueOf(object.get("Clave").toString()) + "\n" + String.valueOf(object.get("NombreMarca").toString()), Pos.CENTER_LEFT, background), 1, (i + 1));
+            gpListVecesVendidos.add(addElementGridPaneLabelTwo("l3" + (i + 1), String.valueOf(object.get("Categoria").toString()) + "\n" + String.valueOf(object.get("Marca").toString()), Pos.CENTER_LEFT, background), 2, (i + 1));
+            gpListVecesVendidos.add(addElementGridPaneLabelTwo("l4" + (i + 1), Tools.roundingValue(Double.parseDouble(object.get("Cantidad").toString()), 2), Pos.CENTER_LEFT, background), 3, (i + 1));
+        }
+    }
+
+    private void loadTableCantidadVendidos(JSONArray array) {
+        gpListVentasCantidadVendidos.getChildren().clear();
+        gpListVentasCantidadVendidos.add(addHeadGridPane("N°"), 0, 0);
+        gpListVentasCantidadVendidos.add(addHeadGridPane("Producto"), 1, 0);
+        gpListVentasCantidadVendidos.add(addHeadGridPane("Categoría/Marca"), 2, 0);
+        gpListVentasCantidadVendidos.add(addHeadGridPane("Cantidad"), 3, 0);
+
+        for (int i = 0; i < array.size(); i++) {
+            JSONObject object = (JSONObject) array.get(i);
+            String background = (i % 2 != 0 ? "white" : "#dee2e6");
+            gpListVentasCantidadVendidos.add(addElementGridPaneLabelTwo("l1" + (i + 1), "" + (i + 1), Pos.CENTER, background), 0, (i + 1));
+            gpListVentasCantidadVendidos.add(addElementGridPaneLabelTwo("l2" + (i + 1), String.valueOf(object.get("Clave").toString()) + "\n" + String.valueOf(object.get("NombreMarca").toString()), Pos.CENTER_LEFT, background), 1, (i + 1));
+            gpListVentasCantidadVendidos.add(addElementGridPaneLabelTwo("l3" + (i + 1), String.valueOf(object.get("Categoria").toString()) + "\n" + String.valueOf(object.get("Marca").toString()), Pos.CENTER_LEFT, background), 2, (i + 1));
+            gpListVentasCantidadVendidos.add(addElementGridPaneLabelTwo("l4" + (i + 1), Tools.roundingValue(Double.parseDouble(object.get("Suma").toString()), 2) + "\n" + String.valueOf(object.get("Medida").toString()), Pos.CENTER_LEFT, background), 3, (i + 1));
+        }
+    }
+
+    private Label addHeadGridPane(String nombre) {
+        Label label = new Label(nombre);
+        label.getStyleClass().add("labelRobotoBold14");
+        label.setStyle("-fx-text-fill: #020203;;-fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;-fx-font-weight: bold;");
+        label.setAlignment(Pos.CENTER);
+        label.setWrapText(true);
+        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
+        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxHeight(Double.MAX_VALUE);
+        return label;
+    }
+
+    private Label addElementGridPaneLabel(String id, String nombre, Pos pos, String background) {
+        Label label = new Label(nombre);
+        label.setId(id);
+        label.getStyleClass().add("labelRoboto13");
+        label.setStyle("-fx-text-fill:#6c757d;-fx-background-color: " + background + ";-fx-padding: 0.8333333333333334em 0.8333333333333334em;");
+        label.setAlignment(pos);
+        label.setWrapText(true);
+        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
+        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxHeight(Double.MAX_VALUE);
+        return label;
+    }
+
+    private Label addElementGridPaneLabelTwo(String id, String nombre, Pos pos, String background) {
+        Label label = new Label(nombre);
+        label.setId(id);
+        label.getStyleClass().add("labelRoboto13");
+        label.setStyle("-fx-text-fill: #020203;-fx-background-color: " + background + ";-fx-padding: 0.8333333333333334em 0.8333333333333334em;");
+        label.setAlignment(pos);
+        label.setWrapText(true);
+        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
+        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxHeight(Double.MAX_VALUE);
+        return label;
     }
 
     private void onEventInventario(short existencia) {
@@ -311,7 +481,6 @@ public class FxInicioController implements Initializable {
         if (event.getCode() == KeyCode.ENTER) {
             onEventInventario((short) 3);
         }
-
     }
 
     @FXML
@@ -324,19 +493,11 @@ public class FxInicioController implements Initializable {
         if (event.getCode() == KeyCode.ENTER) {
             onEventInventario((short) 4);
         }
-
     }
 
     @FXML
     private void onActionExcedentes(ActionEvent event) {
         onEventInventario((short) 4);
     }
-
-    private void onKeyPressedAceptarLoad(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-
-        }
-    }
-
 
 }

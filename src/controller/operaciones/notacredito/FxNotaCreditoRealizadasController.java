@@ -17,7 +17,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -88,7 +87,7 @@ public class FxNotaCreditoRealizadasController implements Initializable {
         ));
         tcComprobante.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getNombreComprobante() + "\n"
-                + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()
+                + cellData.getValue().getSerie() + "-" + Tools.formatNumber(cellData.getValue().getNumeracion())
         ));
         tcDetalle.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getVentaTB().getComprobanteName() + "\n"
@@ -186,7 +185,7 @@ public class FxNotaCreditoRealizadasController implements Initializable {
     private void openWindowNotaCreditoDetalle() throws IOException {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             FXMLLoader fXMLLoader = new FXMLLoader(getClass().getResource(FilesRouters.FX_NOTA_CREDITO_DETALLE));
-            ScrollPane node = fXMLLoader.load();
+            AnchorPane node = fXMLLoader.load();
             //Controlller here
             FxNotaCreditoDetalleController controller = fXMLLoader.getController();
             controller.loadInitData(tvList.getSelectionModel().getSelectedItem().getIdNotaCredito());

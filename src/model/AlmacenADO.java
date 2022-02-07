@@ -142,14 +142,13 @@ public class AlmacenADO {
                         statementCantidad.setDouble(5, 0);
                         statementCantidad.addBatch();
                     }
+                    
                     statementCantidad.executeBatch();
-
                     statementAlmacen.executeBatch();
                     DBUtil.getConnection().commit();
                     return "inserted";
                 }
             }
-
         } catch (SQLException ex) {
             try {
                 DBUtil.getConnection().rollback();

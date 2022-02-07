@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Button;
 
 public class OrdenCompraADO {
 
@@ -125,6 +126,7 @@ public class OrdenCompraADO {
                     OrdenCompraDetalleTB compraDetalleTB = new OrdenCompraDetalleTB();
                     compraDetalleTB.setId(resultSet.getRow());
                     compraDetalleTB.setIdOrdenCompra(resultSet.getString("IdOrdenCompra"));
+                    compraDetalleTB.setIdSuministro(resultSet.getString("IdSuministro"));
 
                     SuministroTB suministroTB = new SuministroTB();
                     suministroTB.setIdSuministro(resultSet.getString("IdSuministro"));
@@ -136,13 +138,19 @@ public class OrdenCompraADO {
                     compraDetalleTB.setCantidad(resultSet.getDouble("Cantidad"));
                     compraDetalleTB.setCosto(resultSet.getDouble("Costo"));
                     compraDetalleTB.setDescuento(resultSet.getDouble("Descuento"));
-
+                    compraDetalleTB.setIdImpuesto(resultSet.getInt("IdImpuesto")); 
+ 
                     ImpuestoTB impuestoTB = new ImpuestoTB();
-                    impuestoTB.setNombreImpuesto(resultSet.getString("NombreImpuesto"));
+                    impuestoTB.setNombre(resultSet.getString("NombreImpuesto"));
                     impuestoTB.setValor(resultSet.getDouble("Valor"));
                     compraDetalleTB.setImpuestoTB(impuestoTB);
 
                     compraDetalleTB.setObservacion(resultSet.getString("Observacion"));
+
+                    Button button = new Button("X");
+                    button.getStyleClass().add("buttonDark");
+                    compraDetalleTB.setBtnRemove(button);
+
                     compraDetalleTBs.add(compraDetalleTB);
                 }
                 ordenCompraTB.setOrdenCompraDetalleTBs(compraDetalleTBs);
@@ -172,75 +180,132 @@ public class OrdenCompraADO {
     }
 
     public static String InsertarOrdenCompra(OrdenCompraTB ordenCompraTB) {
+        PreparedStatement statementValidate = null;
         PreparedStatement statementOrdenCompra = null;
         PreparedStatement statementOrdenDealle = null;
         PreparedStatement statementNumeracion = null;
         CallableStatement statementCodigo = null;
+        ResultSet resultSet = null;
         try {
             DBUtil.dbConnect();
-            DBUtil.getConnection().setAutoCommit(true);
+            DBUtil.getConnection().setAutoCommit(false);
 
-            statementCodigo = DBUtil.getConnection().prepareCall("{? = call Fc_OrdenCompra_Codigo_Alfanumerico()}");
-            statementCodigo.registerOutParameter(1, java.sql.Types.VARCHAR);
-            statementCodigo.execute();
-            String idOrdenCompra = statementCodigo.getString(1);
-
-            statementNumeracion = DBUtil.getConnection().prepareStatement("SELECT MAX(Numeracion) AS Total FROM OrdenCompra");
-            ResultSet resultSet = statementNumeracion.executeQuery();
-
-            int numeracion = 0;
+            statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM OrdenCompraTB WHERE IdOrdenCompra = ?");
+            statementValidate.setString(1, ordenCompraTB.getIdOrdenCompra());
+            resultSet = statementValidate.executeQuery();
             if (resultSet.next()) {
-                numeracion = resultSet.getInt("Total") + 1;
-            } else {
-                numeracion = 1;
-            }
 
-            statementOrdenCompra = DBUtil.getConnection().prepareStatement("INSERT INTO OrdenCompra("
-                    + "IdOrdenCompra,"
-                    + "Numeracion,"
-                    + "IdProveedor,"
-                    + "IdEmpledo,"
-                    + "FechaRegistro,"
-                    + "HoraRegistro,"
-                    + "FechaVencimiento,"
-                    + "HoraVencimiento,"
-                    + "Observacion"
-                    + ")VALUES(?,?,?,?,?,?,?,?,?)");
-            statementOrdenCompra.setString(1, idOrdenCompra);
-            statementOrdenCompra.setInt(2, numeracion);
-            statementOrdenCompra.setString(3, ordenCompraTB.getIdProveedor());
-            statementOrdenCompra.setString(4, ordenCompraTB.getIdEmpleado());
-            statementOrdenCompra.setString(5, ordenCompraTB.getFechaRegistro());
-            statementOrdenCompra.setString(6, ordenCompraTB.getHoraRegistro());
-            statementOrdenCompra.setString(7, ordenCompraTB.getFechaVencimiento());
-            statementOrdenCompra.setString(8, ordenCompraTB.getHoraVencimiento());
-            statementOrdenCompra.setString(9, ordenCompraTB.getObservacion());
-            statementOrdenCompra.addBatch();
-            statementOrdenCompra.executeBatch();
+                statementOrdenCompra = DBUtil.getConnection().prepareStatement("UPDATE OrdenCompraTB "
+                        + "SET IdProveedor = ?,"
+                        + "IdEmpledo = ?, "
+                        + "FechaRegistro=?, "
+                        + "HoraRegistro=?, "
+                        + "FechaVencimiento=?, "
+                        + "HoraVencimiento=?, "
+                        + "Observacion=? "
+                        + "WHERE IdOrdenCompra = ?");
+                statementOrdenCompra.setString(1, ordenCompraTB.getIdProveedor());
+                statementOrdenCompra.setString(2, ordenCompraTB.getIdEmpleado());
+                statementOrdenCompra.setString(3, ordenCompraTB.getFechaRegistro());
+                statementOrdenCompra.setString(4, ordenCompraTB.getHoraVencimiento());
+                statementOrdenCompra.setString(5, ordenCompraTB.getFechaVencimiento());
+                statementOrdenCompra.setString(6, ordenCompraTB.getHoraVencimiento());
+                statementOrdenCompra.setString(7, ordenCompraTB.getObservacion());
+                statementOrdenCompra.setString(8, ordenCompraTB.getIdOrdenCompra());
+                statementOrdenCompra.addBatch();
+                statementOrdenCompra.executeBatch();
 
-            statementOrdenDealle = DBUtil.getConnection().prepareStatement("INSERT INTO OrdenCompraDatalle("
-                    + "IdOrdenCompra,"
-                    + "IdSuministro,"
-                    + "Cantidad,"
-                    + "Descuento,"
-                    + "Costo,"
-                    + "IdImpuesto,"
-                    + "Observacion"
-                    + ")VALUES(?,?,?,?,?,?,?)");
-            for (OrdenCompraDetalleTB detalleTB : ordenCompraTB.getOrdenCompraDetalleTBs()) {
-                statementOrdenDealle.setString(1, idOrdenCompra);
-                statementOrdenDealle.setString(2, detalleTB.getIdSuministro());
-                statementOrdenDealle.setDouble(3, detalleTB.getCantidad());
-                statementOrdenDealle.setDouble(4, detalleTB.getDescuento());
-                statementOrdenDealle.setDouble(5, detalleTB.getCosto());
-                statementOrdenDealle.setInt(6, detalleTB.getIdImpuesto());
-                statementOrdenDealle.setString(7, detalleTB.getObservacion());
+                statementOrdenDealle = DBUtil.getConnection().prepareStatement("DELETE FROM OrdenCompraDatalleTB WHERE IdOrdenCompra = ?");
+                statementOrdenDealle.setString(1, ordenCompraTB.getIdOrdenCompra());
                 statementOrdenDealle.addBatch();
-            }
-            statementOrdenDealle.executeBatch();
+                statementOrdenDealle.executeBatch();
 
-            DBUtil.getConnection().commit();
-            return "inserted";
+                statementOrdenDealle = DBUtil.getConnection().prepareStatement("INSERT INTO OrdenCompraDatalleTB("
+                        + "IdOrdenCompra,"
+                        + "IdSuministro,"
+                        + "Cantidad,"
+                        + "Descuento,"
+                        + "Costo,"
+                        + "IdImpuesto,"
+                        + "Observacion"
+                        + ")VALUES(?,?,?,?,?,?,?)");
+                for (OrdenCompraDetalleTB detalleTB : ordenCompraTB.getOrdenCompraDetalleTBs()) {
+                    statementOrdenDealle.setString(1, ordenCompraTB.getIdOrdenCompra());
+                    statementOrdenDealle.setString(2, detalleTB.getIdSuministro());
+                    statementOrdenDealle.setDouble(3, detalleTB.getCantidad());
+                    statementOrdenDealle.setDouble(4, detalleTB.getDescuento());
+                    statementOrdenDealle.setDouble(5, detalleTB.getCosto());
+                    statementOrdenDealle.setInt(6, detalleTB.getIdImpuesto());
+                    statementOrdenDealle.setString(7, detalleTB.getObservacion());
+                    statementOrdenDealle.addBatch();
+                }
+                statementOrdenDealle.executeBatch();
+
+                DBUtil.getConnection().commit();
+                return "updated";
+            } else {
+                statementCodigo = DBUtil.getConnection().prepareCall("{? = call Fc_OrdenCompra_Codigo_Alfanumerico()}");
+                statementCodigo.registerOutParameter(1, java.sql.Types.VARCHAR);
+                statementCodigo.execute();
+                String idOrdenCompra = statementCodigo.getString(1);
+
+                statementNumeracion = DBUtil.getConnection().prepareStatement("SELECT MAX(Numeracion) AS Total FROM OrdenCompraTB");
+                resultSet = statementNumeracion.executeQuery();
+
+                int numeracion;
+                if (resultSet.next()) {
+                    numeracion = resultSet.getInt("Total") + 1;
+                } else {
+                    numeracion = 1;
+                }
+
+                statementOrdenCompra = DBUtil.getConnection().prepareStatement("INSERT INTO OrdenCompraTB("
+                        + "IdOrdenCompra,"
+                        + "Numeracion,"
+                        + "IdProveedor,"
+                        + "IdEmpledo,"
+                        + "FechaRegistro,"
+                        + "HoraRegistro,"
+                        + "FechaVencimiento,"
+                        + "HoraVencimiento,"
+                        + "Observacion"
+                        + ")VALUES(?,?,?,?,?,?,?,?,?)");
+                statementOrdenCompra.setString(1, idOrdenCompra);
+                statementOrdenCompra.setInt(2, numeracion);
+                statementOrdenCompra.setString(3, ordenCompraTB.getIdProveedor());
+                statementOrdenCompra.setString(4, ordenCompraTB.getIdEmpleado());
+                statementOrdenCompra.setString(5, ordenCompraTB.getFechaRegistro());
+                statementOrdenCompra.setString(6, ordenCompraTB.getHoraRegistro());
+                statementOrdenCompra.setString(7, ordenCompraTB.getFechaVencimiento());
+                statementOrdenCompra.setString(8, ordenCompraTB.getHoraVencimiento());
+                statementOrdenCompra.setString(9, ordenCompraTB.getObservacion());
+                statementOrdenCompra.addBatch();
+                statementOrdenCompra.executeBatch();
+
+                statementOrdenDealle = DBUtil.getConnection().prepareStatement("INSERT INTO OrdenCompraDatalleTB("
+                        + "IdOrdenCompra,"
+                        + "IdSuministro,"
+                        + "Cantidad,"
+                        + "Descuento,"
+                        + "Costo,"
+                        + "IdImpuesto,"
+                        + "Observacion"
+                        + ")VALUES(?,?,?,?,?,?,?)");
+                for (OrdenCompraDetalleTB detalleTB : ordenCompraTB.getOrdenCompraDetalleTBs()) {
+                    statementOrdenDealle.setString(1, idOrdenCompra);
+                    statementOrdenDealle.setString(2, detalleTB.getIdSuministro());
+                    statementOrdenDealle.setDouble(3, detalleTB.getCantidad());
+                    statementOrdenDealle.setDouble(4, detalleTB.getDescuento());
+                    statementOrdenDealle.setDouble(5, detalleTB.getCosto());
+                    statementOrdenDealle.setInt(6, detalleTB.getIdImpuesto());
+                    statementOrdenDealle.setString(7, detalleTB.getObservacion());
+                    statementOrdenDealle.addBatch();
+                }
+                statementOrdenDealle.executeBatch();
+
+                DBUtil.getConnection().commit();
+                return "inserted";
+            }
         } catch (SQLException ex) {
             try {
                 DBUtil.getConnection().rollback();
@@ -261,6 +326,12 @@ public class OrdenCompraADO {
                 }
                 if (statementCodigo != null) {
                     statementCodigo.close();
+                }
+                if (statementValidate != null) {
+                    statementValidate.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {

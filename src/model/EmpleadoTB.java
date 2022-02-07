@@ -45,6 +45,10 @@ public class EmpleadoTB {
     private int rol;
 
     private String rolName;
+    
+    private boolean sistema;
+    
+    private String huella;
 
     private CheckBox validarEm;
 
@@ -243,6 +247,22 @@ public class EmpleadoTB {
 
     public void setRolName(String rolName) {
         this.rolName = rolName == null ? "Global" : rolName;
+    }
+
+    public boolean isSistema() {
+        return sistema;
+    }
+
+    public void setSistema(boolean sistema) {
+        this.sistema = sistema;
+    }
+
+    public String getHuella() {
+        return huella;
+    }
+
+    public void setHuella(String huella) {
+        this.huella = huella;
     }
 
     public CheckBox getValidarEm() {

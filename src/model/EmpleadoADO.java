@@ -26,8 +26,25 @@ public class EmpleadoADO {
             codigo_empleado.execute();
             String id_empleado = codigo_empleado.getString(1);
 
-            empleado = DBUtil.getConnection().prepareStatement("INSERT INTO EmpleadoTB(IdEmpleado,TipoDocumento,NumeroDocumento,Apellidos,Nombres,Sexo,FechaNacimiento,Puesto,Rol,Estado,Telefono,Celular,Email,Direccion,Usuario,Clave)\n"
-                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            empleado = DBUtil.getConnection().prepareStatement("INSERT INTO EmpleadoTB( "
+                    + "IdEmpleado,"
+                    + "TipoDocumento,"
+                    + "NumeroDocumento,"
+                    + "Apellidos,Nombres,"
+                    + "Sexo,"
+                    + "FechaNacimiento,"
+                    + "Puesto,"
+                    + "Rol,"
+                    + "Estado,"
+                    + "Telefono,"
+                    + "Celular,"
+                    + "Email,"
+                    + "Direccion,"
+                    + "Usuario,"
+                    + "Clave,"
+                    + "Sistema,"
+                    + "Huella)\n"
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             empleado.setString(1, id_empleado);
             empleado.setInt(2, empleadoTB.getTipoDocumento());
@@ -45,6 +62,8 @@ public class EmpleadoADO {
             empleado.setString(14, empleadoTB.getDireccion());
             empleado.setString(15, empleadoTB.getUsuario());
             empleado.setString(16, empleadoTB.getClave());
+            empleado.setBoolean(17, empleadoTB.isSistema());
+            empleado.setString(18, empleadoTB.getHuella());
             empleado.addBatch();
 
             empleado.executeBatch();
@@ -125,32 +144,50 @@ public class EmpleadoADO {
         }
     }
 
-    public static ObservableList<EmpleadoTB> ListEmpleados(String value) {
-        String selectStmt = "{call Sp_Listar_Empleados(?)}";
+    public static Object ListEmpleados(int opcion, String buscar, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
-        ObservableList<EmpleadoTB> empList = FXCollections.observableArrayList();
+
         try {
             DBUtil.dbConnect();
-            preparedStatement = DBUtil.getConnection().prepareStatement(selectStmt);
-            preparedStatement.setString(1, value);
+            Object[] object = new Object[2];
+            ObservableList<EmpleadoTB> empList = FXCollections.observableArrayList();
+
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Empleados(?,?,?,?)}");
+            preparedStatement.setInt(1, opcion);
+            preparedStatement.setString(2, buscar);
+            preparedStatement.setInt(3, posicionPagina);
+            preparedStatement.setInt(4, filasPorPagina);
             rsEmps = preparedStatement.executeQuery();
             while (rsEmps.next()) {
                 EmpleadoTB empleadoTB = new EmpleadoTB();
-                empleadoTB.setId(rsEmps.getInt("Filas"));
+                empleadoTB.setId(rsEmps.getRow() + posicionPagina);
                 empleadoTB.setIdEmpleado(rsEmps.getString("IdEmpleado"));
                 empleadoTB.setNumeroDocumento(rsEmps.getString("NumeroDocumento"));
                 empleadoTB.setApellidos(rsEmps.getString("Apellidos"));
                 empleadoTB.setNombres(rsEmps.getString("Nombres"));
                 empleadoTB.setTelefono(rsEmps.getString("Telefono"));
                 empleadoTB.setCelular(rsEmps.getString("Celular"));
-                empleadoTB.setPuestoName(rsEmps.getString("Puesto"));
+                empleadoTB.setDireccion(rsEmps.getString("Direccion"));
                 empleadoTB.setRolName(rsEmps.getString("Rol"));
                 empleadoTB.setEstadoName(rsEmps.getString("Estado"));
                 empList.add(empleadoTB);
             }
-        } catch (SQLException e) {
-            System.out.println("La operación de selección de SQL ha fallado: " + e);
+            object[0] = empList;
+
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Empleados_Count(?,?)}");
+            preparedStatement.setInt(1, opcion);
+            preparedStatement.setString(2, buscar);
+            rsEmps = preparedStatement.executeQuery();
+            Integer total = 0;
+            if (rsEmps.next()) {
+                total = rsEmps.getInt("Total");
+            }
+            object[1] = total;
+
+            return object;
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (preparedStatement != null) {
@@ -161,10 +198,9 @@ public class EmpleadoADO {
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-
+                return ex.getLocalizedMessage();
             }
         }
-        return empList;
     }
 
     public static EmpleadoTB GetByIdEmpleados(String value) {

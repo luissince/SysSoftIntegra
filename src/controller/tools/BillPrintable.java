@@ -49,6 +49,7 @@ import model.GuiaRemisionDetalleTB;
 import model.HistorialSuministroSalidaTB;
 import model.ImageADO;
 import model.ImagenTB;
+import model.NotaCreditoDetalleTB;
 import model.OrdenCompraDetalleTB;
 import model.SuministroTB;
 import model.VentaCreditoTB;
@@ -119,6 +120,10 @@ public class BillPrintable implements Printable {
      * @param marca_vehiculo_guia
      * @param numero_placa_vehiculo_guia
      * @param movito_traslado_guia
+     * @param comprobante_anulado_nombre
+     * @param comprobante_anulado_serie
+     * @param comprobante_anulado_numeracion
+     * @param nota_credito_motivo_anulacion
      * @return
      */
     public int hbEncebezado(HBox box,
@@ -162,7 +167,11 @@ public class BillPrintable implements Printable {
             String informacion_trasportista_guia,
             String marca_vehiculo_guia,
             String numero_placa_vehiculo_guia,
-            String movito_traslado_guia) {
+            String movito_traslado_guia,
+            String comprobante_anulado_nombre,
+            String comprobante_anulado_serie,
+            String comprobante_anulado_numeracion,
+            String nota_credito_motivo_anulacion) {
         int lines = 0;
         for (int j = 0; j < box.getChildren().size(); j++) {
             if (box.getChildren().get(j) instanceof TextFieldTicket) {
@@ -271,6 +280,14 @@ public class BillPrintable implements Printable {
                     fieldTicket.setText(Tools.AddText2Guines(numero_placa_vehiculo_guia));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("motivotrasguia")) {
                     fieldTicket.setText(Tools.AddText2Guines(movito_traslado_guia));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("nomcompronulanc")) {
+                    fieldTicket.setText(Tools.AddText2Guines(comprobante_anulado_nombre));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("sericomproanulanc")) {
+                    fieldTicket.setText(Tools.AddText2Guines(comprobante_anulado_serie));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("numcomproanulanc")) {
+                    fieldTicket.setText(Tools.AddText2Guines(comprobante_anulado_numeracion));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("motivoanulacionnc")) {
+                    fieldTicket.setText(Tools.AddText2Guines(nota_credito_motivo_anulacion));
                 }
                 lines = fieldTicket.getLines();
             }
@@ -311,6 +328,38 @@ public class BillPrintable implements Printable {
     }
 
     public int hbDetalleCotizacion(HBox hBox, HBox box, ObservableList<CotizacionDetalleTB> arrList, int m) {
+        int lines = 0;
+        for (int j = 0; j < box.getChildren().size(); j++) {
+            if (box.getChildren().get(j) instanceof TextFieldTicket) {
+                TextFieldTicket fieldTicket = ((TextFieldTicket) box.getChildren().get(j));
+                if (fieldTicket.getVariable().equalsIgnoreCase("numfilas")) {
+                    fieldTicket.setText(Tools.AddText2Guines("" + (m + 1)));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("codalternoarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(""));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("codbarrasarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getSuministroTB().getClave()));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("nombretarticulo")) {
+                    String nombreMarcaReplace = arrList.get(m).getSuministroTB().getNombreMarca().replaceAll("\"", "");
+                    fieldTicket.setText(Tools.AddText2Guines(nombreMarcaReplace));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("cantarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad(), 2)));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("precarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getPrecio(), 2)));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines("-" + Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad() * (arrList.get(m).getPrecio() - arrList.get(m).getDescuento()), 2)));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("unimearticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getSuministroTB().getUnidadCompraName()));
+                }
+                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                lines = fieldTicket.getLines();
+            }
+        }
+        return lines;
+    }
+
+    public int hbDetalleNotaCredito(HBox hBox, HBox box, ObservableList<NotaCreditoDetalleTB> arrList, int m) {
         int lines = 0;
         for (int j = 0; j < box.getChildren().size(); j++) {
             if (box.getChildren().get(j) instanceof TextFieldTicket) {
@@ -542,7 +591,7 @@ public class BillPrintable implements Printable {
                     fieldTicket.setText(Tools.AddText2Guines(nombreMarcaReplace));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("cantarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad(), 2)));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("precarticulo")) {
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("costarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCosto(), 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
@@ -742,7 +791,7 @@ public class BillPrintable implements Printable {
         }
     }
 
-    public void generatePDFPrint(AnchorPane apEncabezado, AnchorPane apDetalle, AnchorPane apPie) {
+    public void generateTicketPrint(AnchorPane apEncabezado, AnchorPane apDetalle, AnchorPane apPie) {
         this.apEncabezado = apEncabezado;
         this.apDetalle = apDetalle;
         this.apPie = apPie;

@@ -46,6 +46,8 @@ public class FxOrdenCompraProductoController implements Initializable {
     @FXML
     private TableColumn<DetalleCompraTB, String> tcCosto;
     @FXML
+    private TableColumn<DetalleCompraTB, String> tcCantidad;
+    @FXML
     private TableColumn<DetalleCompraTB, String> tcFechaCompra;
     @FXML
     private TableColumn<DetalleCompraTB, String> tcObservacion;
@@ -62,6 +64,7 @@ public class FxOrdenCompraProductoController implements Initializable {
         tcId.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
         tcProveedor.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getDescripcion()));
         tcCosto.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getPrecioCompra(), 2)));
+        tcCantidad.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
         tcFechaCompra.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFechaRegistro() + "\n" + cellData.getValue().getHoraRegistro()));
         tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservacion()));
 

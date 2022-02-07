@@ -45,8 +45,6 @@ public class FxEmpleadosProcesoController implements Initializable {
     @FXML
     private DatePicker dpFechaNacimiento;
     @FXML
-    private ComboBox<DetalleTB> cbPuesto;
-    @FXML
     private ComboBox<DetalleTB> cbEstado;
     @FXML
     private TextField txtTelefono;
@@ -74,7 +72,6 @@ public class FxEmpleadosProcesoController implements Initializable {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
         cbTipoDocumento.getItems().addAll(DetalleADO.Get_Detail_IdName("1", "0003", "RUC"));
         cbSexo.getItems().addAll(DetalleADO.GetDetailId("0004"));
-        cbPuesto.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0012", ""));
         cbRol.getItems().addAll(RolADO.RolList());
         cbEstado.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0001", ""));
         cbEstado.getSelectionModel().select(0);
@@ -113,16 +110,6 @@ public class FxEmpleadosProcesoController implements Initializable {
 
             if (empleadoTB.getFechaNacimiento() != null) {
                 Tools.actualDate(empleadoTB.getFechaNacimiento().toString(), dpFechaNacimiento);
-            }
-
-            if (empleadoTB.getPuesto() != 0) {
-                ObservableList<DetalleTB> lstpus = cbPuesto.getItems();
-                for (int i = 0; i < lstpus.size(); i++) {
-                    if (empleadoTB.getPuesto() == lstpus.get(i).getIdDetalle()) {
-                        cbPuesto.getSelectionModel().select(i);
-                        break;
-                    }
-                }
             }
 
             if (empleadoTB.getEstado() != 0) {
@@ -169,10 +156,8 @@ public class FxEmpleadosProcesoController implements Initializable {
         } else if (Tools.isText(txtNombres.getText())) {
             Tools.AlertMessageWarning(window, "Empleado", "Ingrese los nombres del empleado");
             txtNombres.requestFocus();
-        } else if (cbPuesto.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(window, "Empleado", "Seleccione el puesto del empleado");
-            cbPuesto.requestFocus();
-        } else if (cbEstado.getSelectionModel().getSelectedIndex() < 0) {
+        }
+        if (cbEstado.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(window, "Empleado", "Seleccione el estado del empleado");
             cbEstado.requestFocus();
         } else {
@@ -196,9 +181,7 @@ public class FxEmpleadosProcesoController implements Initializable {
                     empleadoTB.setFechaNacimiento(null);
                 }
 
-                empleadoTB.setPuesto(cbPuesto.getSelectionModel().getSelectedIndex() >= 0
-                        ? cbPuesto.getSelectionModel().getSelectedItem().getIdDetalle()
-                        : 0);
+                empleadoTB.setPuesto(0);
                 empleadoTB.setEstado(cbEstado.getSelectionModel().getSelectedIndex() >= 0
                         ? cbEstado.getSelectionModel().getSelectedItem().getIdDetalle()
                         : 0);
@@ -211,6 +194,9 @@ public class FxEmpleadosProcesoController implements Initializable {
                 empleadoTB.setRol(cbRol.getSelectionModel().getSelectedIndex() >= 0
                         ? cbRol.getSelectionModel().getSelectedItem().getIdRol()
                         : 0);
+                empleadoTB.setSistema(false);
+                empleadoTB.setHuella("");
+                
                 if (idEmpleado.equalsIgnoreCase("")) {
                     String result = EmpleadoADO.InsertEmpleado(empleadoTB);
                     switch (result) {

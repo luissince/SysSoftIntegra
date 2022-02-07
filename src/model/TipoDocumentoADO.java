@@ -108,16 +108,18 @@ public class TipoDocumentoADO {
         return result;
     }
 
-    public static Object ListTipoDocumento(int posicionPagina, int filasPorPagina) {
+    public static Object ListTipoDocumento(int opcion, String buscar, int posicionPagina, int filasPorPagina) {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
             DBUtil.dbConnect();
             Object[] objects = new Object[2];
             ObservableList<TipoDocumentoTB> observableList = FXCollections.observableArrayList();
-            statement = DBUtil.getConnection().prepareStatement("SELECT * FROM TipoDocumentoTB order by IdTipoDocumento desc offset ? rows fetch next ? rows only");
-            statement.setInt(1, posicionPagina);
-            statement.setInt(2, filasPorPagina);
+            statement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_TipoDocumento(?,?,?,?)}");
+            statement.setInt(1, opcion);
+            statement.setString(2, buscar);
+            statement.setInt(3, posicionPagina);
+            statement.setInt(4, filasPorPagina);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 TipoDocumentoTB tipoDocumentoTB = new TipoDocumentoTB();
@@ -153,7 +155,9 @@ public class TipoDocumentoADO {
                 observableList.add(tipoDocumentoTB);
             }
 
-            statement = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM TipoDocumentoTB");
+            statement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_TipoDocumento_Count(?,?)}");
+            statement.setInt(1, opcion);
+            statement.setString(2, buscar);
             resultSet = statement.executeQuery();
             Integer cantidadTotal = 0;
             if (resultSet.next()) {

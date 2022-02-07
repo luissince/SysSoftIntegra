@@ -184,8 +184,8 @@ public class FxPosReporteController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w -> controller.loadInit());
             stage.show();
-            controller.fillEmpleadosTable("");
         } catch (IOException ex) {
             System.out.println("Venta reporte controller:" + ex.getLocalizedMessage());
         }
@@ -630,19 +630,21 @@ public class FxPosReporteController implements Initializable {
                     if (vt.getEstado() == 3) {
                         totalanulado += vt.getTotal();
                     } else {
-                        if (vt.getTipo() == 1 && vt.getEstado() == 1 || vt.getTipo() == 1 && vt.getEstado() == 4) {
+                        if (vt.getTipo() == 1 && vt.getEstado() == 1
+                                || vt.getTipo() == 1 && vt.getEstado() == 4) {
                             totalcontado += vt.getTotal();
-                        } else if (vt.getTipo() == 2 && vt.getEstado() == 1) {
-                            totalcreditopagado += vt.getTotal();
                         } else {
                             totalcredito += vt.getTotal();
+                            if (vt.getTipo() == 2 && vt.getEstado() == 1) {
+                                totalcreditopagado += vt.getTotal();
+                            }
                         }
                     }
                 }
 
                 if (vt.getNotaCreditoTB() == null && vt.getEstado() != 3) {
-                    if (vt.getTipo() == 2 && vt.getEstado() == 1) {
-                        efectivo += vt.getTotal();
+                    if (vt.getTipo() == 2 || vt.getTipo() == 2 && vt.getEstado() == 1) {
+//                        efectivo += vt.getTotal();
                     } else if (vt.getEstado() == 1 || vt.getEstado() == 4) {
                         if (vt.getFormaName().equalsIgnoreCase("EFECTIVO")) {
                             efectivo += vt.getTotal();

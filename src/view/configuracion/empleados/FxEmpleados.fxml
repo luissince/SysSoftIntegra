@@ -35,7 +35,7 @@
       </HBox>
       <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 0 0 1px 0;">
          <children>
-            <Button mnemonicParsing="false" onAction="#onActionAdd" styleClass="buttonLight" text="Agregar">
+            <Button mnemonicParsing="false" onAction="#onActionAdd" onKeyPressed="#onKeyPressedAdd" styleClass="buttonLight" text="Agregar">
                <graphic>
                   <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -44,7 +44,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" onAction="#onActionEdit" styleClass="buttonLight" text="Editar">
+            <Button mnemonicParsing="false" onAction="#onActionEdit" onKeyPressed="#onKeyPressedEdit" styleClass="buttonLight" text="Editar">
                <graphic>
                   <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -62,7 +62,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" onAction="#onActionReload" styleClass="buttonLight" text="Recargar">
+            <Button mnemonicParsing="false" onAction="#onActionReload" onKeyPressed="#onKeyPressedReload" styleClass="buttonLight" text="Recargar">
                <graphic>
                   <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -104,10 +104,10 @@
                         <TableView fx:id="tvList" fixedCellSize="-0.0" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="298.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
                            <columns>
                               <TableColumn fx:id="tcId" prefWidth="60.0" style="-fx-alignment: CENTER;" text="N°" />
-                              <TableColumn fx:id="tcDocument" prefWidth="130.0" style="-fx-alignment: CENTER;" text="Documento" />
-                              <TableColumn fx:id="tcCompleteData" prefWidth="280.0" style="-fx-alignment: CENTER-LEFT;" text="Datos completos" />
+                              <TableColumn fx:id="tcCompleteData" prefWidth="260.0" style="-fx-alignment: CENTER-LEFT;" text="Empleado" />
                               <TableColumn fx:id="tcContact" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Teléfono/Celular" />
-                              <TableColumn fx:id="tcMarketStall" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Puesto" />
+                              <TableColumn fx:id="tcAddres" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Dirección" />
+                              <TableColumn fx:id="tcRol" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Rol" />
                               <TableColumn fx:id="tcState" prefWidth="130.0" style="-fx-alignment: CENTER;" text="Estado" />
                            </columns>
                         </TableView>
@@ -115,6 +115,53 @@
                   </HBox>
                </children>
             </VBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" style="-fx-border-width: 1 0 0 0; -fx-border-color: #cccccc; -fx-padding: 0.8333333333333334em;">
+         <children>
+            <HBox alignment="CENTER" style="-fx-background-color: #cccccc; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onActionAnterior" onKeyPressed="#onKeyPressedAnterior" styleClass="buttonLight" text="Anterior">
+                     <font>
+                        <Font name="Calibri" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/left.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Label fx:id="lblPaginaActual" styleClass="labelBorder" text="0" textFill="#020203">
+                     <font>
+                        <Font name="Calibri" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="labelForm" text="de" textFill="#020203">
+                     <font>
+                        <Font name="Calibri" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblPaginaSiguiente" styleClass="labelBorder" text="0" textFill="#020203">
+                     <font>
+                        <Font name="Calibri" size="14.0" />
+                     </font>
+                  </Label>
+                  <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onActionSiguiente" onKeyPressed="#onKeyPressedSiguiente" styleClass="buttonLight" text="Siguiente">
+                     <font>
+                        <Font name="Calibri" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/right.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
          </children>
       </HBox>
    </children>

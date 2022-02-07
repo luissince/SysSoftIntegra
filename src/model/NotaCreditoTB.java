@@ -28,7 +28,9 @@ public class NotaCreditoTB {
     private ClienteTB clienteTB;
     private VentaTB ventaTB;
     private MonedaTB monedaTB;
+    private EmpleadoTB empleadoTB;
     private ArrayList<NotaCreditoDetalleTB> notaCreditoDetalleTBs;
+    
 
     public NotaCreditoTB() {
     }
@@ -215,6 +217,14 @@ public class NotaCreditoTB {
 
     public void setMonedaTB(MonedaTB monedaTB) {
         this.monedaTB = monedaTB;
+    }
+
+    public EmpleadoTB getEmpleadoTB() {
+        return empleadoTB;
+    }
+
+    public void setEmpleadoTB(EmpleadoTB empleadoTB) {
+        this.empleadoTB = empleadoTB;
     }
 
     public ArrayList<NotaCreditoDetalleTB> getNotaCreditoDetalleTBs() {

@@ -134,9 +134,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
                 lblMontoPagado.setText(Tools.roundingValue(compraTB.getMontoPagado(), 2));
                 lblDiferencia.setText(Tools.roundingValue(compraTB.getMontoRestante(), 2));
                 for (CompraCreditoTB vc : compraTB.getCompraCreditoTBs()) {
-                    vc.getBtnImprimir().setOnAction(event
-                            -> openModalImpresion(idCompra, vc.getIdCompraCredito())
-                    );
+                    vc.getBtnImprimir().setOnAction(event-> openModalImpresion(idCompra, vc.getIdCompraCredito()));
                     vc.getBtnImprimir().setOnKeyPressed(event -> {
                         if (event.getCode() == KeyCode.ENTER) {
                             openModalImpresion(idCompra, vc.getIdCompraCredito());

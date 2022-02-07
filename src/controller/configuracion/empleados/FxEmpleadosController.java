@@ -6,7 +6,6 @@ import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,82 +42,118 @@ public class FxEmpleadosController implements Initializable {
     @FXML
     private TableView<EmpleadoTB> tvList;
     @FXML
-    private TableColumn<EmpleadoTB, Integer> tcId;
-    @FXML
-    private TableColumn<EmpleadoTB, String> tcDocument;
+    private TableColumn<EmpleadoTB, String> tcId;
     @FXML
     private TableColumn<EmpleadoTB, String> tcCompleteData;
     @FXML
     private TableColumn<EmpleadoTB, String> tcContact;
     @FXML
-    private TableColumn<EmpleadoTB, String> tcMarketStall;
+    private TableColumn<EmpleadoTB, String> tcRol;
+    @FXML
+    private TableColumn<EmpleadoTB, String> tcAddres;
     @FXML
     private TableColumn<EmpleadoTB, String> tcState;
+    @FXML
+    private Label lblPaginaActual;
+    @FXML
+    private Label lblPaginaSiguiente;
 
     private FxPrincipalController fxPrincipalController;
 
+    private int paginacion;
+
+    private int totalPaginacion;
+
+    private short opcion;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        tcId.setCellValueFactory(cellData -> cellData.getValue().getId().asObject());
-        tcDocument.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getNumeroDocumento()));
-        tcCompleteData.setCellValueFactory(cellData
-                -> Bindings.concat(
-                        cellData.getValue().getApellidos() + " ",
-                        cellData.getValue().getNombres()
-                )
-        );
-        tcContact.setCellValueFactory(cellData
-                -> Bindings.concat(
-                        !Tools.isText(cellData.getValue().getTelefono())
-                        ? "TEL: " + cellData.getValue().getTelefono() + "\n" + "CEL: " + cellData.getValue().getCelular()
-                        : "CEL: " + cellData.getValue().getCelular()
-                )
-        );
-        tcMarketStall.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getPuestoName()));
+        paginacion = 1;
+        opcion = 0;
+
+        tcId.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
+        tcCompleteData.setCellValueFactory(cellData -> Bindings.concat(
+                cellData.getValue().getNumeroDocumento() + "\n"
+                + cellData.getValue().getApellidos() + ", ",
+                cellData.getValue().getNombres()
+        ));
+        tcContact.setCellValueFactory(cellData -> Bindings.concat(
+                "TEL: " + cellData.getValue().getTelefono() + "\n" + "CEL: " + cellData.getValue().getCelular()
+        ));
+        tcRol.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getRolName()));
+        tcAddres.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getDireccion()));
         tcState.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getEstadoName()));
-           
-         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
-        tcDocument.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
+
+        tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
+//        tcDocument.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
         tcCompleteData.prefWidthProperty().bind(tvList.widthProperty().multiply(0.23));
         tcContact.prefWidthProperty().bind(tvList.widthProperty().multiply(0.25));
-        tcMarketStall.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcRol.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcAddres.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
         tcState.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
+        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+        loadInit();
     }
 
-    public void fillEmpleadosTable(String value) {
+    public void loadInit() {
+        if (!lblLoad.isVisible()) {
+            paginacion = 1;
+            fillEmpleadosTable(0, "");
+            opcion = 0;
+        }
+    }
 
+    private void fillEmpleadosTable(int opcion, String buscar) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
             return t;
         });
 
-        Task<List<EmpleadoTB>> task = new Task<List<EmpleadoTB>>() {
+        Task<Object> task = new Task<Object>() {
             @Override
-            public ObservableList<EmpleadoTB> call() {
-                return EmpleadoADO.ListEmpleados(value);
+            public Object call() {
+                return EmpleadoADO.ListEmpleados(opcion, buscar, (paginacion - 1) * 20, 20);
             }
         };
 
-        task.setOnSucceeded((WorkerStateEvent e) -> {
-            tvList.setItems((ObservableList<EmpleadoTB>) task.getValue());
-
-            lblLoad.setVisible(false);
-        });
-        task.setOnFailed((WorkerStateEvent event) -> {
-
-            lblLoad.setVisible(false);
-        });
-
         task.setOnScheduled((WorkerStateEvent event) -> {
             lblLoad.setVisible(true);
+            tvList.getItems().clear();
+            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            totalPaginacion = 0;
         });
-        exec.execute(task);
 
+        task.setOnFailed((WorkerStateEvent event) -> {
+            lblLoad.setVisible(false);
+            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
+        });
+
+        task.setOnSucceeded((WorkerStateEvent e) -> {
+            Object object = task.getValue();
+            if (object instanceof Object[]) {
+                Object[] objects = (Object[]) object;
+                ObservableList<EmpleadoTB> empleadoTBs = (ObservableList<EmpleadoTB>) objects[0];
+                if (!empleadoTBs.isEmpty()) {
+                    tvList.setItems(empleadoTBs);
+                    totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));
+                    lblPaginaActual.setText(paginacion + "");
+                    lblPaginaSiguiente.setText(totalPaginacion + "");
+                } else {
+                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                    lblPaginaActual.setText("0");
+                    lblPaginaSiguiente.setText("0");
+                }
+            } else {
+                tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
+            }
+            lblLoad.setVisible(false);
+        });
+
+        exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();
         }
-
     }
 
     private void openWindowEmpleadosAdd() throws IOException {
@@ -159,8 +194,9 @@ public class FxEmpleadosController implements Initializable {
                 String resultado = EmpleadoADO.DeleteEmpleadoById(tvList.getSelectionModel().getSelectedItem().getIdEmpleado());
                 if (resultado.equalsIgnoreCase("deleted")) {
                     Tools.AlertMessageInformation(window, "Empleado", "Se eliminó el empleado correctamente.");
+                    loadInit();
                 } else if (resultado.equalsIgnoreCase("caja")) {
-                    Tools.AlertMessageWarning(window, "Empleado", "No se puede eliminar el empleado, porque tiene historial de cajas..");
+                    Tools.AlertMessageWarning(window, "Empleado", "No se puede eliminar el empleado, porque tiene historial de cajas.");
                 } else if (resultado.equalsIgnoreCase("compra")) {
                     Tools.AlertMessageWarning(window, "Empleado", "No se puede eliminar el empleado, porque tiene un historial de compras.");
                 } else if (resultado.equalsIgnoreCase("sistema")) {
@@ -168,10 +204,27 @@ public class FxEmpleadosController implements Initializable {
                 } else {
                     Tools.AlertMessageError(window, "Empleado", resultado);
                 }
-
             }
         } else {
             Tools.AlertMessageWarning(window, "Empleado", "Seleccione un elemento de la lista.");
+        }
+    }
+
+    private void onEventPaginacion() {
+        switch (opcion) {
+            case 0:
+                fillEmpleadosTable(0, "");
+                break;
+            case 1:
+                fillEmpleadosTable(1, txtSearch.getText().trim());
+                break;
+        }
+    }
+
+    @FXML
+    private void onKeyPressedAdd(KeyEvent event) throws IOException {
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowEmpleadosAdd();
         }
     }
 
@@ -181,28 +234,85 @@ public class FxEmpleadosController implements Initializable {
     }
 
     @FXML
+    private void onKeyPressedEdit(KeyEvent event) throws IOException {
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowEmpleadosEdit(tvList.getSelectionModel().getSelectedItem().getIdEmpleado());
+        }
+    }
+
+    @FXML
     private void onActionEdit(ActionEvent event) throws IOException {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             openWindowEmpleadosEdit(tvList.getSelectionModel().getSelectedItem().getIdEmpleado());
         }
+    }
 
+    @FXML
+    private void onKeyPressedReload(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            loadInit();
+        }
     }
 
     @FXML
     private void onActionReload(ActionEvent event) {
-        fillEmpleadosTable("");
+        loadInit();
     }
 
     @FXML
     private void onKeyPressedSearch(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            txtSearch.requestFocus();
+            if (!tvList.getItems().isEmpty()) {
+                tvList.requestFocus();
+                tvList.getSelectionModel().select(0);
+            }
         }
     }
 
     @FXML
     private void onKeyReleasedSearch(KeyEvent event) {
-        fillEmpleadosTable(txtSearch.getText().trim());
+        if (event.getCode() != KeyCode.ESCAPE
+                && event.getCode() != KeyCode.F1
+                && event.getCode() != KeyCode.F2
+                && event.getCode() != KeyCode.F3
+                && event.getCode() != KeyCode.F4
+                && event.getCode() != KeyCode.F5
+                && event.getCode() != KeyCode.F6
+                && event.getCode() != KeyCode.F7
+                && event.getCode() != KeyCode.F8
+                && event.getCode() != KeyCode.F9
+                && event.getCode() != KeyCode.F10
+                && event.getCode() != KeyCode.F11
+                && event.getCode() != KeyCode.F12
+                && event.getCode() != KeyCode.ALT
+                && event.getCode() != KeyCode.CONTROL
+                && event.getCode() != KeyCode.UP
+                && event.getCode() != KeyCode.DOWN
+                && event.getCode() != KeyCode.RIGHT
+                && event.getCode() != KeyCode.LEFT
+                && event.getCode() != KeyCode.TAB
+                && event.getCode() != KeyCode.CAPS
+                && event.getCode() != KeyCode.SHIFT
+                && event.getCode() != KeyCode.HOME
+                && event.getCode() != KeyCode.WINDOWS
+                && event.getCode() != KeyCode.ALT_GRAPH
+                && event.getCode() != KeyCode.CONTEXT_MENU
+                && event.getCode() != KeyCode.END
+                && event.getCode() != KeyCode.INSERT
+                && event.getCode() != KeyCode.PAGE_UP
+                && event.getCode() != KeyCode.PAGE_DOWN
+                && event.getCode() != KeyCode.NUM_LOCK
+                && event.getCode() != KeyCode.PRINTSCREEN
+                && event.getCode() != KeyCode.SCROLL_LOCK
+                && event.getCode() != KeyCode.PAUSE) {
+            if (!Tools.isText(txtSearch.getText())) {
+                if (!lblLoad.isVisible()) {
+                    paginacion = 1;
+                    fillEmpleadosTable(1, txtSearch.getText().trim());
+                    opcion = 1;
+                }
+            }
+        }
     }
 
     @FXML
@@ -235,7 +345,51 @@ public class FxEmpleadosController implements Initializable {
         }
     }
 
-     public void setContent( FxPrincipalController fxPrincipalController) {
+    @FXML
+    private void onKeyPressedAnterior(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion > 1) {
+                    paginacion--;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionAnterior(ActionEvent event) {
+        if (!lblLoad.isVisible()) {
+            if (paginacion > 1) {
+                paginacion--;
+                onEventPaginacion();
+            }
+        }
+    }
+
+    @FXML
+    private void onKeyPressedSiguiente(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion < totalPaginacion) {
+                    paginacion++;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionSiguiente(ActionEvent event) {
+        if (!lblLoad.isVisible()) {
+            if (paginacion < totalPaginacion) {
+                paginacion++;
+                onEventPaginacion();
+            }
+        }
+    }
+
+    public void setContent(FxPrincipalController fxPrincipalController) {
         this.fxPrincipalController = fxPrincipalController;
     }
 

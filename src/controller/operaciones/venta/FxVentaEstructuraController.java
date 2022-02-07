@@ -249,7 +249,7 @@ public class FxVentaEstructuraController implements Initializable {
 
         if (!cbMoneda.getItems().isEmpty()) {
             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
-                if (cbMoneda.getItems().get(i).getPredeterminado()) {
+                if (cbMoneda.getItems().get(i).isPredeterminado()) {
                     cbMoneda.getSelectionModel().select(i);
                     monedaSimbolo = cbMoneda.getItems().get(i).getSimbolo();
                     break;

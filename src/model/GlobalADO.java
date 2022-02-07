@@ -1,6 +1,5 @@
 package model;
 
-import controller.tools.Session;
 import controller.tools.Tools;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -10,6 +9,8 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class GlobalADO {
 
@@ -165,185 +166,325 @@ public class GlobalADO {
         return list;
     }
 
-    public static ArrayList<Object> DashboardLoad(String fechaActual) {
-        PreparedStatement preparedLista = null;
+    public static Object DashboardLoad(String fechaActual) {
         ResultSet resultLista = null;
-        ArrayList<Object> arrayList = new ArrayList<>();
-        double ventasTotales = 0;
-        double comprasTotales = 0;
-        double articulos = 0;
-        double clientes = 0;
-        double proveedores = 0;
-        double trabajadores = 0;
 
-        int cantidad_negativas = 0;
-        int cantidad_intermedias = 0;
-        int cantidad_necesarias = 0;
-        int cantidad_excedentes = 0;
+        try {
+            DBUtil.dbConnect();
+            ArrayList<Object> arrayList = new ArrayList<>();
+            double ventasTotales = 0;
+            double comprasTotales = 0;
+            double articulos = 0;
+            double clientes = 0;
+            double proveedores = 0;
+            double trabajadores = 0;
 
-        int ventas_cobrar = 0;
-        int compras_pagar = 0;
+            int cantidad_negativas = 0;
+            int cantidad_intermedias = 0;
+            int cantidad_necesarias = 0;
+            int cantidad_excedentes = 0;
 
-        ArrayList<SuministroTB> listaProductos = new ArrayList<>();
+            int ventas_cobrar = 0;
+            int compras_pagar = 0;
 
-        DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            try {
-                preparedLista = DBUtil.getConnection().prepareStatement("SELECT ISNULL(sum(dv.Cantidad*(dv.PrecioVenta-dv.Descuento)),0) AS Total FROM VentaTB as v INNER JOIN DetalleVentaTB as dv on dv.IdVenta = v.IdVenta LEFT JOIN NotaCreditoTB as nc on nc.IdVenta = v.IdVenta WHERE CAST(v.FechaVenta AS DATE) = ? AND v.Tipo = 1 AND v.Estado <> 3 AND nc.IdNotaCredito IS NULL");
-                preparedLista.setString(1, fechaActual);
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    ventasTotales = resultLista.getDouble("Total");
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("SELECT SUM(d.Importe) AS Total FROM CompraTB as c inner join DetalleCompraTB as d on d.IdCompra = c.IdCompra where c.FechaCompra = ? and c.EstadoCompra = 1");
-                preparedLista.setString(1, fechaActual);
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    comprasTotales = resultLista.getDouble("Total");
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB");
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    articulos = resultLista.getDouble("Total");
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM ClienteTB");
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    clientes = resultLista.getDouble("Total");
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM ProveedorTB");
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    proveedores = resultLista.getDouble("Total");
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM EmpleadoTB");
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    trabajadores = resultLista.getDouble("Total");
-                }
-
-                // CANTIDADES
-                preparedLista = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Negativos' from SuministroTB where Cantidad <= 0");
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    cantidad_negativas = resultLista.getInt("Productos Negativos");
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Intermedios' from SuministroTB where Cantidad > 0 and Cantidad < StockMinimo");
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    cantidad_intermedias = resultLista.getInt("Productos Intermedios");
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Necesarios' from SuministroTB where Cantidad >= StockMinimo and Cantidad < StockMaximo");
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    cantidad_necesarias = resultLista.getInt("Productos Necesarios");
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Execedentes' from SuministroTB where Cantidad >= StockMaximo");
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    cantidad_excedentes = resultLista.getInt("Productos Execedentes");
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("SELECT TOP 10 dt.IdArticulo, s.NombreMarca, s.NuevaImagen as NuevaImagen,dt.PrecioVenta, SUM(dt.Cantidad) as Cantidad\n"
-                        + "from DetalleVentaTB as dt \n"
-                        + "inner join VentaTB as v on v.IdVenta=dt.IdVenta\n"
-                        + "inner join SuministroTB as s on dt.IdArticulo=s.IdSuministro \n"
-                        + "where MONTH(v.FechaVenta) = MONTH(GETDATE()) AND YEAR(v.FechaVenta) = YEAR(GETDATE())\n"
-                        + "group by dt.IdArticulo, s.NombreMarca, NuevaImagen,dt.PrecioVenta  \n"
-                        + "order by Cantidad DESC");
-                resultLista = preparedLista.executeQuery();
-                while (resultLista.next()) {
-
-                    SuministroTB suministroTB = new SuministroTB();
-                    suministroTB.setNombreMarca(resultLista.getString("NombreMarca"));
-                    suministroTB.setPrecioVentaGeneral(resultLista.getDouble("PrecioVenta"));
-                    suministroTB.setCantidad(resultLista.getDouble("Cantidad"));
-                    suministroTB.setNuevaImagen(resultLista.getBytes("NuevaImagen"));
-                    listaProductos.add(suministroTB);
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("select COUNT(*) as VentasCobrar from VentaTB as v left join NotaCreditoTB as nc on nc.IdVenta = v.IdVenta where v.Tipo = 2 and v.Estado = 2 and nc.IdNotaCredito is null");
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    ventas_cobrar = resultLista.getInt("VentasCobrar");
-                }
-
-                preparedLista = DBUtil.getConnection().prepareStatement("select COUNT(*) as ComprasPagar from CompraTB where TipoCompra = 2 and EstadoCompra = 2");
-                resultLista = preparedLista.executeQuery();
-                if (resultLista.next()) {
-                    compras_pagar = resultLista.getInt("ComprasPagar");
-                }
-
-                arrayList.add(Tools.roundingValue(ventasTotales, 2));
-                arrayList.add(Tools.roundingValue(comprasTotales, 2));
-                arrayList.add(Tools.roundingValue(articulos, 0));
-                arrayList.add(Tools.roundingValue(clientes, 0));
-                arrayList.add(Tools.roundingValue(proveedores, 0));
-                arrayList.add(Tools.roundingValue(trabajadores, 0));
-
-                //CANTIDAD
-                arrayList.add(cantidad_negativas);
-                arrayList.add(cantidad_intermedias);
-                arrayList.add(cantidad_necesarias);
-                arrayList.add(cantidad_excedentes);
-
-                //PRODUCTOS MAS VENDIDOS
-                arrayList.add(listaProductos);
-
-                //VENTAS Y COMPRAR
-                arrayList.add(ventas_cobrar);
-                arrayList.add(compras_pagar);
-            } catch (SQLException ex) {
-                Tools.println(ex.getLocalizedMessage());
-                arrayList.add(Tools.roundingValue(ventasTotales, 2));
-                arrayList.add(Tools.roundingValue(comprasTotales, 2));
-                arrayList.add(Tools.roundingValue(articulos, 0));
-                arrayList.add(Tools.roundingValue(clientes, 0));
-                arrayList.add(Tools.roundingValue(proveedores, 0));
-                arrayList.add(Tools.roundingValue(trabajadores, 0));
-
-                //CANTIDAD
-                arrayList.add(cantidad_negativas);
-                arrayList.add(cantidad_intermedias);
-                arrayList.add(cantidad_necesarias);
-                arrayList.add(cantidad_excedentes);
-
-                //PRODUCTOS MAS VENDIDOS
-                arrayList.add(listaProductos);
-
-                //VENTAS Y COMPRAR
-                arrayList.add(ventas_cobrar);
-                arrayList.add(compras_pagar);
-            } finally {
-                try {
-                    if (preparedLista != null) {
-                        preparedLista.close();
-                    }
-                    if (resultLista != null) {
-                        resultLista.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-
-                }
+            PreparedStatement ptVentas = DBUtil.getConnection().prepareStatement("SELECT\n"
+                    + "ISNULL(SUM(dv.Cantidad * (dv.PrecioVenta-dv.Descuento)),0) AS Total\n"
+                    + "FROM VentaTB AS v\n"
+                    + "LEFT JOIN NotaCreditoTB AS n ON v.IdVenta = n.IdVenta\n"
+                    + "INNER JOIN DetalleVentaTB AS dv ON dv.IdVenta = v.IdVenta\n"
+                    + "WHERE v.Estado <> 3  AND n.IdNotaCredito IS NULL AND v.FechaVenta = CAST(GETDATE() AS DATE)");
+            resultLista = ptVentas.executeQuery();
+            if (resultLista.next()) {
+                ventasTotales = resultLista.getDouble("Total");
             }
-        } else {
-            arrayList.add(Tools.roundingValue(ventasTotales, 2));
-            arrayList.add(Tools.roundingValue(comprasTotales, 2));
-            arrayList.add(Tools.roundingValue(articulos, 0));
-            arrayList.add(Tools.roundingValue(clientes, 0));
-            arrayList.add(Tools.roundingValue(proveedores, 0));
-            arrayList.add(Tools.roundingValue(trabajadores, 0));
+            ptVentas.close();
+
+            PreparedStatement ptCompras = DBUtil.getConnection().prepareStatement("SELECT\n"
+                    + "ISNULL(sum(d.Cantidad*(d.PrecioCompra-d.Descuento)),0) AS Total \n"
+                    + "FROM CompraTB AS c \n"
+                    + "INNER JOIN DetalleCompraTB AS d ON d.IdCompra = c.IdCompra\n"
+                    + "WHERE c.FechaCompra =  CAST(GETDATE() AS DATE)");
+            resultLista = ptCompras.executeQuery();
+            if (resultLista.next()) {
+                comprasTotales = resultLista.getDouble("Total");
+            }
+            ptCompras.close();
+
+            PreparedStatement ptCuentasCobrar = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total\n"
+                    + "FROM VentaTB WHERE Tipo = 2 AND Estado = 2");
+            resultLista = ptCuentasCobrar.executeQuery();
+            if (resultLista.next()) {
+                ventas_cobrar = resultLista.getInt("Total");
+            }
+            ptCuentasCobrar.close();
+
+            PreparedStatement ptCuentasPagar = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total\n"
+                    + "FROM CompraTB WHERE TipoCompra = 2 AND EstadoCompra = 2");
+            resultLista = ptCuentasPagar.executeQuery();
+            if (resultLista.next()) {
+                compras_pagar = resultLista.getInt("Total");
+            }
+            ptCuentasPagar.close();
+
+            PreparedStatement ptProdcuctoTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM SuministroTB");
+            resultLista = ptProdcuctoTotal.executeQuery();
+            if (resultLista.next()) {
+                articulos = resultLista.getInt("Total");
+            }
+            ptProdcuctoTotal.close();
+
+            PreparedStatement ptClienteTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM ClienteTB");
+            resultLista = ptClienteTotal.executeQuery();
+            if (resultLista.next()) {
+                clientes = resultLista.getInt("Total");
+            }
+            ptClienteTotal.close();
+
+            PreparedStatement ptProveedorTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM ProveedorTB");
+            resultLista = ptProveedorTotal.executeQuery();
+            if (resultLista.next()) {
+                proveedores = resultLista.getInt("Total");
+            }
+            ptProveedorTotal.close();
+
+            PreparedStatement ptTrabajadoresTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM EmpleadoTB");
+            resultLista = ptTrabajadoresTotal.executeQuery();
+            if (resultLista.next()) {
+                trabajadores = resultLista.getInt("Total");
+            }
+            ptTrabajadoresTotal.close();
+
+            PreparedStatement ptPNegativos = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad <= 0");
+            resultLista = ptPNegativos.executeQuery();
+            if (resultLista.next()) {
+                cantidad_negativas = resultLista.getInt("Total");
+            }
+            ptPNegativos.close();
+
+            PreparedStatement ptPIntermedio = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad > 0 AND Cantidad < StockMinimo");
+            resultLista = ptPIntermedio.executeQuery();
+            if (resultLista.next()) {
+                cantidad_intermedias = resultLista.getInt("Total");
+            }
+            ptPIntermedio.close();
+
+            PreparedStatement ptPNecesario = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad >= StockMinimo AND Cantidad < StockMaximo");
+            resultLista = ptPNecesario.executeQuery();
+            if (resultLista.next()) {
+                cantidad_necesarias = resultLista.getInt("Total");
+            }
+            ptPNecesario.close();
+
+            PreparedStatement ptPExcedentes = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad >= StockMaximo");
+            resultLista = ptPExcedentes.executeQuery();
+            if (resultLista.next()) {
+                cantidad_excedentes = resultLista.getInt("Total");
+            }
+            ptPExcedentes.close();
+
+            PreparedStatement ptHistorialVentas = DBUtil.getConnection().prepareStatement("SELECT \n"
+                    + "MONTH(vt.FechaVenta) AS Mes, \n"
+                    + "SUM(dv.Cantidad * (dv.PrecioVenta-dv.Descuento)) AS Monto\n"
+                    + "FROM VentaTB AS vt \n"
+                    + "LEFT JOIN NotaCreditoTB AS nc ON nc.IdVenta = vt.IdVenta\n"
+                    + "INNER JOIN DetalleVentaTB AS dv ON dv.IdVenta = vt.IdVenta\n"
+                    + "WHERE \n"
+                    + "vt.Estado <> 3 AND nc.IdNotaCredito IS NULL AND YEAR(vt.FechaVenta) = YEAR(GETDATE())\n"
+                    + "GROUP BY MONTH(vt.FechaVenta)");
+            resultLista = ptHistorialVentas.executeQuery();
+            JSONArray arrayHVentas = new JSONArray();
+            while (resultLista.next()) {
+                JSONObject jsono = new JSONObject();
+                jsono.put("mes", resultLista.getInt("Mes"));
+                jsono.put("monto", resultLista.getDouble("Monto"));
+                arrayHVentas.add(jsono);
+            }
+            ptHistorialVentas.close();
+
+            PreparedStatement ptHistorialVentasTipos = DBUtil.getConnection().prepareStatement("SELECT \n"
+                    + "MONTH(vt.FechaVenta) AS Mes, \n"
+                    + "case td.Facturacion when 1 then SUM(dv.Cantidad * (dv.PrecioVenta-dv.Descuento)) else 0 end Sunat,\n"
+                    + "case td.Facturacion when 0 then SUM(dv.Cantidad * (dv.PrecioVenta-dv.Descuento)) else 0 end Libre\n"
+                    + "FROM VentaTB AS vt \n"
+                    + "INNER JOIN TipoDocumentoTB AS td on td.IdTipoDocumento = vt.Comprobante\n"
+                    + "LEFT JOIN NotaCreditoTB AS nc ON nc.IdVenta = vt.IdVenta\n"
+                    + "INNER JOIN DetalleVentaTB AS dv ON dv.IdVenta = vt.IdVenta\n"
+                    + "WHERE \n"
+                    + "vt.Estado <> 3 AND nc.IdNotaCredito IS NULL AND YEAR(vt.FechaVenta) = YEAR(GETDATE()) \n"
+                    + "or\n"
+                    + "vt.Estado <> 3 AND nc.IdNotaCredito IS NULL AND YEAR(vt.FechaVenta) = YEAR(GETDATE()) AND td.Facturacion = 1\n"
+                    + "GROUP BY \n"
+                    + "MONTH(vt.FechaVenta),\n"
+                    + "td.Facturacion");
+            resultLista = ptHistorialVentasTipos.executeQuery();
+            JSONArray arrayHVentasTipos = new JSONArray();
+            while (resultLista.next()) {              
+                JSONObject jsono = new JSONObject();
+                jsono.put("mes", resultLista.getInt("Mes"));
+                jsono.put("sunat", resultLista.getDouble("Sunat"));
+                jsono.put("libre", resultLista.getDouble("Libre"));
+                arrayHVentasTipos.add(jsono);
+            }
+            ptHistorialVentasTipos.close();
+
+            PreparedStatement ptTipoVenta = DBUtil.getConnection().prepareStatement("SELECT \n"
+                    + "CASE \n"
+                    + "WHEN v.Estado <> 2 AND v.Efectivo > 0 AND v.Tarjeta = 0 THEN 'EFECTIVO' \n"
+                    + "WHEN v.Estado <> 2 AND v.Tarjeta  > 0 AND v.Efectivo = 0 THEN 'TARJETA'\n"
+                    + "WHEN v.Estado <> 2 AND v.Efectivo > 0 AND v.Tarjeta > 0 THEN 'MIXTO'\n"
+                    + "WHEN v.Estado <> 2 AND v.Deposito > 0 THEN 'DEPOSITO' \n"
+                    + "ELSE 'NINGUNO' END AS FormaName,\n"
+                    + "v.Tipo,\n"
+                    + "v.Estado,\n"
+                    + "v.Efectivo,\n"
+                    + "v.Tarjeta,\n"
+                    + "v.Deposito,\n"
+                    + "sum(dv.Cantidad * (dv.PrecioVenta-dv.Descuento)) AS Total,\n"
+                    + "iif(n.IdNotaCredito IS NULL,0,1) AS IdNotaCredito\n"
+                    + "FROM VentaTB AS v\n"
+                    + "LEFT JOIN NotaCreditoTB AS n ON v.IdVenta = n.IdVenta\n"
+                    + "INNER JOIN DetalleVentaTB AS dv ON dv.IdVenta = v.IdVenta\n"
+                    + "WHERE MONTH(v.FechaVenta) = MONTH(GETDATE())\n"
+                    + "GROUP BY             \n"
+                    + "v.Tipo,\n"
+                    + "v.Estado,\n"
+                    + "v.Efectivo,\n"
+                    + "v.Tarjeta,\n"
+                    + "v.Deposito,\n"
+                    + "v.Estado,\n"
+                    + "v.FechaVenta,\n"
+                    + "v.HoraVenta,\n"
+                    + "n.IdNotaCredito");
+            resultLista = ptTipoVenta.executeQuery();
+            JSONArray arrayTipoVenta = new JSONArray();
+            while (resultLista.next()) {
+                JSONObject jsono = new JSONObject();
+                jsono.put("FormaName", resultLista.getString("FormaName"));
+                jsono.put("Tipo", resultLista.getInt("Tipo"));
+                jsono.put("Estado", resultLista.getInt("Estado"));
+                jsono.put("Efectivo", resultLista.getDouble("Efectivo"));
+                jsono.put("Tarjeta", resultLista.getDouble("Tarjeta"));
+                jsono.put("Deposito", resultLista.getDouble("Deposito"));
+                jsono.put("Total", resultLista.getDouble("Total"));
+                jsono.put("IdNotaCredito", resultLista.getInt("IdNotaCredito"));
+                arrayTipoVenta.add(jsono);
+            }
+            ptTipoVenta.close();
+
+            PreparedStatement ptProductosMasVecesVendidos = DBUtil.getConnection().prepareStatement("SELECT \n"
+                    + "TOP 10\n"
+                    + "s.IdSuministro,\n"
+                    + "s.Clave,\n"
+                    + "s.NombreMarca,\n"
+                    + "isnull(dc.Nombre,'') AS Categoria,\n"
+                    + "isnull(dm.Nombre,'') AS Marca,\n"
+                    + "isnull(du.Nombre,'') AS Medida,\n"
+                    + "count(s.IdSuministro) as Cantidad\n"
+                    + "FROM DetalleVentaTB dv \n"
+                    + "INNER JOIN VentaTB AS v ON v.IdVenta = dv.IdVenta\n"
+                    + "INNER JOIN SuministroTB AS s ON s.IdSuministro = dv.IdArticulo\n"
+                    + "LEFT JOIN DetalleTB AS dc ON dc.IdDetalle = s.Categoria AND dc.IdMantenimiento = '0006'\n"
+                    + "LEFT JOIN DetalleTB AS dm ON dm.IdDetalle = s.Marca AND dm.IdMantenimiento = '0007'\n"
+                    + "LEFT JOIN DetalleTB AS du ON du.IdDetalle = s.UnidadCompra AND du.IdMantenimiento = '0013'\n"
+                    + "WHERE MONTH(FechaVenta) = MONTH(GETDATE())\n"
+                    + "GROUP BY\n"
+                    + "s.IdSuministro,\n"
+                    + "s.Clave,\n"
+                    + "s.NombreMarca,\n"
+                    + "dc.Nombre,\n"
+                    + "dm.Nombre,\n"
+                    + "du.Nombre\n"
+                    + "ORDER BY Cantidad DESC");
+            resultLista = ptProductosMasVecesVendidos.executeQuery();
+            JSONArray arrayProductosMasVecesVendidos = new JSONArray();
+            while (resultLista.next()) {
+                JSONObject jsono = new JSONObject();
+                jsono.put("Clave", resultLista.getString("Clave"));
+                jsono.put("NombreMarca", resultLista.getString("NombreMarca"));
+                jsono.put("Categoria", resultLista.getString("Categoria"));
+                jsono.put("Marca", resultLista.getString("Marca"));
+                jsono.put("Medida", resultLista.getString("Medida"));
+                jsono.put("Cantidad", resultLista.getString("Cantidad"));
+                arrayProductosMasVecesVendidos.add(jsono);
+            }
+            ptProductosMasVecesVendidos.close();
+
+            PreparedStatement ptProductosMasCantidadesVendidos = DBUtil.getConnection().prepareStatement("SELECT \n"
+                    + "TOP 10\n"
+                    + "s.IdSuministro,\n"
+                    + "s.Clave,\n"
+                    + "s.NombreMarca,\n"
+                    + "isnull(dc.Nombre,'') AS Categoria,\n"
+                    + "isnull(dm.Nombre,'') AS Marca,\n"
+                    + "isnull(du.Nombre,'') AS Medida,\n"
+                    + "sum(dv.Cantidad) AS Suma\n"
+                    + "FROM DetalleVentaTB dv \n"
+                    + "INNER JOIN VentaTB AS v ON v.IdVenta = dv.IdVenta\n"
+                    + "INNER JOIN SuministroTB as s ON s.IdSuministro = dv.IdArticulo\n"
+                    + "LEFT JOIN DetalleTB AS dc ON dc.IdDetalle = s.Categoria AND dc.IdMantenimiento = '0006'\n"
+                    + "LEFT JOIN DetalleTB AS dm ON dm.IdDetalle = s.Marca AND dm.IdMantenimiento = '0007'\n"
+                    + "LEFT JOIN DetalleTB AS du ON du.IdDetalle = s.UnidadCompra AND du.IdMantenimiento = '0013'\n"
+                    + "WHERE MONTH(FechaVenta) = MONTH(GETDATE())\n"
+                    + "GROUP BY\n"
+                    + "s.IdSuministro,\n"
+                    + "s.Clave,\n"
+                    + "s.NombreMarca,\n"
+                    + "dc.Nombre,\n"
+                    + "dm.Nombre,\n"
+                    + "du.Nombre\n"
+                    + "ORDER BY Suma DESC");
+            resultLista = ptProductosMasCantidadesVendidos.executeQuery();
+            JSONArray arrayProductosMasCantidadVendidos = new JSONArray();
+            while (resultLista.next()) {
+                JSONObject jsono = new JSONObject();
+                jsono.put("Clave", resultLista.getString("Clave"));
+                jsono.put("NombreMarca", resultLista.getString("NombreMarca"));
+                jsono.put("Categoria", resultLista.getString("Categoria"));
+                jsono.put("Marca", resultLista.getString("Marca"));
+                jsono.put("Medida", resultLista.getString("Medida"));
+                jsono.put("Suma", resultLista.getString("Suma"));
+                arrayProductosMasCantidadVendidos.add(jsono);
+            }
+            ptProductosMasCantidadesVendidos.close();
+
+            //
+            arrayList.add(ventasTotales);
+            arrayList.add(comprasTotales);
+            arrayList.add(ventas_cobrar);
+            arrayList.add(compras_pagar);
+
+            //
+            arrayList.add(articulos);
+            arrayList.add(clientes);
+            arrayList.add(proveedores);
+            arrayList.add(trabajadores);
+
+            //CANTIDAD
+            arrayList.add(cantidad_negativas);
+            arrayList.add(cantidad_intermedias);
+            arrayList.add(cantidad_necesarias);
+            arrayList.add(cantidad_excedentes);
+
+            arrayList.add(arrayHVentas);
+            arrayList.add(arrayHVentasTipos);
+            arrayList.add(arrayTipoVenta);
+
+            arrayList.add(arrayProductosMasVecesVendidos);
+            arrayList.add(arrayProductosMasCantidadVendidos);
+
+            return arrayList;
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (resultLista != null) {
+                    resultLista.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
         }
-        return arrayList;
     }
 
     public static String RegistrarInicioPrograma(EmpresaTB empresaTB, MonedaTB monedaTB, EmpleadoTB empleadoTB, ImpuestoTB impuestoTB, TipoDocumentoTB tipoDocumentoTicket, ClienteTB clienteTB, AlmacenTB almacenTB, ProveedorTB proveedorTB) {
@@ -415,7 +556,7 @@ public class GlobalADO {
             statementMoneda.setString(2, monedaTB.getAbreviado());
             statementMoneda.setString(3, monedaTB.getSimbolo());
             statementMoneda.setDouble(4, monedaTB.getTipoCambio());
-            statementMoneda.setBoolean(5, monedaTB.getPredeterminado());
+            statementMoneda.setBoolean(5, monedaTB.isPredeterminado());
             statementMoneda.setBoolean(6, monedaTB.getSistema());
             statementMoneda.addBatch();
 

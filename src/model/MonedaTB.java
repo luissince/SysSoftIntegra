@@ -100,7 +100,7 @@ public class MonedaTB {
         this.sistema = sistema;
     }
 
-    public Boolean getPredeterminado() {
+    public Boolean isPredeterminado() {
         return predeterminado;
     }
 

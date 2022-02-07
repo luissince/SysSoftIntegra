@@ -138,7 +138,7 @@
                                           <TextField fx:id="txtObservacion" maxHeight="1.7976931348623157E308" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" text="N/D" GridPane.columnIndex="3" />
                                           <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelOpenSansRegular14" text="Envío directo para venta:" visible="false" GridPane.columnIndex="2" />
                                           <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelOpenSansRegular14" text="Estado del Movimiento:" textFill="#1a2226" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Inventario:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Almacén:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                           <ComboBox fx:id="cbAlmacen" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="ALMACEN PRINCIPAL" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
@@ -154,8 +154,9 @@
                                                 <TableColumn fx:id="tcAccion" prefWidth="105.99996948242188" style="-fx-alignment: CENTER;" text="Quitar" />
                                                 <TableColumn fx:id="tcClave" prefWidth="229.0" style="-fx-alignment: CENTER-LEFT;" text="Clave/Nombre" />
                                                 <TableColumn fx:id="tcNuevaExistencia" prefWidth="169.0" style="-fx-alignment: CENTER;" text="Nueva Existencia" />
-                                                <TableColumn fx:id="tcExistenciaActual" prefWidth="169.0" style="-fx-alignment: CENTER;" text="Existencia Actual" />
-                                                <TableColumn fx:id="tcDiferencia" prefWidth="169.0" style="-fx-alignment: CENTER;" text="Diferencia" />
+                                                <TableColumn fx:id="tcExistenciaActual" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Existencia Actual" />
+                                                <TableColumn fx:id="tcDiferencia" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Diferencia" />
+                                                <TableColumn fx:id="tcMedida" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Medida" />
                                              </columns>
                                           </TableView>
                                        </children>

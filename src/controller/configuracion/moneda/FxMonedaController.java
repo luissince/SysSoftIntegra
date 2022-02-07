@@ -26,6 +26,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.MonedaADO;
 import model.MonedaTB;
@@ -48,11 +49,26 @@ public class FxMonedaController implements Initializable {
     private TableColumn<MonedaTB, String> tcAbreviatura;
     @FXML
     private TableColumn<MonedaTB, ImageView> tcPredeterminado;
+    @FXML
+    private Label lblPaginaActual;
+    @FXML
+    private Label lblPaginaSiguiente;
+    @FXML
+    private Text lblPredeterminado;
 
     private FxPrincipalController fxPrincipalController;
 
+    private int paginacion;
+
+    private int totalPaginacion;
+
+    private short opcion;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        paginacion = 1;
+        opcion = 0;
+
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
         tcMoneda.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getSimbolo() + " - " + cellData.getValue().getNombre()
@@ -79,7 +95,7 @@ public class FxMonedaController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return MonedaADO.ListMonedas();
+                return MonedaADO.ListMonedas(0, "", (paginacion - 1) * 20, 20);
             }
         };
 
@@ -90,16 +106,25 @@ public class FxMonedaController implements Initializable {
                 ObservableList<MonedaTB> monedaTBs = (ObservableList<MonedaTB>) objects[0];
                 if (!monedaTBs.isEmpty()) {
                     tvList.setItems(monedaTBs);
+                    totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));
+                    lblPaginaActual.setText(paginacion + "");
+                    lblPaginaSiguiente.setText(totalPaginacion + "");
+                    for (int i = 0; i < monedaTBs.size(); i++) {
+                        if (monedaTBs.get(i).isPredeterminado()) {
+                            lblPredeterminado.setText(monedaTBs.get(i).getNombre());
+                        }
+                    }
                 } else {
                     tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
-
+                    lblPaginaActual.setText("0");
+                    lblPaginaSiguiente.setText("0");
                 }
             } else {
                 tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
-
             }
             lblLoad.setVisible(false);
         });
+
         task.setOnFailed(w -> {
             lblLoad.setVisible(false);
             tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
@@ -109,7 +134,10 @@ public class FxMonedaController implements Initializable {
             lblLoad.setVisible(true);
             tvList.getItems().clear();
             tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            totalPaginacion = 0;
+            lblPredeterminado.setText("Ninguno");
         });
+
         exec.execute(task);
 
         if (!exec.isShutdown()) {
@@ -199,6 +227,15 @@ public class FxMonedaController implements Initializable {
         }
     }
 
+    private void onEventPaginacion() {
+        switch (opcion) {
+            case 0:
+                fillTableMonedas();
+                break;
+
+        }
+    }
+
     @FXML
     private void onKeyPressedAdd(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
@@ -254,7 +291,50 @@ public class FxMonedaController implements Initializable {
         if (event.getClickCount() == 2) {
             openWindowMoneyUpdate();
         }
+    }
 
+    @FXML
+    private void onKeyPressedAnterior(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion > 1) {
+                    paginacion--;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionAnterior(ActionEvent event) {
+        if (!lblLoad.isVisible()) {
+            if (paginacion > 1) {
+                paginacion--;
+                onEventPaginacion();
+            }
+        }
+    }
+
+    @FXML
+    private void onKeyPressedSiguiente(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion < totalPaginacion) {
+                    paginacion++;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionSiguiente(ActionEvent event) {
+        if (!lblLoad.isVisible()) {
+            if (paginacion < totalPaginacion) {
+                paginacion++;
+                onEventPaginacion();
+            }
+        }
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

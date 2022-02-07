@@ -270,8 +270,8 @@ public class FxVentaRealizadasController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w -> controller.loadInit());
             stage.show();
-            controller.fillEmpleadosTable("");
         } catch (IOException ex) {
             System.out.println("Venta reporte controller:" + ex.getLocalizedMessage());
         }
@@ -280,7 +280,7 @@ public class FxVentaRealizadasController implements Initializable {
     private void onEventPaginacion() {
         switch (opcion) {
             case 0:
-                fillVentasTable(0, "",Tools.getDatePicker(dtFechaInicial),Tools.getDatePicker(dtFechaFinal),
+                fillVentasTable(0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
                         cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
                         cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
                 break;

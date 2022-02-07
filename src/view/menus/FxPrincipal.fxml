@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.effect.Light.Distant?>
@@ -319,6 +320,50 @@
                   </HBox>
                </children>
             </VBox>
+            <HBox fx:id="hbLoadModulos" layoutX="10.0" layoutY="10.0" style="-fx-background-color: rgba(255,255,255,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <VBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="labelRobotoBold17" text="Cargando modulos, espere por favor." textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/load.gif" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox fx:id="hbLoadMessage" alignment="CENTER" layoutX="20.0" layoutY="20.0" style="-fx-background-color: rgba(0,0,0,0.7);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <VBox alignment="CENTER" maxHeight="400.0" prefWidth="600.0" style="-fx-padding: 0.8333333333333334em; -fx-background-color: white; -fx-spacing: 0.8333333333333334em;">
+                     <children>
+                        <ImageView fitHeight="92.0" fitWidth="92.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../image/warning_large.png" />
+                           </image>
+                        </ImageView>
+                        <Label styleClass="labelRoboto15" text="HAY COMPROBANTES ELECTRÓNICOS POR DECLARAR, EL PLAZO DE ENVÍO SON DE 2 DÍAS REALICE EL PROCESO ANTES DE SUPERAR LA FECHA PARA EVITAR INCONVENIENTES." textAlignment="CENTER" textFill="#020203" wrapText="true" />
+                        <HBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em;">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onActionAceptar" onKeyPressed="#onKeyPressedAceptar" styleClass="buttonLight" text="OK">
+                                 <graphic>
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/accept.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
             <HBox fx:id="hbFondoModal" style="-fx-background-color: rgba(0,0,0,0.55);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <VBox style="-fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
@@ -328,23 +373,6 @@
                               <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../image/esc.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Label>
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <HBox fx:id="hbLoadModulos" layoutX="10.0" layoutY="10.0" style="-fx-background-color: rgba(255,255,255,0.7);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <VBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                     <children>
-                        <Label styleClass="labelRobotoBold17" text="Cargando modulos, espere por favor." textFill="#020203">
-                           <graphic>
-                              <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../image/load.gif" />
                                  </image>
                               </ImageView>
                            </graphic>

@@ -1,6 +1,5 @@
 package model;
 
-import controller.tools.Session;
 import controller.tools.Tools;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -14,311 +13,171 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import static model.DBUtil.getConnection;
 
 public class AjusteInventarioADO {
 
-    public static String Crud_Movimiento_Inventario(AjusteInventarioTB inventarioTB, TableView<SuministroTB> tableView) {
-        DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementMovimiento = null;
-            PreparedStatement statementMovimientoDetalle = null;
-            PreparedStatement suministro_update = null;
-            PreparedStatement suministro_kardex = null;
-            CallableStatement codigoMovimiento = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
+    public static String Crud_Movimiento_Inventario(AjusteInventarioTB inventarioTB) {
+        PreparedStatement statementMovimiento = null;
+        PreparedStatement statementMovimientoDetalle = null;
+        PreparedStatement suministroUpdate = null;
+        PreparedStatement suministroKardex = null;
+        PreparedStatement suministroUpdateAlmacen = null;
+        CallableStatement codigoMovimiento = null;
 
-                codigoMovimiento = DBUtil.getConnection().prepareCall("{? = call Fc_MovimientoInventario_Codigo_Alfanumerico()}");
-                codigoMovimiento.registerOutParameter(1, java.sql.Types.VARCHAR);
-                codigoMovimiento.execute();
-                String idMovimiento = codigoMovimiento.getString(1);
+        try {
+            DBUtil.dbConnect();
+            DBUtil.getConnection().setAutoCommit(false);
 
-                statementMovimiento = DBUtil.getConnection().prepareStatement("INSERT INTO "
-                        + "MovimientoInventarioTB("
-                        + "IdMovimientoInventario,"
-                        + "Fecha,"
-                        + "Hora,"
-                        + "TipoAjuste,"
-                        + "TipoMovimiento,"
-                        + "Observacion,"
-                        + "Suministro,"
-                        + "Estado,"
-                        + "CodigoVerificacion)"
-                        + "VALUES(?,?,?,?,?,?,?,?,?)");
-                statementMovimiento.setString(1, idMovimiento);
-                statementMovimiento.setString(2, inventarioTB.getFecha());
-                statementMovimiento.setString(3, inventarioTB.getHora());
-                statementMovimiento.setBoolean(4, inventarioTB.isTipoAjuste());
-                statementMovimiento.setInt(5, inventarioTB.getTipoMovimiento());
-                statementMovimiento.setString(6, inventarioTB.getObservacion());
-                statementMovimiento.setBoolean(7, inventarioTB.isSuministro());
-//                statementMovimiento.setBoolean(8, inventarioTB.isArticulo());
-//                statementMovimiento.setString(9, inventarioTB.getProveedor() == null ? "" : inventarioTB.getProveedor());
-                statementMovimiento.setInt(8, inventarioTB.getEstado());
-                statementMovimiento.setString(9, "");
-                statementMovimiento.addBatch();
+            codigoMovimiento = DBUtil.getConnection().prepareCall("{? = call Fc_MovimientoInventario_Codigo_Alfanumerico()}");
+            codigoMovimiento.registerOutParameter(1, java.sql.Types.VARCHAR);
+            codigoMovimiento.execute();
+            String idMovimiento = codigoMovimiento.getString(1);
 
-                suministro_update = inventarioTB.isTipoAjuste()
-                        ? DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?")
-                        : DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
+            statementMovimiento = DBUtil.getConnection().prepareStatement("INSERT INTO "
+                    + "MovimientoInventarioTB("
+                    + "IdMovimientoInventario,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "TipoAjuste,"
+                    + "TipoMovimiento,"
+                    + "Observacion,"
+                    + "Suministro,"
+                    + "Estado,"
+                    + "CodigoVerificacion,"
+                    + "IdAlmacen)"
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+            statementMovimiento.setString(1, idMovimiento);
+            statementMovimiento.setString(2, inventarioTB.getFecha());
+            statementMovimiento.setString(3, inventarioTB.getHora());
+            statementMovimiento.setBoolean(4, inventarioTB.isTipoAjuste());
+            statementMovimiento.setInt(5, inventarioTB.getTipoMovimiento());
+            statementMovimiento.setString(6, inventarioTB.getObservacion());
+            statementMovimiento.setBoolean(7, inventarioTB.isSuministro());
+            statementMovimiento.setInt(8, inventarioTB.getEstado());
+            statementMovimiento.setString(9, "");
+            statementMovimiento.setInt(10, inventarioTB.getIdAlmacen());
+            statementMovimiento.addBatch();
 
-                suministro_kardex = DBUtil.getConnection().prepareStatement("INSERT INTO "
-                        + "KardexSuministroTB("
-                        + "IdSuministro,"
-                        + "Fecha,"
-                        + "Hora,"
-                        + "Tipo,"
-                        + "Movimiento,"
-                        + "Detalle,"
-                        + "Cantidad, "
-                        + "Costo, "
-                        + "Total,"
-                        + "IdAlmacen) "
-                        + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+            suministroUpdate = inventarioTB.isTipoAjuste()
+                    ? DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?")
+                    : DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
 
-                statementMovimientoDetalle = DBUtil.getConnection().prepareStatement("INSERT INTO "
-                        + "MovimientoInventarioDetalleTB("
-                        + "IdMovimientoInventario,"
-                        + "IdSuministro,"
-                        + "Cantidad,"
-                        + "Costo,"
-                        + "Precio)"
-                        + "VALUES(?,?,?,?,?)");
+            suministroUpdateAlmacen = getConnection().prepareStatement(
+                    inventarioTB.isTipoAjuste()
+                    ? "UPDATE CantidadTB SET Cantidad = Cantidad + ? WHERE IdAlmacen = ? AND IdSuministro = ?"
+                    : "UPDATE CantidadTB SET Cantidad = Cantidad - ? WHERE IdAlmacen = ? AND IdSuministro = ?");
 
-                for (int i = 0; i < tableView.getItems().size(); i++) {
-                    if (tableView.getItems().get(i).getValidar().isSelected()) {
-                        statementMovimientoDetalle.setString(1, idMovimiento);
-                        statementMovimientoDetalle.setString(2, tableView.getItems().get(i).getIdSuministro());
-                        statementMovimientoDetalle.setDouble(3, tableView.getItems().get(i).getMovimiento());
-                        statementMovimientoDetalle.setDouble(4, tableView.getItems().get(i).getCostoCompra());
-                        statementMovimientoDetalle.setDouble(5, tableView.getItems().get(i).getPrecioVentaGeneral());
-                        statementMovimientoDetalle.addBatch();
+            suministroKardex = DBUtil.getConnection().prepareStatement("INSERT INTO "
+                    + "KardexSuministroTB("
+                    + "IdSuministro,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "Tipo,"
+                    + "Movimiento,"
+                    + "Detalle,"
+                    + "Cantidad, "
+                    + "Costo, "
+                    + "Total,"
+                    + "IdAlmacen) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
 
-                        if (inventarioTB.getEstado() == 1) {
-                            suministro_update.setDouble(1, tableView.getItems().get(i).getMovimiento());
-                            suministro_update.setString(2, tableView.getItems().get(i).getIdSuministro());
-                            suministro_update.addBatch();
+            statementMovimientoDetalle = DBUtil.getConnection().prepareStatement("INSERT INTO "
+                    + "MovimientoInventarioDetalleTB("
+                    + "IdMovimientoInventario,"
+                    + "IdSuministro,"
+                    + "Cantidad,"
+                    + "Costo,"
+                    + "Precio)"
+                    + "VALUES(?,?,?,?,?)");
 
-                            suministro_kardex.setString(1, tableView.getItems().get(i).getIdSuministro());
-                            suministro_kardex.setString(2, Tools.getDate());
-                            suministro_kardex.setString(3, Tools.getTime());
-                            suministro_kardex.setShort(4, inventarioTB.isTipoAjuste() ? (short) 1 : (short) 2);
-                            suministro_kardex.setInt(5, inventarioTB.getTipoMovimiento());
-                            suministro_kardex.setString(6, inventarioTB.getObservacion());
-                            suministro_kardex.setDouble(7, tableView.getItems().get(i).getMovimiento());
-                            suministro_kardex.setDouble(8, tableView.getItems().get(i).getCostoCompra());
-                            suministro_kardex.setDouble(9, tableView.getItems().get(i).getMovimiento() * tableView.getItems().get(i).getCostoCompra());
-                            suministro_kardex.setInt(10, 0);
-                            suministro_kardex.addBatch();
-                        }
+            for (SuministroTB suministroTB : inventarioTB.getSuministroTBs()) {
+                if (suministroTB.getValidar().isSelected()) {
+                    statementMovimientoDetalle.setString(1, idMovimiento);
+                    statementMovimientoDetalle.setString(2, suministroTB.getIdSuministro());
+                    statementMovimientoDetalle.setDouble(3, suministroTB.getMovimiento());
+                    statementMovimientoDetalle.setDouble(4, suministroTB.getCostoCompra());
+                    statementMovimientoDetalle.setDouble(5, suministroTB.getPrecioVentaGeneral());
+                    statementMovimientoDetalle.addBatch();
+
+                    if (inventarioTB.getIdAlmacen() == 0) {
+                        suministroUpdate.setDouble(1, suministroTB.getMovimiento());
+                        suministroUpdate.setString(2, suministroTB.getIdSuministro());
+                        suministroUpdate.addBatch();
+
+                        suministroKardex.setString(1, suministroTB.getIdSuministro());
+                        suministroKardex.setString(2, Tools.getDate());
+                        suministroKardex.setString(3, Tools.getTime());
+                        suministroKardex.setShort(4, inventarioTB.isTipoAjuste() ? (short) 1 : (short) 2);
+                        suministroKardex.setInt(5, inventarioTB.getTipoMovimiento());
+                        suministroKardex.setString(6, inventarioTB.getObservacion());
+                        suministroKardex.setDouble(7, suministroTB.getMovimiento());
+                        suministroKardex.setDouble(8, suministroTB.getCostoCompra());
+                        suministroKardex.setDouble(9, suministroTB.getMovimiento() * suministroTB.getCostoCompra());
+                        suministroKardex.setInt(10, inventarioTB.getIdAlmacen());
+                        suministroKardex.addBatch();
+                    } else {
+                        suministroUpdateAlmacen.setDouble(1, suministroTB.getMovimiento());
+                        suministroUpdateAlmacen.setInt(2, inventarioTB.getIdAlmacen());
+                        suministroUpdateAlmacen.setString(3, suministroTB.getIdSuministro());
+                        suministroUpdateAlmacen.addBatch();
+
+                        suministroKardex.setString(1, suministroTB.getIdSuministro());
+                        suministroKardex.setString(2, Tools.getDate());
+                        suministroKardex.setString(3, Tools.getTime());
+                        suministroKardex.setShort(4, inventarioTB.isTipoAjuste() ? (short) 1 : (short) 2);
+                        suministroKardex.setInt(5, inventarioTB.getTipoMovimiento());
+                        suministroKardex.setString(6, inventarioTB.getObservacion());
+                        suministroKardex.setDouble(7, suministroTB.getMovimiento());
+                        suministroKardex.setDouble(8, suministroTB.getCostoCompra());
+                        suministroKardex.setDouble(9, suministroTB.getMovimiento() * suministroTB.getCostoCompra());
+                        suministroKardex.setInt(10, inventarioTB.getIdAlmacen());
+                        suministroKardex.addBatch();
                     }
-                }
-
-                statementMovimiento.executeBatch();
-                statementMovimientoDetalle.executeBatch();
-                suministro_update.executeBatch();
-                suministro_kardex.executeBatch();
-                DBUtil.getConnection().commit();
-                return "registered";
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
-
-                }
-                return ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementMovimiento != null) {
-                        statementMovimiento.close();
-                    }
-                    if (statementMovimientoDetalle != null) {
-                        statementMovimientoDetalle.close();
-                    }
-                    if (codigoMovimiento != null) {
-                        codigoMovimiento.close();
-                    }
-                    if (suministro_update != null) {
-                        suministro_update.close();
-                    }
-                    if (suministro_kardex != null) {
-                        suministro_kardex.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-
                 }
             }
-        } else {
-            return "No se puedo completar la petición por un problema con su conexión, intente nuevamente.";
-        }
-    }
 
-    public static String Crud_Movimiento_Inventario_Con_Caja(MovimientoCajaTB movimientoCajaTB, AjusteInventarioTB inventarioTB, TableView<SuministroTB> tableView) {
-        String result = "";
-        DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementValidar = null;
-            PreparedStatement statementMovimiento = null;
-            PreparedStatement statementMovimientoDetalle = null;
-            PreparedStatement suministro_update = null;
-            PreparedStatement suministro_kardex = null;
-            CallableStatement codigoMovimiento = null;
-            PreparedStatement statementMovimientoCaja = null;
+            statementMovimiento.executeBatch();
+            statementMovimientoDetalle.executeBatch();
+            suministroUpdate.executeBatch();
+            suministroUpdateAlmacen.executeBatch();
+            suministroKardex.executeBatch();
+            DBUtil.getConnection().commit();
+            return "registered";
+        } catch (SQLException ex) {
             try {
-                DBUtil.getConnection().setAutoCommit(false);
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
 
-                statementValidar = DBUtil.getConnection().prepareStatement("SELECT IdCaja FROM CajaTB WHERE IdUsuario = ? AND Estado = 1");
-                statementValidar.setString(1, Session.USER_ID);
-                if (statementValidar.executeQuery().next()) {
-
-                    ResultSet resultSet = statementValidar.executeQuery();
-                    resultSet.next();
-                    String idCaja = resultSet.getString("IdCaja");
-
-                    codigoMovimiento = DBUtil.getConnection().prepareCall("{? = call Fc_MovimientoInventario_Codigo_Alfanumerico()}");
-                    codigoMovimiento.registerOutParameter(1, java.sql.Types.VARCHAR);
-                    codigoMovimiento.execute();
-                    String idMovimiento = codigoMovimiento.getString(1);
-
-                    statementMovimiento = DBUtil.getConnection().prepareStatement("INSERT INTO "
-                            + "MovimientoInventarioTB("
-                            + "IdMovimientoInventario,"
-                            + "Fecha,"
-                            + "Hora,"
-                            + "TipoAjuste,"
-                            + "TipoMovimiento,"
-                            + "Observacion,"
-                            + "Suministro,"
-                            + "Estado,"
-                            + "CodigoVerificacion)"
-                            + "VALUES(?,?,?,?,?,?,?,?,?)");
-                    statementMovimiento.setString(1, idMovimiento);
-                    statementMovimiento.setString(2, inventarioTB.getFecha());
-                    statementMovimiento.setString(3, inventarioTB.getHora());
-                    statementMovimiento.setBoolean(4, inventarioTB.isTipoAjuste());
-                    statementMovimiento.setInt(5, inventarioTB.getTipoMovimiento());
-                    statementMovimiento.setString(6, inventarioTB.getObservacion());
-                    statementMovimiento.setBoolean(7, inventarioTB.isSuministro());
-//                    statementMovimiento.setBoolean(8, inventarioTB.isArticulo());
-//                    statementMovimiento.setString(9, inventarioTB.getProveedor() == null ? "" : inventarioTB.getProveedor());
-                    statementMovimiento.setInt(8, inventarioTB.getEstado());
-                    statementMovimiento.setString(9, "");
-                    statementMovimiento.addBatch();
-
-                    suministro_update = inventarioTB.isTipoAjuste() ? DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?")
-                            : DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
-
-                    suministro_kardex = DBUtil.getConnection().prepareStatement("INSERT INTO "
-                            + "KardexSuministroTB("
-                            + "IdSuministro,"
-                            + "Fecha,"
-                            + "Hora,"
-                            + "Tipo,"
-                            + "Movimiento,"
-                            + "Detalle,"
-                            + "Cantidad, "
-                            + "Costo, "
-                            + "Total) "
-                            + "VALUES(?,?,?,?,?,?,?,?,?)");
-
-                    statementMovimientoDetalle = DBUtil.getConnection().prepareStatement("INSERT INTO "
-                            + "MovimientoInventarioDetalleTB("
-                            + "IdMovimientoInventario,"
-                            + "IdSuministro,"
-                            + "Cantidad,"
-                            + "Costo,"
-                            + "Precio)"
-                            + "VALUES(?,?,?,?,?)");
-
-                    for (int i = 0; i < tableView.getItems().size(); i++) {
-                        if (tableView.getItems().get(i).getValidar().isSelected()) {
-                            statementMovimientoDetalle.setString(1, idMovimiento);
-                            statementMovimientoDetalle.setString(2, tableView.getItems().get(i).getIdSuministro());
-                            statementMovimientoDetalle.setDouble(3, tableView.getItems().get(i).getMovimiento());
-                            statementMovimientoDetalle.setDouble(4, tableView.getItems().get(i).getCostoCompra());
-                            statementMovimientoDetalle.setDouble(5, tableView.getItems().get(i).getPrecioVentaGeneral());
-                            statementMovimientoDetalle.addBatch();
-
-                            if (inventarioTB.getEstado() == 1) {
-                                suministro_update.setDouble(1, tableView.getItems().get(i).getMovimiento());
-                                suministro_update.setString(2, tableView.getItems().get(i).getIdSuministro());
-                                suministro_update.addBatch();
-
-                                suministro_kardex.setString(1, tableView.getItems().get(i).getIdSuministro());
-                                suministro_kardex.setString(2, Tools.getDate());
-                                suministro_kardex.setString(3, Tools.getTime());
-                                suministro_kardex.setShort(4, inventarioTB.isTipoAjuste() ? (short) 1 : (short) 2);
-                                suministro_kardex.setInt(5, inventarioTB.getTipoMovimiento());
-                                suministro_kardex.setString(6, inventarioTB.getObservacion());
-                                suministro_kardex.setDouble(7, tableView.getItems().get(i).getMovimiento());
-                                suministro_kardex.setDouble(8, tableView.getItems().get(i).getCostoCompra());
-                                suministro_kardex.setDouble(9, tableView.getItems().get(i).getMovimiento() * tableView.getItems().get(i).getCostoCompra());
-                                suministro_kardex.addBatch();
-                            }
-                        }
-                    }
-
-                    statementMovimientoCaja = DBUtil.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB(IdCaja,FechaMovimiento,HoraMovimiento,Comentario,TipoMovimiento,Monto)VALUES(?,?,?,?,?,?)");
-                    statementMovimientoCaja.setString(1, idCaja);
-                    statementMovimientoCaja.setString(2, movimientoCajaTB.getFechaMovimiento());
-                    statementMovimientoCaja.setString(3, movimientoCajaTB.getHoraMovimiento());
-                    statementMovimientoCaja.setString(4, movimientoCajaTB.getComentario());
-                    statementMovimientoCaja.setInt(5, movimientoCajaTB.getTipoMovimiento());
-                    statementMovimientoCaja.setDouble(6, movimientoCajaTB.getMonto());
-                    statementMovimientoCaja.addBatch();
-
-                    statementMovimiento.executeBatch();
-                    statementMovimientoDetalle.executeBatch();
-                    suministro_update.executeBatch();
-                    suministro_kardex.executeBatch();
-                    statementMovimientoCaja.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "registered";
-                } else {
-                    DBUtil.getConnection().rollback();
-                    result = "nocaja";
-                }
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
-
-                }
-                result = ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementValidar != null) {
-                        statementValidar.close();
-                    }
-                    if (statementMovimiento != null) {
-                        statementMovimiento.close();
-                    }
-                    if (statementMovimientoDetalle != null) {
-                        statementMovimientoDetalle.close();
-                    }
-                    if (codigoMovimiento != null) {
-                        codigoMovimiento.close();
-                    }
-                    if (suministro_update != null) {
-                        suministro_update.close();
-                    }
-                    if (suministro_kardex != null) {
-                        suministro_kardex.close();
-                    }
-                    if (statementMovimientoCaja != null) {
-                        statementMovimientoCaja.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
-                }
             }
-        } else {
-            result = "No se puedo completar la petición por un problema con su conexión, intente nuevamente.";
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementMovimiento != null) {
+                    statementMovimiento.close();
+                }
+                if (statementMovimientoDetalle != null) {
+                    statementMovimientoDetalle.close();
+                }
+                if (codigoMovimiento != null) {
+                    codigoMovimiento.close();
+                }
+                if (suministroUpdate != null) {
+                    suministroUpdate.close();
+                }
+                if (suministroUpdateAlmacen != null) {
+                    suministroUpdateAlmacen.close();
+                }
+                if (suministroKardex != null) {
+                    suministroKardex.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+
+            }
         }
-        return result;
     }
 
     public static Object Listar_Movimiento_Inventario(int opcion, int movimiento, String fechaInicial, String fechaFinal, int posicionPagina, int filasPorPagina) {
@@ -347,7 +206,6 @@ public class AjusteInventarioADO {
                 movimientoInventarioTB.setTipoMovimientoName(rsEmps.getString("TipoMovimiento"));
                 movimientoInventarioTB.setObservacion(rsEmps.getString("Observacion"));
                 movimientoInventarioTB.setInformacion(rsEmps.getString("Informacion"));
-//                movimientoInventarioTB.setProveedor(rsEmps.getString("Proveedor").toUpperCase());
                 movimientoInventarioTB.setEstadoName(rsEmps.getString("Estado"));
 
                 Label label = new Label(movimientoInventarioTB.getEstadoName());
@@ -362,8 +220,11 @@ public class AjusteInventarioADO {
                 movimientoInventarioTB.setLblEstado(label);
 
                 Button btn = new Button();
-                btn.getStyleClass().add("buttonLightWarning");
-                btn.setText("Ver");
+                ImageView view = new ImageView(new Image("/view/image/search.png"));
+                view.setFitWidth(22);
+                view.setFitHeight(22);
+                btn.setGraphic(view);
+                btn.getStyleClass().add("buttonLightWarning");                
                 movimientoInventarioTB.setValidar(btn);
                 empList.add(movimientoInventarioTB);
             }
@@ -380,7 +241,7 @@ public class AjusteInventarioADO {
                 integer = rsEmps.getInt("Total");
             }
             objects[1] = integer;
-            
+
             return objects;
         } catch (SQLException ex) {
             return ex.getLocalizedMessage();
@@ -420,7 +281,6 @@ public class AjusteInventarioADO {
                     inventarioTB.setTipoAjuste(resultSet.getBoolean("TipoAjuste"));
                     inventarioTB.setTipoMovimiento(resultSet.getInt("TipoMovimientoId"));
                     inventarioTB.setObservacion(resultSet.getString("Observacion"));
-//                    inventarioTB.setProveedor(resultSet.getString("Proveedor").toUpperCase());
                     inventarioTB.setEstadoName(resultSet.getString("Estado"));
                 }
                 list.add(inventarioTB);
@@ -475,98 +335,97 @@ public class AjusteInventarioADO {
     }
 
     public static String RegistrarMovimientoSuministro(AjusteInventarioTB inventarioTB, ObservableList<MovimientoInventarioDetalleTB> tableView) {
-        DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementValidar = null;
-            PreparedStatement statementMovimiento = null;
-            PreparedStatement suministro_update = null;
-            PreparedStatement suministro_kardex = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
+        PreparedStatement statementValidar = null;
+        PreparedStatement statementMovimiento = null;
+        PreparedStatement suministro_update = null;
+        PreparedStatement suministro_kardex = null;
+        try {
+            DBUtil.dbConnect();
+            DBUtil.getConnection().setAutoCommit(false);
 
-                statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM MovimientoInventarioTB WHERE IdMovimientoInventario = ? AND Estado <> 0");
+            statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM MovimientoInventarioTB WHERE IdMovimientoInventario = ? AND Estado <> 0");
+            statementValidar.setString(1, inventarioTB.getIdMovimientoInventario());
+            if (statementValidar.executeQuery().next()) {
+                DBUtil.getConnection().rollback();
+                return "inserted";
+            } else {
+                statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM MovimientoInventarioTB WHERE IdMovimientoInventario = ? AND CodigoVerificacion <> ?");
                 statementValidar.setString(1, inventarioTB.getIdMovimientoInventario());
+                statementValidar.setString(2, inventarioTB.getCodigoVerificacion());
                 if (statementValidar.executeQuery().next()) {
                     DBUtil.getConnection().rollback();
-                    return "inserted";
+                    return "nocde";
                 } else {
-                    statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM MovimientoInventarioTB WHERE IdMovimientoInventario = ? AND CodigoVerificacion <> ?");
-                    statementValidar.setString(1, inventarioTB.getIdMovimientoInventario());
-                    statementValidar.setString(2, inventarioTB.getCodigoVerificacion());
-                    if (statementValidar.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        return "nocde";
-                    } else {
 
-                        statementMovimiento = DBUtil.getConnection().prepareStatement("UPDATE MovimientoInventarioTB SET Estado = 1 WHERE IdMovimientoInventario = ?");
-                        statementMovimiento.setString(1, inventarioTB.getIdMovimientoInventario());
-                        statementMovimiento.addBatch();
+                    statementMovimiento = DBUtil.getConnection().prepareStatement("UPDATE MovimientoInventarioTB SET Estado = 1 WHERE IdMovimientoInventario = ?");
+                    statementMovimiento.setString(1, inventarioTB.getIdMovimientoInventario());
+                    statementMovimiento.addBatch();
 
-                        suministro_update = inventarioTB.isTipoAjuste() ? DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?")
-                                : DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
+                    suministro_update = inventarioTB.isTipoAjuste() ? DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?")
+                            : DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
 
-                        suministro_kardex = DBUtil.getConnection().prepareStatement("INSERT INTO "
-                                + "KardexSuministroTB("
-                                + "IdSuministro,"
-                                + "Fecha,"
-                                + "Hora,"
-                                + "Tipo,"
-                                + "Movimiento,"
-                                + "Detalle,"
-                                + "Cantidad, "
-                                + "Costo, "
-                                + "Total) "
-                                + "VALUES(?,?,?,?,?,?,?,?,?)");
+                    suministro_kardex = DBUtil.getConnection().prepareStatement("INSERT INTO "
+                            + "KardexSuministroTB("
+                            + "IdSuministro,"
+                            + "Fecha,"
+                            + "Hora,"
+                            + "Tipo,"
+                            + "Movimiento,"
+                            + "Detalle,"
+                            + "Cantidad, "
+                            + "Costo, "
+                            + "Total) "
+                            + "VALUES(?,?,?,?,?,?,?,?,?)");
 
-                        for (int i = 0; i < tableView.size(); i++) {
-                            suministro_update.setDouble(1, tableView.get(i).getCantidad());
-                            suministro_update.setString(2, tableView.get(i).getIdSuministro());
-                            suministro_update.addBatch();
+                    for (int i = 0; i < tableView.size(); i++) {
+                        suministro_update.setDouble(1, tableView.get(i).getCantidad());
+                        suministro_update.setString(2, tableView.get(i).getIdSuministro());
+                        suministro_update.addBatch();
 
-                            suministro_kardex.setString(1, tableView.get(i).getIdSuministro());
-                            suministro_kardex.setString(2, Tools.getDate());
-                            suministro_kardex.setString(3, Tools.getTime());
-                            suministro_kardex.setShort(4, inventarioTB.isTipoAjuste() ? (short) 1 : (short) 2);
-                            suministro_kardex.setInt(5, inventarioTB.getTipoMovimiento());
-                            suministro_kardex.setString(6, inventarioTB.getObservacion());
-                            suministro_kardex.setDouble(7, tableView.get(i).getCantidad());
-                            suministro_kardex.setDouble(8, tableView.get(i).getCosto());
-                            suministro_kardex.setDouble(9, tableView.get(i).getCantidad() * tableView.get(i).getCosto());
-                            suministro_kardex.addBatch();
-                        }
-
-                        statementMovimiento.executeBatch();
-                        suministro_update.executeBatch();
-                        suministro_kardex.executeBatch();
-                        DBUtil.getConnection().commit();
-                        return "updated";
+                        suministro_kardex.setString(1, tableView.get(i).getIdSuministro());
+                        suministro_kardex.setString(2, Tools.getDate());
+                        suministro_kardex.setString(3, Tools.getTime());
+                        suministro_kardex.setShort(4, inventarioTB.isTipoAjuste() ? (short) 1 : (short) 2);
+                        suministro_kardex.setInt(5, inventarioTB.getTipoMovimiento());
+                        suministro_kardex.setString(6, inventarioTB.getObservacion());
+                        suministro_kardex.setDouble(7, tableView.get(i).getCantidad());
+                        suministro_kardex.setDouble(8, tableView.get(i).getCosto());
+                        suministro_kardex.setDouble(9, tableView.get(i).getCantidad() * tableView.get(i).getCosto());
+                        suministro_kardex.addBatch();
                     }
-                }
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
-                    return e.getLocalizedMessage();
-                }
-                return ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementMovimiento != null) {
-                        statementMovimiento.close();
-                    }
-                    if (suministro_update != null) {
-                        suministro_update.close();
-                    }
-                    if (suministro_kardex != null) {
-                        suministro_kardex.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
 
+                    statementMovimiento.executeBatch();
+                    suministro_update.executeBatch();
+                    suministro_kardex.executeBatch();
+                    DBUtil.getConnection().commit();
+                    return "updated";
                 }
             }
-        } else {
-            return "No se puedo completar la petición por un problema con su conexión, intente nuevamente.";
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
+                return e.getLocalizedMessage();
+            }
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementMovimiento != null) {
+                    statementMovimiento.close();
+                }
+                if (suministro_update != null) {
+                    suministro_update.close();
+                }
+                if (suministro_kardex != null) {
+                    suministro_kardex.close();
+                }
+                if (statementValidar != null) {
+                    statementValidar.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
         }
     }
 

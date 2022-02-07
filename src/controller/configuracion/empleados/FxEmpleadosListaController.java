@@ -7,7 +7,6 @@ import controller.reporte.FxProduccionReporteController;
 import controller.reporte.FxVentaReporteController;
 import controller.tools.Tools;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,6 +16,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -43,6 +43,10 @@ public class FxEmpleadosListaController implements Initializable {
     private TableColumn<EmpleadoTB, String> tcPersona;
     @FXML
     private TableColumn<EmpleadoTB, String> tcRol;
+    @FXML
+    private Label lblPaginaActual;
+    @FXML
+    private Label lblPaginaSiguiente;
 
     private FxVentaReporteController ventaReporteController;
 
@@ -58,6 +62,12 @@ public class FxEmpleadosListaController implements Initializable {
 
     private boolean status;
 
+    private int paginacion;
+
+    private int totalPaginacion;
+
+    private short opcion;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
@@ -70,7 +80,7 @@ public class FxEmpleadosListaController implements Initializable {
                         break;
                     case F3:
                         if (!status) {
-                            fillEmpleadosTable("");
+                            fillEmpleadosTable(0, "");
                         }
                         break;
 
@@ -83,40 +93,83 @@ public class FxEmpleadosListaController implements Initializable {
         tcPersona.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getApellidos() + " ", cellData.getValue().getNombres())
         );
         tcRol.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getRolName()));
+        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+
+        paginacion = 1;
+        opcion = 0;
+
     }
 
-    public void fillEmpleadosTable(String value) {
+    public void loadInit() {
+        if (!status) {
+            paginacion = 1;
+            fillEmpleadosTable(0, "");
+            opcion = 0;
+        }
+    }
 
+    private void fillEmpleadosTable(int opcion, String value) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
             return t;
         });
 
-        Task<List<EmpleadoTB>> task = new Task<List<EmpleadoTB>>() {
+        Task<Object> task = new Task<Object>() {
             @Override
-            public ObservableList<EmpleadoTB> call() {
-                return EmpleadoADO.ListEmpleados(value);
+            public Object call() {
+                return EmpleadoADO.ListEmpleados(opcion, value, (paginacion - 1) * 20, 20);
             }
         };
 
-        task.setOnSucceeded(w -> {
-            tvList.setItems((ObservableList<EmpleadoTB>) task.getValue());
-            status = false;
-        });
-        task.setOnFailed(w -> {
-            status = false;
-        });
-
         task.setOnScheduled(w -> {
             status = true;
+            tvList.getItems().clear();
+            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            totalPaginacion = 0;
         });
-        exec.execute(task);
 
+        task.setOnFailed(w -> {
+            status = false;
+            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
+        });
+
+        task.setOnSucceeded(w -> {
+            Object object = task.getValue();
+            if (object instanceof Object[]) {
+                Object[] objects = (Object[]) object;
+                ObservableList<EmpleadoTB> empleadoTBs = (ObservableList<EmpleadoTB>) objects[0];
+                if (!empleadoTBs.isEmpty()) {
+                    tvList.setItems(empleadoTBs);
+                    totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));
+                    lblPaginaActual.setText(paginacion + "");
+                    lblPaginaSiguiente.setText(totalPaginacion + "");
+                } else {
+                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                    lblPaginaActual.setText("0");
+                    lblPaginaSiguiente.setText("0");
+                }
+            } else {
+                tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
+            }
+            status = false;
+        });
+
+        exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();
         }
+    }
 
+    private void onEventPaginacion() {
+        switch (opcion) {
+            case 0:
+                fillEmpleadosTable(0, "");
+                break;
+            case 1:
+                fillEmpleadosTable(1, txtSearch.getText().trim());
+                break;
+        }
     }
 
     private void selectEmpleadoList() {
@@ -204,7 +257,9 @@ public class FxEmpleadosListaController implements Initializable {
                 && event.getCode() != KeyCode.SCROLL_LOCK
                 && event.getCode() != KeyCode.PAUSE) {
             if (!status) {
-                fillEmpleadosTable(txtSearch.getText());
+                paginacion = 1;
+                fillEmpleadosTable(1, txtSearch.getText());
+                opcion = 0;
             }
         }
     }
@@ -212,17 +267,13 @@ public class FxEmpleadosListaController implements Initializable {
     @FXML
     private void onKeyPressedReload(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            if (!status) {
-                fillEmpleadosTable("");
-            }
+            loadInit();
         }
     }
 
     @FXML
     private void onActionReload(ActionEvent event) {
-        if (!status) {
-            fillEmpleadosTable("");
-        }
+        loadInit();
     }
 
     @FXML
@@ -249,6 +300,50 @@ public class FxEmpleadosListaController implements Initializable {
     @FXML
     private void onActionAceptar(ActionEvent event) {
         selectEmpleadoList();
+    }
+
+    @FXML
+    private void onKeyPressedAnterior(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!status) {
+                if (paginacion > 1) {
+                    paginacion--;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionAnterior(ActionEvent event) {
+        if (!status) {
+            if (paginacion > 1) {
+                paginacion--;
+                onEventPaginacion();
+            }
+        }
+    }
+
+    @FXML
+    private void onKeyPressedSiguiente(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!status) {
+                if (paginacion < totalPaginacion) {
+                    paginacion++;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionSiguiente(ActionEvent event) {
+        if (!status) {
+            if (paginacion < totalPaginacion) {
+                paginacion++;
+                onEventPaginacion();
+            }
+        }
     }
 
     public void setInitVentaReporteController(FxVentaReporteController ventaReporteController) {

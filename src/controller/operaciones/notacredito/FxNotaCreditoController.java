@@ -395,7 +395,7 @@ public class FxNotaCreditoController implements Initializable {
                 ncdtb.setPrecio(f.getSuministroTB().getPrecioVentaGeneral());
                 ncdtb.setDescuento(f.getSuministroTB().getDescuento());
                 ncdtb.setIdImpuesto(f.getSuministroTB().getIdImpuesto());
-                ncdtb.setValorImpuesto(f.getSuministroTB().getImpuestoTB().getValor());
+                ncdtb.setImpuestoTB(f.getSuministroTB().getImpuestoTB());
                 ncdtb.setSuministroTB(f.getSuministroTB());
                 creditoDetalleTBs.add(ncdtb);
             });

@@ -14,7 +14,7 @@ public class Session {
     public static String USER_ID;
     public static String USER_NAME;
     public static String USER_PUESTO;
-   
+
     /*
     my company session data
      */
@@ -44,10 +44,10 @@ public class Session {
 
     public static int TICKET_COTIZACION_ID = 0;
     public static String TICKET_COTIZACION_RUTA = "";
-    
-    public static int TICKET_ORDERN_COMPRA_ID = 0;
+
+    public static int TICKET_ORDEN_COMPRA_ID = 0;
     public static String TICKET_ORDEN_COMPRA_RUTA = "";
-    
+
     public static int TICKET_PEDIDO_ID = 0;
     public static String TICKET_PEDIDO_RUTA = "";
 
@@ -62,6 +62,9 @@ public class Session {
 
     public static int TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = 0;
     public static String TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = "";
+
+    public static int TICKET_NOTA_CREDITO_ID = 0;
+    public static String TICKET_NOTA_CREDITO_RUTA = "";
 
     public static boolean ESTADO_IMPRESORA_VENTA;
     public static String NOMBRE_IMPRESORA_VENTA = "";
@@ -80,8 +83,8 @@ public class Session {
     public static boolean CORTAPAPEL_IMPRESORA_COTIZACION;
     public static String FORMATO_IMPRESORA_COTIZACION = "";
     public static String DESING_IMPRESORA_COTIZACION = "";
-    
-     public static boolean ESTADO_IMPRESORA_ORDEN_COMPRA;
+
+    public static boolean ESTADO_IMPRESORA_ORDEN_COMPRA;
     public static String NOMBRE_IMPRESORA_ORDEN_COMPRA = "";
     public static boolean CORTAPAPEL_IMPRESORA_ORDEN_COMPRA;
     public static String FORMATO_IMPRESORA_ORDEN_COMPRA = "";
@@ -92,7 +95,7 @@ public class Session {
     public static boolean CORTAPAPEL_IMPRESORA_PEDIDO;
     public static String FORMATO_IMPRESORA_PEDIDO = "";
     public static String DESING_IMPRESORA_PEDIDO = "";
-    
+
     public static boolean ESTADO_IMPRESORA_CORTE_CAJA;
     public static String NOMBRE_IMPRESORA_CORTE_CAJA = "";
     public static boolean CORTAPAPEL_IMPRESORA_CORTE_CAJA;
@@ -122,6 +125,12 @@ public class Session {
     public static boolean CORTAPAPEL_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS;
     public static String FORMATO_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = "";
     public static String DESING_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = "";
+
+    public static boolean ESTADO_IMPRESORA_NOTA_CREDITO;
+    public static String NOMBRE_IMPRESORA_NOTA_CREDITO = "";
+    public static boolean CORTAPAPEL_IMPRESORA_NOTA_CREDITO;
+    public static String FORMATO_IMPRESORA_NOTA_CREDITO = "";
+    public static String DESING_IMPRESORA_NOTA_CREDITO = "";
 
     /*
     variable de cliente

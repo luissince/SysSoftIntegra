@@ -37,7 +37,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.ClienteTB;
 import model.OrdenCompraADO;
 import model.OrdenCompraDetalleTB;
 import model.OrdenCompraTB;
@@ -131,11 +130,11 @@ public class FxOrdenCompraController implements Initializable {
         tcImporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
 
-        loadComboBoxProveedor();
+        loadComboBoxCliente();
     }
 
-    private void loadComboBoxProveedor() {
-        SearchComboBox<ClienteTB> searchComboBoxCliente = new SearchComboBox<>(cbProveedor, false);
+    private void loadComboBoxCliente() {
+        SearchComboBox<ProveedorTB> searchComboBoxCliente = new SearchComboBox<>(cbProveedor, false);
         searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
             if (t.getCode() == KeyCode.ENTER) {
                 if (!searchComboBoxCliente.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
@@ -229,7 +228,7 @@ public class FxOrdenCompraController implements Initializable {
             tvList.getItems().remove(compraDetalleTB);
             calculateTotales();
         });
-        
+
         compraDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 tvList.getItems().remove(compraDetalleTB);
@@ -307,7 +306,7 @@ public class FxOrdenCompraController implements Initializable {
                     @Override
                     protected String call() {
                         OrdenCompraTB compraTB = new OrdenCompraTB();
-                        compraTB.setIdOrdenCompra("");
+                        compraTB.setIdOrdenCompra(idOrdenCompra);
                         compraTB.setNumeracion(0);
                         compraTB.setIdEmpleado(Session.USER_ID);
                         compraTB.setIdProveedor(cbProveedor.getSelectionModel().getSelectedItem().getIdProveedor());
@@ -334,13 +333,13 @@ public class FxOrdenCompraController implements Initializable {
                     btnAceptarLoad.setOnAction(event -> {
                         hbBody.setDisable(false);
                         hbLoad.setVisible(false);
-                        resetVenta();
+                        resetOrdenCompra();
                     });
                     btnAceptarLoad.setOnKeyPressed(event -> {
                         if (event.getCode() == KeyCode.ENTER) {
                             hbBody.setDisable(false);
                             hbLoad.setVisible(false);
-                            resetVenta();
+                            resetOrdenCompra();
                         }
                     });
                     lblMessageLoad.setText(task.getException().getLocalizedMessage());
@@ -349,18 +348,35 @@ public class FxOrdenCompraController implements Initializable {
                 task.setOnSucceeded(w -> {
                     String result = task.getValue();
                     if (result.equalsIgnoreCase("inserted")) {
-                        lblMessageLoad.setText("Registro correctamente la orden de compra.");
+                        lblMessageLoad.setText("Se registró correctamente la orden de compra.");
                         lblMessageLoad.setTextFill(Color.web("#ffffff"));
+                        btnAceptarLoad.setVisible(true);
                         btnAceptarLoad.setOnAction(event -> {
                             hbBody.setDisable(false);
                             hbLoad.setVisible(false);
-                            resetVenta();
+                            resetOrdenCompra();
                         });
                         btnAceptarLoad.setOnKeyPressed(event -> {
                             if (event.getCode() == KeyCode.ENTER) {
                                 hbBody.setDisable(false);
                                 hbLoad.setVisible(false);
-                                resetVenta();
+                                resetOrdenCompra();
+                            }
+                        });
+                    } else if (result.equalsIgnoreCase("updated")) {
+                        lblMessageLoad.setText("se actualizó correctamente la orden de compra.");
+                        lblMessageLoad.setTextFill(Color.web("#ffffff"));
+                        btnAceptarLoad.setVisible(true);
+                        btnAceptarLoad.setOnAction(event -> {
+                            hbBody.setDisable(false);
+                            hbLoad.setVisible(false);
+                            resetOrdenCompra();
+                        });
+                        btnAceptarLoad.setOnKeyPressed(event -> {
+                            if (event.getCode() == KeyCode.ENTER) {
+                                hbBody.setDisable(false);
+                                hbLoad.setVisible(false);
+                                resetOrdenCompra();
                             }
                         });
                     } else {
@@ -370,13 +386,13 @@ public class FxOrdenCompraController implements Initializable {
                         btnAceptarLoad.setOnAction(event -> {
                             hbBody.setDisable(false);
                             hbLoad.setVisible(false);
-                            resetVenta();
+                            resetOrdenCompra();
                         });
                         btnAceptarLoad.setOnKeyPressed(event -> {
                             if (event.getCode() == KeyCode.ENTER) {
                                 hbBody.setDisable(false);
                                 hbLoad.setVisible(false);
-                                resetVenta();
+                                resetOrdenCompra();
                             }
                         });
                     }
@@ -391,7 +407,7 @@ public class FxOrdenCompraController implements Initializable {
         }
     }
 
-    private void resetVenta() {
+    private void resetOrdenCompra() {
         idOrdenCompra = "";
         cbProveedor.getItems().clear();
         Tools.actualDate(Tools.getDate(), dtFechaEmision);
@@ -448,13 +464,13 @@ public class FxOrdenCompraController implements Initializable {
             btnAceptarLoad.setOnAction(event -> {
                 hbBody.setDisable(false);
                 hbLoad.setVisible(false);
-                resetVenta();
+                resetOrdenCompra();
             });
             btnAceptarLoad.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.ENTER) {
                     hbBody.setDisable(false);
                     hbLoad.setVisible(false);
-                    resetVenta();
+                    resetOrdenCompra();
                 }
                 event.consume();
             });
@@ -493,6 +509,7 @@ public class FxOrdenCompraController implements Initializable {
                 });
 
                 tvList.setItems(compraDetalleTBs);
+                calculateTotales();
 
                 txtObservacion.setText(ordenCompraTB.getObservacion());
 
@@ -505,13 +522,13 @@ public class FxOrdenCompraController implements Initializable {
                 btnAceptarLoad.setOnAction(event -> {
                     hbBody.setDisable(false);
                     hbLoad.setVisible(false);
-                    resetVenta();
+                    resetOrdenCompra();
                 });
                 btnAceptarLoad.setOnKeyPressed(event -> {
                     if (event.getCode() == KeyCode.ENTER) {
                         hbBody.setDisable(false);
                         hbLoad.setVisible(false);
-                        resetVenta();
+                        resetOrdenCompra();
                     }
                     event.consume();
                 });
