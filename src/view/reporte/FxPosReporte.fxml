@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="hbWindow" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.reporte.FxPosReporteController">
+<VBox fx:id="hbWindow" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.reporte.FxPosReporteController">
    <children>
       <VBox VBox.vgrow="ALWAYS">
          <children>
@@ -235,83 +235,6 @@
                            </children>
                         </AnchorPane>
                      </content>
-                  </Tab>
-                  <Tab text="Corte de Caja">
-                    <content>
-                      <AnchorPane style="-fx-background-color: white;">
-                           <children>
-                              <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                                       <children>
-                                          <Button mnemonicParsing="false" onAction="#onActionVisualizarCaja" onKeyPressed="#onKeyPressedVisualizarCaja" styleClass="buttonLight" text="Visualizar">
-                                             <graphic>
-                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" style="-fx-fit-width: 0.8333333333333334em;">
-                                                   <image>
-                                                      <Image url="@../image/view.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
-                                          <Button mnemonicParsing="false" onAction="#onActionPdfCaja" onKeyPressed="#onKeyPressedPdfCaja" styleClass="buttonLight" text="Pdf">
-                                             <graphic>
-                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" style="-fx-fit-width: 0.8333333333333334em;">
-                                                   <image>
-                                                      <Image url="@../image/pdf.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
-                                          <Button mnemonicParsing="false" onAction="#onActionExcelCaja" onKeyPressed="#onKeyPressedExcelCaja" styleClass="buttonLight" text="Excel">
-                                             <graphic>
-                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" style="-fx-fit-width: 0.8333333333333334em;">
-                                                   <image>
-                                                      <Image url="@../image/excel.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                    <Separator prefWidth="200.0" />
-                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                                       <children>
-                                          <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.4166666666666667em;">
-                                             <children>
-                                                <Label minWidth="-Infinity" styleClass="labelRoboto13" text="Fecha Inicial:" textFill="#020203">
-                                                   <graphic>
-                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../image/calendar.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                   </graphic>
-                                                </Label>
-                                                <DatePicker fx:id="dpFechaInicialCaja" prefHeight="30.0" prefWidth="220.0" />
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.4166666666666667em;">
-                                             <children>
-                                                <Label minWidth="-Infinity" styleClass="labelRoboto13" text="Fecha Final:" textFill="#020203">
-                                                   <graphic>
-                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../image/calendar.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                   </graphic>
-                                                </Label>
-                                                <DatePicker fx:id="dpFechaFinalCaja" minWidth="-Infinity" prefHeight="30.0" prefWidth="220.0" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </HBox>
-                                    <Separator />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </AnchorPane>
-                    </content>
                   </Tab>
                </tabs>
             </TabPane>

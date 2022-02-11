@@ -95,7 +95,7 @@ public class FxComprasRealizadasController implements Initializable {
         ));
         tcTipo.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getTipoName()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaNombre() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo()+ " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcFechaCompra.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
@@ -115,9 +115,19 @@ public class FxComprasRealizadasController implements Initializable {
         cbEstadoCompra.getItems().add(new DetalleTB(3, "ANULADO"));
         cbEstadoCompra.getSelectionModel().select(0);
 
+        loadInit();
     }
 
-    public void fillPurchasesTable(short opcion, String value, String fechaInicial, String fechaFinal, int estadoCompra) {
+    public void loadInit() {
+        if (!lblLoad.isVisible()) {
+            paginacion = 1;
+            fillPurchasesTable(0, "", "", "", 0);
+            opcion = 0;
+
+        }
+    }
+
+    private void fillPurchasesTable(int opcion, String value, String fechaInicial, String fechaFinal, int estadoCompra) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -189,6 +199,21 @@ public class FxComprasRealizadasController implements Initializable {
         }
     }
 
+    private void onEventPaginacion() {
+        switch (opcion) {
+            case 0:
+                fillPurchasesTable(0, "", "", "", 0);
+                break;
+            case 1:
+                fillPurchasesTable(1, txtSearch.getText().trim(), "", "", 0);
+                break;
+            case 2:
+                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                        cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
+                break;
+        }
+    }
+
     @FXML
     private void onActionView(ActionEvent event) throws IOException {
         openWindowDetalleCompra();
@@ -199,22 +224,17 @@ public class FxComprasRealizadasController implements Initializable {
         if (event.getClickCount() == 2) {
             openWindowDetalleCompra();
         }
-
     }
 
     @FXML
     private void onActionReload(ActionEvent event) {
-        fillPurchasesTable((short) 1, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
-        this.txtSearch.setText("");
-        cbEstadoCompra.getSelectionModel().select(0);
+        loadInit();
     }
 
     @FXML
     private void onKeyPressedReload(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            fillPurchasesTable((short) 1, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
-            cbEstadoCompra.getSelectionModel().select(0);
-            this.txtSearch.setText("");
+            loadInit();
         }
     }
 
@@ -264,8 +284,9 @@ public class FxComprasRealizadasController implements Initializable {
                 && event.getCode() != KeyCode.PAUSE
                 && event.getCode() != KeyCode.ENTER) {
             if (!lblLoad.isVisible()) {
-                fillPurchasesTable((short) 0, txtSearch.getText().trim(), "", "", 0);
-                cbEstadoCompra.getSelectionModel().select(0);
+                paginacion = 1;
+                fillPurchasesTable(1, txtSearch.getText().trim(), "", "", 0);
+                opcion = 1;
             }
         }
     }
@@ -273,30 +294,80 @@ public class FxComprasRealizadasController implements Initializable {
     @FXML
     private void onActionFechaInicial(ActionEvent actionEvent) {
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
-            fillPurchasesTable((short) 1, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
-            cbEstadoCompra.getSelectionModel().select(0);
-            this.txtSearch.setText("");
+            if (!lblLoad.isVisible()) {
+                paginacion = 1;
+                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                        cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
+                opcion = 2;
+            }
         }
     }
 
     @FXML
     private void onActionFechaFinal(ActionEvent actionEvent) {
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
-            fillPurchasesTable((short) 1, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
-            cbEstadoCompra.getSelectionModel().select(0);
-            this.txtSearch.setText("");
+            if (!lblLoad.isVisible()) {
+                paginacion = 1;
+                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                        cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
+                opcion = 2;
+            }
         }
     }
 
     @FXML
     private void OnActionEstadoCompra(ActionEvent event) {
-        if (cbEstadoCompra.getSelectionModel().getSelectedIndex() != 0) {
-            fillPurchasesTable((short) 2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
-            this.txtSearch.setText("");
-        } else {
-            fillPurchasesTable((short) 1, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
-            cbEstadoCompra.getSelectionModel().select(0);
-            this.txtSearch.setText("");
+        if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
+            if (!lblLoad.isVisible()) {
+                paginacion = 1;
+                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                        cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
+                opcion = 2;
+            }
+        }
+    }
+
+    @FXML
+    private void onKeyPressedAnterior(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion > 1) {
+                    paginacion--;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionAnterior(ActionEvent event) {
+        if (!lblLoad.isVisible()) {
+            if (paginacion > 1) {
+                paginacion--;
+                onEventPaginacion();
+            }
+        }
+    }
+
+    @FXML
+    private void onKeyPressedSiguiente(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion < totalPaginacion) {
+                    paginacion++;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionSiguiente(ActionEvent event) {
+        if (!lblLoad.isVisible()) {
+            if (paginacion < totalPaginacion) {
+                paginacion++;
+                onEventPaginacion();
+            }
         }
     }
 

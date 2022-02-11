@@ -1,6 +1,5 @@
 package controller.inventario.movimientos;
 
-import controller.operaciones.compras.FxComprasListaController;
 import controller.inventario.suministros.FxSuministrosListaController;
 import controller.menus.FxPrincipalController;
 import controller.tools.FilesRouters;
@@ -415,27 +414,6 @@ public class FxMovimientosProcesoController implements Initializable {
         }
     }
 
-    private void openWindowCompras() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_COMPRAS_LISTA);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
-            FxComprasListaController controller = fXMLLoader.getController();
-            controller.setInitMovimientoProcesoController(this);
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Compra", apWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.show();
-            controller.loadListCompras("", "", (short) 0);
-        } catch (IOException ex) {
-            System.out.println(ex.getLocalizedMessage());
-        }
-    }
-
     private void executeEventRomever() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             short confirmation = Tools.AlertMessage(apWindow.getScene().getWindow(), Alert.AlertType.CONFIRMATION, "Compras", "¿Esta seguro de quitar el suministro?", true);
@@ -589,28 +567,6 @@ public class FxMovimientosProcesoController implements Initializable {
     @FXML
     private void onActionGenerarReporte(ActionEvent event) {
         executeGenerarReporte();
-    }
-
-    private void onKeyPressedRemover(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            executeEventRomever();
-        }
-    }
-
-    private void onActionRemover(ActionEvent event) {
-        executeEventRomever();
-    }
-
-    @FXML
-    private void onKeyPressedBuscarCompras(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            openWindowCompras();
-        }
-    }
-
-    @FXML
-    private void onActionBuscarCompras(ActionEvent event) {
-        openWindowCompras();
     }
 
     @FXML

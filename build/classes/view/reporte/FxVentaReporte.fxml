@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="window" style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.reporte.FxVentaReporteController">
+<VBox fx:id="window" style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.reporte.FxVentaReporteController">
    <children>
       <VBox>
          <children>
@@ -236,127 +236,6 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                  <Tab text="Reporte Ingresos y Egresos">
-                     <content>
-                        <AnchorPane style="-fx-background-color: white;">
-                           <children>
-                              <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                                       <children>
-                                          <Button mnemonicParsing="false" onAction="#onActionVisualizarDos" onKeyPressed="#onKeyPressedVisualizarDos" styleClass="buttonLight" text="Visualizar">
-                                             <graphic>
-                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" style="-fx-fit-width: 0.8333333333333334em;">
-                                                   <image>
-                                                      <Image url="@../image/view.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
-                                          <Button mnemonicParsing="false" onAction="#onActionPdfDos" onKeyPressed="#onKeyPressedPdfDos" styleClass="buttonLight" text="Pdf">
-                                             <graphic>
-                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" style="-fx-fit-width: 0.8333333333333334em;">
-                                                   <image>
-                                                      <Image url="@../image/pdf.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
-                                          <Button mnemonicParsing="false" onAction="#onActionExcelDos" onKeyPressed="#onKeyPressedExcelDos" styleClass="buttonLight" text="Excel">
-                                             <graphic>
-                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" style="-fx-fit-width: 0.8333333333333334em;">
-                                                   <image>
-                                                      <Image url="@../image/excel.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                    <Separator prefWidth="200.0" />
-                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                                       <children>
-                                          <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.4166666666666667em;">
-                                             <children>
-                                                <Label styleClass="labelRoboto13" text="Fecha Inicial:" textFill="#020203">
-                                                   <graphic>
-                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../image/calendar.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                   </graphic>
-                                                </Label>
-                                                <DatePicker fx:id="dpFechaInicialDos" editable="false" prefHeight="30.0" prefWidth="220.0" />
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.4166666666666667em;">
-                                             <children>
-                                                <Label styleClass="labelRoboto13" text="Fecha Final:" textFill="#020203">
-                                                   <graphic>
-                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../image/calendar.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                   </graphic>
-                                                </Label>
-                                                <DatePicker fx:id="dpFechaFinalDos" editable="false" prefHeight="30.0" prefWidth="220.0" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </HBox>
-                                    <Separator />
-                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                                       <children>
-                                          <VBox>
-                                             <children>
-                                                <GridPane style="-fx-hgap: 0.4166666666666667em; -fx-vgap: 1em;">
-                                                   <columnConstraints>
-                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <children>
-                                                      <CheckBox fx:id="cbVendedorSelectDos" mnemonicParsing="false" onAction="#onActionVendedoresDos" selected="true" styleClass="check-box-contenido" text="Todos los Vendedores" textFill="#1a2226" />
-                                                      <Label minWidth="-Infinity" styleClass="labelRoboto13" text="Vendedore" textFill="#020203" GridPane.columnIndex="1">
-                                                         <graphic>
-                                                            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                               <image>
-                                                                  <Image url="@../image/seller.png" />
-                                                               </image>
-                                                            </ImageView>
-                                                         </graphic>
-                                                      </Label>
-                                                      <HBox GridPane.columnIndex="2">
-                                                         <children>
-                                                            <TextField fx:id="txtVendedoresDos" disable="true" maxHeight="1.7976931348623157E308" prefHeight="30.0" prefWidth="280.0" styleClass="text-field-normal" />
-                                                            <Button fx:id="btnVendedorDos" disable="true" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionVendedorDos" onKeyPressed="#onKeyPressedVendedorDos" styleClass="buttonBorder">
-                                                               <graphic>
-                                                                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                                                     <image>
-                                                                        <Image url="@../image/search.png" />
-                                                                     </image>
-                                                                  </ImageView>
-                                                               </graphic>
-                                                            </Button>
-                                                         </children>
-                                                      </HBox>
-                                                   </children>
-                                                </GridPane>
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </AnchorPane>
-                     </content>
-                  </Tab>
               </tabs>
             </TabPane>
          </children>

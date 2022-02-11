@@ -1,6 +1,7 @@
 package controller.menus;
 
 import controller.reporte.FxCompraReporteController;
+import controller.reporte.FxIngresosEgresosController;
 import controller.reporte.FxInventarioReporteController;
 import controller.reporte.FxNotaCreditoReporteController;
 import controller.reporte.FxPosReporteController;
@@ -48,7 +49,7 @@ public class FxReportesController implements Initializable {
     private VBox nodeCompra;
 
     private FxCompraReporteController controllerReporteCompra;
-    
+
     /*
     Controller utilidades
      */
@@ -94,6 +95,15 @@ public class FxReportesController implements Initializable {
 
     private FxProduccionReporteController controllerProduccion;
 
+    /*
+    Controller produccion
+     */
+    private FXMLLoader fXMLIngresosEgresos;
+
+    private VBox nodeIngresosEgresos;
+
+    private FxIngresosEgresosController controllerIngresosEgresos;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -124,6 +134,10 @@ public class FxReportesController implements Initializable {
             fXMLProduccion = new FXMLLoader(getClass().getResource(FilesRouters.FX_PRODUCCION_REPORTE));
             nodeProduccion = fXMLProduccion.load();
             controllerProduccion = fXMLProduccion.getController();
+
+            fXMLIngresosEgresos = new FXMLLoader(getClass().getResource(FilesRouters.FX_INGRESOS_EGRESOS_REPORTE));
+            nodeIngresosEgresos = fXMLIngresosEgresos.load();
+            controllerIngresosEgresos = fXMLIngresosEgresos.getController();
         } catch (IOException ex) {
             System.out.println("Error en Ingresos Controller:" + ex.getLocalizedMessage());
         }
@@ -197,6 +211,16 @@ public class FxReportesController implements Initializable {
         AnchorPane.setRightAnchor(nodeProduccion, 0d);
         AnchorPane.setBottomAnchor(nodeProduccion, 0d);
         fxPrincipalController.getVbContent().getChildren().add(nodeProduccion);
+    }
+
+    private void openWindowIngresosEgresos() {
+        controllerIngresosEgresos.setContent(fxPrincipalController);
+        fxPrincipalController.getVbContent().getChildren().clear();
+        AnchorPane.setLeftAnchor(nodeIngresosEgresos, 0d);
+        AnchorPane.setTopAnchor(nodeIngresosEgresos, 0d);
+        AnchorPane.setRightAnchor(nodeIngresosEgresos, 0d);
+        AnchorPane.setBottomAnchor(nodeIngresosEgresos, 0d);
+        fxPrincipalController.getVbContent().getChildren().add(nodeIngresosEgresos);
     }
 
     @FXML
@@ -282,6 +306,18 @@ public class FxReportesController implements Initializable {
     @FXML
     private void onActionProduccion(ActionEvent event) {
         openWindowProduccion();
+    }
+
+    @FXML
+    private void onKeyPressedIngresosEgresos(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowIngresosEgresos();
+        }
+    }
+
+    @FXML
+    private void onActionIngresosEgresos(ActionEvent event) {
+        openWindowIngresosEgresos();
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

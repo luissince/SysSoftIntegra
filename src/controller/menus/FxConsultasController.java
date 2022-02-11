@@ -290,9 +290,6 @@ public class FxConsultasController implements Initializable {
         AnchorPane.setRightAnchor(nodeComprasRealizadas, 0d);
         AnchorPane.setBottomAnchor(nodeComprasRealizadas, 0d);
         fxPrincipalController.getVbContent().getChildren().add(nodeComprasRealizadas);
-        if (controllerComprasRealizadas.getTvList().getItems().isEmpty()) {
-            controllerComprasRealizadas.fillPurchasesTable((short) 0, "", Tools.getDate(), Tools.getDate(), 0);
-        }
     }
 
     private void openWindowCortesCaja() {

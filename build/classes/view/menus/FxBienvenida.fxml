@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox style="-fx-background-color: #e7e6e6;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.menus.FxBienvenidaController">
+<VBox style="-fx-background-color: #e7e6e6;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.menus.FxBienvenidaController">
    <children>
       <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 2px 0; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
          <children>
@@ -33,7 +33,7 @@
                            <children>
                               <VBox style="-fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label maxWidth="1.7976931348623157E308" prefWidth="200.0" styleClass="labelOpenSansRegular13" text="Bienvenido al Sistema de SysSoft Integra, donde podrá realizar operaciones de venta, compras, cartera de cliente, gastos entre otras funcionalidad para llevar una mejor administración de su negocio." textFill="#020203" wrapText="true" VBox.vgrow="ALWAYS">
+                                    <Label maxWidth="1.7976931348623157E308" prefWidth="200.0" styleClass="labelOpenSansRegular13" text="Bienvenido al Sistema de SysSoft Integra, donde podrá realizar operaciones de venta, compras, cartera de cliente, gastos entre otras funcionalidades para llevar a cabo una mejor administración de su negocio." textFill="#020203" wrapText="true" VBox.vgrow="ALWAYS">
                                        <font>
                                           <Font name="Calibri" size="15.0" />
                                        </font>

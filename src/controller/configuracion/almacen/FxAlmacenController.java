@@ -192,8 +192,6 @@ public class FxAlmacenController implements Initializable {
                     Tools.AlertMessageWarning(vbWindow, "Almacen", "El almacen esta ligado a un kardex de productos.");
                 } else if (result.equalsIgnoreCase("principal")) {
                     Tools.AlertMessageWarning(vbWindow, "Almacen", "No se puede eliminar el almacen generado por el sistema.");
-                } else if (result.equalsIgnoreCase("historial")) {
-                    Tools.AlertMessageWarning(vbWindow, "Almacen", "No se puede eliminar el almacen por estar ligado a un hostorial de movimientos.");
                 } else {
                     Tools.AlertMessageError(vbWindow, "Almacen", result);
                 }

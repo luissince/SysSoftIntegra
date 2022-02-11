@@ -618,167 +618,6 @@ public class CajaADO {
 
     }
 
-    public static Object ListarMovimientoPorFecha(String fechaInicio, String fechaFin) {
-        PreparedStatement statementValidar = null;
-        PreparedStatement statementMovimiento = null;
-        PreparedStatement statementMovimientoBase = null;
-        ResultSet resultSet = null;
-
-        try {
-            DBUtil.dbConnect();
-            ArrayList<Double> arrayTotales = new ArrayList();
-            double apertura = 0;
-            double ventaEfectivo = 0;
-            double ventaTarjeta = 0;
-            double ventaDeposito = 0;
-
-            double ingresoEfectivo = 0;
-            double ingresoTarjeta = 0;
-            double ingresoDeposito = 0;
-
-            double salidaEfectivo = 0;
-            double salidaTarjeta = 0;
-            double salidaDeposito = 0;
-
-            statementValidar = DBUtil.getConnection().prepareStatement("select IdCaja from CajaTB where FechaApertura between ? and ?");
-            statementValidar.setString(1, fechaInicio);
-            statementValidar.setString(2, fechaFin);
-            resultSet = statementValidar.executeQuery();
-
-            while (resultSet.next()) {
-                String idCaja = resultSet.getString("IdCaja");
-
-                statementMovimientoBase = DBUtil.getConnection().prepareStatement("SELECT Monto FROM MovimientoCajaTB WHERE IdCaja = ? AND TipoMovimiento = 1");
-                statementMovimientoBase.setString(1, idCaja);
-                try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
-                    while (setMovimientoBase.next()) {
-                        apertura += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Monto"), 2));
-                    }
-                }
-
-                statementMovimientoBase = DBUtil.getConnection().prepareStatement("SELECT m.Monto AS VentaEfectivo FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 2 AND v.IdNotaCredito IS NULL");
-                statementMovimientoBase.setString(1, idCaja);
-                try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
-                    while (setMovimientoBase.next()) {
-                        ventaEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("VentaEfectivo"), 2));
-                    }
-                }
-
-                statementMovimientoBase = DBUtil.getConnection().prepareStatement("SELECT m.Monto AS VentaTarjeta FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 3 AND v.IdNotaCredito IS NULL");
-                statementMovimientoBase.setString(1, idCaja);
-                try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
-                    while (setMovimientoBase.next()) {
-                        ventaTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("VentaTarjeta"), 2));
-                    }
-                }
-
-                statementMovimientoBase = DBUtil.getConnection().prepareStatement("SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 6 AND v.IdNotaCredito IS NULL");
-                statementMovimientoBase.setString(1, idCaja);
-                try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
-                    while (setMovimientoBase.next()) {
-                        ventaDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
-                    }
-                }
-
-                statementMovimientoBase = DBUtil.getConnection().prepareStatement("SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 4 AND v.IdNotaCredito IS NULL");
-                statementMovimientoBase.setString(1, idCaja);
-                try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
-                    while (setMovimientoBase.next()) {
-                        ingresoEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
-                    }
-                }
-
-                statementMovimientoBase = DBUtil.getConnection().prepareStatement("SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 7 AND v.IdNotaCredito IS NULL");
-                statementMovimientoBase.setString(1, idCaja);
-                try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
-                    while (setMovimientoBase.next()) {
-                        ingresoTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
-                    }
-                }
-
-                statementMovimientoBase = DBUtil.getConnection().prepareStatement("SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 8 AND v.IdNotaCredito IS NULL");
-                statementMovimientoBase.setString(1, idCaja);
-                try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
-                    while (setMovimientoBase.next()) {
-                        ingresoDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
-                    }
-                }
-
-                statementMovimientoBase = DBUtil.getConnection().prepareStatement("SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 5 AND v.IdNotaCredito IS NULL");
-                statementMovimientoBase.setString(1, idCaja);
-                try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
-                    while (setMovimientoBase.next()) {
-                        salidaEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
-                    }
-                }
-
-                statementMovimientoBase = DBUtil.getConnection().prepareStatement("SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 9 AND v.IdNotaCredito IS NULL");
-                statementMovimientoBase.setString(1, idCaja);
-                try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
-                    while (setMovimientoBase.next()) {
-                        salidaTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
-                    }
-                }
-
-                statementMovimientoBase = DBUtil.getConnection().prepareStatement("SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 10 AND v.IdNotaCredito IS NULL");
-                statementMovimientoBase.setString(1, idCaja);
-                try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
-                    while (setMovimientoBase.next()) {
-                        salidaDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
-                    }
-                }
-
-//                statementMovimiento = DBUtil.getConnection().prepareStatement("select * from MovimientoCajaTB where IdCaja = ?");
-//                statementMovimiento.setString(1, idCaja);
-//                try (ResultSet resultSetMovimiento = statementMovimiento.executeQuery()) {
-//                    while (resultSetMovimiento.next()) {
-//                        MovimientoCajaTB movimientoCajaTB = new MovimientoCajaTB();
-//                        movimientoCajaTB.setId(resultSetMovimiento.getRow());
-//                        movimientoCajaTB.setFechaMovimiento(resultSetMovimiento.getDate("FechaMovimiento").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-//                        movimientoCajaTB.setHoraMovimiento(resultSetMovimiento.getTime("HoraMovimiento").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
-//                        movimientoCajaTB.setComentario(resultSetMovimiento.getString("Comentario"));
-//                        movimientoCajaTB.setTipoMovimiento(resultSetMovimiento.getShort("TipoMovimiento"));
-//                        movimientoCajaTB.setMonto(resultSetMovimiento.getDouble("Monto"));
-//                        arratyLista.add(movimientoCajaTB);
-//                    }
-//                }
-            }
-            arrayTotales.add(apertura);
-            arrayTotales.add(ventaEfectivo);
-            arrayTotales.add(ventaTarjeta);
-            arrayTotales.add(ventaDeposito);
-            arrayTotales.add(ingresoEfectivo);
-            arrayTotales.add(ingresoTarjeta);
-            arrayTotales.add(ingresoDeposito);
-            arrayTotales.add(salidaEfectivo);
-            arrayTotales.add(salidaTarjeta);
-            arrayTotales.add(salidaDeposito);
-
-            return arrayTotales;
-        } catch (SQLException | NumberFormatException ex) {
-            return ex.getLocalizedMessage();
-        } finally {
-            try {
-                if (statementValidar != null) {
-                    statementValidar.close();
-                }
-                if (statementMovimiento != null) {
-                    statementMovimiento.close();
-                }
-                if (statementMovimientoBase != null) {
-                    statementMovimientoBase.close();
-                }
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                DBUtil.dbDisconnect();
-            } catch (SQLException ex) {
-                return ex.getLocalizedMessage();
-            }
-        }
-
-    }
-
     public static String CerrarAperturaCaja(String idCaja, BancoHistorialTB bancoHistorialEfectivo, BancoHistorialTB bancoHistorialTarjeta, double contado, double calculado) {
         String cajaTB = "";
         PreparedStatement statementCaja = null;
@@ -905,7 +744,7 @@ public class CajaADO {
                 cajaTB.setLabelEstado(label);
                 empList.add(cajaTB);
             }
-             return empList;
+            return empList;
         } catch (SQLException ex) {
             return ex.getLocalizedMessage();
         } finally {
@@ -918,7 +757,7 @@ public class CajaADO {
                 return ex.getLocalizedMessage();
             }
         }
-       
+
     }
 
     public static ObservableList<CajaTB> ListarCajasAperturadasByUser(String idUsuario) {
@@ -1025,6 +864,49 @@ public class CajaADO {
             result = "No se puedo conectar al servidor, revise su conexión e intente nuevamente.";
         }
         return result;
+    }
+
+    public static Object ReporteGeneralMovimientoCaja(String fechaInicio, String fechaFinal, int usuario, String idUusuario) {
+        PreparedStatement statementMovimiento = null;
+        ResultSet resultSet = null;
+        try {
+            DBUtil.dbConnect();
+            ArrayList<IngresoTB> ingresoTBs = new ArrayList<>();
+
+            statementMovimiento = DBUtil.getConnection().prepareStatement("{call Sp_Reporte_General_Movimiento_Caja(?,?,?,?)}");
+            statementMovimiento.setString(1, fechaInicio);
+            statementMovimiento.setString(2, fechaFinal);
+            statementMovimiento.setInt(3, usuario);
+            statementMovimiento.setString(4, idUusuario);
+            resultSet = statementMovimiento.executeQuery();
+            while (resultSet.next()) {
+                IngresoTB ingresoTB = new IngresoTB();
+                ingresoTB.setId(resultSet.getRow());
+                ingresoTB.setTransaccion(resultSet.getString("Transaccion"));
+                ingresoTB.setCantidad(resultSet.getInt("Cantidad"));
+                ingresoTB.setFormaIngreso(resultSet.getString("FormaIngreso"));
+                ingresoTB.setEfectivo(resultSet.getDouble("Efectivo"));
+                ingresoTB.setTarjeta(resultSet.getDouble("Tarjeta"));
+                ingresoTB.setDeposito(resultSet.getDouble("Deposito"));
+                ingresoTBs.add(ingresoTB);
+            }
+
+            return ingresoTBs;
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementMovimiento != null) {
+                    statementMovimiento.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
     }
 
 }

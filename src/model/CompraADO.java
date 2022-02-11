@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -608,7 +607,7 @@ public class CompraADO extends DBUtil {
         }
     }
 
-    public static Object ListComprasRealizadas(short opcion, String value, String fechaInicial, String fechaFinal, int estadoCompra, int posicionPagina, int filasPorPagina) {
+    public static Object ListComprasRealizadas(int opcion, String value, String fechaInicial, String fechaFinal, int estadoCompra, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
         try {
@@ -617,7 +616,7 @@ public class CompraADO extends DBUtil {
             ObservableList<CompraTB> empList = FXCollections.observableArrayList();
 
             preparedStatement = getConnection().prepareStatement("{call Sp_Listar_Compras(?,?,?,?,?,?,?)}");
-            preparedStatement.setShort(1, opcion);
+            preparedStatement.setInt(1, opcion);
             preparedStatement.setString(2, value);
             preparedStatement.setString(3, fechaInicial);
             preparedStatement.setString(4, fechaFinal);
@@ -634,7 +633,11 @@ public class CompraADO extends DBUtil {
                 compraTB.setHoraCompra(rsEmps.getTime("HoraCompra").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 compraTB.setSerie(rsEmps.getString("Serie"));
                 compraTB.setNumeracion(rsEmps.getString("Numeracion"));
-                compraTB.setProveedorTB(new ProveedorTB(rsEmps.getString("NumeroDocumento"), rsEmps.getString("RazonSocial")));
+
+                ProveedorTB proveedorTB = new ProveedorTB();
+                proveedorTB.setNumeroDocumento(rsEmps.getString("NumeroDocumento"));
+                proveedorTB.setRazonSocial(rsEmps.getString("RazonSocial"));
+                compraTB.setProveedorTB(proveedorTB);
 
                 compraTB.setTipo(rsEmps.getInt("TipoCompra"));
                 compraTB.setTipoName(rsEmps.getString("Tipo"));
@@ -643,16 +646,20 @@ public class CompraADO extends DBUtil {
                 compraTB.setEstadoName(rsEmps.getString("Estado"));
                 Label label = new Label(compraTB.getEstadoName());
                 label.getStyleClass().add(compraTB.getEstado() == 1 ? "label-asignacion" : compraTB.getEstado() == 2 ? "label-medio" : compraTB.getEstado() == 3 ? "label-proceso" : "label-ultimo");
-
                 compraTB.setEstadoLabel(label);
-                compraTB.setMonedaNombre(rsEmps.getString("Simbolo"));
+
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setNombre(rsEmps.getString("Moneda"));
+                monedaTB.setSimbolo(rsEmps.getString("Simbolo"));
+                compraTB.setMonedaTB(monedaTB);
+                
                 compraTB.setTotal(rsEmps.getDouble("Total"));
                 empList.add(compraTB);
             }
             objects[0] = empList;
 
             preparedStatement = getConnection().prepareStatement("{call Sp_Listar_Compras_Count(?,?,?,?,?)}");
-            preparedStatement.setShort(1, opcion);
+            preparedStatement.setInt(1, opcion);
             preparedStatement.setString(2, value);
             preparedStatement.setString(3, fechaInicial);
             preparedStatement.setString(4, fechaFinal);
@@ -704,7 +711,6 @@ public class CompraADO extends DBUtil {
                 compraTB.setHoraCompra(resultSet.getTime("HoraCompra").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 compraTB.setSerie(resultSet.getString("Serie").toUpperCase());
                 compraTB.setNumeracion(resultSet.getString("Numeracion"));
-                compraTB.setMonedaNombre(resultSet.getString("Simbolo"));
                 compraTB.setTipoName(resultSet.getString("Tipo"));
                 compraTB.setEstado(resultSet.getInt("EstadoCompra"));
                 compraTB.setEstadoName(resultSet.getString("Estado"));
@@ -731,7 +737,7 @@ public class CompraADO extends DBUtil {
 
                 //moneda start
                 MonedaTB monedaTB = new MonedaTB();
-                monedaTB.setNombre(resultSet.getString("Nombre"));
+                monedaTB.setNombre(resultSet.getString("Moneda"));
                 monedaTB.setSimbolo(resultSet.getString("Simbolo"));
                 compraTB.setMonedaTB(monedaTB);
 
@@ -821,46 +827,6 @@ public class CompraADO extends DBUtil {
             }
         }
 
-    }
-
-    public static ObservableList<CompraTB> List_Compras_Realizadas(String value, String fecha, short opcion) {
-        PreparedStatement statementCompra = null;
-        ObservableList<CompraTB> compraTBs = FXCollections.observableArrayList();
-        dbConnect();
-        if (getConnection() != null) {
-            try {
-                statementCompra = getConnection().prepareStatement("{call Sp_Listar_Compras_For_Movimiento(?,?,?)}");
-                statementCompra.setString(1, value);
-                statementCompra.setString(2, fecha);
-                statementCompra.setShort(3, opcion);
-                ResultSet resultSet = statementCompra.executeQuery();
-                while (resultSet.next()) {
-                    CompraTB compraTB = new CompraTB();
-                    compraTB.setId(resultSet.getRow());
-                    compraTB.setIdCompra(resultSet.getString("IdCompra"));
-                    compraTB.setFechaCompra(resultSet.getDate("Fecha").toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
-                    compraTB.setHoraCompra(resultSet.getTime("Hora").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
-                    compraTB.setNumeracion(resultSet.getString("Numeracion"));
-                    compraTB.setIdProveedor(resultSet.getString("RazonSocial"));
-                    compraTB.setMonedaNombre(resultSet.getString("Simbolo"));
-                    compraTB.setTotal(resultSet.getDouble("Total"));
-                    compraTBs.add(compraTB);
-
-                }
-            } catch (SQLException ex) {
-                System.out.println("Compras Ado:" + ex.getLocalizedMessage());
-            } finally {
-                try {
-                    if (statementCompra != null) {
-                        statementCompra.close();
-                    }
-                    dbDisconnect();
-                } catch (SQLException ex) {
-                }
-            }
-
-        }
-        return compraTBs;
     }
 
     public static String cancelarCompraProducto(String idCompra, int idAlmacen, ObservableList<DetalleCompraTB> tableView, String observacion) {
@@ -1287,11 +1253,16 @@ public class CompraADO extends DBUtil {
                 compraTB.setEstado(resultSet.getInt("EstadoCompra"));
                 compraTB.setEstadoName(resultSet.getString("EstadoName"));
                 compraTB.setFormaName(resultSet.getString("FormaName"));
-                compraTB.setMonedaNombre(resultSet.getString("Simbolo"));
                 compraTB.setEfectivo(resultSet.getBoolean("Efectivo"));
                 compraTB.setTarjeta(resultSet.getBoolean("Tarjeta"));
                 compraTB.setDeposito(resultSet.getBoolean("Deposito"));
                 compraTB.setTotal(resultSet.getDouble("Total"));
+
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setNombre(resultSet.getString("Moneda"));
+                monedaTB.setSimbolo(resultSet.getString("Simbolo"));
+                compraTB.setMonedaTB(monedaTB);
+
                 arrayList.add(compraTB);
             }
             return arrayList;
@@ -1349,10 +1320,14 @@ public class CompraADO extends DBUtil {
 
                 compraTB.setEstadoLabel(label);
 
-                compraTB.setMonedaNombre(rsEmps.getString("Simbolo"));
                 compraTB.setMontoTotal(rsEmps.getDouble("MontoTotal"));
                 compraTB.setMontoPagado(rsEmps.getDouble("MontoPagado"));
                 compraTB.setMontoRestante(compraTB.getMontoTotal() - compraTB.getMontoPagado());
+
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setNombre(rsEmps.getString("Moneda"));
+                monedaTB.setSimbolo(rsEmps.getString("Simbolo"));
+                compraTB.setMonedaTB(monedaTB);
 
                 HBox hBox = new HBox();
                 hBox.setAlignment(Pos.CENTER);
@@ -1431,10 +1406,15 @@ public class CompraADO extends DBUtil {
                     compraTB.setNumeracion(resultSet.getString("Numeracion"));
                     compraTB.setEstado(resultSet.getInt("EstadoCompra"));
                     compraTB.setEstadoName(resultSet.getString("Estado"));
-                    compraTB.setMonedaNombre(resultSet.getString("Simbolo"));
                     compraTB.setMontoTotal(resultSet.getDouble("MontoTotal"));
                     compraTB.setMontoPagado(resultSet.getDouble("MontoPagado"));
                     compraTB.setMontoRestante(resultSet.getDouble("MontoTotal") - resultSet.getDouble("MontoPagado"));
+
+                    MonedaTB monedaTB = new MonedaTB();
+                    monedaTB.setNombre(resultSet.getString("Moneda"));
+                    monedaTB.setSimbolo(resultSet.getString("Simbolo"));
+                    compraTB.setMonedaTB(monedaTB);
+
                     compraCreditoTB.setCompraTB(compraTB);
                 }
                 return compraCreditoTB;

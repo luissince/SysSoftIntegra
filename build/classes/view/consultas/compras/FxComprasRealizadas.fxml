@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="vbWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.compras.FxComprasRealizadasController">
+<VBox fx:id="vbWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.compras.FxComprasRealizadasController">
    <children>
       <HBox VBox.vgrow="ALWAYS">
          <children>
@@ -22,7 +22,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 2px 0; -fx-border-color: #3c8dbc; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
                      <children>
-                        <Label styleClass="labelRobotoBold15" text="Compras realizadas" textFill="#020203">
+                        <Label styleClass="labelRobotoBold15" text="Compras" textFill="#020203">
                            <graphic>
                               <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -85,7 +85,7 @@
                                                       </ImageView>
                                                    </graphic>
                                                 </Label>
-                                                <DatePicker fx:id="dtFechaInicial" editable="false" onAction="#onActionFechaInicial" prefHeight="30.0" prefWidth="240.0" />
+                                                <DatePicker fx:id="dtFechaInicial" editable="false" onAction="#onActionFechaInicial" prefHeight="30.0" prefWidth="220.0" />
                                              </children>
                                           </VBox>
                                           <VBox style="-fx-spacing: 0.5em;">
@@ -102,7 +102,7 @@
                                                       </ImageView>
                                                    </graphic>
                                                 </Label>
-                                                <DatePicker fx:id="dtFechaFinal" editable="false" onAction="#onActionFechaFinal" prefHeight="30.0" prefWidth="240.0" />
+                                                <DatePicker fx:id="dtFechaFinal" editable="false" onAction="#onActionFechaFinal" prefHeight="30.0" prefWidth="220.0" />
                                              </children>
                                           </VBox>
                                           <VBox style="-fx-spacing: 0.5em;">
@@ -119,7 +119,7 @@
                                                       </ImageView>
                                                    </graphic>
                                                 </Label>
-                                                <ComboBox fx:id="cbEstadoCompra" onAction="#OnActionEstadoCompra" prefHeight="30.0" prefWidth="240.0" />
+                                                <ComboBox fx:id="cbEstadoCompra" onAction="#OnActionEstadoCompra" prefHeight="30.0" prefWidth="220.0" />
                                              </children>
                                           </VBox>
                                        </children>
@@ -162,19 +162,20 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 1px 0 0 0;">
+                  <HBox alignment="CENTER" style="-fx-border-width: 1 0 0 0; -fx-border-color: #cccccc; -fx-padding: 0.8333333333333334em;">
                      <children>
                         <HBox alignment="CENTER" style="-fx-background-color: #cccccc; -fx-spacing: 0.8333333333333334em;">
                            <children>
-                              <Button mnemonicParsing="false" styleClass="buttonLight" text="Anterior">
+                              <Button mnemonicParsing="false" onAction="#onActionAnterior" onKeyPressed="#onKeyPressedAnterior" styleClass="buttonLight" text="Anterior">
                                  <font>
                                     <Font name="Calibri" size="14.0" />
                                  </font>
                                  <graphic>
-                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../image/left.png" />
-                                       </image></ImageView>
+                                       </image>
+                                    </ImageView>
                                  </graphic>
                               </Button>
                               <Label fx:id="lblPaginaActual" styleClass="labelBorder" text="0" textFill="#020203">
@@ -192,15 +193,16 @@
                                     <Font name="Calibri" size="14.0" />
                                  </font>
                               </Label>
-                              <Button contentDisplay="RIGHT" mnemonicParsing="false" styleClass="buttonLight" text="Siguiente">
+                              <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onActionSiguiente" onKeyPressed="#onKeyPressedSiguiente" styleClass="buttonLight" text="Siguiente">
                                  <font>
                                     <Font name="Calibri" size="14.0" />
                                  </font>
                                  <graphic>
-                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../image/right.png" />
-                                       </image></ImageView>
+                                       </image>
+                                    </ImageView>
                                  </graphic>
                               </Button>
                            </children>

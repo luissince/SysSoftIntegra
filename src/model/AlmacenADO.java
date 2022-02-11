@@ -142,7 +142,7 @@ public class AlmacenADO {
                         statementCantidad.setDouble(5, 0);
                         statementCantidad.addBatch();
                     }
-                    
+
                     statementCantidad.executeBatch();
                     statementAlmacen.executeBatch();
                     DBUtil.getConnection().commit();
@@ -182,6 +182,7 @@ public class AlmacenADO {
     public static String DeletedAlmacenById(int idAlmacen) {
         PreparedStatement statementValidate = null;
         PreparedStatement statementAlmacen = null;
+        PreparedStatement statementCantidad = null;
 
         try {
             DBUtil.dbConnect();
@@ -199,31 +200,22 @@ public class AlmacenADO {
                     DBUtil.getConnection().rollback();
                     return "kardex";
                 } else {
-                    statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM TrasladoHistorialTB WHERE IdAlmacenOrigen = ?");
-                    statementValidate.setInt(1, idAlmacen);
-                    if (statementValidate.executeQuery().next()) {
+                    if (idAlmacen == 0) {
                         DBUtil.getConnection().rollback();
-                        return "historial";
+                        return "principal";
                     } else {
-                        statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM TrasladoHistorialTB WHERE IdAlmacenDestino = ?");
-                        statementValidate.setInt(1, idAlmacen);
-                        if (statementValidate.executeQuery().next()) {
-                            DBUtil.getConnection().rollback();
-                            return "historial";
-                        } else {
-                            if (idAlmacen == 0) {
-                                DBUtil.getConnection().rollback();
-                                return "principal";
-                            } else {
-                                statementAlmacen = DBUtil.getConnection().prepareStatement("DELETE FROM AlmacenTB WHERE IdAlmacen = ?");
-                                statementAlmacen.setInt(1, idAlmacen);
-                                statementAlmacen.addBatch();
+                        statementAlmacen = DBUtil.getConnection().prepareStatement("DELETE FROM AlmacenTB WHERE IdAlmacen = ?");
+                        statementAlmacen.setInt(1, idAlmacen);
+                        statementAlmacen.addBatch();
 
-                                statementAlmacen.executeBatch();
-                                DBUtil.getConnection().commit();
-                                return "deleted";
-                            }
-                        }
+                        statementCantidad = DBUtil.getConnection().prepareStatement("DELETE FROM CantidadTB WHERE IdAlmacen = ?");
+                        statementCantidad.setInt(1, idAlmacen);
+                        statementCantidad.addBatch();
+
+                        statementAlmacen.executeBatch();
+                        statementCantidad.executeBatch();
+                        DBUtil.getConnection().commit();
+                        return "deleted";
                     }
                 }
             }
@@ -242,8 +234,11 @@ public class AlmacenADO {
                 if (statementAlmacen != null) {
                     statementAlmacen.close();
                 }
+                if (statementCantidad != null) {
+                    statementCantidad.close();
+                }
             } catch (SQLException ex) {
-
+                return ex.getLocalizedMessage();
             }
         }
     }

@@ -14,7 +14,6 @@ public class CompraTB {
     private String serie;
     private String numeracion;
     private int idMoneda;
-    private String monedaNombre;
     private String fechaCompra;
     private String horaCompra;
     private String fechaVencimiento;
@@ -110,14 +109,6 @@ public class CompraTB {
 
     public void setIdMoneda(int idMoneda) {
         this.idMoneda = idMoneda;
-    }
-
-    public String getMonedaNombre() {
-        return monedaNombre;
-    }
-
-    public void setMonedaNombre(String monedaNombre) {
-        this.monedaNombre = monedaNombre;
     }
 
     public String getFechaCompra() {
