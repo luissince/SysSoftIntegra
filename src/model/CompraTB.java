@@ -10,7 +10,7 @@ public class CompraTB {
     private int id;
     private String idCompra;
     private String idProveedor;
-    private int tipoDocumento;
+    private int idComprobante;
     private String serie;
     private String numeracion;
     private int idMoneda;
@@ -79,12 +79,12 @@ public class CompraTB {
         this.idProveedor = idProveedor;
     }
 
-    public int getTipoDocumento() {
-        return tipoDocumento;
+    public int getIdComprobante() {
+        return idComprobante;
     }
 
-    public void setTipoDocumento(int tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
+    public void setIdComprobante(int idComprobante) {
+        this.idComprobante = idComprobante;
     }
 
     public String getSerie() {

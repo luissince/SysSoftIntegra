@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fx:id="spWindow" fitToHeight="true" fitToWidth="true" onKeyReleased="#onKeyReleasedWindow" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.compras.FxComprasController">
+<ScrollPane fx:id="spWindow" fitToHeight="true" fitToWidth="true" onKeyReleased="#onKeyReleasedWindow" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.compras.FxComprasController">
    <content>
       <VBox style="-fx-background-color: white;">
          <children>
@@ -63,11 +63,11 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnQuitar" mnemonicParsing="false" onAction="#onActionRemover" onKeyPressed="#onKeyPressedRemover" styleClass="buttonLight" text="Quitar(F4)">
+                  <Button fx:id="btnProveedor" mnemonicParsing="false" onAction="#onActionProviders" onKeyPressed="#onKeyPressedProviders" styleClass="buttonLight" text="Proveedor(F4)">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../image/remove.png" />
+                              <Image url="@../../image/providers.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -81,11 +81,20 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnProveedor" mnemonicParsing="false" onAction="#onActionProviders" onKeyPressed="#onKeyPressedProviders" styleClass="buttonLight" text="Proveedor(F6)">
+                  <Button mnemonicParsing="false" onAction="#onActionCompras" onKeyPressed="#onKeyPressedCompras" styleClass="buttonLight" text="Compras(F6)">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../image/providers.png" />
+                              <Image url="@../../image/purchases.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionCompras" onKeyPressed="#onKeyPressedCompras" styleClass="buttonLight" text="Orden de Compra(F7)">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/pedidos.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -109,7 +118,7 @@
                                  </rowConstraints>
                                  <children>
 
-                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Proveedor(F7):" textFill="#020203">
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Proveedor(F8):" textFill="#020203">
                                        <graphic>
                                           <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -118,7 +127,7 @@
                                           </ImageView>
                                        </graphic></Label>
                                     <ComboBox fx:id="cbProveedor" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="- Buscar -" GridPane.columnIndex="1" />
-                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Almacen(F8)" textFill="#020203" GridPane.rowIndex="1">
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Almacen(F9)" textFill="#020203" GridPane.rowIndex="1">
                                        <graphic>
                                           <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -139,6 +148,7 @@
                                  <rowConstraints>
                                     <RowConstraints minHeight="10.0" />
                                     <RowConstraints minHeight="10.0" />
+                                    <RowConstraints minHeight="10.0" />
                                  </rowConstraints>
                                  <children>
                                     <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Fecha:" textFill="#020203">
@@ -150,7 +160,16 @@
                                           </ImageView>
                                        </graphic></Label>
                                     <DatePicker fx:id="tpFechaCompra" editable="false" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" GridPane.columnIndex="1" />
-                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Serie y Numeración:" textFill="#020203" GridPane.rowIndex="1">
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Comprobante" textFill="#020203" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/recibo.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Label>
+                                    <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Serie y Numeración:" textFill="#020203" GridPane.rowIndex="2">
                                        <graphic>
                                           <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -158,12 +177,13 @@
                                              </image>
                                           </ImageView>
                                        </graphic></Label>
-                                    <HBox style="-fx-spacing: 0.8333333333333334em;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <HBox style="-fx-spacing: 0.8333333333333334em;" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <children>
                                           <TextField fx:id="cbSerie" onKeyTyped="#onKeyTypedNumeracion" prefHeight="30.0" prefWidth="110.0" promptText="Ingrese la serie" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
                                           <TextField fx:id="cbNumeracion" onKeyTyped="#onKeyTypedNumeracion" prefHeight="30.0" prefWidth="110.0" promptText="Ingrese la numeración" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
                                        </children>
                                     </HBox>
+                                    <ComboBox fx:id="cbComprobante" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="- Seleccione -" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                  </children>
                               </GridPane>
                            </children>
@@ -172,11 +192,11 @@
                            <children>
                               <TableView fx:id="tvList" fixedCellSize="-0.0" onMouseClicked="#onMouseClickedList" prefHeight="280.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
                                  <columns>
-                                    <TableColumn fx:id="tcAccion" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Acción" />
+                                    <TableColumn fx:id="tcQuitar" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Quitar" />
                                     <TableColumn fx:id="tcCantidad" prefWidth="110.0" style="-fx-alignment: CENTER;" text="Cantidad" />
                                     <TableColumn fx:id="tcArticulo" prefWidth="379.0" style="-fx-alignment: CENTER-LEFT;" text="Clave/Descripción" />
                                     <TableColumn fx:id="tcCosto" prefWidth="110.0" style="-fx-alignment: CENTER;" text="Costo Unitario" />
-                                    <TableColumn fx:id="tcImpuesto" prefWidth="110.0" style="-fx-alignment: CENTER;" text="Impuesto %" />
+                                    <TableColumn fx:id="tcImpuesto" prefWidth="110.0" style="-fx-alignment: CENTER;" text="Impuesto" />
                                     <TableColumn fx:id="tcImporte" prefWidth="148.0" style="-fx-alignment: CENTER;" text="Importe" />
                                  </columns>
                               </TableView>

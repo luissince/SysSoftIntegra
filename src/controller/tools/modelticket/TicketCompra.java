@@ -77,9 +77,9 @@ public class TicketCompra {
 
                         ArrayList<DetalleCompraTB> list = new ArrayList();
                         for (DetalleCompraTB e : empList) {
-                            subImporteNeto += (e.getSubImporteNeto() * e.getCantidad());
-                            impuesto += (e.getImpuestoGenerado() * e.getCantidad());
-                            importeNeto += (e.getImporteNeto() * e.getCantidad());
+//                            subImporteNeto += (e.getSubImporteNeto() * e.getCantidad());
+//                            impuesto += (e.getImpuestoGenerado() * e.getCantidad());
+//                            importeNeto += (e.getImporteNeto() * e.getCantidad());
 
                             DetalleCompraTB detalleCompraTB = new DetalleCompraTB();
                             detalleCompraTB.setId(e.getId());
@@ -122,7 +122,7 @@ public class TicketCompra {
                         map.put("COMPROBANTE", compraTB.getSerie().toUpperCase() + "-" + compraTB.getNumeracion());
 
                         map.put("NOTAS", compraTB.getNotas());
-                        map.put("SIMBOLO", compraTB.getMonedaNombre());
+                        map.put("SIMBOLO", compraTB.getMonedaTB().getSimbolo());
                         map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(compraTB.getTotal(), 2), true, compraTB.getMonedaTB().getNombre()));
 
                         map.put("VALOR_VENTA", Tools.roundingValue(0, 2));

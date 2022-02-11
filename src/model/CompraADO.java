@@ -190,8 +190,8 @@ public class CompraADO extends DBUtil {
                     detalle_compra.setDouble(5, dc.getDescuento());
 
                     detalle_compra.setInt(6, dc.getIdImpuesto());
-                    detalle_compra.setString(7, dc.getNombreImpuesto());
-                    detalle_compra.setDouble(8, dc.getValorImpuesto());
+                    detalle_compra.setString(7, dc.getImpuestoTB().getNombre());
+                    detalle_compra.setDouble(8, dc.getImpuestoTB().getValor());
                     detalle_compra.setDouble(9, dc.getPrecioCompra() * dc.getCantidad());
                     detalle_compra.setString(10, dc.getDescripcion());
                     detalle_compra.addBatch();
@@ -470,8 +470,8 @@ public class CompraADO extends DBUtil {
                     detalle_compra.setDouble(5, dc.getDescuento());
 
                     detalle_compra.setInt(6, dc.getIdImpuesto());
-                    detalle_compra.setString(7, dc.getNombreImpuesto());
-                    detalle_compra.setDouble(8, dc.getValorImpuesto());
+                    detalle_compra.setString(7, dc.getImpuestoTB().getNombre());
+                    detalle_compra.setDouble(8, dc.getImpuestoTB().getValor());
                     detalle_compra.setDouble(9, dc.getPrecioCompra() * dc.getCantidad());
                     detalle_compra.setString(10, dc.getDescripcion());
                     detalle_compra.addBatch();
@@ -765,21 +765,21 @@ public class CompraADO extends DBUtil {
                 detalleCompraTB.setPrecioCompra(resultSet.getDouble("PrecioCompra"));
                 detalleCompraTB.setDescuento(resultSet.getDouble("Descuento"));
                 detalleCompraTB.setIdImpuesto(resultSet.getInt("IdImpuesto"));
-                detalleCompraTB.setValorImpuesto(resultSet.getDouble("ValorImpuesto"));
+//                detalleCompraTB.setValorImpuesto(resultSet.getDouble("ValorImpuesto"));
 
                 //GENERAR COSTO
-                double importeBruto = detalleCompraTB.getPrecioCompra();
-                double descuento = detalleCompraTB.getDescuento();
-                double subImporteBruto = importeBruto - descuento;
-                double subImporteNeto = Tools.calculateTaxBruto(detalleCompraTB.getValorImpuesto(), subImporteBruto);
-                double impuesto = Tools.calculateTax(detalleCompraTB.getValorImpuesto(), subImporteNeto);
-                double importeNeto = subImporteNeto + impuesto;
+//                double importeBruto = detalleCompraTB.getPrecioCompra();
+//                double descuento = detalleCompraTB.getDescuento();
+//                double subImporteBruto = importeBruto - descuento;
+//                double subImporteNeto = Tools.calculateTaxBruto(detalleCompraTB.getValorImpuesto(), subImporteBruto);
+//                double impuesto = Tools.calculateTax(detalleCompraTB.getValorImpuesto(), subImporteNeto);
+//                double importeNeto = subImporteNeto + impuesto;
 
-                detalleCompraTB.setImporteBruto(importeBruto);
-                detalleCompraTB.setDescuentoBruto(descuento);
-                detalleCompraTB.setSubImporteNeto(subImporteNeto);
-                detalleCompraTB.setImpuestoGenerado(impuesto);
-                detalleCompraTB.setImporteNeto(importeNeto);
+//                detalleCompraTB.setImporteBruto(importeBruto);
+//                detalleCompraTB.setDescuentoBruto(descuento);
+//                detalleCompraTB.setSubImporteNeto(subImporteNeto);
+//                detalleCompraTB.setImpuestoGenerado(impuesto);
+//                detalleCompraTB.setImporteNeto(importeNeto);
 
                 empList.add(detalleCompraTB);
             }
@@ -1046,20 +1046,20 @@ public class CompraADO extends DBUtil {
                     detalleCompraTB.setPrecioCompra(rsEmps.getDouble("PrecioCompra"));
                     detalleCompraTB.setDescuento(rsEmps.getDouble("Descuento"));
                     detalleCompraTB.setIdImpuesto(rsEmps.getInt("IdImpuesto"));
-                    detalleCompraTB.setValorImpuesto(rsEmps.getDouble("ValorImpuesto"));
+//                    detalleCompraTB.setValorImpuesto(rsEmps.getDouble("ValorImpuesto"));
                     //GENERAR COSTO
-                    double importeBruto = detalleCompraTB.getPrecioCompra();
-                    double descuento = detalleCompraTB.getDescuento();
-                    double subImporteBruto = importeBruto - descuento;
-                    double subImporteNeto = Tools.calculateTaxBruto(detalleCompraTB.getValorImpuesto(), subImporteBruto);
-                    double impuesto = Tools.calculateTax(detalleCompraTB.getValorImpuesto(), subImporteNeto);
-                    double importeNeto = subImporteNeto + impuesto;
+//                    double importeBruto = detalleCompraTB.getPrecioCompra();
+//                    double descuento = detalleCompraTB.getDescuento();
+//                    double subImporteBruto = importeBruto - descuento;
+//                    double subImporteNeto = Tools.calculateTaxBruto(detalleCompraTB.getValorImpuesto(), subImporteBruto);
+//                    double impuesto = Tools.calculateTax(detalleCompraTB.getValorImpuesto(), subImporteNeto);
+//                    double importeNeto = subImporteNeto + impuesto;
 
-                    detalleCompraTB.setImporteBruto(importeBruto);
-                    detalleCompraTB.setDescuentoBruto(descuento);
-                    detalleCompraTB.setSubImporteNeto(subImporteNeto);
-                    detalleCompraTB.setImpuestoGenerado(impuesto);
-                    detalleCompraTB.setImporteNeto(importeNeto);
+//                    detalleCompraTB.setImporteBruto(importeBruto);
+//                    detalleCompraTB.setDescuentoBruto(descuento);
+//                    detalleCompraTB.setSubImporteNeto(subImporteNeto);
+//                    detalleCompraTB.setImpuestoGenerado(impuesto);
+//                    detalleCompraTB.setImporteNeto(importeNeto);
 
                     empList.add(detalleCompraTB);
                 }

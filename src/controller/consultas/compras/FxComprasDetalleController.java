@@ -161,7 +161,7 @@ public class FxComprasDetalleController implements Initializable {
                 lblNotas.setText(compraTB.getNotas().equalsIgnoreCase("") ? "NO TIENE NINGUNA NOTA" : compraTB.getNotas());
                 lblTipo.setText(compraTB.getTipoName());
                 lblEstado.setText(compraTB.getEstadoName());
-                lblTotalCompra.setText(compraTB.getMonedaNombre() + " " + Tools.roundingValue(compraTB.getTotal(), 2));
+                lblTotalCompra.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(compraTB.getTotal(), 2));
                 lblAlmacen.setText(compraTB.getAlmacenTB().getNombre());
 
                 switch (compraTB.getEstado()) {
@@ -190,7 +190,7 @@ public class FxComprasDetalleController implements Initializable {
                 if (!listComprasCredito.isEmpty()) {
                     lblMetodoPago.setText("Método de pago al crédito");
                     for (int i = 0; i < listComprasCredito.size(); i++) {
-                        vbCondicion.getChildren().add(adddElementCondicion("Nro." + ((i + 1) < 10 ? "00" + (i + 1) : ((i + 1) >= 10 && (i + 1) <= 99 ? "0" + (i + 1) : (i + 1))) + " Pago el " + listComprasCredito.get(i).getFechaPago() + " por " + compraTB.getMonedaNombre() + " " + Tools.roundingValue(listComprasCredito.get(i).getMonto(), 2)));
+                        vbCondicion.getChildren().add(adddElementCondicion("Nro." + ((i + 1) < 10 ? "00" + (i + 1) : ((i + 1) >= 10 && (i + 1) <= 99 ? "0" + (i + 1) : (i + 1))) + " Pago el " + listComprasCredito.get(i).getFechaPago() + " por " + compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(listComprasCredito.get(i).getMonto(), 2)));
                     }
                 } else {
                     lblMetodoPago.setText("Método de pago al contado");
@@ -216,7 +216,7 @@ public class FxComprasDetalleController implements Initializable {
             gpList.add(addElementGridPane("l2" + (i + 1), arrList.get(i).getSuministroTB().getClave() + "\n" + arrList.get(i).getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
             gpList.add(addElementGridPane("l3" + (i + 1), compraTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(arrList.get(i).getPrecioCompra(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
             gpList.add(addElementGridPane("l4" + (i + 1), "-" + Tools.roundingValue(arrList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
-            gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(arrList.get(i).getValorImpuesto(), 2) + "%", Pos.CENTER_RIGHT), 4, (i + 1));
+            gpList.add(addElementGridPane("l5" + (i + 1), arrList.get(i).getImpuestoTB().getNombre(), Pos.CENTER_RIGHT), 4, (i + 1));
             gpList.add(addElementGridPane("l6" + (i + 1), Tools.roundingValue(arrList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
             gpList.add(addElementGridPane("l7" + (i + 1), arrList.get(i).getSuministroTB().getUnidadCompraName(), Pos.CENTER_RIGHT), 6, (i + 1));
             gpList.add(addElementGridPane("l8" + (i + 1), compraTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(arrList.get(i).getCantidad() * (arrList.get(i).getPrecioCompra() - arrList.get(i).getDescuento()), 2), Pos.CENTER_RIGHT), 7, (i + 1));
@@ -239,17 +239,18 @@ public class FxComprasDetalleController implements Initializable {
     }
 
     private void calcularTotales() {
-        subImporteNeto = 0;
-        arrList.forEach(e -> subImporteNeto += (e.getSubImporteNeto() * e.getCantidad()));
-        lblSubImporteNeto.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(subImporteNeto, 2));
-
-        impuesto = 0;
-        arrList.forEach(e -> impuesto += (e.getImpuestoGenerado() * e.getCantidad()));
-        lblImpuesto.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuesto, 2));
-
-        importeNeto = 0;
-        arrList.forEach(e -> importeNeto += (e.getImporteNeto() * e.getCantidad()));
-        lblImporteNeto.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNeto, 2));
+//        subImporteNeto = 0;
+//        arrList.forEach(e -> subImporteNeto += (e.getSubImporteNeto() * e.getCantidad()));
+//        lblSubImporteNeto.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(subImporteNeto, 2));
+//
+//        impuesto = 0;
+//        arrList.forEach(e -> impuesto += (e.getImpuestoGenerado() * e.getCantidad()));
+//        lblImpuesto.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuesto, 2));
+//
+//        importeNeto = 0;
+//        arrList.forEach(e -> importeNeto += (e.getImporteNeto() * e.getCantidad()));
+//        lblImporteNeto.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNeto, 2));
+//    
     }
 
     private Text adddElementCondicion(String value) {

@@ -86,6 +86,34 @@ public class FxConfiguracionController implements Initializable {
     private VBox nodeRoles;
 
     private FxRolesController controllerRoles;
+
+    /*
+    Controller empleado
+     */
+    private FXMLLoader fXMLEmpleado;
+
+    private VBox nodeEmpleado;
+
+    private FxEmpleadosController controllerEmpleado;
+
+    /*
+    Controller moneda
+     */
+    private FXMLLoader fXMLMoneda;
+
+    private VBox nodeMoneda;
+
+    private FxMonedaController controllerMoneda;
+
+    /*
+    Controller moneda
+     */
+    private FXMLLoader fXMLImpuesto;
+
+    private VBox nodeImpuesto;
+
+    private FxImpuestoController controllerImpuesto;
+
     /*
     Controller ticket
      */
@@ -145,6 +173,18 @@ public class FxConfiguracionController implements Initializable {
             fXMLTicket = new FXMLLoader(getClass().getResource(FilesRouters.FX_TICKET));
             nodeTicketa = fXMLTicket.load();
             controllerTicket = fXMLTicket.getController();
+
+            fXMLImpuesto = new FXMLLoader(getClass().getResource(FilesRouters.FX_IMPUESTO));
+            nodeImpuesto = fXMLImpuesto.load();
+            controllerImpuesto = fXMLImpuesto.getController();
+
+            fXMLMoneda = new FXMLLoader(getClass().getResource(FilesRouters.FX_MONEDA));
+            nodeMoneda = fXMLMoneda.load();
+            controllerMoneda = fXMLMoneda.getController();
+
+            fXMLEmpleado = new FXMLLoader(getClass().getResource(FilesRouters.FX_EMPLEADO));
+            nodeEmpleado = fXMLEmpleado.load();
+            controllerEmpleado = fXMLEmpleado.getController();
 
             fXMLEtiquetas = new FXMLLoader(getClass().getResource(FilesRouters.FX_ETIQUETA));
             nodeEtiqueta = fXMLEtiquetas.load();
@@ -218,9 +258,9 @@ public class FxConfiguracionController implements Initializable {
         } else {
 
         }
-        
+
         if (subMenusTBs.get(10).getIdSubMenu() != 0 && !subMenusTBs.get(10).isEstado()) {
-             hbOperacionesDos.getChildren().remove(btnAlmacen);
+            hbOperacionesDos.getChildren().remove(btnAlmacen);
         }
 
     }
@@ -257,38 +297,23 @@ public class FxConfiguracionController implements Initializable {
     }
 
     private void openWindowEmployes() {
-        try {
-            FXMLLoader fXMLPrincipal = new FXMLLoader(getClass().getResource(FilesRouters.FX_EMPLEADO));
-            VBox node = fXMLPrincipal.load();
-            FxEmpleadosController controller = fXMLPrincipal.getController();
-            controller.setContent(fxPrincipalController);
-            fxPrincipalController.getVbContent().getChildren().clear();
-            AnchorPane.setLeftAnchor(node, 0d);
-            AnchorPane.setTopAnchor(node, 0d);
-            AnchorPane.setRightAnchor(node, 0d);
-            AnchorPane.setBottomAnchor(node, 0d);
-            fxPrincipalController.getVbContent().getChildren().add(node);           
-        } catch (IOException ex) {
-            System.out.println("Error en la view configuración:" + ex.getLocalizedMessage());
-        }
+        controllerEmpleado.setContent(fxPrincipalController);
+        fxPrincipalController.getVbContent().getChildren().clear();
+        AnchorPane.setLeftAnchor(nodeEmpleado, 0d);
+        AnchorPane.setTopAnchor(nodeEmpleado, 0d);
+        AnchorPane.setRightAnchor(nodeEmpleado, 0d);
+        AnchorPane.setBottomAnchor(nodeEmpleado, 0d);
+        fxPrincipalController.getVbContent().getChildren().add(nodeEmpleado);
     }
 
     private void openWindowMoney() {
-        try {
-            FXMLLoader fXMLPrincipal = new FXMLLoader(getClass().getResource(FilesRouters.FX_MONEDA));
-            VBox node = fXMLPrincipal.load();
-            FxMonedaController controller = fXMLPrincipal.getController();
-            controller.setContent(fxPrincipalController);
-            fxPrincipalController.getVbContent().getChildren().clear();
-            AnchorPane.setLeftAnchor(node, 0d);
-            AnchorPane.setTopAnchor(node, 0d);
-            AnchorPane.setRightAnchor(node, 0d);
-            AnchorPane.setBottomAnchor(node, 0d);
-            fxPrincipalController.getVbContent().getChildren().add(node);
-            controller.fillTableMonedas();
-        } catch (IOException ex) {
-            System.out.println("Error en la view configuración:" + ex.getLocalizedMessage());
-        }
+        controllerMoneda.setContent(fxPrincipalController);
+        fxPrincipalController.getVbContent().getChildren().clear();
+        AnchorPane.setLeftAnchor(nodeMoneda, 0d);
+        AnchorPane.setTopAnchor(nodeMoneda, 0d);
+        AnchorPane.setRightAnchor(nodeMoneda, 0d);
+        AnchorPane.setBottomAnchor(nodeMoneda, 0d);
+        fxPrincipalController.getVbContent().getChildren().add(nodeMoneda);
     }
 
     private void openWindowVoucher() {
@@ -302,20 +327,13 @@ public class FxConfiguracionController implements Initializable {
     }
 
     private void openWindowTex() {
-        try {
-            FXMLLoader fXMLPrincipal = new FXMLLoader(getClass().getResource(FilesRouters.FX_IMPUESTO));
-            VBox node = fXMLPrincipal.load();
-            FxImpuestoController controller = fXMLPrincipal.getController();
-            controller.setContent(fxPrincipalController);
-            fxPrincipalController.getVbContent().getChildren().clear();
-            AnchorPane.setLeftAnchor(node, 0d);
-            AnchorPane.setTopAnchor(node, 0d);
-            AnchorPane.setRightAnchor(node, 0d);
-            AnchorPane.setBottomAnchor(node, 0d);
-            fxPrincipalController.getVbContent().getChildren().add(node);
-        } catch (IOException ex) {
-            System.out.println("Error en la view configuración:" + ex.getLocalizedMessage());
-        }
+        controllerImpuesto.setContent(fxPrincipalController);
+        fxPrincipalController.getVbContent().getChildren().clear();
+        AnchorPane.setLeftAnchor(nodeImpuesto, 0d);
+        AnchorPane.setTopAnchor(nodeImpuesto, 0d);
+        AnchorPane.setRightAnchor(nodeImpuesto, 0d);
+        AnchorPane.setBottomAnchor(nodeImpuesto, 0d);
+        fxPrincipalController.getVbContent().getChildren().add(nodeImpuesto);
     }
 
     private void openWindowTickets() {

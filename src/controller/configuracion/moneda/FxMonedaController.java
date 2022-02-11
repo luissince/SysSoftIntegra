@@ -83,9 +83,19 @@ public class FxMonedaController implements Initializable {
         tcAbreviatura.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
         tcPredeterminado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+        
+        initLoad();
     }
 
-    public void fillTableMonedas() {
+    public void initLoad() {
+        if (!lblLoad.isVisible()) {
+            paginacion = 1;
+            fillTableMonedas();
+            opcion = 0;
+        }
+    }
+
+    private void fillTableMonedas() {
         ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -272,6 +282,18 @@ public class FxMonedaController implements Initializable {
     @FXML
     private void onActionRemove(ActionEvent event) {
         onEventRemover();
+    }
+
+    @FXML
+    private void onKeyPressedRecargar(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            initLoad();
+        }
+    }
+
+    @FXML
+    private void onActionRecargar(ActionEvent event) {
+        initLoad();
     }
 
     @FXML
