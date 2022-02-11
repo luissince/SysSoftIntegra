@@ -312,6 +312,9 @@ public class FxComprasController implements Initializable {
             searchComboBoxAlmacen.getComboBox().getSelectionModel().select(0);
         }
 
+        cbComprobante.getItems().clear();
+         cbComprobante.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0015", ""));
+        
         lblImporteBruto.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
         lblDescuento.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
         lblSubImporteNeto.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
@@ -664,7 +667,7 @@ public class FxComprasController implements Initializable {
     }
 
     @FXML
-    private void onKeyReleasedWindow(KeyEvent event) {
+    private void onKeyReleasedWindow(KeyEvent event) throws IOException {
         if (null != event.getCode()) {
             switch (event.getCode()) {
                 case F1:

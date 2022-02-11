@@ -65,7 +65,7 @@ public class TicketCompra {
             @Override
             public Object call() {
                 try {
-                    Object object = CompraADO.ListCompletaDetalleCompra(idCompra);
+                    Object object = CompraADO.ObtenerCompraId(idCompra);
                     if (object instanceof Object[]) {
                         Object[] objects = (Object[]) object;
                         CompraTB compraTB = (CompraTB) objects[0];

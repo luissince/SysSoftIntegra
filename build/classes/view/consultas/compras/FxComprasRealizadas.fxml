@@ -73,7 +73,7 @@
                                        <children>
                                           <VBox style="-fx-spacing: 0.5em;">
                                              <children>
-                                                <Label styleClass="labelRoboto13" text="Fecha inicial:" textFill="#020203">
+                                                <Label styleClass="labelRoboto13" text="Fecha Inicial" textFill="#020203">
                                                    <font>
                                                       <Font name="Calibri" size="15.0" />
                                                    </font>
@@ -90,7 +90,7 @@
                                           </VBox>
                                           <VBox style="-fx-spacing: 0.5em;">
                                              <children>
-                                                <Label styleClass="labelRoboto13" text="Fecha final:" textFill="#020203">
+                                                <Label styleClass="labelRoboto13" text="Fecha Final" textFill="#020203">
                                                    <font>
                                                       <Font name="Calibri" size="15.0" />
                                                    </font>
@@ -107,7 +107,24 @@
                                           </VBox>
                                           <VBox style="-fx-spacing: 0.5em;">
                                              <children>
-                                                <Label styleClass="labelRoboto13" text="Estado:" textFill="#020203">
+                                                <Label styleClass="labelRoboto13" text="Comprobantes" textFill="#020203">
+                                                   <font>
+                                                      <Font name="Calibri" size="15.0" />
+                                                   </font>
+                                                   <graphic>
+                                                      <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/recibo.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Label>
+                                                <ComboBox fx:id="cbComprobantes" onAction="#OnActionComprobantes" prefHeight="30.0" prefWidth="220.0" />
+                                             </children>
+                                          </VBox>
+                                          <VBox style="-fx-spacing: 0.5em;">
+                                             <children>
+                                                <Label styleClass="labelRoboto13" text="Estado" textFill="#020203">
                                                    <font>
                                                       <Font name="Calibri" size="15.0" />
                                                    </font>

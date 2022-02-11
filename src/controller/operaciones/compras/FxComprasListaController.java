@@ -75,12 +75,12 @@ public class FxComprasListaController implements Initializable {
     public void loadInit() {
         if (!lblLoad.isVisible()) {
             paginacion = 1;
-            fillPurchasesTable(0, "", "", "", 0);
+            fillPurchasesTable(0, "", "", "", 0, 0);
             opcion = 0;
         }
     }
 
-    private void fillPurchasesTable(int opcion, String value, String fechaInicial, String fechaFinal, int estadoCompra) {
+    private void fillPurchasesTable(int opcion, String value, String fechaInicial, String fechaFinal, int comprobate, int estadoCompra) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -90,7 +90,7 @@ public class FxComprasListaController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CompraADO.ListComprasRealizadas(opcion, value, fechaInicial, fechaFinal, estadoCompra, (paginacion - 1) * 20, 20);
+                return CompraADO.ListComprasRealizadas(opcion, value, fechaInicial, fechaFinal, comprobate, estadoCompra, (paginacion - 1) * 20, 20);
             }
         };
 
@@ -144,13 +144,14 @@ public class FxComprasListaController implements Initializable {
     private void onEventPaginacion() {
         switch (opcion) {
             case 0:
-                fillPurchasesTable(0, "", "", "", 0);
+                fillPurchasesTable(0, "", "", "", 0, 0);
                 break;
             case 1:
-                fillPurchasesTable(1, txtSearch.getText().trim(), "", "", 0);
+                fillPurchasesTable(1, txtSearch.getText().trim(), "", "", 0, 0);
                 break;
             case 2:
                 fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                        0,
                         0);
                 break;
         }
@@ -205,7 +206,7 @@ public class FxComprasListaController implements Initializable {
                 && event.getCode() != KeyCode.ENTER) {
             if (!lblLoad.isVisible()) {
                 paginacion = 1;
-                fillPurchasesTable(1, txtSearch.getText().trim(), "", "", 0);
+                fillPurchasesTable(1, txtSearch.getText().trim(), "", "", 0, 0);
                 opcion = 1;
             }
         }
@@ -216,7 +217,7 @@ public class FxComprasListaController implements Initializable {
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
             if (!lblLoad.isVisible()) {
                 paginacion = 1;
-                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
+                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0, 0);
                 opcion = 2;
             }
         }

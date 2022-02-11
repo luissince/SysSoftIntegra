@@ -11,6 +11,7 @@ public class CompraTB {
     private String idCompra;
     private String idProveedor;
     private int idComprobante;
+    private String comprobante;
     private String serie;
     private String numeracion;
     private int idMoneda;
@@ -44,7 +45,8 @@ public class CompraTB {
     private AlmacenTB almacenTB;
     
     private ArrayList<CompraCreditoTB> compraCreditoTBs;
-    private ObservableList<DetalleCompraTB> detalleCompraTBs;
+    private ArrayList<DetalleCompraTB> detalleCompraTBs;
+    
     private HBox hbOpciones;
 
     private double montoTotal;
@@ -85,6 +87,14 @@ public class CompraTB {
 
     public void setIdComprobante(int idComprobante) {
         this.idComprobante = idComprobante;
+    }
+
+    public String getComprobante() {
+        return comprobante;
+    }
+
+    public void setComprobante(String comprobante) {
+        this.comprobante = comprobante;
     }
 
     public String getSerie() {
@@ -319,11 +329,11 @@ public class CompraTB {
         this.compraCreditoTBs = compraCreditoTBs;
     }
 
-    public ObservableList<DetalleCompraTB> getDetalleCompraTBs() {
+    public ArrayList<DetalleCompraTB> getDetalleCompraTBs() {
         return detalleCompraTBs;
     }
 
-    public void setDetalleCompraTBs(ObservableList<DetalleCompraTB> detalleCompraTBs) {
+    public void setDetalleCompraTBs(ArrayList<DetalleCompraTB> detalleCompraTBs) {
         this.detalleCompraTBs = detalleCompraTBs;
     }
 

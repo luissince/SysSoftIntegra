@@ -7,10 +7,10 @@ import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -179,7 +179,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
         }
     }
 
-    private void fillArticlesTable(ObservableList<DetalleCompraTB> arrList) {
+    private void fillArticlesTable(ArrayList<DetalleCompraTB> arrList) {
         for (int i = 0; i < arrList.size(); i++) {
             gpDetalle.add(addElementGridPane("l1" + (i + 1), arrList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
             gpDetalle.add(addElementGridPane("l2" + (i + 1), arrList.get(i).getSuministroTB().getClave() + "\n" + arrList.get(i).getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
@@ -222,7 +222,6 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
     }
 
     private void onEventAmortizar() {
-
         try {
             fxPrincipalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_AMARTIZAR_PAGOS);
