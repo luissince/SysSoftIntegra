@@ -1092,89 +1092,104 @@ public class CompraADO extends DBUtil {
         try {
             dbConnect();
             getConnection().setAutoCommit(false);
-
-            statementValidate = DBUtil.getConnection().prepareStatement("SELECT sum(dc.Cantidad * (dc.PrecioCompra-dc.Descuento)) as Total "
-                    + "FROM CompraTB AS c \n"
-                    + "INNER JOIN DetalleCompraTB AS dc ON dc.IdCompra = c.IdCompra\n"
-                    + "where c.IdCompra = ?");
+            statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM CompraTB WHERE IdCompra = ? AND EstadoCompra = 3");
             statementValidate.setString(1, compraCreditoTB.getIdCompra());
-            ResultSet resultSet = statementValidate.executeQuery();
-            if (resultSet.next()) {
-                double total = Double.parseDouble(Tools.roundingValue(resultSet.getDouble("Total"), 2));
+            if (statementValidate.executeQuery().next()) {
+                getConnection().rollback();
 
-                callableIdCompraCredito = DBUtil.getConnection().prepareCall("{? = call Fc_Compra_Credito_Codigo_Alfanumerico()}");
-                callableIdCompraCredito.registerOutParameter(1, java.sql.Types.VARCHAR);
-                callableIdCompraCredito.execute();
-                String idCompraCreditoCredito = callableIdCompraCredito.getString(1);
-
-                statementIngreso = DBUtil.getConnection().prepareStatement("INSERT INTO IngresoTB(IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)VALUES(?,?,?,?,?,?,?,?)");
-                if (ingresoTB != null) {
-                    statementIngreso.setString(1, idCompraCreditoCredito);
-                    statementIngreso.setString(2, ingresoTB.getIdUsuario());
-                    statementIngreso.setString(3, ingresoTB.getDetalle().toUpperCase());
-                    statementIngreso.setInt(4, ingresoTB.getProcedencia());
-                    statementIngreso.setString(5, ingresoTB.getFecha());
-                    statementIngreso.setString(6, ingresoTB.getHora());
-                    statementIngreso.setInt(7, ingresoTB.getForma());
-                    statementIngreso.setDouble(8, ingresoTB.getMonto());
-                    statementIngreso.addBatch();
-                }
-
-                statementMovimientoCaja = DBUtil.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB(IdCaja,FechaMovimiento,HoraMovimiento,Comentario,TipoMovimiento,Monto,IdProcedencia)VALUES(?,?,?,?,?,?,?)");
-                if (movimientoCajaTB != null) {
-                    statementMovimientoCaja.setString(1, movimientoCajaTB.getIdCaja());
-                    statementMovimientoCaja.setString(2, movimientoCajaTB.getFechaMovimiento());
-                    statementMovimientoCaja.setString(3, movimientoCajaTB.getHoraMovimiento());
-                    statementMovimientoCaja.setString(4, movimientoCajaTB.getComentario().toUpperCase());
-                    statementMovimientoCaja.setInt(5, movimientoCajaTB.getTipoMovimiento());
-                    statementMovimientoCaja.setDouble(6, movimientoCajaTB.getMonto());
-                    statementMovimientoCaja.setString(7, idCompraCreditoCredito);
-                    statementMovimientoCaja.addBatch();
-                }
-
-                statementCompraCredito = DBUtil.getConnection().prepareStatement("INSERT INTO CompraCreditoTB(IdCompra,IdCompraCredito,Monto,FechaPago,HoraPago,Estado,IdUsuario,Observacion) VALUES(?,?,?,?,?,?,?,?)");
-                statementCompraCredito.setString(1, compraCreditoTB.getIdCompra());
-                statementCompraCredito.setString(2, idCompraCreditoCredito);
-                statementCompraCredito.setDouble(3, compraCreditoTB.getMonto());
-                statementCompraCredito.setString(4, compraCreditoTB.getFechaPago());
-                statementCompraCredito.setString(5, compraCreditoTB.getHoraPago());
-                statementCompraCredito.setBoolean(6, compraCreditoTB.isEstado());
-                statementCompraCredito.setString(7, compraCreditoTB.getIdEmpleado());
-                statementCompraCredito.setString(8, compraCreditoTB.getObservacion());
-                statementCompraCredito.addBatch();
-
-                statementValidate = DBUtil.getConnection().prepareStatement("SELECT Monto FROM CompraCreditoTB WHERE IdCompra = ?");
-                statementValidate.setString(1, compraCreditoTB.getIdCompra());
-                resultSet = statementValidate.executeQuery();
-                double montoTotal = 0;
-                while (resultSet.next()) {
-                    montoTotal += resultSet.getDouble("Monto");
-                }
-
-                statementCompra = DBUtil.getConnection().prepareStatement("UPDATE CompraTB SET EstadoCompra = 1 WHERE IdCompra = ?");
-                if ((montoTotal + compraCreditoTB.getMonto()) >= total) {
-                    statementCompra.setString(1, compraCreditoTB.getIdCompra());
-                    statementCompra.addBatch();
-                }
-
-                statementCompraCredito.executeBatch();
-                statementIngreso.executeBatch();
-                statementMovimientoCaja.executeBatch();
-                statementCompra.executeBatch();
-                DBUtil.getConnection().commit();
-
-                result.setId((short) 1);
-                result.setState("inserted");
-                result.setIdResult(idCompraCreditoCredito);
-                result.setMessage("Se completo correctamente el proceso.");
-
-                return result;
-            } else {
                 result.setId((short) 2);
-                result.setMessage("Problemas al encontrar le venta con el id indicado " + compraCreditoTB.getIdCompra());
+                result.setMessage("No se pueden realizar pagos a una compra anulada.");
                 result.setState("error");
 
                 return result;
+            } else {
+
+                statementValidate = DBUtil.getConnection().prepareStatement("SELECT "
+                        + "sum(dc.Cantidad * (dc.PrecioCompra-dc.Descuento)) as Total "
+                        + "FROM CompraTB AS c "
+                        + "INNER JOIN DetalleCompraTB AS dc ON dc.IdCompra = c.IdCompra "
+                        + "where c.IdCompra = ?");
+                statementValidate.setString(1, compraCreditoTB.getIdCompra());
+                ResultSet resultSet = statementValidate.executeQuery();
+                if (resultSet.next()) {
+                    double total = Double.parseDouble(Tools.roundingValue(resultSet.getDouble("Total"), 2));
+
+                    callableIdCompraCredito = DBUtil.getConnection().prepareCall("{? = call Fc_Compra_Credito_Codigo_Alfanumerico()}");
+                    callableIdCompraCredito.registerOutParameter(1, java.sql.Types.VARCHAR);
+                    callableIdCompraCredito.execute();
+                    String idCompraCreditoCredito = callableIdCompraCredito.getString(1);
+
+                    statementIngreso = DBUtil.getConnection().prepareStatement("INSERT INTO IngresoTB(IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)VALUES(?,?,?,?,?,?,?,?)");
+                    if (ingresoTB != null) {
+                        statementIngreso.setString(1, idCompraCreditoCredito);
+                        statementIngreso.setString(2, ingresoTB.getIdUsuario());
+                        statementIngreso.setString(3, ingresoTB.getDetalle().toUpperCase());
+                        statementIngreso.setInt(4, ingresoTB.getProcedencia());
+                        statementIngreso.setString(5, ingresoTB.getFecha());
+                        statementIngreso.setString(6, ingresoTB.getHora());
+                        statementIngreso.setInt(7, ingresoTB.getForma());
+                        statementIngreso.setDouble(8, ingresoTB.getMonto());
+                        statementIngreso.addBatch();
+                    }
+
+                    statementMovimientoCaja = DBUtil.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB(IdCaja,FechaMovimiento,HoraMovimiento,Comentario,TipoMovimiento,Monto,IdProcedencia)VALUES(?,?,?,?,?,?,?)");
+                    if (movimientoCajaTB != null) {
+                        statementMovimientoCaja.setString(1, movimientoCajaTB.getIdCaja());
+                        statementMovimientoCaja.setString(2, movimientoCajaTB.getFechaMovimiento());
+                        statementMovimientoCaja.setString(3, movimientoCajaTB.getHoraMovimiento());
+                        statementMovimientoCaja.setString(4, movimientoCajaTB.getComentario().toUpperCase());
+                        statementMovimientoCaja.setInt(5, movimientoCajaTB.getTipoMovimiento());
+                        statementMovimientoCaja.setDouble(6, movimientoCajaTB.getMonto());
+                        statementMovimientoCaja.setString(7, idCompraCreditoCredito);
+                        statementMovimientoCaja.addBatch();
+                    }
+
+                    statementCompraCredito = DBUtil.getConnection().prepareStatement("INSERT INTO CompraCreditoTB(IdCompra,IdCompraCredito,Monto,FechaPago,HoraPago,Estado,IdUsuario,Observacion) VALUES(?,?,?,?,?,?,?,?)");
+                    statementCompraCredito.setString(1, compraCreditoTB.getIdCompra());
+                    statementCompraCredito.setString(2, idCompraCreditoCredito);
+                    statementCompraCredito.setDouble(3, compraCreditoTB.getMonto());
+                    statementCompraCredito.setString(4, compraCreditoTB.getFechaPago());
+                    statementCompraCredito.setString(5, compraCreditoTB.getHoraPago());
+                    statementCompraCredito.setBoolean(6, compraCreditoTB.isEstado());
+                    statementCompraCredito.setString(7, compraCreditoTB.getIdEmpleado());
+                    statementCompraCredito.setString(8, compraCreditoTB.getObservacion());
+                    statementCompraCredito.addBatch();
+
+                    statementValidate = DBUtil.getConnection().prepareStatement("SELECT Monto FROM CompraCreditoTB WHERE IdCompra = ?");
+                    statementValidate.setString(1, compraCreditoTB.getIdCompra());
+                    resultSet = statementValidate.executeQuery();
+                    double montoTotal = 0;
+                    while (resultSet.next()) {
+                        montoTotal += resultSet.getDouble("Monto");
+                    }
+
+                    statementCompra = DBUtil.getConnection().prepareStatement("UPDATE CompraTB SET EstadoCompra = 1 WHERE IdCompra = ?");
+                    if ((montoTotal + compraCreditoTB.getMonto()) >= total) {
+                        statementCompra.setString(1, compraCreditoTB.getIdCompra());
+                        statementCompra.addBatch();
+                    }
+
+                    statementCompraCredito.executeBatch();
+                    statementIngreso.executeBatch();
+                    statementMovimientoCaja.executeBatch();
+                    statementCompra.executeBatch();
+                    DBUtil.getConnection().commit();
+
+                    result.setId((short) 1);
+                    result.setState("inserted");
+                    result.setIdResult(idCompraCreditoCredito);
+                    result.setMessage("Se completo correctamente el proceso.");
+
+                    return result;
+                } else {
+                    getConnection().rollback();
+
+                    result.setId((short) 2);
+                    result.setMessage("Problemas al encontrar la compra con el id indicado " + compraCreditoTB.getIdCompra());
+                    result.setState("error");
+
+                    return result;
+                }
             }
         } catch (SQLException | NullPointerException e) {
             try {
