@@ -45,6 +45,7 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import model.CompraCreditoTB;
 import model.CotizacionDetalleTB;
+import model.DetalleCompraTB;
 import model.GuiaRemisionDetalleTB;
 import model.HistorialSuministroSalidaTB;
 import model.ImageADO;
@@ -597,6 +598,38 @@ public class BillPrintable implements Printable {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad() * (arrList.get(m).getCosto() - arrList.get(m).getDescuento()), 2)));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("unimearticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getSuministroTB().getUnidadCompraName()));
+                }
+                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                lines = fieldTicket.getLines();
+            }
+        }
+        return lines;
+    }
+
+    public int hbDetalleCompra(HBox hBox, HBox box, ArrayList<DetalleCompraTB> arrList, int m) {
+        int lines = 0;
+        for (int j = 0; j < box.getChildren().size(); j++) {
+            if (box.getChildren().get(j) instanceof TextFieldTicket) {
+                TextFieldTicket fieldTicket = ((TextFieldTicket) box.getChildren().get(j));
+                if (fieldTicket.getVariable().equalsIgnoreCase("numfilas")) {
+                    fieldTicket.setText(Tools.AddText2Guines("" + (m + 1)));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("codalternoarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(""));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("codbarrasarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getSuministroTB().getClave()));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("nombretarticulo")) {
+                    String nombreMarcaReplace = arrList.get(m).getSuministroTB().getNombreMarca().replaceAll("\"", "");
+                    fieldTicket.setText(Tools.AddText2Guines(nombreMarcaReplace));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("cantarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad(), 2)));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("costarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getPrecioCompra(), 2)));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad() * (arrList.get(m).getPrecioCompra() - arrList.get(m).getDescuento()), 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("unimearticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getSuministroTB().getUnidadCompraName()));
                 }

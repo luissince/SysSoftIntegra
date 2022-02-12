@@ -106,8 +106,6 @@ public class TicketCuentasPorPagar {
                                 return printTicketWithDesingCuentaPagarUnico(compraCreditoTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
                             } else {
                                 return "empty";
-//                                billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
-//                                return printTicketNoDesingCuentaPagarUnico(compraCreditoTB, nombreImpresora, cortaPapel);
                             }
                         } catch (PrinterException | IOException | PrintException ex) {
                             return "Error en imprimir: " + ex.getLocalizedMessage();
@@ -116,7 +114,7 @@ public class TicketCuentasPorPagar {
                         return (String) object;
                     }
                 } else {
-                    Object object = CompraADO.ListarCompraCredito(idCompra);
+                    Object object = CompraADO.Obtener_Compra_ById_For_Credito(idCompra);
                     if (object instanceof CompraTB) {
                         CompraTB compraTB = (CompraTB) object;
                         try {
@@ -124,8 +122,6 @@ public class TicketCuentasPorPagar {
                                 return printTicketWithDesingCuentaPagar(compraTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
                             } else {
                                 return "empty";
-//                                billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
-//                                return printTicketNoDesingCuentaPagar(compraTB, nombreImpresora, cortaPapel);
                             }
                         } catch (PrinterException | IOException | PrintException ex) {
                             return "Error en imprimir: " + ex.getLocalizedMessage();
@@ -256,7 +252,7 @@ public class TicketCuentasPorPagar {
             HBox box = ((HBox) hbPie.getChildren().get(i));
 
             billPrintable.hbPie(box,
-                    "M",                  
+                    "M",
                     "0.00",
                     "0.00",
                     "0.00",
@@ -367,7 +363,7 @@ public class TicketCuentasPorPagar {
             HBox box = ((HBox) hbPie.getChildren().get(i));
 
             billPrintable.hbPie(box,
-                    "M",                    
+                    "M",
                     "0.00",
                     "0.00",
                     "0.00",
@@ -418,7 +414,7 @@ public class TicketCuentasPorPagar {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                Object object = CompraADO.ListarCompraCredito(idCompra);
+                Object object = CompraADO.Obtener_Compra_ById_For_Credito(idCompra);
                 if (object instanceof CompraTB) {
                     try {
                         CompraTB compraTB = (CompraTB) object;
@@ -453,23 +449,6 @@ public class TicketCuentasPorPagar {
                 } else {
                     return (String) object;
                 }
-
-//                if (!Tools.isText(idCompra) && !Tools.isText(idCompraCredito)) {
-//                    Object object = CompraADO.ImprimirCompraCreditoById(idCompra, idCompraCredito);
-//                    if (object instanceof CompraCreditoTB) {
-//                        CompraCreditoTB compraCreditoTB = (CompraCreditoTB) object;
-//                        return "";
-//                    } else {
-//                        return (String) object;
-//                    }
-//                } else {
-//                    Object object = CompraADO.ListarCompraCredito(idCompra);
-//                    if (object instanceof CompraTB) {
-//                        return (CompraTB) object;
-//                    } else {
-//                        return (String) object;
-//                    }
-//                }
             }
         };
         task.setOnScheduled(w -> {

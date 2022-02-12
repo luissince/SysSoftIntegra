@@ -96,7 +96,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CompraADO.ListarCompraCredito(idCompra);
+                return CompraADO.Obtener_Compra_ById_For_Credito(idCompra);
             }
         };
         task.setOnScheduled(w -> {
@@ -144,7 +144,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
                 });
 
                 fillVentasDetalleTable();
-                fillArticlesTable(compraTB.getDetalleCompraTBs());
+                fillProductosTable(compraTB.getDetalleCompraTBs());
                 spBody.setDisable(false);
                 hbLoad.setVisible(false);
             } else {
@@ -179,12 +179,12 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
         }
     }
 
-    private void fillArticlesTable(ArrayList<DetalleCompraTB> arrList) {
+    private void fillProductosTable(ArrayList<DetalleCompraTB> arrList) {
         for (int i = 0; i < arrList.size(); i++) {
             gpDetalle.add(addElementGridPane("l1" + (i + 1), arrList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
             gpDetalle.add(addElementGridPane("l2" + (i + 1), arrList.get(i).getSuministroTB().getClave() + "\n" + arrList.get(i).getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
             gpDetalle.add(addElementGridPane("l3" + (i + 1), Tools.roundingValue(arrList.get(i).getPrecioCompra(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpDetalle.add(addElementGridPane("l4" + (i + 1), "-" + Tools.roundingValue(arrList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
+            gpDetalle.add(addElementGridPane("l4" + (i + 1), Tools.roundingValue(arrList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
             gpDetalle.add(addElementGridPane("l5" + (i + 1), arrList.get(i).getImpuestoTB().getNombre(), Pos.CENTER_RIGHT), 4, (i + 1));
             gpDetalle.add(addElementGridPane("l6" + (i + 1), Tools.roundingValue(arrList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
             gpDetalle.add(addElementGridPane("l7" + (i + 1), arrList.get(i).getSuministroTB().getUnidadCompraName(), Pos.CENTER_RIGHT), 6, (i + 1));
@@ -196,8 +196,8 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
         Label label = new Label(nombre);
         label.setId(id);
         label.setGraphic(node);
-        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.getStyleClass().add("labelRoboto13");
+        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.setAlignment(pos);
         label.setWrapText(true);
         label.setPrefWidth(Control.USE_COMPUTED_SIZE);
@@ -210,8 +210,8 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
     private Label addElementGridPane(String id, String nombre, Pos pos) {
         Label label = new Label(nombre);
         label.setId(id);
-        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.getStyleClass().add("labelRoboto13");
+        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.setAlignment(pos);
         label.setWrapText(true);
         label.setPrefWidth(Control.USE_COMPUTED_SIZE);

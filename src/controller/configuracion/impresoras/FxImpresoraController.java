@@ -336,6 +336,19 @@ public class FxImpresoraController implements Initializable {
                 Session.FORMATO_IMPRESORA_VENTA = rbTicket.isSelected() ? "ticket" : "a4";
                 Session.DESING_IMPRESORA_VENTA = rbTicketWithDesing.isSelected() ? "withdesing" : "nodesing";
                 Tools.AlertMessageInformation(vbWindow, "Impresora", "Se guardo la configuración correctamente.");
+            } else if (cbTipo.getSelectionModel().getSelectedItem().getNombreTicket().equals("COMPRA")) {
+                prop.setProperty("printerNameCompra", cbImpresoras.getSelectionModel().getSelectedItem());
+                prop.setProperty("printerCutPaperCompra", cbPaperCut.isSelected() + "");
+                prop.setProperty("printerTypeFormatCompra", rbTicket.isSelected() ? "ticket" : "a4");
+                prop.setProperty("printerTypeDesingCompra", rbTicketWithDesing.isSelected() ? "withdesing" : "nodesing");
+                prop.store(output, "Ruta de configuración de la impresora de compra");
+
+                Session.ESTADO_IMPRESORA_COMPRA = true;
+                Session.NOMBRE_IMPRESORA_COMPRA = cbImpresoras.getSelectionModel().getSelectedItem();
+                Session.CORTAPAPEL_IMPRESORA_COMPRA = cbPaperCut.isSelected();
+                Session.FORMATO_IMPRESORA_COMPRA = rbTicket.isSelected() ? "ticket" : "a4";
+                Session.DESING_IMPRESORA_COMPRA = rbTicketWithDesing.isSelected() ? "withdesing" : "nodesing";
+                Tools.AlertMessageInformation(vbWindow, "Impresora", "Se guardo la configuración correctamente.");
             } else if (cbTipo.getSelectionModel().getSelectedItem().getNombreTicket().equals("PRE VENTA")) {
                 prop.setProperty("printerNamePreVenta", cbImpresoras.getSelectionModel().getSelectedItem());
                 prop.setProperty("printerCutPaperPreVenta", cbPaperCut.isSelected() + "");
