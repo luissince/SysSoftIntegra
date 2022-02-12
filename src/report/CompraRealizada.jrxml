@@ -3,7 +3,6 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="NUMEROCOMPRA" class="java.lang.String"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
 	<parameter name="ICON" class="java.io.InputStream"/>
 	<parameter name="EMPRESA" class="java.lang.String"/>
@@ -14,13 +13,12 @@
 	<parameter name="PAGINAWEB" class="java.lang.String"/>
 	<parameter name="DATOSPROVEEDOR" class="java.lang.String"/>
 	<parameter name="DIRECCIONPROVEEDOR" class="java.lang.String"/>
-	<parameter name="FECHAELABORACION" class="java.lang.String"/>
+	<parameter name="FECHAREGISTRO" class="java.lang.String"/>
 	<parameter name="DOCUMENTOPROVEEDOR" class="java.lang.String"/>
 	<parameter name="PROVEEDORTELEFONOS" class="java.lang.String"/>
 	<parameter name="PROVEEDOREMAIL" class="java.lang.String"/>
 	<parameter name="COMPROBANTE" class="java.lang.String"/>
 	<parameter name="MONEDA" class="java.lang.String"/>
-	<parameter name="SIMBOLO" class="java.lang.String"/>
 	<parameter name="VALORSOLES" class="java.lang.String"/>
 	<parameter name="NOTAS" class="java.lang.String"/>
 	<parameter name="VALOR_VENTA" class="java.lang.String"/>
@@ -28,12 +26,13 @@
 	<parameter name="SUB_IMPORTE" class="java.lang.String"/>
 	<parameter name="IMPUESTO_TOTAL" class="java.lang.String"/>
 	<parameter name="IMPORTE_TOTAL" class="java.lang.String"/>
-	<field name="id" class="java.lang.Integer"/>
-	<field name="cantidad" class="java.lang.Double"/>
-	<field name="medida" class="java.lang.String"/>
-	<field name="descripcion" class="java.lang.String"/>
-	<field name="descuento" class="java.lang.Double"/>
-	<field name="precioCompra" class="java.lang.Double"/>
+	<field name="id" class="java.lang.String"/>
+	<field name="cantidad" class="java.lang.String"/>
+	<field name="unidad" class="java.lang.String"/>
+	<field name="producto" class="java.lang.String"/>
+	<field name="costo" class="java.lang.String"/>
+	<field name="descuento" class="java.lang.String"/>
+	<field name="importe" class="java.lang.String"/>
 	<background>
 		<band height="802" splitType="Stretch">
 			<rectangle>
@@ -51,7 +50,7 @@
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="0" y="115" width="274" height="15" forecolor="#020203" uuid="f564348e-0f9e-4d21-b6c3-36ac536b8f35"/>
+				<reportElement x="0" y="115" width="555" height="15" forecolor="#020203" uuid="f564348e-0f9e-4d21-b6c3-36ac536b8f35"/>
 				<box>
 					<topPen lineColor="#373B46"/>
 					<leftPen lineWidth="0.25" lineColor="#373B46"/>
@@ -77,20 +76,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DIRECCIONPROVEEDOR}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement mode="Opaque" x="281" y="103" width="274" height="12" forecolor="#FFFFFF" backcolor="#020203" uuid="4a157bf2-d816-47fc-b3ba-1150d20b5a38"/>
-				<box>
-					<topPen lineWidth="0.25" lineColor="#373B46"/>
-					<leftPen lineWidth="0.25" lineColor="#373B46"/>
-					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
-					<rightPen lineWidth="0.25" lineColor="#373B46"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="8" isBold="false"/>
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<text><![CDATA[Comprobante]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="281" y="169" width="274" height="15" forecolor="#020203" uuid="b52cce04-5e98-4040-9719-502a82b48175"/>
 				<box>
@@ -116,19 +101,6 @@
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{PROVEEDORTELEFONOS}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="281" y="115" width="274" height="15" forecolor="#020203" uuid="4606aaec-e287-482f-8ae1-e73d1c15f751"/>
-				<box>
-					<leftPen lineWidth="0.25" lineColor="#373B46"/>
-					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
-					<rightPen lineWidth="0.25" lineColor="#373B46"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7"/>
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{COMPROBANTE}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement mode="Opaque" x="281" y="157" width="274" height="12" forecolor="#FFFFFF" backcolor="#020203" uuid="ecf98924-8f98-4b93-bb98-0233b94ab695"/>
@@ -173,7 +145,7 @@
 				<text><![CDATA[Celular]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="103" width="274" height="12" forecolor="#FFFFFF" backcolor="#020203" uuid="670563d4-5b3e-437f-b755-af0890814198"/>
+				<reportElement mode="Opaque" x="0" y="103" width="555" height="12" forecolor="#FFFFFF" backcolor="#020203" uuid="670563d4-5b3e-437f-b755-af0890814198"/>
 				<box>
 					<topPen lineWidth="0.25" lineColor="#373B46"/>
 					<leftPen lineWidth="0.25" lineColor="#373B46"/>
@@ -217,22 +189,8 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DOCUMENTOEMPRESA}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement mode="Opaque" x="333" y="16" width="222" height="20" forecolor="#FFFFFF" backcolor="#FE3152" uuid="b74b96c8-85a1-41af-9b6a-94c8d435f77f"/>
-				<box>
-					<pen lineWidth="0.0" lineColor="#FE3152"/>
-					<topPen lineWidth="0.0" lineColor="#FE3152"/>
-					<leftPen lineWidth="0.0" lineColor="#FE3152"/>
-					<bottomPen lineWidth="0.0" lineColor="#FE3152"/>
-					<rightPen lineWidth="0.0" lineColor="#FE3152"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
-				</textElement>
-				<text><![CDATA[COMPRA]]></text>
-			</staticText>
 			<textField>
-				<reportElement mode="Opaque" x="333" y="36" width="222" height="16" forecolor="#FFFFFF" backcolor="#FE3152" uuid="9c1ece07-d818-424d-b96d-ce77fa52ee6a"/>
+				<reportElement mode="Opaque" x="333" y="16" width="222" height="36" forecolor="#FFFFFF" backcolor="#FE3152" uuid="9c1ece07-d818-424d-b96d-ce77fa52ee6a"/>
 				<box>
 					<pen lineWidth="0.0" lineColor="#FE3152"/>
 					<topPen lineWidth="0.0" lineColor="#FE3152"/>
@@ -244,7 +202,7 @@
 					<font fontName="Arial" size="11"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{NUMEROCOMPRA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{COMPROBANTE}]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="333" y="52" width="222" height="6" backcolor="#B5B5B5" uuid="2a118442-8fb3-4c15-8b4c-e63f09ad753e"/>
@@ -278,7 +236,7 @@
 					<font fontName="Arial" size="9"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{FECHAELABORACION}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{FECHAREGISTRO}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="333" y="77" width="111" height="15" forecolor="#F0F3FC" uuid="99a684e2-6ee6-42ac-901b-080ec550b71d"/>
@@ -344,7 +302,7 @@
 				<text><![CDATA[UNIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="425" y="0" width="65" height="15" forecolor="#F0F3FC" backcolor="#020203" uuid="7439d768-111f-4bf1-8d13-e78409b9a4a3">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="360" y="0" width="65" height="15" forecolor="#F0F3FC" backcolor="#020203" uuid="7439d768-111f-4bf1-8d13-e78409b9a4a3">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4a409c07-f7c6-4edc-a1fd-bcf829901b1f"/>
 				</reportElement>
 				<box>
@@ -356,10 +314,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="false"/>
 				</textElement>
-				<text><![CDATA[PRECIO]]></text>
+				<text><![CDATA[COSTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="165" y="0" width="260" height="15" forecolor="#F0F3FC" backcolor="#020203" uuid="3a61fb4b-4333-459b-978b-cf3bf32b9450">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="165" y="0" width="195" height="15" forecolor="#F0F3FC" backcolor="#020203" uuid="3a61fb4b-4333-459b-978b-cf3bf32b9450">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4a409c07-f7c6-4edc-a1fd-bcf829901b1f"/>
 				</reportElement>
 				<box>
@@ -388,6 +346,21 @@
 				</textElement>
 				<text><![CDATA[IMPORTE]]></text>
 			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="425" y="0" width="65" height="15" forecolor="#F0F3FC" backcolor="#020203" uuid="bbaced0d-5654-4c59-a152-36359d65c73b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4a409c07-f7c6-4edc-a1fd-bcf829901b1f"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25" lineColor="#373B46"/>
+					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
+					<rightPen lineWidth="0.25" lineColor="#373B46"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[DESCUENTO]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -399,6 +372,7 @@
 				<box>
 					<topPen lineWidth="0.25" lineColor="#373B46"/>
 					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
 					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -413,12 +387,13 @@
 				<box>
 					<topPen lineWidth="0.25" lineColor="#373B46"/>
 					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
 					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new BigDecimal(new Double($F{cantidad})).setScale(2, RoundingMode.HALF_UP)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="94" y="0" width="71" height="16" forecolor="#020203" uuid="14994432-39e3-4973-bacd-d61512c7222c">
@@ -427,42 +402,45 @@
 				<box>
 					<topPen lineWidth="0.25" lineColor="#373B46"/>
 					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
 					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{medida}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{unidad}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="165" y="0" width="260" height="16" forecolor="#020203" uuid="6fb45474-f57c-48fd-9a7e-ef94bdd45036">
+				<reportElement stretchType="RelativeToBandHeight" x="165" y="0" width="196" height="16" forecolor="#020203" uuid="6fb45474-f57c-48fd-9a7e-ef94bdd45036">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="69abe7fe-4546-4e75-929f-a504af6d82c8"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="0.25" lineColor="#373B46"/>
 					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
 					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="false"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="425" y="0" width="64" height="16" forecolor="#020203" uuid="26286a55-ee64-4072-be6b-162c83a1dd71">
+				<reportElement stretchType="RelativeToBandHeight" x="361" y="0" width="64" height="16" forecolor="#020203" uuid="26286a55-ee64-4072-be6b-162c83a1dd71">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="69abe7fe-4546-4e75-929f-a504af6d82c8"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="0.25" lineColor="#373B46"/>
 					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
 					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="false"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new BigDecimal(new Double($F{precioCompra})).setScale(2, RoundingMode.HALF_UP)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{costo}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="490" y="0" width="65" height="16" forecolor="#000000" uuid="abd17372-0488-4ac6-a888-c9cd4724f2ed">
@@ -471,13 +449,30 @@
 				<box>
 					<topPen lineWidth="0.25" lineColor="#373B46"/>
 					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
 					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="false"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new BigDecimal(new Double($F{cantidad}*($F{precioCompra}-$F{descuento}))).setScale(2, RoundingMode.HALF_UP)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="425" y="0" width="65" height="16" forecolor="#020203" uuid="dd8a10ad-9e7d-4024-8d8a-1e582d921d38">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="69abe7fe-4546-4e75-929f-a504af6d82c8"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25" lineColor="#373B46"/>
+					<leftPen lineWidth="0.25" lineColor="#373B46"/>
+					<bottomPen lineWidth="0.25" lineColor="#373B46"/>
+					<rightPen lineWidth="0.25" lineColor="#373B46"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="6" isBold="false"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descuento}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -576,7 +571,7 @@
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{SIMBOLO}+" "+$P{SUB_IMPORTE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{SUB_IMPORTE}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="435" y="68" width="120" height="16" forecolor="#020203" uuid="7cb132e9-bc77-4cea-8f67-9e3dce0f6daa">
@@ -592,7 +587,7 @@
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{SIMBOLO}+" "+$P{IMPUESTO_TOTAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{IMPUESTO_TOTAL}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="435" y="84" width="120" height="16" forecolor="#020203" uuid="53a20713-af1b-474b-87ac-4cacde8c51c1">
@@ -608,7 +603,7 @@
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{SIMBOLO}+" "+$P{IMPORTE_TOTAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{IMPORTE_TOTAL}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="0" width="555" height="20" forecolor="#020203" uuid="01934963-a446-496e-89bd-a17624b12d8f"/>
@@ -707,7 +702,7 @@
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{SIMBOLO}+" "+$P{VALOR_VENTA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{VALOR_VENTA}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="435" y="36" width="120" height="16" forecolor="#020203" uuid="b26da061-ef12-43a2-bc2d-df07e3639b20">
@@ -723,7 +718,7 @@
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{SIMBOLO}+" "+$P{DESCUENTO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DESCUENTO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</lastPageFooter>

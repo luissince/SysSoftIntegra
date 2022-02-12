@@ -35,6 +35,9 @@ public class Session {
      */
     public static int TICKET_VENTA_ID = 0;
     public static String TICKET_VENTA_RUTA = "";
+    
+    public static int TICKET_COMPRA_ID = 0;
+    public static String TICKET_COMPRA_RUTA = "";
 
     public static int TICKET_CORTE_CAJA_ID = 0;
     public static String TICKET_CORTE_CAJA_RUTA = "";
@@ -71,6 +74,12 @@ public class Session {
     public static boolean CORTAPAPEL_IMPRESORA_VENTA;
     public static String FORMATO_IMPRESORA_VENTA = "";
     public static String DESING_IMPRESORA_VENTA = "";
+    
+    public static boolean ESTADO_IMPRESORA_COMPRA;
+    public static String NOMBRE_IMPRESORA_COMPRA = "";
+    public static boolean CORTAPAPEL_IMPRESORA_COMPRA;
+    public static String FORMATO_IMPRESORA_COMPRA = "";
+    public static String DESING_IMPRESORA_COMPRA = "";
 
     public static boolean ESTADO_IMPRESORA_PRE_VENTA;
     public static String NOMBRE_IMPRESORA_PRE_VENTA = "";

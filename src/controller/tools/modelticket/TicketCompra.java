@@ -1,5 +1,6 @@
 package controller.tools.modelticket;
 
+import com.google.zxing.WriterException;
 import controller.reporte.FxReportViewController;
 import controller.tools.BillPrintable;
 import controller.tools.ConvertMonedaCadena;
@@ -7,15 +8,15 @@ import controller.tools.FilesRouters;
 import controller.tools.Session;
 import controller.tools.Tools;
 import controller.tools.WindowStage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -27,10 +28,13 @@ import javafx.util.Duration;
 import model.CompraADO;
 import model.CompraTB;
 import model.DetalleCompraTB;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class TicketCompra {
 
@@ -46,6 +50,8 @@ public class TicketCompra {
 
     private final ConvertMonedaCadena monedaCadena;
 
+    private String fileName;
+
     public TicketCompra(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
         this.billPrintable = billPrintable;
@@ -53,6 +59,108 @@ public class TicketCompra {
         this.hbDetalleCabecera = hbDetalleCabecera;
         this.hbPie = hbPie;
         this.monedaCadena = monedaCadena;
+    }
+
+    public void imprimir(String idCompra) {
+ if (!Session.ESTADO_IMPRESORA_COMPRA && Tools.isText(Session.NOMBRE_IMPRESORA_COMPRA) && Tools.isText(Session.FORMATO_IMPRESORA_COMPRA)) {
+            Tools.AlertMessageWarning(node, "Orden de Compra", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+            return;
+        }
+        if (Session.FORMATO_IMPRESORA_COMPRA.equalsIgnoreCase("ticket")) {
+            if (Session.TICKET_COMPRA_ID == 0 && Session.TICKET_COMPRA_RUTA.equalsIgnoreCase("")) {
+                Tools.AlertMessageWarning(node, "Orden de Compra", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
+            } else {
+                executeProcessCompraTicket(idCompra,
+                        Session.DESING_IMPRESORA_COMPRA,
+                        Session.TICKET_COMPRA_ID,
+                        Session.TICKET_COMPRA_RUTA,
+                        Session.NOMBRE_IMPRESORA_COMPRA,
+                        Session.CORTAPAPEL_IMPRESORA_COMPRA
+                );
+            }
+        } else {
+            Tools.AlertMessageWarning(node, "Orden de Compra", "Error al validar el formato de impresión configure en la sección configuración/impresora.");
+        }
+    }
+
+    private void executeProcessCompraTicket(String idCompra, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel){
+        
+    }
+    
+    private JasperPrint reportA4(CompraTB compraTB) throws JRException, WriterException, UnsupportedEncodingException {
+        double importeBrutoTotal = 0;
+        double descuentoTotal = 0;
+        double subImporteNetoTotal = 0;
+        double impuestoTotal = 0;
+        double importeNetoTotal = 0;
+        JSONArray array = new JSONArray();
+
+        for (DetalleCompraTB ocdtb : compraTB.getDetalleCompraTBs()) {
+            JSONObject jsono = new JSONObject();
+            jsono.put("id", ocdtb.getId());
+            jsono.put("cantidad", Tools.roundingValue(ocdtb.getCantidad(), 2));
+            jsono.put("unidad", ocdtb.getSuministroTB().getUnidadCompraName());
+            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n" + ocdtb.getSuministroTB().getNombreMarca());
+            jsono.put("costo", Tools.roundingValue(ocdtb.getPrecioCompra(), 2));
+            jsono.put("descuento", Tools.roundingValue(ocdtb.getDescuento(), 0));
+            jsono.put("importe", Tools.roundingValue(ocdtb.getPrecioCompra() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
+            array.add(jsono);
+
+            double importeBruto = ocdtb.getPrecioCompra() * ocdtb.getCantidad();
+            double descuento = ocdtb.getDescuento();
+            double subImporteBruto = importeBruto - descuento;
+            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+            double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
+            double importeNeto = subImporteNeto + impuesto;
+
+            importeBrutoTotal += importeBruto;
+            descuentoTotal += descuento;
+            subImporteNetoTotal += subImporteNeto;
+            impuestoTotal += impuesto;
+            importeNetoTotal += importeNeto;
+        }
+
+        String json = new String(array.toJSONString().getBytes(), "UTF-8");
+        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(json.getBytes());
+
+        InputStream dir = getClass().getResourceAsStream("/report/CompraRealizada.jasper");
+        InputStream icon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+        InputStream logo = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+        if (Session.COMPANY_IMAGE != null) {
+            logo = new ByteArrayInputStream(Session.COMPANY_IMAGE);
+        }
+
+        Map map = new HashMap();
+        map.put("LOGO", logo);
+        map.put("ICON", icon);
+        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
+        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
+        map.put("TELEFONOCELULAR", Tools.textShow("TEL.: ", Session.COMPANY_TELEFONO) + " " + Tools.textShow("CEL.: ", Session.COMPANY_CELULAR));
+        map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL.toUpperCase()));
+        map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
+        map.put("PAGINAWEB", Tools.textShow("", Session.COMPANY_PAGINAWEB));
+
+        map.put("FECHAREGISTRO", compraTB.getFechaCompra().toUpperCase());
+        map.put("MONEDA", compraTB.getMonedaTB().getNombre() + "-" + compraTB.getMonedaTB().getAbreviado());
+        map.put("DOCUMENTOPROVEEDOR", compraTB.getProveedorTB().getNumeroDocumento());
+        map.put("DATOSPROVEEDOR", compraTB.getProveedorTB().getRazonSocial());
+        map.put("DIRECCIONPROVEEDOR", Tools.textShow("", compraTB.getProveedorTB().getDireccion()));
+        map.put("PROVEEDORTELEFONOS", Tools.textShow("TEL.: ", compraTB.getProveedorTB().getTelefono()) + " " + Tools.textShow("CEL.: ", compraTB.getProveedorTB().getCelular()));
+        map.put("PROVEEDOREMAIL", Tools.textShow("", compraTB.getProveedorTB().getEmail()));
+        map.put("COMPROBANTE", compraTB.getComprobante() + "\n" + compraTB.getSerie().toUpperCase() + "-" + compraTB.getNumeracion());
+
+        map.put("NOTAS", compraTB.getNotas());
+        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, compraTB.getMonedaTB().getNombre()));
+
+        map.put("VALOR_VENTA", compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBrutoTotal, 2));
+        map.put("DESCUENTO", compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(descuentoTotal, 2));
+        map.put("SUB_IMPORTE", compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+        map.put("IMPUESTO_TOTAL", compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
+        map.put("IMPORTE_TOTAL", compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNetoTotal, 2));
+
+        fileName = "COMPRA " + compraTB.getComprobante() + " " + compraTB.getSerie().toUpperCase() + "-" + compraTB.getNumeracion();
+        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
+        return jasperPrint;
     }
 
     public void mostrarReporte(String idCompra) {
@@ -64,79 +172,15 @@ public class TicketCompra {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                try {
-                    Object object = CompraADO.ObtenerCompraId(idCompra);
-                    if (object instanceof Object[]) {
-                        Object[] objects = (Object[]) object;
-                        CompraTB compraTB = (CompraTB) objects[0];
-                        ObservableList<DetalleCompraTB> empList = (ObservableList<DetalleCompraTB>) objects[1];
-
-                        double subImporteNeto = 0;
-                        double impuesto = 0;
-                        double importeNeto = 0;
-
-                        ArrayList<DetalleCompraTB> list = new ArrayList();
-                        for (DetalleCompraTB e : empList) {
-//                            subImporteNeto += (e.getSubImporteNeto() * e.getCantidad());
-//                            impuesto += (e.getImpuestoGenerado() * e.getCantidad());
-//                            importeNeto += (e.getImporteNeto() * e.getCantidad());
-
-                            DetalleCompraTB detalleCompraTB = new DetalleCompraTB();
-                            detalleCompraTB.setId(e.getId());
-                            detalleCompraTB.setCantidad(e.getCantidad());
-                            detalleCompraTB.setMedida(e.getSuministroTB().getUnidadCompraName());
-                            detalleCompraTB.setDescripcion(e.getSuministroTB().getClave() + "\n" + e.getSuministroTB().getNombreMarca());
-                            detalleCompraTB.setDescuento(e.getDescuento());
-                            detalleCompraTB.setPrecioCompra(e.getPrecioCompra());
-                            list.add(detalleCompraTB);
-                        }
-
-                        if (list.isEmpty()) {
-                            return "No hay registros para mostrar en el reporte.";
-                        }
-
-                        InputStream dir = getClass().getResourceAsStream("/report/CompraRealizada.jasper");
-
-                        InputStream logo = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-
-                        InputStream icon = getClass().getResourceAsStream(FilesRouters.IMAGE_ICON);
-
-                        Map map = new HashMap();
-                        map.put("LOGO", logo);
-                        map.put("ICON", icon);
-                        map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
-                        map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-                        map.put("TELEFONOCELULAR", Tools.textShow("TEL.: ", Session.COMPANY_TELEFONO) + " " + Tools.textShow("CEL.: ", Session.COMPANY_CELULAR));
-                        map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL.toUpperCase()));
-                        map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
-                        map.put("PAGINAWEB", Tools.textShow("", Session.COMPANY_PAGINAWEB));
-                        map.put("NUMEROCOMPRA", idCompra);
-
-                        map.put("FECHAELABORACION", compraTB.getFechaCompra().toUpperCase());
-                        map.put("MONEDA", compraTB.getMonedaTB().getNombre());
-                        map.put("DOCUMENTOPROVEEDOR", compraTB.getProveedorTB().getNumeroDocumento());
-                        map.put("DATOSPROVEEDOR", compraTB.getProveedorTB().getRazonSocial());
-                        map.put("DIRECCIONPROVEEDOR", Tools.textShow("", compraTB.getProveedorTB().getDireccion()));
-                        map.put("PROVEEDORTELEFONOS", Tools.textShow("TEL.: ", compraTB.getProveedorTB().getTelefono()) + " " + Tools.textShow("CEL.: ", compraTB.getProveedorTB().getCelular()));
-                        map.put("PROVEEDOREMAIL", Tools.textShow("", compraTB.getProveedorTB().getEmail()));
-                        map.put("COMPROBANTE", compraTB.getSerie().toUpperCase() + "-" + compraTB.getNumeracion());
-
-                        map.put("NOTAS", compraTB.getNotas());
-                        map.put("SIMBOLO", compraTB.getMonedaTB().getSimbolo());
-                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(compraTB.getTotal(), 2), true, compraTB.getMonedaTB().getNombre()));
-
-                        map.put("VALOR_VENTA", Tools.roundingValue(0, 2));
-                        map.put("DESCUENTO", Tools.roundingValue(0, 2));
-                        map.put("SUB_IMPORTE", Tools.roundingValue(subImporteNeto, 2));
-                        map.put("IMPUESTO_TOTAL", Tools.roundingValue(impuesto, 2));
-                        map.put("IMPORTE_TOTAL", Tools.roundingValue(importeNeto, 2));
-
-                        return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(list));
-                    } else {
-                        return (String) object;
+                Object object = CompraADO.ObtenerCompraId(idCompra);
+                if (object instanceof CompraTB) {
+                    try {
+                        return reportA4((CompraTB) object);
+                    } catch (JRException | WriterException | UnsupportedEncodingException ex) {
+                        return ex.getLocalizedMessage();
                     }
-                } catch (JRException ex) {
-                    return ex.getLocalizedMessage();
+                } else {
+                    return (String) object;
                 }
             }
         };
@@ -169,9 +213,10 @@ public class TicketCompra {
                     Parent parent = fXMLLoader.load(url.openStream());
                     //Controlller here
                     FxReportViewController controller = fXMLLoader.getController();
+                    controller.setFileName(fileName);
                     controller.setJasperPrint((JasperPrint) result);
                     controller.show();
-                    Stage stage = WindowStage.StageLoader(parent, "Corte de Caja");
+                    Stage stage = WindowStage.StageLoader(parent, fileName);
                     stage.setResizable(true);
                     stage.show();
                     stage.requestFocus();
@@ -197,5 +242,4 @@ public class TicketCompra {
             exec.shutdown();
         }
     }
-
 }

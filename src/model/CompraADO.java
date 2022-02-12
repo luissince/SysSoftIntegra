@@ -713,6 +713,7 @@ public class CompraADO extends DBUtil {
                 compraTB.setComprobante(resultSet.getString("Comprobante"));
                 compraTB.setSerie(resultSet.getString("Serie").toUpperCase());
                 compraTB.setNumeracion(resultSet.getString("Numeracion"));
+                compraTB.setTipo(resultSet.getInt("TipoCompra"));
                 compraTB.setTipoName(resultSet.getString("Tipo"));
                 compraTB.setEstado(resultSet.getInt("EstadoCompra"));
                 compraTB.setEstadoName(resultSet.getString("Estado"));
@@ -740,6 +741,7 @@ public class CompraADO extends DBUtil {
                 //moneda start
                 MonedaTB monedaTB = new MonedaTB();
                 monedaTB.setNombre(resultSet.getString("Moneda"));
+                monedaTB.setAbreviado(resultSet.getString("Abreviado"));
                 monedaTB.setSimbolo(resultSet.getString("Simbolo"));
                 compraTB.setMonedaTB(monedaTB);
 
@@ -888,7 +890,7 @@ public class CompraADO extends DBUtil {
                             statementSuministroKardex.setString(3, Tools.getTime());
                             statementSuministroKardex.setShort(4, (short) 2);
                             statementSuministroKardex.setInt(5, 1);
-                            statementSuministroKardex.setString(6, "CANCELAR COMPRA");
+                            statementSuministroKardex.setString(6, "COMPRA CANCELADA");
                             statementSuministroKardex.setDouble(7, detalleCompraTB.getCantidad());
                             statementSuministroKardex.setDouble(8, detalleCompraTB.getPrecioCompra());
                             statementSuministroKardex.setDouble(9, detalleCompraTB.getCantidad() * detalleCompraTB.getPrecioCompra());
