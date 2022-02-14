@@ -19,26 +19,12 @@ public class DetalleCompraTB {
     
     private double cantidad;
     
-    private double precioCompra;
-    
     private double descuento;
     
-    private double importeBruto;
-    
-    private double descuentoBruto;
-    
-    private double subImporteNeto;
-    
-    private double impuestoGenerado;
-    
-    private double importeNeto;
-    
+    private double precioCompra;                
+     
     private int idImpuesto;
-    
-    private String nombreImpuesto;
-    
-    private double valorImpuesto;
-    
+            
     private boolean lote;
     
     private boolean cambiarPrecio;
@@ -50,6 +36,8 @@ public class DetalleCompraTB {
     private ArrayList<LoteTB> listLote;
     
     private SuministroTB suministroTB;
+    
+    private ImpuestoTB impuestoTB;
     
     private Button remove;
 
@@ -112,46 +100,6 @@ public class DetalleCompraTB {
         this.descuento = descuento;
     }
 
-    public double getImporteBruto() {
-        return importeBruto;
-    }
-
-    public void setImporteBruto(double importeBruto) {
-        this.importeBruto = importeBruto;
-    }
-
-    public double getDescuentoBruto() {
-        return descuentoBruto;
-    }
-
-    public void setDescuentoBruto(double descuentoBruto) {
-        this.descuentoBruto = descuentoBruto;
-    }
-
-    public double getSubImporteNeto() {
-        return subImporteNeto;
-    }
-
-    public void setSubImporteNeto(double subImporteNeto) {
-        this.subImporteNeto = subImporteNeto;
-    }
-
-    public double getImpuestoGenerado() {
-        return impuestoGenerado;
-    }
-
-    public void setImpuestoGenerado(double impuestoGenerado) {
-        this.impuestoGenerado = impuestoGenerado;
-    }
-
-    public double getImporteNeto() {
-        return importeNeto;
-    }
-
-    public void setImporteNeto(double importeNeto) {
-        this.importeNeto = importeNeto;
-    }
-
     public int getIdImpuesto() {
         return idImpuesto;
     }
@@ -160,20 +108,12 @@ public class DetalleCompraTB {
         this.idImpuesto = idImpuesto;
     }
 
-    public String getNombreImpuesto() {
-        return nombreImpuesto;
+    public ImpuestoTB getImpuestoTB() {
+        return impuestoTB;
     }
 
-    public void setNombreImpuesto(String nombreImpuesto) {
-        this.nombreImpuesto = nombreImpuesto;
-    }
-
-    public double getValorImpuesto() {
-        return valorImpuesto;
-    }
-
-    public void setValorImpuesto(double valorImpuesto) {
-        this.valorImpuesto = valorImpuesto;
+    public void setImpuestoTB(ImpuestoTB impuestoTB) {
+        this.impuestoTB = impuestoTB;
     }
 
     public boolean isLote() {

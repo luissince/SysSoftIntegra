@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="window" maxHeight="-Infinity" maxWidth="-Infinity" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.configuracion.moneda.FxMonedaController">
+<VBox fx:id="window" maxHeight="-Infinity" maxWidth="-Infinity" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.configuracion.moneda.FxMonedaController">
    <children>
       <HBox VBox.vgrow="ALWAYS">
          <children>
@@ -64,6 +64,15 @@
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../image/remove.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onActionRecargar" onKeyPressed="#onKeyPressedRecargar" styleClass="buttonLight" text="Recargar">
+                           <graphic>
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/reload.png" />
                                  </image>
                               </ImageView>
                            </graphic>

@@ -559,10 +559,10 @@ public class TicketVenta {
                         String json = new String(array.toJSONString().getBytes(), "UTF-8");
                         ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(json.getBytes());
 
-                        InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
-                        InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+                        InputStream icon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+                        InputStream logo = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
                         if (Session.COMPANY_IMAGE != null) {
-                            imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
+                            logo = new ByteArrayInputStream(Session.COMPANY_IMAGE);
                         }
                         InputStream dir = getClass().getResourceAsStream("/report/VentaRealizada.jasper");
 
@@ -570,8 +570,8 @@ public class TicketVenta {
                         /**
                          */
                         Map map = new HashMap();
-                        map.put("LOGO", imgInputStream);
-                        map.put("ICON", imgInputStreamIcon);
+                        map.put("LOGO", logo);
+                        map.put("ICON", icon);
                         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
                         map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
                         map.put("DIRECCION", Session.COMPANY_DOMICILIO);

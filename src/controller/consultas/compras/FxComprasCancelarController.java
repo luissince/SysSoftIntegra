@@ -32,7 +32,7 @@ public class FxComprasCancelarController implements Initializable {
     }
 
     public void loadComponents() {
-        lblTotal.setText(comprasDetalleController.getCompraTB().getMonedaNombre() + " " + Tools.roundingValue(comprasDetalleController.getCompraTB().getTotal(), 2));
+        lblTotal.setText(comprasDetalleController.getCompraTB().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(comprasDetalleController.getCompraTB().getTotal(), 2));
         txtEfectivo.setText(Tools.roundingValue(comprasDetalleController.getCompraTB().getTotal(), 2));
     }
 
@@ -42,7 +42,7 @@ public class FxComprasCancelarController implements Initializable {
         } else {
             short value = Tools.AlertMessageConfirmation(apWindow, "Detalle de la compra", "¿Está seguro de continuar?");
             if (value == 1) {
-                String result = CompraADO.cancelarCompraProducto(comprasDetalleController.getCompraTB().getIdCompra(), comprasDetalleController.getCompraTB().getIdAlmacen(),comprasDetalleController.getArrList(), txtObservacion.getText().toUpperCase());
+                String result = CompraADO.CancelarCompraProducto(comprasDetalleController.getCompraTB(), txtObservacion.getText().toUpperCase());
                 if (result.equalsIgnoreCase("cancel")) {
                     Tools.AlertMessageWarning(apWindow, "Detalle de la compra", "La compra ya se encuentra anulada.");
                     Tools.Dispose(apWindow);

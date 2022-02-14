@@ -150,7 +150,7 @@ public class FxSuministrosCompraController implements Initializable {
 
 //        loteSuministro = lote;
         for (ImpuestoTB impuestoTB : cbImpuestoCompra.getItems()) {
-            if (suministroTB.getIdImpuesto()== impuestoTB.getIdImpuesto()) {
+            if (suministroTB.getIdImpuesto() == impuestoTB.getIdImpuesto()) {
                 cbImpuestoCompra.getSelectionModel().select(impuestoTB);
                 break;
             }
@@ -294,7 +294,7 @@ public class FxSuministrosCompraController implements Initializable {
             cbImpuesto.requestFocus();
         } else {
             if (cbPrecio.isSelected()) {
-                addSuministros(false, cbImpuestoCompra.getSelectionModel().getSelectedItem().getIdImpuesto(), cbImpuestoCompra.getSelectionModel().getSelectedItem().getNombre(), cbImpuestoCompra.getSelectionModel().getSelectedItem().getValor());
+                addSuministros(false, cbImpuestoCompra.getSelectionModel().getSelectedItem());
             } else {
                 if (rbPrecioNormal.isSelected()) {
                     if (!Tools.isNumeric(txtPrecio1.getText().trim())) {
@@ -304,7 +304,7 @@ public class FxSuministrosCompraController implements Initializable {
                         Tools.AlertMessageWarning(apWindow, "Compra", "El precio principal no puede ser menor o igual a 0");
                         txtPrecio1.requestFocus();
                     } else {
-                        addSuministros(true, cbImpuestoCompra.getSelectionModel().getSelectedItem().getIdImpuesto(), cbImpuestoCompra.getSelectionModel().getSelectedItem().getNombre(), cbImpuestoCompra.getSelectionModel().getSelectedItem().getValor());
+                        addSuministros(true, cbImpuestoCompra.getSelectionModel().getSelectedItem());
                     }
                 } else {
                     if (!Tools.isNumeric(txtPrecioVentaNetoPersonalizado.getText().trim())) {
@@ -314,25 +314,25 @@ public class FxSuministrosCompraController implements Initializable {
                         Tools.AlertMessageWarning(apWindow, "Compra", "El precio principal no puede ser menor o igual a 0");
                         txtPrecioVentaNetoPersonalizado.requestFocus();
                     } else {
-                        addSuministros(true, cbImpuestoCompra.getSelectionModel().getSelectedItem().getIdImpuesto(), cbImpuestoCompra.getSelectionModel().getSelectedItem().getNombre(), cbImpuestoCompra.getSelectionModel().getSelectedItem().getValor());
+                        addSuministros(true, cbImpuestoCompra.getSelectionModel().getSelectedItem());
                     }
                 }
             }
         }
     }
 
-    private void addSuministros(boolean isPrecio, int idImpuesto, String nombreImpuesto, double valorImpuesto) {
+    private void addSuministros(boolean isPrecio, ImpuestoTB impuestoTB) {
         DetalleCompraTB detalleCompraTB = new DetalleCompraTB();
         detalleCompraTB.setId(editarSuministros ? indexcompra + 1 : comprasController.getTvList().getItems().size() + 1);
         detalleCompraTB.setIdSuministro(idSuminisitro);
         detalleCompraTB.setCambiarPrecio(isPrecio);
-        detalleCompraTB.setIdImpuesto(idImpuesto);
-        detalleCompraTB.setNombreImpuesto(nombreImpuesto);
-        detalleCompraTB.setValorImpuesto(valorImpuesto);
+        detalleCompraTB.setIdImpuesto(impuestoTB.getIdImpuesto());
         detalleCompraTB.setDescripcion("");
         detalleCompraTB.setCantidad(Double.parseDouble(txtCantidad.getText()));
         detalleCompraTB.setDescuento(0);
         detalleCompraTB.setPrecioCompra(Double.parseDouble(txtCosto.getText()));
+
+        detalleCompraTB.setImpuestoTB(impuestoTB);
 
         //SUMINISTRO
         SuministroTB suministrosTB = new SuministroTB();
@@ -351,28 +351,9 @@ public class FxSuministrosCompraController implements Initializable {
         suministrosTB.setPreciosTBs(rbPrecioNormal.isSelected() ? tvPreciosNormal : new ArrayList<>(tvPrecios.getItems()));
         detalleCompraTB.setSuministroTB(suministrosTB);
 
-        //GENERAR COSTO
-        double importeBruto = detalleCompraTB.getPrecioCompra();
-        double descuento = detalleCompraTB.getDescuento();
-        double subImporteBruto = importeBruto - descuento;
-        double subImporteNeto = Tools.calculateTaxBruto(detalleCompraTB.getValorImpuesto(), subImporteBruto);
-        double impuesto = Tools.calculateTax(detalleCompraTB.getValorImpuesto(), subImporteNeto);
-        double importeNeto = subImporteNeto + impuesto;
-
-        detalleCompraTB.setImporteBruto(importeBruto);
-        detalleCompraTB.setDescuentoBruto(descuento);
-        detalleCompraTB.setSubImporteNeto(subImporteNeto);
-        detalleCompraTB.setImpuestoGenerado(impuesto);
-        detalleCompraTB.setImporteNeto(importeNeto);
-
-////        detalleCompraTB.setLote(loteSuministro);
-        Button btnRemove = new Button();
-        btnRemove.setId(detalleCompraTB.getIdSuministro());
+//      detalleCompraTB.setLote(loteSuministro);
+        Button btnRemove = new Button("X");
         btnRemove.getStyleClass().add("buttonDark");
-        ImageView view = new ImageView(new Image("/view/image/remove.png"));
-        view.setFitWidth(22);
-        view.setFitHeight(22);
-        btnRemove.setGraphic(view);
         detalleCompraTB.setRemove(btnRemove);
 
         if (!validateStock(comprasController.getTvList(), detalleCompraTB.getSuministroTB().getClave()) && !editarSuministros) {
@@ -387,27 +368,6 @@ public class FxSuministrosCompraController implements Initializable {
         } else {
             Tools.AlertMessageWarning(apWindow, "Compra", "Ya hay un producto con las mismas características.");
         }
-//        if (comprasController != null) {
-//            if (!validateStock(comprasController.getTvList(), detalleCompraTB.getSuministroTB().getClave()) && !editarSuministros) {
-//                if (loteSuministro) {
-//                    openWindowLote(suministrosTB);
-//                } else {
-//                    comprasController.addSuministroToTable(detalleCompraTB);
-//                    comprasController.calculateTotals();
-//                    Tools.Dispose(apWindow);
-//                }
-//            } else if (editarSuministros) {
-//                if (loteSuministro) {
-//                    openWindowLote(suministrosTB);
-//                } else {
-//                    comprasController.editSuministroToTable(indexcompra, detalleCompraTB);
-//                    comprasController.calculateTotals();
-//                    Tools.Dispose(apWindow);
-//                }
-//            } else {
-//                Tools.AlertMessageWarning(apWindow, "Compra", "Ya hay un producto con las mismas características.");
-//            }        
-//        }
     }
 
     private void openWindowLote(SuministroTB suministroTB) {
@@ -435,9 +395,7 @@ public class FxSuministrosCompraController implements Initializable {
 //            }
         } catch (IOException ex) {
             System.out.println("Suministros controller" + ex.getLocalizedMessage());
-
         }
-
     }
 
     private void addElementsTablePrecios() {
@@ -502,9 +460,7 @@ public class FxSuministrosCompraController implements Initializable {
             }
         });
         precios.setBtnOpcion(button);
-
         precios.setEstado(true);
-
         tvPrecios.getItems().add(precios);
     }
 

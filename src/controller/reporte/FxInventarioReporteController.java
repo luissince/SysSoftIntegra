@@ -28,7 +28,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
@@ -41,7 +40,6 @@ import model.DetalleADO;
 import model.DetalleTB;
 import model.SuministroADO;
 import model.SuministroTB;
-import model.TrasladoADO;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -86,10 +84,6 @@ public class FxInventarioReporteController implements Initializable {
     private ComboBox<DetalleTB> cbPresentaciones;
     @FXML
     private ComboBox<String> cbExistencia;
-    @FXML
-    private DatePicker dpFechaInicialMovimiento;
-    @FXML
-    private DatePicker dpFechaFinalMovimiento;
 
     private FxPrincipalController fxPrincipalController;
 
@@ -97,8 +91,6 @@ public class FxInventarioReporteController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Tools.actualDate(Tools.getDate(), dpFechaInicialMovimiento);
-        Tools.actualDate(Tools.getDate(), dpFechaFinalMovimiento);
         cbExistencia.getItems().addAll("NEGATIVOS", "INTERMEDIAS", "NECESARIAS", "EXCEDENTES");
         filterCbAlmacen();
         filterCbUnidadMedida();
@@ -771,112 +763,6 @@ public class FxInventarioReporteController implements Initializable {
         }
     }
 
-    private void onEventVisualizarMovimientos() {
-        if (dpFechaInicialMovimiento.getValue() != null && dpFechaFinalMovimiento.getValue() != null) {
-            Tools.AlertMessageWarning(vbWindow, "Reporte Traslado", "Ingrese la fechas para continuar.");
-            dpFechaInicialMovimiento.requestFocus();
-        } else {
-            ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
-                Thread t = new Thread(runnable);
-                t.setDaemon(true);
-                return t;
-            });
-            Task<Object> task = new Task<Object>() {
-                @Override
-                public Object call() throws JRException {
-                    return reportGenerateMovimiento();
-                }
-            };
-            task.setOnScheduled(w -> {
-                Tools.showAlertNotification("/view/image/information_large.png",
-                        "Generar Vista",
-                        Tools.newLineString("Se envió los datos para generar el reporte."),
-                        Duration.seconds(5),
-                        Pos.BOTTOM_RIGHT);
-            });
-            task.setOnFailed(w -> {
-                Tools.showAlertNotification("/view/image/warning_large.png",
-                        "Generar Vista",
-                        Tools.newLineString("Se produjo un problema al generar."),
-                        Duration.seconds(10),
-                        Pos.BOTTOM_RIGHT);
-            });
-            task.setOnSucceeded(w -> {
-                Object object = task.getValue();
-                try {
-                    if (object instanceof JasperPrint) {
-                        Tools.showAlertNotification(
-                                "/view/image/information_large.png",
-                                "Generar Vista",
-                                Tools.newLineString("Se completo la creación del modal correctamente."),
-                                Duration.seconds(10),
-                                Pos.BOTTOM_RIGHT);
-
-                        URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
-                        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                        Parent parent = fXMLLoader.load(url.openStream());
-                        //Controlller here
-                        FxReportViewController controller = fXMLLoader.getController();
-                        controller.setFileName("REPORTE DE MOVIMIENTOS DEL " + Tools.getDatePicker(dpFechaInicialMovimiento) + " al " + Tools.getDatePicker(dpFechaFinalMovimiento));
-                        controller.setJasperPrint((JasperPrint) object);
-                        controller.show();
-                        Stage stage = WindowStage.StageLoader(parent, "Movimiento");
-                        stage.setResizable(true);
-                        stage.show();
-                        stage.requestFocus();
-                    } else {
-                        Tools.showAlertNotification(
-                                "/view/image/warning_large.png",
-                                "Generar Vista",
-                                Tools.newLineString((String) object),
-                                Duration.seconds(10),
-                                Pos.BOTTOM_RIGHT);
-                    }
-                } catch (HeadlessException | IOException ex) {
-                    Tools.showAlertNotification(
-                            "/view/image/warning_large.png",
-                            "Generar Vista",
-                            Tools.newLineString("Error al generar el reporte : " + ex.getLocalizedMessage()),
-                            Duration.seconds(10),
-                            Pos.BOTTOM_RIGHT);
-                }
-            });
-            exec.execute(task);
-            if (!exec.isShutdown()) {
-                exec.shutdown();
-            }
-        }
-    }
-
-    private Object reportGenerateMovimiento() throws JRException {
-        Object object = TrasladoADO.ObtenerTrasladosReporteForDate(Tools.getDatePicker(dpFechaInicialMovimiento), Tools.getDatePicker(dpFechaFinalMovimiento));
-        if (object instanceof ArrayList) {
-            return null;
-//            ArrayList<TrasladoHistorialTB> historialTBs = (ArrayList<TrasladoHistorialTB>) object;
-//
-//            ArrayList<MovimientoReporte> reportes = new ArrayList();
-//            int count = 0;
-//            for (TrasladoHistorialTB e : historialTBs) {
-//                count++;
-//                MovimientoReporte movimientoReporte = new MovimientoReporte();
-//                movimientoReporte.setId(count + "");
-//                movimientoReporte.setProducto(e.getSuministroTB().getClave() + "\n" + e.getSuministroTB().getNombreMarca());
-//                movimientoReporte.setInventarioOrigen(e.getAlmacenOrigenTB().getNombre());
-//                movimientoReporte.setInventarioDestino(e.getAlmacenDestinoTB().getNombre());
-//                movimientoReporte.setCantidad(Tools.roundingValue(e.getCantidad(), 2));
-//                reportes.add(movimientoReporte);
-//            }
-//
-//            InputStream dir = getClass().getResourceAsStream("/report/Movimientos.jasper");
-//            Map map = new HashMap();
-//            map.put("PERIODO", dpFechaInicialMovimiento.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")) + " - " + dpFechaFinalMovimiento.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")));
-//
-//            return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(reportes));
-        } else {
-            return (String) object;
-        }
-    }
-
     @FXML
     private void onKeyPressedVisualizarInventario(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
@@ -913,19 +799,6 @@ public class FxInventarioReporteController implements Initializable {
     @FXML
     private void onActionExcelInventario(ActionEvent event) {
         onEventExcel();
-    }
-
-    @FXML
-    private void onKeyPressedMovimientos(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            onEventVisualizarMovimientos();
-            event.consume();
-        }
-    }
-
-    @FXML
-    private void onActionMovimientos(ActionEvent event) {
-        onEventVisualizarMovimientos();
     }
 
     @FXML

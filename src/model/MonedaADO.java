@@ -117,7 +117,7 @@ public class MonedaADO {
             }
             objects[0] = observableList;
 
-            statementList = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Monedas_Count(?)}");
+            statementList = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Monedas_Count(?,?)}");
             statementList.setInt(1, opcion);
             statementList.setString(2, buscar);
             resultSet = statementList.executeQuery();

@@ -98,6 +98,19 @@ public class SplashScreen extends Preloader {
                                 Session.ESTADO_IMPRESORA_VENTA = false;
                             }
 
+                            String rutaCompra = "./archivos/COMPRA.properties";
+                            try (InputStream input = new FileInputStream(rutaCompra)) {
+                                Properties prop = new Properties();
+                                prop.load(input);
+                                Session.ESTADO_IMPRESORA_COMPRA = true;
+                                Session.NOMBRE_IMPRESORA_COMPRA = prop.getProperty("printerNameCompra");
+                                Session.CORTAPAPEL_IMPRESORA_COMPRA = Boolean.parseBoolean(prop.getProperty("printerCutPaperCompra"));
+                                Session.FORMATO_IMPRESORA_COMPRA = prop.getProperty("printerTypeFormatCompra");
+                                Session.DESING_IMPRESORA_COMPRA = prop.getProperty("printerTypeDesingCompra");
+                            } catch (IOException ex) {
+                                Session.ESTADO_IMPRESORA_COMPRA = false;
+                            }
+
                             String rutaPreVenta = "./archivos/PRE VENTA.properties";
                             try (InputStream input = new FileInputStream(rutaPreVenta)) {
                                 Properties prop = new Properties();
@@ -238,6 +251,15 @@ public class SplashScreen extends Preloader {
                             } else {
                                 Session.TICKET_VENTA_ID = 0;
                                 Session.TICKET_VENTA_RUTA = "";
+                            }
+
+                            TicketTB ticketCompraTB = TicketADO.GetTicketRuta(2);
+                            if (ticketCompraTB != null) {
+                                Session.TICKET_COMPRA_ID = ticketCompraTB.getId();
+                                Session.TICKET_COMPRA_RUTA = ticketCompraTB.getRuta();
+                            } else {
+                                Session.TICKET_COMPRA_ID = 0;
+                                Session.TICKET_COMPRA_RUTA = "";
                             }
 
                             TicketTB ticketCorteCajaTB = TicketADO.GetTicketRuta(5);

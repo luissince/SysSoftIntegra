@@ -232,6 +232,7 @@ public class FxOpcionesImprimirController implements Initializable {
             Tools.Dispose(apWindow);
             ticketTraslado.imprimir(idTraslado);
         } else if (ticketCompra != null) {
+            ticketCompra.imprimir(idCompra);
             Tools.Dispose(apWindow);
         } else if (ticketOrdenCompra != null) {
             Tools.Dispose(apWindow);

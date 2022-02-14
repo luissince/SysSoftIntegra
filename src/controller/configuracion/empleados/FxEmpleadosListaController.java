@@ -2,6 +2,7 @@ package controller.configuracion.empleados;
 
 import controller.operaciones.venta.FxVentaRealizadasController;
 import controller.posterminal.venta.FxPostVentaRealizadasController;
+import controller.reporte.FxIngresosEgresosController;
 import controller.reporte.FxPosReporteController;
 import controller.reporte.FxProduccionReporteController;
 import controller.reporte.FxVentaReporteController;
@@ -50,8 +51,6 @@ public class FxEmpleadosListaController implements Initializable {
 
     private FxVentaReporteController ventaReporteController;
 
-    private FxVentaReporteController ventaReporteDosController;
-
     private FxPosReporteController posReporteController;
 
     private FxVentaRealizadasController ventaRealizadasController;
@@ -59,6 +58,8 @@ public class FxEmpleadosListaController implements Initializable {
     private FxPostVentaRealizadasController postVentaRealizadasController;
 
     private FxProduccionReporteController produccionReporteController;
+
+    private FxIngresosEgresosController ingresosEgresosController;
 
     private boolean status;
 
@@ -197,14 +198,14 @@ public class FxEmpleadosListaController implements Initializable {
                 postVentaRealizadasController.getTxtVendedor().setText(tvList.getSelectionModel().getSelectedItem().getApellidos() + " " + tvList.getSelectionModel().getSelectedItem().getNombres());
                 Tools.Dispose(apWindow);
             }
-        } else if (ventaReporteDosController != null) {
-            if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-                ventaReporteDosController.setVendorReporte(tvList.getSelectionModel().getSelectedItem().getIdEmpleado(), tvList.getSelectionModel().getSelectedItem().getApellidos() + " " + tvList.getSelectionModel().getSelectedItem().getNombres());
-                Tools.Dispose(apWindow);
-            }
         } else if (produccionReporteController != null) {
             if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
                 produccionReporteController.setLoadDataEmpleado(tvList.getSelectionModel().getSelectedItem().getIdEmpleado(), tvList.getSelectionModel().getSelectedItem().getApellidos() + " " + tvList.getSelectionModel().getSelectedItem().getNombres());
+                Tools.Dispose(apWindow);
+            }
+        } else if (ingresosEgresosController != null) {
+            if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+                ingresosEgresosController.setLoadDataEmpleado(tvList.getSelectionModel().getSelectedItem().getIdEmpleado(), tvList.getSelectionModel().getSelectedItem().getApellidos() + " " + tvList.getSelectionModel().getSelectedItem().getNombres());
                 Tools.Dispose(apWindow);
             }
         }
@@ -350,10 +351,6 @@ public class FxEmpleadosListaController implements Initializable {
         this.ventaReporteController = ventaReporteController;
     }
 
-    public void setInitVentaReporteDosController(FxVentaReporteController ventaReporteDosController) {
-        this.ventaReporteDosController = ventaReporteDosController;
-    }
-
     public void setInitPostReporteController(FxPosReporteController posReporteController) {
         this.posReporteController = posReporteController;
     }
@@ -368,6 +365,10 @@ public class FxEmpleadosListaController implements Initializable {
 
     public void setInitProduccionReporteController(FxProduccionReporteController produccionReporteController) {
         this.produccionReporteController = produccionReporteController;
+    }
+
+    public void setInitIngresosEgresosReporteController(FxIngresosEgresosController ingresosEgresosController) {
+        this.ingresosEgresosController = ingresosEgresosController;
     }
 
 }

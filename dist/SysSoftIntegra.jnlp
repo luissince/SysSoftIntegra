@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="SysSoftIntegra.jar" size="4798410" download="eager" />
+    <jar href="SysSoftIntegra.jar" size="4801994" download="eager" />
     <jar href="lib\Consola.jar" size="254096" download="eager" />
     <jar href="lib\RobotoBold.jar" size="91740" download="eager" />
     <jar href="lib\RobotoMedium.jar" size="91979" download="eager" />

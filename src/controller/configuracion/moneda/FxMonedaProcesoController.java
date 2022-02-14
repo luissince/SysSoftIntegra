@@ -76,11 +76,11 @@ public class FxMonedaProcesoController implements Initializable {
             if (result.equalsIgnoreCase("inserted")) {
                 Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.INFORMATION, "Moneda", "Se registró correctamente la moneda.", false);
                 Tools.Dispose(window);
-                monedaController.fillTableMonedas();
+                monedaController.initLoad();
             } else if (result.equalsIgnoreCase("updated")) {
                 Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.INFORMATION, "Moneda", "Se actualizó correctamente la moneda.", false);
                 Tools.Dispose(window);
-                monedaController.fillTableMonedas();
+                monedaController.initLoad();
             } else if (result.equalsIgnoreCase("duplicated")) {
                 Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.WARNING, "Moneda", "Hay una moneda con el mismo nombre.", false);
                 txtNombre.requestFocus();

@@ -5,8 +5,6 @@ import controller.tools.FilesRouters;
 import controller.tools.Tools;
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,7 +19,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -33,6 +30,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import model.CompraADO;
 import model.CompraTB;
+import model.DetalleADO;
 import model.DetalleTB;
 
 public class FxComprasRealizadasController implements Initializable {
@@ -69,6 +67,8 @@ public class FxComprasRealizadasController implements Initializable {
     private Label lblPaginaActual;
     @FXML
     private Label lblPaginaSiguiente;
+    @FXML
+    private ComboBox<DetalleTB> cbComprobantes;
 
     private FxPrincipalController fxPrincipalController;
 
@@ -85,17 +85,17 @@ public class FxComprasRealizadasController implements Initializable {
 
         tcId.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
         tcFechaCompra.setCellValueFactory(cellData -> Bindings.concat(
-                LocalDate.parse(cellData.getValue().getFechaCompra()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).toUpperCase() + "\n"
+                cellData.getValue().getFechaCompra() + "\n"
                 + cellData.getValue().getHoraCompra()
         ));
         tcNumeracion.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getSerie().toUpperCase() + "-" + cellData.getValue().getNumeracion()));
+                cellData.getValue().getComprobante() + "\n" + cellData.getValue().getSerie().toUpperCase() + "-" + cellData.getValue().getNumeracion()));
         tcProveedor.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getProveedorTB().getNumeroDocumento() + "\n" + cellData.getValue().getProveedorTB().getRazonSocial().toUpperCase()
         ));
         tcTipo.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getTipoName()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaNombre() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcFechaCompra.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
@@ -109,15 +109,29 @@ public class FxComprasRealizadasController implements Initializable {
         Tools.actualDate(Tools.getDate(), dtFechaInicial);
         Tools.actualDate(Tools.getDate(), dtFechaFinal);
 
+        cbComprobantes.getItems().add(new DetalleTB(0, "TODOS"));
+        cbComprobantes.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0015", ""));
+        cbComprobantes.getSelectionModel().select(0);
+
         cbEstadoCompra.getItems().add(new DetalleTB(0, "TODOS"));
         cbEstadoCompra.getItems().add(new DetalleTB(1, "PAGADO"));
         cbEstadoCompra.getItems().add(new DetalleTB(2, "POR PAGAR"));
         cbEstadoCompra.getItems().add(new DetalleTB(3, "ANULADO"));
         cbEstadoCompra.getSelectionModel().select(0);
 
+        loadInit();
     }
 
-    public void fillPurchasesTable(short opcion, String value, String fechaInicial, String fechaFinal, int estadoCompra) {
+    public void loadInit() {
+        if (!lblLoad.isVisible()) {
+            paginacion = 1;
+            fillPurchasesTable(0, "", "", "", 0, 0);
+            opcion = 0;
+
+        }
+    }
+
+    private void fillPurchasesTable(int opcion, String value, String fechaInicial, String fechaFinal, int comprobante, int estadoCompra) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -127,7 +141,7 @@ public class FxComprasRealizadasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CompraADO.ListComprasRealizadas(opcion, value, fechaInicial, fechaFinal, estadoCompra, (paginacion - 1) * 20, 20);
+                return CompraADO.ListComprasRealizadas(opcion, value, fechaInicial, fechaFinal, comprobante, estadoCompra, (paginacion - 1) * 20, 20);
             }
         };
         task.setOnSucceeded(w -> {
@@ -171,7 +185,7 @@ public class FxComprasRealizadasController implements Initializable {
     private void openWindowDetalleCompra() throws IOException {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             FXMLLoader fXMLPrincipal = new FXMLLoader(getClass().getResource(FilesRouters.FX_COMPRAS_DETALLE));
-            ScrollPane node = fXMLPrincipal.load();
+            AnchorPane node = fXMLPrincipal.load();
 
             FxComprasDetalleController controller = fXMLPrincipal.getController();
             controller.setInitComptrasController(this, fxPrincipalController);
@@ -189,6 +203,22 @@ public class FxComprasRealizadasController implements Initializable {
         }
     }
 
+    private void onEventPaginacion() {
+        switch (opcion) {
+            case 0:
+                fillPurchasesTable(0, "", "", "", 0, 0);
+                break;
+            case 1:
+                fillPurchasesTable(1, txtSearch.getText().trim(), "", "", 0, 0);
+                break;
+            case 2:
+                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                        cbComprobantes.getSelectionModel().getSelectedItem().getIdDetalle(),
+                        cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
+                break;
+        }
+    }
+
     @FXML
     private void onActionView(ActionEvent event) throws IOException {
         openWindowDetalleCompra();
@@ -199,22 +229,17 @@ public class FxComprasRealizadasController implements Initializable {
         if (event.getClickCount() == 2) {
             openWindowDetalleCompra();
         }
-
     }
 
     @FXML
     private void onActionReload(ActionEvent event) {
-        fillPurchasesTable((short) 1, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
-        this.txtSearch.setText("");
-        cbEstadoCompra.getSelectionModel().select(0);
+        loadInit();
     }
 
     @FXML
     private void onKeyPressedReload(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            fillPurchasesTable((short) 1, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
-            cbEstadoCompra.getSelectionModel().select(0);
-            this.txtSearch.setText("");
+            loadInit();
         }
     }
 
@@ -264,8 +289,9 @@ public class FxComprasRealizadasController implements Initializable {
                 && event.getCode() != KeyCode.PAUSE
                 && event.getCode() != KeyCode.ENTER) {
             if (!lblLoad.isVisible()) {
-                fillPurchasesTable((short) 0, txtSearch.getText().trim(), "", "", 0);
-                cbEstadoCompra.getSelectionModel().select(0);
+                paginacion = 1;
+                fillPurchasesTable(1, txtSearch.getText().trim(), "", "", 0, 0);
+                opcion = 1;
             }
         }
     }
@@ -273,30 +299,96 @@ public class FxComprasRealizadasController implements Initializable {
     @FXML
     private void onActionFechaInicial(ActionEvent actionEvent) {
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
-            fillPurchasesTable((short) 1, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
-            cbEstadoCompra.getSelectionModel().select(0);
-            this.txtSearch.setText("");
+            if (!lblLoad.isVisible()) {
+                paginacion = 1;
+                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                        cbComprobantes.getSelectionModel().getSelectedItem().getIdDetalle(),
+                        cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
+                opcion = 2;
+            }
         }
     }
 
     @FXML
     private void onActionFechaFinal(ActionEvent actionEvent) {
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
-            fillPurchasesTable((short) 1, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
-            cbEstadoCompra.getSelectionModel().select(0);
-            this.txtSearch.setText("");
+            if (!lblLoad.isVisible()) {
+                paginacion = 1;
+                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                        cbComprobantes.getSelectionModel().getSelectedItem().getIdDetalle(),
+                        cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
+                opcion = 2;
+            }
+        }
+    }
+
+    @FXML
+    private void OnActionComprobantes(ActionEvent event) {
+        if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
+            if (!lblLoad.isVisible()) {
+                paginacion = 1;
+                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                        cbComprobantes.getSelectionModel().getSelectedItem().getIdDetalle(),
+                        cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
+                opcion = 2;
+            }
         }
     }
 
     @FXML
     private void OnActionEstadoCompra(ActionEvent event) {
-        if (cbEstadoCompra.getSelectionModel().getSelectedIndex() != 0) {
-            fillPurchasesTable((short) 2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
-            this.txtSearch.setText("");
-        } else {
-            fillPurchasesTable((short) 1, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), 0);
-            cbEstadoCompra.getSelectionModel().select(0);
-            this.txtSearch.setText("");
+        if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
+            if (!lblLoad.isVisible()) {
+                paginacion = 1;
+                fillPurchasesTable(2, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                        cbComprobantes.getSelectionModel().getSelectedItem().getIdDetalle(),
+                        cbEstadoCompra.getSelectionModel().getSelectedItem().getIdDetalle());
+                opcion = 2;
+            }
+        }
+    }
+
+    @FXML
+    private void onKeyPressedAnterior(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion > 1) {
+                    paginacion--;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionAnterior(ActionEvent event) {
+        if (!lblLoad.isVisible()) {
+            if (paginacion > 1) {
+                paginacion--;
+                onEventPaginacion();
+            }
+        }
+    }
+
+    @FXML
+    private void onKeyPressedSiguiente(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (!lblLoad.isVisible()) {
+                if (paginacion < totalPaginacion) {
+                    paginacion++;
+                    onEventPaginacion();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void onActionSiguiente(ActionEvent event) {
+        if (!lblLoad.isVisible()) {
+            if (paginacion < totalPaginacion) {
+                paginacion++;
+                onEventPaginacion();
+            }
         }
     }
 

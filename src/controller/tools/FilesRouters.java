@@ -429,5 +429,7 @@ public final class FilesRouters {
     public static final String FX_INVENTARIO_REPORTE = "/view/reporte/FxInventarioReporte.fxml";
 
     public static final String FX_PRODUCCION_REPORTE = "/view/reporte/FxProduccionReporte.fxml";
+    
+     public static final String FX_INGRESOS_EGRESOS_REPORTE = "/view/reporte/FxIngresosEgresos.fxml";
 
 }

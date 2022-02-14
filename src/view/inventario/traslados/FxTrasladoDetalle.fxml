@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.traslados.FxTrasladoDetalleController">
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.traslados.FxTrasladoDetalleController">
    <children>
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -60,7 +60,7 @@
                         <Label fx:id="lblFechaRegistro" styleClass="labelRoboto13" text="--" textFill="#006ac1" GridPane.columnIndex="1" />
                         <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Fecha de Traslado:" textFill="#020203" GridPane.columnIndex="2" />
                         <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Punto de Partida:" textFill="#020203" GridPane.rowIndex="1" />
-                        <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Putno de Llegada:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Punto de Llegada:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Tipo Traslado:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <Label fx:id="lblPuntoPartida" styleClass="labelRoboto13" text="--" textFill="#006ac1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label fx:id="lblFechaTraslado" styleClass="labelRoboto13" text="--" textFill="#006ac1" GridPane.columnIndex="3" />

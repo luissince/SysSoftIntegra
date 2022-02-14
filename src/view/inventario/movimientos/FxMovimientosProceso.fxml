@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.movimientos.FxMovimientosProcesoController">
+<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.movimientos.FxMovimientosProcesoController">
    <children>
       <HBox fx:id="hbBody" onKeyReleased="#onKeyReleasedWindow" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -76,15 +76,6 @@
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../image/reports.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button mnemonicParsing="false" onAction="#onActionBuscarCompras" onKeyPressed="#onKeyPressedBuscarCompras" prefHeight="30.0" styleClass="buttonLight" text="Buscar compras" visible="false">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../image/purchases.png" />
                                  </image>
                               </ImageView>
                            </graphic>

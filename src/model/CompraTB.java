@@ -10,11 +10,11 @@ public class CompraTB {
     private int id;
     private String idCompra;
     private String idProveedor;
-    private int tipoDocumento;
+    private int idComprobante;
+    private String comprobante;
     private String serie;
     private String numeracion;
     private int idMoneda;
-    private String monedaNombre;
     private String fechaCompra;
     private String horaCompra;
     private String fechaVencimiento;
@@ -45,7 +45,8 @@ public class CompraTB {
     private AlmacenTB almacenTB;
     
     private ArrayList<CompraCreditoTB> compraCreditoTBs;
-    private ObservableList<DetalleCompraTB> detalleCompraTBs;
+    private ArrayList<DetalleCompraTB> detalleCompraTBs;
+    
     private HBox hbOpciones;
 
     private double montoTotal;
@@ -80,12 +81,20 @@ public class CompraTB {
         this.idProveedor = idProveedor;
     }
 
-    public int getTipoDocumento() {
-        return tipoDocumento;
+    public int getIdComprobante() {
+        return idComprobante;
     }
 
-    public void setTipoDocumento(int tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
+    public void setIdComprobante(int idComprobante) {
+        this.idComprobante = idComprobante;
+    }
+
+    public String getComprobante() {
+        return comprobante;
+    }
+
+    public void setComprobante(String comprobante) {
+        this.comprobante = comprobante;
     }
 
     public String getSerie() {
@@ -110,14 +119,6 @@ public class CompraTB {
 
     public void setIdMoneda(int idMoneda) {
         this.idMoneda = idMoneda;
-    }
-
-    public String getMonedaNombre() {
-        return monedaNombre;
-    }
-
-    public void setMonedaNombre(String monedaNombre) {
-        this.monedaNombre = monedaNombre;
     }
 
     public String getFechaCompra() {
@@ -328,11 +329,11 @@ public class CompraTB {
         this.compraCreditoTBs = compraCreditoTBs;
     }
 
-    public ObservableList<DetalleCompraTB> getDetalleCompraTBs() {
+    public ArrayList<DetalleCompraTB> getDetalleCompraTBs() {
         return detalleCompraTBs;
     }
 
-    public void setDetalleCompraTBs(ObservableList<DetalleCompraTB> detalleCompraTBs) {
+    public void setDetalleCompraTBs(ArrayList<DetalleCompraTB> detalleCompraTBs) {
         this.detalleCompraTBs = detalleCompraTBs;
     }
 

@@ -493,6 +493,10 @@ public class FxTicketController implements Initializable {
                                     Session.TICKET_VENTA_ID = idTicket;
                                     Session.TICKET_VENTA_RUTA = sampleObject.toJSONString();
                                     break;
+                                case 2:
+                                    Session.TICKET_COMPRA_ID = idTicket;
+                                    Session.TICKET_COMPRA_RUTA = sampleObject.toJSONString();
+                                    break;
                                 case 5:
                                     Session.TICKET_CORTE_CAJA_ID = idTicket;
                                     Session.TICKET_CORTE_CAJA_RUTA = sampleObject.toJSONString();
@@ -1516,6 +1520,10 @@ public class FxTicketController implements Initializable {
                             Session.TICKET_VENTA_ID = idTicket;
                             Session.TICKET_VENTA_RUTA = ruta;
                             break;
+                        case 2:
+                            Session.TICKET_COMPRA_ID = idTicket;
+                            Session.TICKET_COMPRA_RUTA = ruta;
+                            break;
                         case 5:
                             Session.TICKET_CORTE_CAJA_ID = idTicket;
                             Session.TICKET_CORTE_CAJA_RUTA = ruta;
@@ -1580,6 +1588,10 @@ public class FxTicketController implements Initializable {
                         case 1:
                             Session.TICKET_VENTA_ID = 0;
                             Session.TICKET_VENTA_RUTA = "";
+                            break;
+                        case 2:
+                            Session.TICKET_COMPRA_ID = 0;
+                            Session.TICKET_COMPRA_RUTA = "";
                             break;
                         case 5:
                             Session.TICKET_CORTE_CAJA_ID = 0;

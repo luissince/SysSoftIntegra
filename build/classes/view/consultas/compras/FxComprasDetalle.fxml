@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -15,188 +16,117 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane fx:id="cpWindow" fitToWidth="true" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.compras.FxComprasDetalleController">
-   <content>
-      <VBox style="-fx-background-color: white;">
-         <children>
-            <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 2px 0; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" styleClass="paddinContainer">
+<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.compras.FxComprasDetalleController">
+   <children>
+      <ScrollPane fx:id="spBody" fitToWidth="true" styleClass="scroll-pane-secundario">
+         <content>
+            <VBox style="-fx-background-color: white;">
                <children>
-                  <Label onMouseClicked="#onMouseClickedBehind" style="-fx-cursor: hand;">
-                     <graphic>
-                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
-                           <image>
-                              <Image url="@../../image/right.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Label>
-                  <Label styleClass="labelRobotoBold15" text="Detalle de la compra" textFill="#020203">
-                     <graphic>
-                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../image/purchases.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Label>
-                  <Label fx:id="lblLoad" contentDisplay="RIGHT" styleClass="labelNormal" text="Cargando..." textOverrun="CLIP" visible="false">
-                     <font>
-                        <Font name="Roboto" size="14.0" />
-                     </font>
-                     <graphic>
-                        <ProgressIndicator prefHeight="30.0" prefWidth="30.0" style="-fx-progress-color: #23283a;" />
-                     </graphic>
-                  </Label>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 0 0 1px 0;">
-               <children>
-                  <Button fx:id="btnReporte" disable="true" mnemonicParsing="false" onAction="#onActionImprimir" onKeyPressed="#onKeyPressedImprimir" styleClass="buttonLight" text="Reporte">
-                     <graphic>
-                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../image/reports.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="btnAnular" disable="true" mnemonicParsing="false" onAction="#onActionCancelar" onKeyPressed="#onKeyPressedCancelar" styleClass="buttonLight" text="Anular">
-                     <graphic>
-                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../image/cancel.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" style="-fx-background-color: #e7e6e6; -fx-padding: 0.8333333333333334em;">
-               <children>
-                  <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-background-color: white; -fx-border-color: #cccccc;" HBox.hgrow="ALWAYS">
+                  <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 2px 0; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" styleClass="paddinContainer">
                      <children>
-                        <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-spacing: 0.4166666666666667em; -fx-padding: 0em 0.8333333333333334em;">
+                        <Label onMouseClicked="#onMouseClickedBehind" style="-fx-cursor: hand;">
+                           <graphic>
+                              <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                                 <image>
+                                    <Image url="@../../image/right.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Label>
+                        <Label styleClass="labelRobotoBold15" text="Detalle de la compra" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/purchases.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Label>
+                        <Label fx:id="lblLoad" contentDisplay="RIGHT" styleClass="labelNormal" text="Cargando..." textOverrun="CLIP" visible="false">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                           <graphic>
+                              <ProgressIndicator prefHeight="30.0" prefWidth="30.0" style="-fx-progress-color: #23283a;" />
+                           </graphic>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 0 0 1px 0;">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onActionReporte" onKeyPressed="#onKeyPressedReporte" styleClass="buttonLight" text="Reporte">
+                           <graphic>
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/complete.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onActionAnular" onKeyPressed="#onKeyPressedAnular" styleClass="buttonLight" text="Anular">
+                           <graphic>
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/cancel.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onActionImprimir" onKeyPressed="#onKeyPressedImprimir" styleClass="buttonLight" text="Imprimir">
+                           <graphic>
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/print.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" style="-fx-background-color: #e7e6e6; -fx-padding: 0.8333333333333334em;">
+                     <children>
+                        <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-background-color: white; -fx-border-color: #cccccc;" HBox.hgrow="ALWAYS">
                            <children>
-                              <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="Fecha Compra:" />
-                              <Text fx:id="lblFechaCompra" fill="#0771d3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="20/10/2018" />
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT">
-                           <children>
-                              <GridPane style="-fx-hgap: 0.8333333333333334em; -fx-vgap: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                  <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints vgrow="SOMETIMES" />
-                                    <RowConstraints vgrow="SOMETIMES" />
-                                    <RowConstraints vgrow="SOMETIMES" />
-                                    <RowConstraints vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                </rowConstraints>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-spacing: 0.4166666666666667em; -fx-padding: 0em 0.8333333333333334em;">
                                  <children>
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Proveedor:" textFill="#020203" />
-                                    <Label fx:id="lblProveedor" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Dirección:" textFill="#020203" GridPane.rowIndex="4" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Teléfono:" textFill="#020203" GridPane.rowIndex="1" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Celular:" textFill="#020203" GridPane.rowIndex="2" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Email:" textFill="#020203" GridPane.rowIndex="3" />
-                                    <Label fx:id="lblTelefono" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <Label fx:id="lblEmail" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <Label fx:id="lblDireccion" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                    <Label fx:id="lblCelular" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Almacen:" textFill="#020203" GridPane.rowIndex="5" />
-                                    <Label fx:id="lblAlmacen" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                    <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="Fecha Compra:" />
+                                    <Text fx:id="lblFechaCompra" fill="#0771d3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="20/10/2018" />
                                  </children>
-                              </GridPane>
-                              <GridPane style="-fx-hgap: 0.8333333333333334em; -fx-vgap: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Comprobante:" textFill="#020203" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Tipo y Estado:" textFill="#020203" GridPane.rowIndex="1" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Obervación:" textFill="#020203" GridPane.rowIndex="2" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Notas:" textFill="#020203" GridPane.rowIndex="3" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Total:" textFill="#020203" GridPane.rowIndex="4" />
-                                    <Label fx:id="lblTotalCompra" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                    <Label fx:id="lblNotas" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <Label fx:id="lblObservacion" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.4166666666666667em;" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                       <children>
-                                          <Label fx:id="lblTipo" styleClass="labelRoboto13" text="-" textFill="#055bd3" />
-                                          <Label fx:id="lblEstado" styleClass="labelRoboto13" text="-" textFill="#055bd3" />
-                                       </children>
-                                    </HBox>
-                                    <Label fx:id="lblComprobante" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" />
-                                 </children>
-                              </GridPane>
-                           </children>
-                           <VBox.margin>
-                              <Insets />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox>
-                           <children>
-                              <GridPane fx:id="gpList" HBox.hgrow="ALWAYS">
-                                <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="61.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="280.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints minHeight="36.0" vgrow="SOMETIMES" />
-                                </rowConstraints>
-                                 <children>
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="N°" textFill="WHITE" />
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Descripción" textFill="WHITE" GridPane.columnIndex="1" />
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Precio" textFill="WHITE" GridPane.columnIndex="2" />
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Descuento" textFill="WHITE" GridPane.columnIndex="3" />
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Cantidad" textFill="WHITE" GridPane.columnIndex="5" />
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Unidad" textFill="WHITE" GridPane.columnIndex="6" />
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Importe" textFill="WHITE" GridPane.columnIndex="7" />
-                                    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Impuesto %" textFill="WHITE" GridPane.columnIndex="4" />
-                                 </children>
-                              </GridPane>
-                           </children>
-                        </HBox>
-                        <HBox>
-                           <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <HBox style="-fx-spacing: 0.8333333333333334em;">
-                                       <children>
-                                          <VBox>
-                                             <children>
-                                                <Label fx:id="lblMetodoPago" styleClass="labelRobotoBold13" text="Método de pago" textFill="#020203" />
-                                                <VBox fx:id="vbCondicion" />
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <GridPane style="-fx-hgap: 0.8333333333333334em;">
+                                    <GridPane style="-fx-hgap: 0.8333333333333334em; -fx-vgap: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                          <ColumnConstraints hgrow="ALWAYS" minWidth="100.0" />
+                                          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints vgrow="SOMETIMES" />
+                                          <RowConstraints vgrow="SOMETIMES" />
+                                          <RowConstraints vgrow="SOMETIMES" />
+                                          <RowConstraints vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Proveedor:" textFill="#020203" />
+                                          <Label fx:id="lblProveedor" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Dirección:" textFill="#020203" GridPane.rowIndex="4" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Teléfono:" textFill="#020203" GridPane.rowIndex="1" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Celular:" textFill="#020203" GridPane.rowIndex="2" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Email:" textFill="#020203" GridPane.rowIndex="3" />
+                                          <Label fx:id="lblTelefono" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label fx:id="lblEmail" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <Label fx:id="lblDireccion" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <Label fx:id="lblCelular" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Almacen:" textFill="#020203" GridPane.rowIndex="5" />
+                                          <Label fx:id="lblAlmacen" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                       </children>
+                                    </GridPane>
+                                    <GridPane style="-fx-hgap: 0.8333333333333334em; -fx-vgap: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
@@ -206,27 +136,137 @@
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPORTE BRUTO:" textFill="#020203" />
-                                          <Label fx:id="lblImporteBruto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" />
-                                          <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="DESCUENTO TOTAL:" textFill="#020203" GridPane.rowIndex="1" />
-                                          <Label fx:id="lblDescuento" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                          <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPUESTO:" textFill="#020203" GridPane.rowIndex="3" />
-                                          <Label fx:id="lblImpuesto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                          <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPORTE NETO:" textFill="#020203" GridPane.rowIndex="4" />
-                                          <Label fx:id="lblImporteNeto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                          <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="SUB IMPORTE NETO:" textFill="#020203" GridPane.rowIndex="2" />
-                                          <Label fx:id="lblSubImporteNeto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Comprobante:" textFill="#020203" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Tipo y Estado:" textFill="#020203" GridPane.rowIndex="1" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Obervación:" textFill="#020203" GridPane.rowIndex="2" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Notas:" textFill="#020203" GridPane.rowIndex="3" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Total:" textFill="#020203" GridPane.rowIndex="4" />
+                                          <Label fx:id="lblTotalCompra" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <Label fx:id="lblNotas" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <Label fx:id="lblObservacion" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.4166666666666667em;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <children>
+                                                <Label fx:id="lblTipo" styleClass="labelRoboto13" text="-" textFill="#055bd3" />
+                                                <Label fx:id="lblEstado" styleClass="labelRoboto13" text="-" textFill="#055bd3" />
+                                             </children>
+                                          </HBox>
+                                          <Label fx:id="lblComprobante" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="-" textFill="#055bd3" GridPane.columnIndex="1" />
                                        </children>
                                     </GridPane>
                                  </children>
-                              </VBox>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <GridPane fx:id="gpList" HBox.hgrow="ALWAYS">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="61.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="280.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="36.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="N°" textFill="WHITE" />
+                                          <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Descripción" textFill="WHITE" GridPane.columnIndex="1" />
+                                          <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Precio" textFill="WHITE" GridPane.columnIndex="2" />
+                                          <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Descuento" textFill="WHITE" GridPane.columnIndex="3" />
+                                          <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Cantidad" textFill="WHITE" GridPane.columnIndex="5" />
+                                          <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Unidad" textFill="WHITE" GridPane.columnIndex="6" />
+                                          <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Importe" textFill="WHITE" GridPane.columnIndex="7" />
+                                          <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Impuesto %" textFill="WHITE" GridPane.columnIndex="4" />
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <HBox style="-fx-spacing: 0.8333333333333334em;">
+                                             <children>
+                                                <VBox>
+                                                   <children>
+                                                      <Label fx:id="lblMetodoPago" styleClass="labelRobotoBold13" text="Método de pago" textFill="#020203" />
+                                                      <VBox fx:id="vbCondicion" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox>
+                                       <children>
+                                          <GridPane style="-fx-hgap: 0.8333333333333334em;">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                                <ColumnConstraints hgrow="ALWAYS" minWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPORTE BRUTO:" textFill="#020203" />
+                                                <Label fx:id="lblImporteBruto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" />
+                                                <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="DESCUENTO TOTAL:" textFill="#020203" GridPane.rowIndex="1" />
+                                                <Label fx:id="lblDescuento" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPUESTO:" textFill="#020203" GridPane.rowIndex="3" />
+                                                <Label fx:id="lblImpuesto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="IMPORTE NETO:" textFill="#020203" GridPane.rowIndex="4" />
+                                                <Label fx:id="lblImporteNeto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em;" styleClass="labelRoboto13" text="SUB IMPORTE NETO:" textFill="#020203" GridPane.rowIndex="2" />
+                                                <Label fx:id="lblSubImporteNeto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
                            </children>
-                        </HBox>
+                        </VBox>
                      </children>
-                  </VBox>
+                  </HBox>
                </children>
-            </HBox>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <HBox fx:id="hbLoad" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <Label fx:id="lblMessageLoad" contentDisplay="TOP" styleClass="labelRobotoBold17" text="Cargando datos..." textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/load.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <Button fx:id="btnAceptarLoad" mnemonicParsing="false" onAction="#onActionAceptarLoad" onKeyPressed="#onKeyPressedAceptarLoad" styleClass="buttonLight" text="Aceptar" visible="false">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/accept.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
          </children>
-      </VBox>
-   </content>
-</ScrollPane>
+      </HBox>
+   </children>
+</AnchorPane>
