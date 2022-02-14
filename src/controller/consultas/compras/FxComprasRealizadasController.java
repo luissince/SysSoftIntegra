@@ -141,7 +141,7 @@ public class FxComprasRealizadasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CompraADO.ListComprasRealizadas(opcion, value, fechaInicial, fechaFinal, comprobante, estadoCompra, (paginacion - 1) * 20, 20);
+                return CompraADO.Listar_Compras_Realizadas(opcion, value, fechaInicial, fechaFinal, comprobante, estadoCompra, (paginacion - 1) * 20, 20);
             }
         };
         task.setOnSucceeded(w -> {

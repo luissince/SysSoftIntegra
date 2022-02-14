@@ -52,6 +52,8 @@ public class FxComprasListaController implements Initializable {
     @FXML
     private Label lblPaginaSiguiente;
 
+    private FxComprasController comprasController;
+
     private int paginacion;
 
     private int totalPaginacion;
@@ -90,11 +92,21 @@ public class FxComprasListaController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CompraADO.ListComprasRealizadas(opcion, value, fechaInicial, fechaFinal, comprobate, estadoCompra, (paginacion - 1) * 20, 20);
+                return CompraADO.Listar_Compras_Realizadas(opcion, value, fechaInicial, fechaFinal, comprobate, estadoCompra, (paginacion - 1) * 20, 20);
             }
         };
 
         task.setOnScheduled(t -> {
+            lblLoad.setVisible(true);
+            tvList.getItems().clear();
+            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            totalPaginacion = 0;
+        });
+        task.setOnFailed(t -> {
+            lblLoad.setVisible(false);
+            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
+        });
+        task.setOnSucceeded(t -> {
             Object object = task.getValue();
             if (object instanceof Object[]) {
                 Object[] objects = (Object[]) object;
@@ -115,16 +127,6 @@ public class FxComprasListaController implements Initializable {
 
             lblLoad.setVisible(false);
         });
-        task.setOnFailed(t -> {
-            lblLoad.setVisible(false);
-            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
-        });
-        task.setOnSucceeded(t -> {
-            lblLoad.setVisible(true);
-            tvList.getItems().clear();
-            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
-            totalPaginacion = 0;
-        });
 
         exec.execute(task);
         if (!exec.isShutdown()) {
@@ -134,7 +136,7 @@ public class FxComprasListaController implements Initializable {
 
     private void onEventAceptar() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            //movimientosProcesoController.loadComprasRealizadas(tvList.getSelectionModel().getSelectedItem().getIdCompra());
+            comprasController.loadCompra(tvList.getSelectionModel().getSelectedItem().getIdCompra());
             Tools.Dispose(apWindow);
         } else {
             tvList.requestFocus();
@@ -303,6 +305,10 @@ public class FxComprasListaController implements Initializable {
                 onEventPaginacion();
             }
         }
+    }
+
+    public void setInitCompras(FxComprasController comprasController) {
+        this.comprasController = comprasController;
     }
 
 }

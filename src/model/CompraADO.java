@@ -607,7 +607,7 @@ public class CompraADO extends DBUtil {
         }
     }
 
-    public static Object ListComprasRealizadas(int opcion, String value, String fechaInicial, String fechaFinal, int comprobante, int estadoCompra, int posicionPagina, int filasPorPagina) {
+    public static Object Listar_Compras_Realizadas(int opcion, String value, String fechaInicial, String fechaFinal, int comprobante, int estadoCompra, int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
         try {
@@ -692,7 +692,7 @@ public class CompraADO extends DBUtil {
         }
     }
 
-    public static Object ObtenerCompraId(String idCompra) {
+    public static Object Obtener_Compra_ById(String idCompra) {
         PreparedStatement preparedCompra = null;
         PreparedStatement preparedProveedor = null;
         PreparedStatement preparedDetalleCompra = null;
@@ -772,6 +772,10 @@ public class CompraADO extends DBUtil {
                     impuestoTB.setNombre(resultSet.getString("NombreImpuesto"));
                     impuestoTB.setValor(resultSet.getDouble("ValorImpuesto"));
                     detalleCompraTB.setImpuestoTB(impuestoTB);
+                    
+                       Button button = new Button("X");
+                    button.getStyleClass().add("buttonDark");
+                    detalleCompraTB.setBtnRemove(button);
 
                     empList.add(detalleCompraTB);
                 }

@@ -39,7 +39,7 @@ public class DetalleCompraTB {
     
     private ImpuestoTB impuestoTB;
     
-    private Button remove;
+    private Button btnRemove;
 
     public DetalleCompraTB() {
     }
@@ -172,14 +172,14 @@ public class DetalleCompraTB {
         this.suministroTB = suministroTB;
     }
 
-    public Button getRemove() {
-        return remove;
+    public Button getBtnRemove() {
+        return btnRemove;
     }
 
-    public void setRemove(Button remove) {
-        this.remove = remove;
+    public void setBtnRemove(Button btnRemove) {
+        this.btnRemove = btnRemove;
     }
-
+    
     public String getMedida() {
         return medida;
     }

@@ -13,9 +13,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,11 +37,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.AlmacenADO;
 import model.AlmacenTB;
+import model.CompraADO;
 import model.CompraTB;
+import model.CotizacionADO;
 import model.DetalleADO;
 import model.DetalleCompraTB;
 import model.DetalleTB;
@@ -51,7 +58,9 @@ import model.SuministroTB;
 public class FxComprasController implements Initializable {
 
     @FXML
-    private ScrollPane spWindow;
+    private AnchorPane apWindow;
+    @FXML
+    private HBox hbBody;
     @FXML
     private ComboBox<ProveedorTB> cbProveedor;
     @FXML
@@ -95,8 +104,6 @@ public class FxComprasController implements Initializable {
     @FXML
     private Button btnEditar;
     @FXML
-    private Button btnQuitar;
-    @FXML
     private Button btnProveedor;
     @FXML
     private TextField cbSerie;
@@ -104,6 +111,12 @@ public class FxComprasController implements Initializable {
     private ComboBox<AlmacenTB> cbAlmacen;
     @FXML
     private ComboBox<DetalleTB> cbComprobante;
+    @FXML
+    private HBox hbLoad;
+    @FXML
+    private Label lblMessageLoad;
+    @FXML
+    private Button btnAceptarLoad;
 
     private FxPrincipalController fxPrincipalController;
 
@@ -147,7 +160,7 @@ public class FxComprasController implements Initializable {
             hbBotones.getChildren().remove(btnEditar);
         }
         if (privilegioTBs.get(3).getIdPrivilegio() != 0 && !privilegioTBs.get(3).isEstado()) {
-            hbBotones.getChildren().remove(btnQuitar);
+//            hbBotones.getChildren().remove(btnQuitar);
         }
         if (privilegioTBs.get(4).getIdPrivilegio() != 0 && !privilegioTBs.get(4).isEstado()) {
             hbBotones.getChildren().remove(btnProveedor);
@@ -173,7 +186,7 @@ public class FxComprasController implements Initializable {
     }
 
     private void initTable() {
-        tcQuitar.setCellValueFactory(new PropertyValueFactory<>("remove"));
+        tcQuitar.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
         tcArticulo.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getSuministroTB().getClave() + "\n" + cellData.getValue().getSuministroTB().getNombreMarca()
         ));
@@ -313,8 +326,8 @@ public class FxComprasController implements Initializable {
         }
 
         cbComprobante.getItems().clear();
-         cbComprobante.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0015", ""));
-        
+        cbComprobante.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0015", ""));
+
         lblImporteBruto.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
         lblDescuento.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
         lblSubImporteNeto.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
@@ -328,7 +341,7 @@ public class FxComprasController implements Initializable {
 
     private void openAlertMessageWarning(String message) {
         fxPrincipalController.openFondoModal();
-        Tools.AlertMessageWarning(spWindow, "Compras", message);
+        Tools.AlertMessageWarning(apWindow, "Compras", message);
         fxPrincipalController.closeFondoModal();
     }
 
@@ -378,7 +391,7 @@ public class FxComprasController implements Initializable {
             controller.setInitComprasController(this);
             controller.setLoadProcess(compraTB, tvList, loteTBs);
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Completar compra", spWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Completar compra", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding((w) -> fxPrincipalController.closeFondoModal());
@@ -396,7 +409,7 @@ public class FxComprasController implements Initializable {
             FxSuministrosListaController controller = fXMLLoader.getController();
             controller.setInitComprasController(this);
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto", spWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
@@ -421,7 +434,7 @@ public class FxComprasController implements Initializable {
                     FxSuministrosCompraController controller = fXMLLoader.getController();
                     controller.setInitComprasController(this);
                     //
-                    Stage stage = WindowStage.StageLoaderModal(parent, "Editar suministro", spWindow.getScene().getWindow());
+                    Stage stage = WindowStage.StageLoaderModal(parent, "Editar suministro", apWindow.getScene().getWindow());
                     stage.setResizable(false);
                     stage.sizeToScene();
                     stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
@@ -475,12 +488,12 @@ public class FxComprasController implements Initializable {
     }
 
     public void addSuministroToTable(DetalleCompraTB detalleCompraTB) {
-        detalleCompraTB.getRemove().setOnAction(e -> {
+        detalleCompraTB.getBtnRemove().setOnAction(e -> {
             tvList.getItems().remove(detalleCompraTB);
             tvList.refresh();
             calculateTotals();
         });
-        detalleCompraTB.getRemove().setOnKeyPressed(e -> {
+        detalleCompraTB.getBtnRemove().setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 tvList.getItems().remove(detalleCompraTB);
                 tvList.refresh();
@@ -491,12 +504,12 @@ public class FxComprasController implements Initializable {
     }
 
     public void editSuministroToTable(int index, DetalleCompraTB detalleCompraTB) {
-        detalleCompraTB.getRemove().setOnAction(e -> {
+        detalleCompraTB.getBtnRemove().setOnAction(e -> {
             tvList.getItems().remove(detalleCompraTB);
             tvList.refresh();
             calculateTotals();
         });
-        detalleCompraTB.getRemove().setOnKeyPressed(e -> {
+        detalleCompraTB.getBtnRemove().setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 tvList.getItems().remove(detalleCompraTB);
                 tvList.refresh();
@@ -504,6 +517,39 @@ public class FxComprasController implements Initializable {
             }
         });
         tvList.getItems().set(index, detalleCompraTB);
+    }
+
+    public void loadCompra(String idCompra) {
+        ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+        Task<Object> task = new Task<Object>() {
+            @Override
+            public Object call() {
+                return CompraADO.Obtener_Compra_ById(idCompra);
+            }
+        };
+
+        task.setOnFailed(w -> {
+            hbBody.setDisable(false);
+            hbLoad.setVisible(false);
+            lblMessageLoad.setText(task.getException().getLocalizedMessage());
+            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+            btnAceptarLoad.setVisible(true);
+        });
+        task.setOnScheduled(w -> {
+            hbBody.setDisable(true);
+            hbLoad.setVisible(true);
+            btnAceptarLoad.setVisible(false);
+            lblMessageLoad.setText("Cargando datos...");
+            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+        });
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
     }
 
     private void openWindowProvedores() {
@@ -515,7 +561,7 @@ public class FxComprasController implements Initializable {
             //Controlller here
             FxProveedorProcesoController controller = fXMLLoader.getController();
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Proveedor", spWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Proveedor", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
@@ -527,7 +573,24 @@ public class FxComprasController implements Initializable {
     }
 
     private void openWindowCompras() {
-
+        try {
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_COMPRAS_LISTA);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            //Controlller here
+            FxComprasListaController controller = fXMLLoader.getController();
+            controller.setInitCompras(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Lista de Compras", apWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w -> controller.loadInit());
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println("openWindowCompras():" + ex.getLocalizedMessage());
+        }
     }
 
     public void calculateTotals() {
@@ -557,6 +620,13 @@ public class FxComprasController implements Initializable {
         lblSubImporteNeto.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(subImporteNetoTotal, 2));
         lblImpuesto.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(impuestoTotal, 2));
         lblImporteNeto.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(importeNetoTotal, 2));
+    }
+
+    public void onEventRecargar() {
+        short value = Tools.AlertMessageConfirmation(apWindow, "Compras", "¿Está seguro de cancelar el venta?");
+        if (value == 1) {
+            clearComponents();
+        }
     }
 
     @FXML
@@ -595,14 +665,12 @@ public class FxComprasController implements Initializable {
         openWindowSuministroEdit();
     }
 
-    @FXML
     private void onKeyPressedRemover(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             onViewRemove();
         }
     }
 
-    @FXML
     private void onActionRemover(ActionEvent event) {
         onViewRemove();
     }
@@ -610,19 +678,13 @@ public class FxComprasController implements Initializable {
     @FXML
     private void onKeyPressedRecargar(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            short value = Tools.AlertMessageConfirmation(spWindow, "Compras", "¿Está seguro de limpiar la compra?");
-            if (value == 1) {
-                clearComponents();
-            }
+            onEventRecargar();
         }
     }
 
     @FXML
     private void onActionRecargar(ActionEvent event) {
-        short value = Tools.AlertMessageConfirmation(spWindow, "Compras", "¿Está seguro de limpiar la compra?");
-        if (value == 1) {
-            clearComponents();
-        }
+        onEventRecargar();
     }
 
     @FXML
@@ -666,7 +728,6 @@ public class FxComprasController implements Initializable {
         }
     }
 
-    @FXML
     private void onKeyReleasedWindow(KeyEvent event) throws IOException {
         if (null != event.getCode()) {
             switch (event.getCode()) {
@@ -683,10 +744,7 @@ public class FxComprasController implements Initializable {
                     openWindowProvedores();
                     break;
                 case F5:
-                    short value = Tools.AlertMessageConfirmation(spWindow, "Compras", "¿Está seguro de cancelar el venta?");
-                    if (value == 1) {
-                        clearComponents();
-                    }
+                    onEventRecargar();
                     break;
                 case F6:
 

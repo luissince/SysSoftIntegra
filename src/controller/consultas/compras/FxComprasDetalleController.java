@@ -122,7 +122,7 @@ public class FxComprasDetalleController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return CompraADO.ObtenerCompraId(idCompra);
+                return CompraADO.Obtener_Compra_ById(idCompra);
             }
         };
 

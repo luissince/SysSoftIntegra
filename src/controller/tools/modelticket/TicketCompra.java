@@ -99,7 +99,7 @@ public class TicketCompra {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object object = CompraADO.ObtenerCompraId(idCompra);
+                Object object = CompraADO.Obtener_Compra_ById(idCompra);
                 if (object instanceof CompraTB) {
                     try {
                         CompraTB compraTB = (CompraTB) object;
@@ -380,7 +380,7 @@ public class TicketCompra {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                Object object = CompraADO.ObtenerCompraId(idCompra);
+                Object object = CompraADO.Obtener_Compra_ById(idCompra);
                 if (object instanceof CompraTB) {
                     try {
                         return reportA4((CompraTB) object);

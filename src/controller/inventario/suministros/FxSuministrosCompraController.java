@@ -354,7 +354,7 @@ public class FxSuministrosCompraController implements Initializable {
 //      detalleCompraTB.setLote(loteSuministro);
         Button btnRemove = new Button("X");
         btnRemove.getStyleClass().add("buttonDark");
-        detalleCompraTB.setRemove(btnRemove);
+        detalleCompraTB.setBtnRemove(btnRemove);
 
         if (!validateStock(comprasController.getTvList(), detalleCompraTB.getSuministroTB().getClave()) && !editarSuministros) {
             comprasController.addSuministroToTable(detalleCompraTB);
