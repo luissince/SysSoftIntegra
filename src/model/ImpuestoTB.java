@@ -33,9 +33,9 @@ public class ImpuestoTB {
         this.predeterminado = predeterminado;
     }
 
-    public ImpuestoTB(int idImpuesto, String nombreImpuesto, double valor) {
+    public ImpuestoTB(int idImpuesto, String nombre, double valor) {
         this.idImpuesto = idImpuesto;
-        this.nombre = nombreImpuesto;
+        this.nombre = nombre;
         this.valor = valor;
     }
 

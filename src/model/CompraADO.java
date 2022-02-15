@@ -687,7 +687,7 @@ public class CompraADO extends DBUtil {
                 }
                 dbDisconnect();
             } catch (SQLException ex) {
-
+                return ex.getLocalizedMessage();
             }
         }
     }
@@ -697,6 +697,7 @@ public class CompraADO extends DBUtil {
         PreparedStatement preparedProveedor = null;
         PreparedStatement preparedDetalleCompra = null;
         PreparedStatement preparedCredito = null;
+        PreparedStatement preparedPrecio = null;
         ResultSet resultSet = null;
 
         try {
@@ -733,7 +734,7 @@ public class CompraADO extends DBUtil {
 
                 //proveedor start
                 ProveedorTB proveedorTB = new ProveedorTB();
-                proveedorTB.setIdProveedor(resultSet.getString("IdProveedor")); 
+                proveedorTB.setIdProveedor(resultSet.getString("IdProveedor"));
                 proveedorTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
                 proveedorTB.setRazonSocial(resultSet.getString("RazonSocial"));
                 proveedorTB.setTelefono(resultSet.getString("Telefono"));
@@ -757,13 +758,7 @@ public class CompraADO extends DBUtil {
                     DetalleCompraTB detalleCompraTB = new DetalleCompraTB();
                     detalleCompraTB.setId(resultSet.getRow());
                     detalleCompraTB.setIdSuministro(resultSet.getString("IdSuministro"));
-                    //
-                    SuministroTB suministrosTB = new SuministroTB();
-                    suministrosTB.setClave(resultSet.getString("Clave"));
-                    suministrosTB.setNombreMarca(resultSet.getString("NombreMarca"));
-                    suministrosTB.setUnidadVenta(resultSet.getInt("UnidadVenta"));
-                    suministrosTB.setUnidadCompraName(resultSet.getString("UnidadCompra"));
-                    detalleCompraTB.setSuministroTB(suministrosTB);
+
                     // 
                     detalleCompraTB.setCantidad(resultSet.getDouble("Cantidad"));
                     detalleCompraTB.setPrecioCompra(resultSet.getDouble("PrecioCompra"));
@@ -771,13 +766,49 @@ public class CompraADO extends DBUtil {
                     detalleCompraTB.setIdImpuesto(resultSet.getInt("IdImpuesto"));
 
                     ImpuestoTB impuestoTB = new ImpuestoTB();
+                    impuestoTB.setIdImpuesto(resultSet.getInt("IdImpuesto"));
                     impuestoTB.setNombre(resultSet.getString("NombreImpuesto"));
                     impuestoTB.setValor(resultSet.getDouble("ValorImpuesto"));
                     detalleCompraTB.setImpuestoTB(impuestoTB);
-                    
-                       Button button = new Button("X");
+
+                    Button button = new Button("X");
                     button.getStyleClass().add("buttonDark");
                     detalleCompraTB.setBtnRemove(button);
+
+                    //
+                    SuministroTB suministrosTB = new SuministroTB();
+                    suministrosTB.setClave(resultSet.getString("Clave"));
+                    suministrosTB.setNombreMarca(resultSet.getString("NombreMarca"));
+                    suministrosTB.setUnidadVenta(resultSet.getInt("UnidadVenta"));
+                    suministrosTB.setUnidadCompraName(resultSet.getString("UnidadCompra"));
+
+                    preparedPrecio = getConnection().prepareStatement("SELECT s.TipoPrecio,s.PrecioCompra,i.IdImpuesto,i.Nombre,i.Valor "
+                            + "FROM "
+                            + "SuministroTB AS s "
+                            + "INNER JOIN ImpuestoTB AS i ON i.IdImpuesto = s.Impuesto "
+                            + "WHERE s.IdSuministro = ?");
+                    preparedPrecio.setString(1, resultSet.getString("IdSuministro"));
+                    ResultSet rsEmps = preparedPrecio.executeQuery();
+                    rsEmps.next();
+                    suministrosTB.setTipoPrecio(rsEmps.getBoolean("TipoPrecio"));
+                    suministrosTB.setPrecioVentaGeneral(rsEmps.getDouble("PrecioCompra"));
+                    suministrosTB.setIdImpuesto(rsEmps.getInt("IdImpuesto"));
+                    suministrosTB.setImpuestoTB(new ImpuestoTB(rsEmps.getInt("IdImpuesto"), rsEmps.getString("Nombre"), rsEmps.getDouble("Valor")));
+
+                    ArrayList<PreciosTB> preciosTBs = new ArrayList();
+                    preparedPrecio = getConnection().prepareStatement("SELECT * FROM PreciosTB WHERE IdSuministro = ?");
+                    preparedPrecio.setString(1, resultSet.getString("IdSuministro"));
+                    rsEmps = preparedPrecio.executeQuery();
+                    while (rsEmps.next()) {
+                        PreciosTB preciosTB = new PreciosTB();
+                        preciosTB.setIdPrecios(rsEmps.getInt("IdPrecios"));
+                        preciosTB.setNombre(rsEmps.getString("Nombre"));
+                        preciosTB.setValor(rsEmps.getDouble("Valor"));
+                        preciosTB.setFactor(rsEmps.getDouble("Factor"));
+                        preciosTBs.add(preciosTB);
+                    }
+                    suministrosTB.setPreciosTBs(preciosTBs);
+                    detalleCompraTB.setSuministroTB(suministrosTB);
 
                     empList.add(detalleCompraTB);
                 }

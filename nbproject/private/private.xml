@@ -3,8 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Alexander/Documents/NetBeansProjects/SysSoftIntegra/src/controller/reporte/FxVentaReporteController.java</file>
-            <file>file:/C:/Users/Alexander/Documents/NetBeansProjects/SysSoftIntegra/src/model/IngresoADO.java</file>
+            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/tools/SearchComboBoxSkin.java</file>
+            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/operaciones/compras/FxComprasController.java</file>
+            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/model/CompraADO.java</file>
+            <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/inventario/suministros/FxSuministrosCompraController.java</file>
         </group>
     </open-files>
 </project-private>

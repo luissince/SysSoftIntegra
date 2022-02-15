@@ -346,8 +346,8 @@ public class FxSuministrosCompraController implements Initializable {
         suministrosTB.setPrecioVentaGeneral(precioValidado);
         suministrosTB.setIdImpuesto(cbImpuesto.getSelectionModel().getSelectedItem().getIdImpuesto());
         suministrosTB.setTipoPrecio(rbPrecioNormal.isSelected());
-        tvPreciosNormal.add(new PreciosTB(0, "Precio de Venta 1", !Tools.isNumeric(txtPrecio2.getText()) ? 0 : Double.parseDouble(txtPrecio2.getText()), 1));
-        tvPreciosNormal.add(new PreciosTB(0, "Precio de Venta 2", !Tools.isNumeric(txtPrecio3.getText()) ? 0 : Double.parseDouble(txtPrecio3.getText()), 1));
+        tvPreciosNormal.add(new PreciosTB(0, "PRECIO DE VENTA 1", !Tools.isNumeric(txtPrecio2.getText()) ? 0 : Double.parseDouble(txtPrecio2.getText()), 1));
+        tvPreciosNormal.add(new PreciosTB(0, "PRECIO DE VENTA 2", !Tools.isNumeric(txtPrecio3.getText()) ? 0 : Double.parseDouble(txtPrecio3.getText()), 1));
         suministrosTB.setPreciosTBs(rbPrecioNormal.isSelected() ? tvPreciosNormal : new ArrayList<>(tvPrecios.getItems()));
         detalleCompraTB.setSuministroTB(suministrosTB);
 

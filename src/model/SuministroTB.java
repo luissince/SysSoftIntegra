@@ -652,8 +652,6 @@ public class SuministroTB {
         this.searchComboBoxDetalle = searchComboBoxDetalle;
     }
 
-   
-
     public ArrayList<PreciosTB> getPreciosTBs() {
         return preciosTBs;
     }

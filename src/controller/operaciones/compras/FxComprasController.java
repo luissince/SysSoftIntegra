@@ -11,6 +11,7 @@ import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
@@ -48,6 +49,7 @@ import model.DetalleADO;
 import model.DetalleCompraTB;
 import model.DetalleTB;
 import model.LoteTB;
+import model.PreciosTB;
 import model.PrivilegioTB;
 import model.ProveedorADO;
 import model.ProveedorTB;
@@ -121,8 +123,6 @@ public class FxComprasController implements Initializable {
     private ObservableList<LoteTB> loteTBs;
 
     private SearchComboBox<AlmacenTB> searchComboBoxAlmacen;
-
-    private String idCompra;
 
     private double importeBrutoTotal = 0;
 
@@ -313,13 +313,12 @@ public class FxComprasController implements Initializable {
     }
 
     public void clearComponents() {
-        idCompra = "";
         cbSerie.clear();
         cbNumeracion.clear();
         Tools.actualDate(Tools.getDate(), tpFechaCompra);
         tvList.getItems().clear();
         loteTBs.clear();
-        initTable();
+
         searchComboBoxAlmacen.getComboBox().getItems().clear();
         searchComboBoxAlmacen.getComboBox().getItems().addAll(AlmacenADO.GetSearchComboBoxAlmacen());
         if (!searchComboBoxAlmacen.getComboBox().getItems().isEmpty()) {
@@ -329,11 +328,7 @@ public class FxComprasController implements Initializable {
         cbComprobante.getItems().clear();
         cbComprobante.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0015", ""));
 
-        lblImporteBruto.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
-        lblDescuento.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
-        lblSubImporteNeto.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
-        lblImpuesto.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
-        lblImporteNeto.setText(Session.MONEDA_SIMBOLO + " " + "0.00");
+        calculateTotals();
 
         txtObservaciones.clear();
         txtNotas.clear();
@@ -529,6 +524,7 @@ public class FxComprasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
+//                clearComponents();
                 return CompraADO.Obtener_Compra_ById(idCompra);
             }
         };
@@ -536,22 +532,78 @@ public class FxComprasController implements Initializable {
             Object object = task.getValue();
             if (object instanceof CompraTB) {
                 CompraTB compraTB = (CompraTB) object;
-                this.idCompra = idCompra;
 
                 cbProveedor.getItems().clear();
                 cbProveedor.getItems().add(new ProveedorTB(compraTB.getProveedorTB().getIdProveedor(), compraTB.getProveedorTB().getNumeroDocumento(), compraTB.getProveedorTB().getRazonSocial()));
-                cbProveedor.getSelectionModel().select(0);                
-                
+                cbProveedor.getSelectionModel().select(0);
+
                 Tools.actualDate(Tools.getDate(), tpFechaCompra);
                 for (int i = 0; i < cbComprobante.getItems().size(); i++) {
                     if (cbComprobante.getItems().get(i).getIdDetalle() == compraTB.getIdComprobante()) {
                         cbComprobante.getSelectionModel().select(i);
                     }
-                }                
-                
+                }
+
                 cbSerie.setText(compraTB.getSerie());
                 cbNumeracion.setText(compraTB.getNumeracion());
 
+                compraTB.getDetalleCompraTBs().forEach(dctb -> {
+                    DetalleCompraTB detalleCompraTB = new DetalleCompraTB();
+                    detalleCompraTB.setId(tvList.getItems().size() + 1);
+                    detalleCompraTB.setIdSuministro(dctb.getIdSuministro());
+                    detalleCompraTB.setCambiarPrecio(false);
+                    detalleCompraTB.setIdImpuesto(dctb.getIdImpuesto());
+                    detalleCompraTB.setDescripcion("");
+                    detalleCompraTB.setCantidad(dctb.getCantidad());
+                    detalleCompraTB.setDescuento(dctb.getDescuento());
+                    detalleCompraTB.setPrecioCompra(dctb.getPrecioCompra());
+
+                    detalleCompraTB.setImpuestoTB(dctb.getImpuestoTB());
+
+                    //SUMINISTRO
+                    SuministroTB suministrosTB = new SuministroTB();
+                    suministrosTB.setClave(dctb.getSuministroTB().getClave());
+                    suministrosTB.setNombreMarca(dctb.getSuministroTB().getNombreMarca());
+                    suministrosTB.setPrecioVentaGeneral(dctb.getSuministroTB().getPrecioVentaGeneral());
+                    suministrosTB.setIdImpuesto(dctb.getSuministroTB().getIdImpuesto());
+                    suministrosTB.setTipoPrecio(dctb.getSuministroTB().isTipoPrecio());
+                    
+                    if (suministrosTB.isTipoPrecio()) {
+                        ArrayList<PreciosTB> tvPreciosNormal = new ArrayList<>();
+                        tvPreciosNormal.add(new PreciosTB(0, "PRECIO DE VENTA 1", ((PreciosTB) dctb.getSuministroTB().getPreciosTBs().get(0)).getValor(), 1));
+                        tvPreciosNormal.add(new PreciosTB(0, "PRECIO DE VENTA 2", ((PreciosTB) dctb.getSuministroTB().getPreciosTBs().get(1)).getValor(), 1));
+                        suministrosTB.setPreciosTBs(tvPreciosNormal);
+                    } else {
+                        suministrosTB.setPreciosTBs(new ArrayList<>(dctb.getSuministroTB().getPreciosTBs()));
+                    }
+                    detalleCompraTB.setSuministroTB(suministrosTB);
+
+                    Button btnRemove = new Button("X");
+                    btnRemove.getStyleClass().add("buttonDark");
+                    btnRemove.setOnAction(e -> {
+                        tvList.getItems().remove(detalleCompraTB);
+                        tvList.refresh();
+                        calculateTotals();
+                    });
+                    btnRemove.setOnKeyPressed(e -> {
+                        if (e.getCode() == KeyCode.ENTER) {
+                            tvList.getItems().remove(detalleCompraTB);
+                            tvList.refresh();
+                            calculateTotals();
+                        }
+                    });
+
+                    detalleCompraTB.setBtnRemove(btnRemove);
+
+                    tvList.getItems().add(detalleCompraTB);
+                });
+                calculateTotals();
+
+                txtNotas.setText(compraTB.getNotas());
+                txtObservaciones.setText(compraTB.getObservaciones());
+
+                hbBody.setDisable(false);
+                hbLoad.setVisible(false);
             } else {
                 lblMessageLoad.setText((String) object);
                 lblMessageLoad.setTextFill(Color.web("#ff6d6d"));

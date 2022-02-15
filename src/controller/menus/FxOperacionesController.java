@@ -77,7 +77,7 @@ public class FxOperacionesController implements Initializable {
      */
     private FXMLLoader fXMLCompra;
 
-    private ScrollPane nodeCompra;
+    private AnchorPane nodeCompra;
 
     private FxComprasController controllerCompras;
 
