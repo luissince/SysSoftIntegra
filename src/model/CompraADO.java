@@ -712,6 +712,7 @@ public class CompraADO extends DBUtil {
                 compraTB.setHoraCompra(resultSet.getTime("HoraCompra").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 compraTB.setFechaVencimiento(resultSet.getDate("FechaVencimiento").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 compraTB.setHoraVencimiento(resultSet.getTime("HoraVencimiento").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                compraTB.setIdComprobante(resultSet.getInt("IdComprobante"));
                 compraTB.setComprobante(resultSet.getString("Comprobante"));
                 compraTB.setSerie(resultSet.getString("Serie").toUpperCase());
                 compraTB.setNumeracion(resultSet.getString("Numeracion"));
@@ -732,6 +733,7 @@ public class CompraADO extends DBUtil {
 
                 //proveedor start
                 ProveedorTB proveedorTB = new ProveedorTB();
+                proveedorTB.setIdProveedor(resultSet.getString("IdProveedor")); 
                 proveedorTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
                 proveedorTB.setRazonSocial(resultSet.getString("RazonSocial"));
                 proveedorTB.setTelefono(resultSet.getString("Telefono"));

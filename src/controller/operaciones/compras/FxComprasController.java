@@ -28,7 +28,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -45,7 +44,6 @@ import model.AlmacenADO;
 import model.AlmacenTB;
 import model.CompraADO;
 import model.CompraTB;
-import model.CotizacionADO;
 import model.DetalleADO;
 import model.DetalleCompraTB;
 import model.DetalleTB;
@@ -123,6 +121,8 @@ public class FxComprasController implements Initializable {
     private ObservableList<LoteTB> loteTBs;
 
     private SearchComboBox<AlmacenTB> searchComboBoxAlmacen;
+
+    private String idCompra;
 
     private double importeBrutoTotal = 0;
 
@@ -313,6 +313,7 @@ public class FxComprasController implements Initializable {
     }
 
     public void clearComponents() {
+        idCompra = "";
         cbSerie.clear();
         cbNumeracion.clear();
         Tools.actualDate(Tools.getDate(), tpFechaCompra);
@@ -531,19 +532,68 @@ public class FxComprasController implements Initializable {
                 return CompraADO.Obtener_Compra_ById(idCompra);
             }
         };
+        task.setOnSucceeded(w -> {
+            Object object = task.getValue();
+            if (object instanceof CompraTB) {
+                CompraTB compraTB = (CompraTB) object;
+                this.idCompra = idCompra;
 
+                cbProveedor.getItems().clear();
+                cbProveedor.getItems().add(new ProveedorTB(compraTB.getProveedorTB().getIdProveedor(), compraTB.getProveedorTB().getNumeroDocumento(), compraTB.getProveedorTB().getRazonSocial()));
+                cbProveedor.getSelectionModel().select(0);                
+                
+                Tools.actualDate(Tools.getDate(), tpFechaCompra);
+                for (int i = 0; i < cbComprobante.getItems().size(); i++) {
+                    if (cbComprobante.getItems().get(i).getIdDetalle() == compraTB.getIdComprobante()) {
+                        cbComprobante.getSelectionModel().select(i);
+                    }
+                }                
+                
+                cbSerie.setText(compraTB.getSerie());
+                cbNumeracion.setText(compraTB.getNumeracion());
+
+            } else {
+                lblMessageLoad.setText((String) object);
+                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+                btnAceptarLoad.setVisible(true);
+                btnAceptarLoad.setOnAction(event -> {
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    clearComponents();
+                });
+                btnAceptarLoad.setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        hbBody.setDisable(false);
+                        hbLoad.setVisible(false);
+                        clearComponents();
+                    }
+                    event.consume();
+                });
+            }
+        });
         task.setOnFailed(w -> {
-            hbBody.setDisable(false);
-            hbLoad.setVisible(false);
+            btnAceptarLoad.setVisible(true);
+            btnAceptarLoad.setOnAction(event -> {
+                hbBody.setDisable(false);
+                hbLoad.setVisible(false);
+                clearComponents();
+            });
+            btnAceptarLoad.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    clearComponents();
+                }
+                event.consume();
+            });
             lblMessageLoad.setText(task.getException().getLocalizedMessage());
             lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-            btnAceptarLoad.setVisible(true);
         });
         task.setOnScheduled(w -> {
             hbBody.setDisable(true);
             hbLoad.setVisible(true);
             btnAceptarLoad.setVisible(false);
-            lblMessageLoad.setText("Cargando datos...");
+            lblMessageLoad.setText("Cargando información...");
             lblMessageLoad.setTextFill(Color.web("#ffffff"));
         });
         exec.execute(task);
