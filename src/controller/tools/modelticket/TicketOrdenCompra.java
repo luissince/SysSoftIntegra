@@ -98,7 +98,7 @@ public class TicketOrdenCompra {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object object = OrdenCompraADO.ObtenerOrdenCompraId(idOrdenCompra);
+                Object object = OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
                 if (object instanceof OrdenCompraTB) {
                     try {
                         OrdenCompraTB ordenCompraTB = (OrdenCompraTB) object;
@@ -304,7 +304,7 @@ public class TicketOrdenCompra {
             @Override
             public Object call() {
                 try {
-                    Object object = OrdenCompraADO.ObtenerOrdenCompraId(idOrdenCompra);
+                    Object object = OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
                     if (object instanceof OrdenCompraTB) {
                         OrdenCompraTB ordenCompraTB = (OrdenCompraTB) object;
                         double importeBrutoTotal = 0;

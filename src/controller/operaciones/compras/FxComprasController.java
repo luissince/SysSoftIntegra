@@ -4,6 +4,7 @@ import controller.contactos.proveedores.FxProveedorProcesoController;
 import controller.inventario.suministros.FxSuministrosCompraController;
 import controller.inventario.suministros.FxSuministrosListaController;
 import controller.menus.FxPrincipalController;
+import controller.operaciones.ordencompra.FxOrdenCompraListaController;
 import controller.tools.FilesRouters;
 import controller.tools.SearchComboBox;
 import controller.tools.Session;
@@ -49,6 +50,8 @@ import model.DetalleADO;
 import model.DetalleCompraTB;
 import model.DetalleTB;
 import model.LoteTB;
+import model.OrdenCompraADO;
+import model.OrdenCompraTB;
 import model.PreciosTB;
 import model.PrivilegioTB;
 import model.ProveedorADO;
@@ -203,8 +206,7 @@ public class FxComprasController implements Initializable {
         tcArticulo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.39));
         tcCosto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
         tcImpuesto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
-        tcImporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
-
+        tcImporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
     }
 
@@ -521,23 +523,24 @@ public class FxComprasController implements Initializable {
             t.setDaemon(true);
             return t;
         });
+
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-//                clearComponents();
                 return CompraADO.Obtener_Compra_ById(idCompra);
             }
         };
+
         task.setOnSucceeded(w -> {
             Object object = task.getValue();
             if (object instanceof CompraTB) {
+
                 CompraTB compraTB = (CompraTB) object;
 
                 cbProveedor.getItems().clear();
                 cbProveedor.getItems().add(new ProveedorTB(compraTB.getProveedorTB().getIdProveedor(), compraTB.getProveedorTB().getNumeroDocumento(), compraTB.getProveedorTB().getRazonSocial()));
                 cbProveedor.getSelectionModel().select(0);
 
-                Tools.actualDate(Tools.getDate(), tpFechaCompra);
                 for (int i = 0; i < cbComprobante.getItems().size(); i++) {
                     if (cbComprobante.getItems().get(i).getIdDetalle() == compraTB.getIdComprobante()) {
                         cbComprobante.getSelectionModel().select(i);
@@ -567,7 +570,7 @@ public class FxComprasController implements Initializable {
                     suministrosTB.setPrecioVentaGeneral(dctb.getSuministroTB().getPrecioVentaGeneral());
                     suministrosTB.setIdImpuesto(dctb.getSuministroTB().getIdImpuesto());
                     suministrosTB.setTipoPrecio(dctb.getSuministroTB().isTipoPrecio());
-                    
+
                     if (suministrosTB.isTipoPrecio()) {
                         ArrayList<PreciosTB> tvPreciosNormal = new ArrayList<>();
                         tvPreciosNormal.add(new PreciosTB(0, "PRECIO DE VENTA 1", ((PreciosTB) dctb.getSuministroTB().getPreciosTBs().get(0)).getValor(), 1));
@@ -623,6 +626,7 @@ public class FxComprasController implements Initializable {
                 });
             }
         });
+
         task.setOnFailed(w -> {
             btnAceptarLoad.setVisible(true);
             btnAceptarLoad.setOnAction(event -> {
@@ -641,6 +645,7 @@ public class FxComprasController implements Initializable {
             lblMessageLoad.setText(task.getException().getLocalizedMessage());
             lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
         });
+
         task.setOnScheduled(w -> {
             hbBody.setDisable(true);
             hbLoad.setVisible(true);
@@ -648,6 +653,143 @@ public class FxComprasController implements Initializable {
             lblMessageLoad.setText("Cargando información...");
             lblMessageLoad.setTextFill(Color.web("#ffffff"));
         });
+
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+
+    public void loadOrdenCompra(String idOrdenCompra) {
+        ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<Object> task = new Task<Object>() {
+            @Override
+            public Object call() {
+                return OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
+            }
+        };
+
+        task.setOnSucceeded(w -> {
+            Object object = task.getValue();
+            if (object instanceof OrdenCompraTB) {
+
+                OrdenCompraTB ordenCompraTB = (OrdenCompraTB) object;
+
+                cbProveedor.getItems().clear();
+                cbProveedor.getItems().add(new ProveedorTB(ordenCompraTB.getProveedorTB().getIdProveedor(), ordenCompraTB.getProveedorTB().getNumeroDocumento(), ordenCompraTB.getProveedorTB().getRazonSocial()));
+                cbProveedor.getSelectionModel().select(0);
+
+                ordenCompraTB.getOrdenCompraDetalleTBs().forEach(dctb -> {
+                    DetalleCompraTB detalleCompraTB = new DetalleCompraTB();
+                    detalleCompraTB.setId(tvList.getItems().size() + 1);
+                    detalleCompraTB.setIdSuministro(dctb.getIdSuministro());
+                    detalleCompraTB.setCambiarPrecio(false);
+                    detalleCompraTB.setIdImpuesto(dctb.getIdImpuesto());
+                    detalleCompraTB.setDescripcion("");
+                    detalleCompraTB.setCantidad(dctb.getCantidad());
+                    detalleCompraTB.setDescuento(dctb.getDescuento());
+                    detalleCompraTB.setPrecioCompra(dctb.getCosto());
+
+                    detalleCompraTB.setImpuestoTB(dctb.getImpuestoTB());
+
+                    //SUMINISTRO
+                    SuministroTB suministrosTB = new SuministroTB();
+                    suministrosTB.setIdSuministro(dctb.getIdSuministro());
+                    suministrosTB.setClave(dctb.getSuministroTB().getClave());
+                    suministrosTB.setNombreMarca(dctb.getSuministroTB().getNombreMarca());
+                    suministrosTB.setUnidadCompraName(dctb.getSuministroTB().getUnidadCompraName());
+                    suministrosTB.setPrecioVentaGeneral(dctb.getSuministroTB().getPrecioVentaGeneral());
+                    suministrosTB.setIdImpuesto(dctb.getSuministroTB().getIdImpuesto());
+                    suministrosTB.setTipoPrecio(dctb.getSuministroTB().isTipoPrecio());
+
+                    if (suministrosTB.isTipoPrecio()) {
+                        ArrayList<PreciosTB> tvPreciosNormal = new ArrayList<>();
+                        tvPreciosNormal.add(new PreciosTB(0, "PRECIO DE VENTA 1", ((PreciosTB) dctb.getSuministroTB().getPreciosTBs().get(0)).getValor(), 1));
+                        tvPreciosNormal.add(new PreciosTB(0, "PRECIO DE VENTA 2", ((PreciosTB) dctb.getSuministroTB().getPreciosTBs().get(1)).getValor(), 1));
+                        suministrosTB.setPreciosTBs(tvPreciosNormal);
+                    } else {
+                        suministrosTB.setPreciosTBs(new ArrayList<>(dctb.getSuministroTB().getPreciosTBs()));
+                    }
+                    detalleCompraTB.setSuministroTB(suministrosTB);
+
+                    Button btnRemove = new Button("X");
+                    btnRemove.getStyleClass().add("buttonDark");
+                    btnRemove.setOnAction(e -> {
+                        tvList.getItems().remove(detalleCompraTB);
+                        tvList.refresh();
+                        calculateTotals();
+                    });
+                    btnRemove.setOnKeyPressed(e -> {
+                        if (e.getCode() == KeyCode.ENTER) {
+                            tvList.getItems().remove(detalleCompraTB);
+                            tvList.refresh();
+                            calculateTotals();
+                        }
+                    });
+
+                    detalleCompraTB.setBtnRemove(btnRemove);
+
+                    tvList.getItems().add(detalleCompraTB);
+                });
+
+                calculateTotals();
+                txtObservaciones.setText(ordenCompraTB.getObservacion());
+
+                hbBody.setDisable(false);
+                hbLoad.setVisible(false);
+
+            } else {
+                lblMessageLoad.setText((String) object);
+                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+                btnAceptarLoad.setVisible(true);
+                btnAceptarLoad.setOnAction(event -> {
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    clearComponents();
+                });
+                btnAceptarLoad.setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        hbBody.setDisable(false);
+                        hbLoad.setVisible(false);
+                        clearComponents();
+                    }
+                    event.consume();
+                });
+            }
+        });
+
+        task.setOnFailed(w -> {
+            btnAceptarLoad.setVisible(true);
+            btnAceptarLoad.setOnAction(event -> {
+                hbBody.setDisable(false);
+                hbLoad.setVisible(false);
+                clearComponents();
+            });
+            btnAceptarLoad.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    clearComponents();
+                }
+                event.consume();
+            });
+            lblMessageLoad.setText(task.getException().getLocalizedMessage());
+            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+        });
+
+        task.setOnScheduled(w -> {
+            hbBody.setDisable(true);
+            hbLoad.setVisible(true);
+            btnAceptarLoad.setVisible(false);
+            lblMessageLoad.setText("Cargando información...");
+            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+        });
+
         exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();
@@ -682,6 +824,27 @@ public class FxComprasController implements Initializable {
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
             FxComprasListaController controller = fXMLLoader.getController();
+            controller.setInitCompras(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Lista de Compras", apWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w -> controller.loadInit());
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println("openWindowCompras():" + ex.getLocalizedMessage());
+        }
+    }
+
+    private void openWindowOrdenCompra() {
+        try {
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_ORDEN_COMPRA_LISTA);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            //Controlller here
+            FxOrdenCompraListaController controller = fXMLLoader.getController();
             controller.setInitCompras(this);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Lista de Compras", apWindow.getScene().getWindow());
@@ -811,6 +974,18 @@ public class FxComprasController implements Initializable {
     @FXML
     private void onActionCompras(ActionEvent event) {
         openWindowCompras();
+    }
+
+    @FXML
+    private void onKeyPressedOrdenCompra(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowOrdenCompra();
+        }
+    }
+
+    @FXML
+    private void onActionOrdenCompra(ActionEvent event) {
+        openWindowOrdenCompra();
     }
 
     @FXML

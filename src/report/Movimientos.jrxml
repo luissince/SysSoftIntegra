@@ -131,23 +131,23 @@
 	<pageFooter>
 		<band height="20" splitType="Stretch">
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="158" y="0" width="255" height="20" forecolor="#020203" uuid="18f6c1ec-f1c5-4270-a98d-fd61d2202e74"/>
+				<reportElement stretchType="RelativeToTallestObject" x="158" y="0" width="255" height="20" forecolor="#333333" uuid="18f6c1ec-f1c5-4270-a98d-fd61d2202e74"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Generado por SYS SOFT INTEGRA]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy h:mm a">
-				<reportElement x="413" y="0" width="144" height="20" forecolor="#020203" uuid="9ddf6941-d6aa-47f1-ba02-3275a1a6101e"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+				<reportElement x="413" y="0" width="144" height="20" forecolor="#333333" uuid="9ddf6941-d6aa-47f1-ba02-3275a1a6101e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="0" width="158" height="20" forecolor="#020203" uuid="22aabeba-8768-469b-9c12-d7a751b17153"/>
+				<reportElement x="0" y="0" width="158" height="20" forecolor="#333333" uuid="22aabeba-8768-469b-9c12-d7a751b17153"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7"/>
+					<font fontName="Arial" size="6"/>
 					<paragraph lineSpacing="AtLeast"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}+" / " + $V{PAGE_NUMBER}]]></textFieldExpression>

@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -46,6 +47,8 @@ public class FxComprasListaController implements Initializable {
     @FXML
     private TableColumn<CompraTB, String> tcProveedor;
     @FXML
+    private TableColumn<CompraTB, Label> tcEstado;
+    @FXML
     private TableColumn<CompraTB, String> tcTotal;
     @FXML
     private Label lblPaginaActual;
@@ -65,8 +68,9 @@ public class FxComprasListaController implements Initializable {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
         tcFecha.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFechaCompra() + "\n" + cellData.getValue().getHoraCompra()));
-        tcSerie.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()));
+        tcSerie.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getComprobante() + "\n" + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()));
         tcProveedor.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getProveedorTB().getNumeroDocumento() + "\n" + cellData.getValue().getProveedorTB().getRazonSocial()));
+        tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
         tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
@@ -136,8 +140,9 @@ public class FxComprasListaController implements Initializable {
 
     private void onEventAceptar() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            comprasController.loadCompra(tvList.getSelectionModel().getSelectedItem().getIdCompra());
+            comprasController.clearComponents();
             Tools.Dispose(apWindow);
+            comprasController.loadCompra(tvList.getSelectionModel().getSelectedItem().getIdCompra());
         } else {
             tvList.requestFocus();
         }

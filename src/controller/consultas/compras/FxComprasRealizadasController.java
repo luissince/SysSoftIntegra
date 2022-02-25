@@ -98,7 +98,7 @@ public class FxComprasRealizadasController implements Initializable {
         tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
-        tcFechaCompra.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcFechaCompra.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
         tcNumeracion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
         tcProveedor.prefWidthProperty().bind(tvList.widthProperty().multiply(0.23));
         tcTipo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));

@@ -74,7 +74,7 @@
                                     </ImageView>
                                  </graphic>
                               </Label>
-                              <DatePicker fx:id="dtFechaFinal" onAction="#onActionFechaCompra" prefHeight="30.0" prefWidth="200.0" />
+                              <DatePicker fx:id="dtFechaInicial" onAction="#onActionFechaCompra" prefHeight="30.0" prefWidth="200.0" />
                            </children>
                         </VBox>
                         <VBox style="-fx-spacing: 0.6666666666666666em;">
@@ -103,10 +103,11 @@
                               <TableView fx:id="tvList" fixedCellSize="-0.0" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="320.0" prefWidth="820.0" styleClass="table-view-principal" VBox.vgrow="ALWAYS">
                                  <columns>
                                     <TableColumn fx:id="tcNumero" prefWidth="50.0" style="-fx-alignment: CENTER;" text="N°" />
-                                    <TableColumn fx:id="tcFecha" prefWidth="140.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha" />
-                                    <TableColumn fx:id="tcSerie" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Serie/Numeración" />
-                                    <TableColumn fx:id="tcProveedor" prefWidth="260.0" style="-fx-alignment: CENTER-LEFT;" text="Proveedor" />
-                                    <TableColumn fx:id="tcTotal" prefWidth="160.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
+                                    <TableColumn fx:id="tcFecha" prefWidth="100.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha" />
+                                    <TableColumn fx:id="tcSerie" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Serie/Numeración" />
+                                    <TableColumn fx:id="tcProveedor" prefWidth="250.0" style="-fx-alignment: CENTER-LEFT;" text="Proveedor" />
+                                    <TableColumn fx:id="tcEstado" prefWidth="140.0" style="-fx-alignment: CENTER-RIGHT;" text="Estado" />
+                                    <TableColumn fx:id="tcTotal" prefWidth="100.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
                                  </columns>
                               </TableView>
                            </children>

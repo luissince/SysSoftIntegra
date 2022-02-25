@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2113b6ec-3b92-49be-89e1-fe09c35088de">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="128"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="FECHA_ENVIO" class="java.lang.String"/>
 	<parameter name="FECHA_SALIDA" class="java.lang.String"/>
@@ -278,32 +278,32 @@
 	</detail>
 	<pageFooter>
 		<band height="20" splitType="Stretch">
-			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="158" y="0" width="255" height="20" forecolor="#FFFFFF" backcolor="#020203" uuid="ba800eb3-55d8-4c6c-9800-0d9c83782d7a"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Generado por SYS SOFT INTEGRA]]></text>
-			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" forecolor="#1A2226" uuid="a3f7046e-40d2-404a-b7d8-795ef5a158bc"/>
+			</line>
 			<textField>
-				<reportElement mode="Opaque" x="0" y="0" width="158" height="20" forecolor="#FFFFFF" backcolor="#020203" uuid="ff66783a-2472-4f1e-bcf6-f0ed67a46b8c"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="20" forecolor="#333333" uuid="e024e31c-7b21-4551-947f-57bab0ee1611"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7"/>
-					<paragraph lineSpacing="AtLeast"/>
+					<font fontName="Arial" size="6" isBold="false"/>
+					<paragraph lineSpacing="AtLeast" leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}+" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy h:mm a">
-				<reportElement mode="Opaque" x="413" y="0" width="144" height="20" forecolor="#FFFFFF" backcolor="#020203" uuid="f06ec65c-d8fb-4c36-b7e7-8612e7a6e484"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
-					<paragraph leftIndent="5" rightIndent="5"/>
+				<reportElement stretchType="RelativeToTallestObject" x="415" y="0" width="140" height="20" forecolor="#333333" uuid="e4204311-0ae7-4a00-9a2b-061d390a2b49"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6" isBold="false"/>
+					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="0" y="0" width="555" height="1" forecolor="#1A2226" uuid="a3f7046e-40d2-404a-b7d8-795ef5a158bc"/>
-			</line>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="140" y="0" width="277" height="20" forecolor="#333333" uuid="02151f50-2d26-4b77-8d14-829d82e67022"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Generado por SysSoft Integra]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 </jasperReport>

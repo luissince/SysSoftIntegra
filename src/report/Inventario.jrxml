@@ -288,7 +288,7 @@
 			<textField pattern="dd/MM/yyyy h:mm a">
 				<reportElement mode="Transparent" x="400" y="0" width="155" height="21" forecolor="#333333" backcolor="#000000" uuid="50b9aa40-b358-4ef0-87b5-86499733c2d2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+					<font fontName="Arial" size="6" isBold="false"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
@@ -296,7 +296,7 @@
 			<textField>
 				<reportElement mode="Transparent" x="0" y="0" width="160" height="21" forecolor="#333333" backcolor="#000000" uuid="2540d31d-3629-4ada-bfe5-14dcd71d0e1d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7"/>
+					<font fontName="Arial" size="6"/>
 					<paragraph lineSpacing="AtLeast"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}+" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
@@ -304,7 +304,7 @@
 			<staticText>
 				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="160" y="0" width="240" height="21" forecolor="#333333" backcolor="#000000" uuid="d5f2d98e-1b7a-4e88-8a90-b65bde74e636"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Generado por SYSSOFT INTEGRA]]></text>
 			</staticText>

@@ -234,25 +234,25 @@
 	<pageFooter>
 		<band height="21">
 			<textField pattern="dd/MM/yyyy h:mm a">
-				<reportElement mode="Transparent" x="394" y="0" width="161" height="21" forecolor="#020203" backcolor="#020203" uuid="1e635db5-87bc-40f5-821b-61f8df7641a3"/>
+				<reportElement mode="Transparent" x="394" y="0" width="161" height="21" forecolor="#333333" backcolor="#020203" uuid="1e635db5-87bc-40f5-821b-61f8df7641a3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+					<font fontName="Arial" size="6" isBold="false"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="0" y="0" width="160" height="21" forecolor="#020203" backcolor="#020203" uuid="680caca9-21bd-4b91-9774-2eeb7b560bbc"/>
+				<reportElement mode="Transparent" x="0" y="0" width="160" height="21" forecolor="#333333" backcolor="#020203" uuid="680caca9-21bd-4b91-9774-2eeb7b560bbc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7"/>
+					<font fontName="Arial" size="6"/>
 					<paragraph lineSpacing="AtLeast"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}+" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="160" y="0" width="234" height="21" forecolor="#020203" backcolor="#020203" uuid="3bafbb65-a4a7-40d8-b4a5-44beb26d4f0f"/>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="160" y="0" width="234" height="21" forecolor="#333333" backcolor="#020203" uuid="3bafbb65-a4a7-40d8-b4a5-44beb26d4f0f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Generado por SYS SOFT INTEGRA]]></text>
 			</staticText>

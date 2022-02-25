@@ -771,16 +771,12 @@ public class CompraADO extends DBUtil {
                     impuestoTB.setValor(resultSet.getDouble("ValorImpuesto"));
                     detalleCompraTB.setImpuestoTB(impuestoTB);
 
-                    Button button = new Button("X");
-                    button.getStyleClass().add("buttonDark");
-                    detalleCompraTB.setBtnRemove(button);
-
-                    //
-                    SuministroTB suministrosTB = new SuministroTB();
-                    suministrosTB.setClave(resultSet.getString("Clave"));
-                    suministrosTB.setNombreMarca(resultSet.getString("NombreMarca"));
-                    suministrosTB.setUnidadVenta(resultSet.getInt("UnidadVenta"));
-                    suministrosTB.setUnidadCompraName(resultSet.getString("UnidadCompra"));
+                    //SUMINISTRO
+                    SuministroTB suministroTB = new SuministroTB();
+                    suministroTB.setClave(resultSet.getString("Clave"));
+                    suministroTB.setNombreMarca(resultSet.getString("NombreMarca"));
+                    suministroTB.setUnidadVenta(resultSet.getInt("UnidadVenta"));
+                    suministroTB.setUnidadCompraName(resultSet.getString("UnidadCompra"));
 
                     preparedPrecio = getConnection().prepareStatement("SELECT s.TipoPrecio,s.PrecioCompra,i.IdImpuesto,i.Nombre,i.Valor "
                             + "FROM "
@@ -790,10 +786,10 @@ public class CompraADO extends DBUtil {
                     preparedPrecio.setString(1, resultSet.getString("IdSuministro"));
                     ResultSet rsEmps = preparedPrecio.executeQuery();
                     rsEmps.next();
-                    suministrosTB.setTipoPrecio(rsEmps.getBoolean("TipoPrecio"));
-                    suministrosTB.setPrecioVentaGeneral(rsEmps.getDouble("PrecioCompra"));
-                    suministrosTB.setIdImpuesto(rsEmps.getInt("IdImpuesto"));
-                    suministrosTB.setImpuestoTB(new ImpuestoTB(rsEmps.getInt("IdImpuesto"), rsEmps.getString("Nombre"), rsEmps.getDouble("Valor")));
+                    suministroTB.setTipoPrecio(rsEmps.getBoolean("TipoPrecio"));
+                    suministroTB.setPrecioVentaGeneral(rsEmps.getDouble("PrecioCompra"));
+                    suministroTB.setIdImpuesto(rsEmps.getInt("IdImpuesto"));
+                    suministroTB.setImpuestoTB(new ImpuestoTB(rsEmps.getInt("IdImpuesto"), rsEmps.getString("Nombre"), rsEmps.getDouble("Valor")));
 
                     ArrayList<PreciosTB> preciosTBs = new ArrayList();
                     preparedPrecio = getConnection().prepareStatement("SELECT * FROM PreciosTB WHERE IdSuministro = ?");
@@ -807,8 +803,13 @@ public class CompraADO extends DBUtil {
                         preciosTB.setFactor(rsEmps.getDouble("Factor"));
                         preciosTBs.add(preciosTB);
                     }
-                    suministrosTB.setPreciosTBs(preciosTBs);
-                    detalleCompraTB.setSuministroTB(suministrosTB);
+                    suministroTB.setPreciosTBs(preciosTBs);
+                    detalleCompraTB.setSuministroTB(suministroTB);
+
+                    //BUTTON
+                    Button button = new Button("X");
+                    button.getStyleClass().add("buttonDark");
+                    detalleCompraTB.setBtnRemove(button);
 
                     empList.add(detalleCompraTB);
                 }
@@ -852,6 +853,9 @@ public class CompraADO extends DBUtil {
                 }
                 if (resultSet != null) {
                     resultSet.close();
+                }
+                if (preparedPrecio != null) {
+                    preparedPrecio.close();
                 }
                 dbDisconnect();
             } catch (SQLException ex) {
@@ -1259,33 +1263,35 @@ public class CompraADO extends DBUtil {
                 if (statementMovimientoCaja != null) {
                     statementMovimientoCaja.close();
                 }
-                Tools.println("finally");
                 dbDisconnect();
             } catch (SQLException ex) {
+                
             }
         }
     }
 
-    public static Object GetReporteGenetalCompras(String fechaInicial, String fechaFinal, String idProveedor, int tipoCompra, boolean forma, int metodo) {
+    public static Object GetReporteGenetalCompras(String fechaInicial, String fechaFinal, int idComprobante, String idProveedor, int tipoCompra, boolean forma, int metodo) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             DBUtil.dbConnect();
             ArrayList<CompraTB> arrayList = new ArrayList<>();
-
-            preparedStatement = DBUtil.getConnection().prepareCall("{call Sp_Reporte_General_Compras(?,?,?,?,?,?)}");
+  
+            preparedStatement = DBUtil.getConnection().prepareCall("{call Sp_Reporte_General_Compras(?,?,?,?,?,?,?)}");
             preparedStatement.setString(1, fechaInicial);
             preparedStatement.setString(2, fechaFinal);
-            preparedStatement.setString(3, idProveedor);
-            preparedStatement.setInt(4, tipoCompra);
-            preparedStatement.setBoolean(5, forma);
-            preparedStatement.setInt(6, metodo);
+            preparedStatement.setInt(3, idComprobante);
+            preparedStatement.setString(4, idProveedor);            
+            preparedStatement.setInt(5, tipoCompra);
+            preparedStatement.setBoolean(6, forma);
+            preparedStatement.setInt(7, metodo);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
+            while (resultSet.next()) {              
                 CompraTB compraTB = new CompraTB();
                 compraTB.setFechaCompra(resultSet.getDate("FechaCompra").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 compraTB.setIdProveedor(resultSet.getString("NumeroDocumento") + "\n" + resultSet.getString("Proveedor").toUpperCase());
                 compraTB.setProveedorTB(new ProveedorTB(resultSet.getString("NumeroDocumento"), resultSet.getString("Proveedor").toUpperCase()));
+                compraTB.setComprobante(resultSet.getString("Comprobante").toUpperCase());
                 compraTB.setSerie(resultSet.getString("Serie").toUpperCase());
                 compraTB.setNumeracion(resultSet.getString("Numeracion"));
                 compraTB.setTipoName(resultSet.getString("Tipo"));
@@ -1317,11 +1323,9 @@ public class CompraADO extends DBUtil {
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-
+                return ex.getLocalizedMessage();
             }
-
         }
-
     }
 
     public static Object ListComprasCredito(int opcion, String search, boolean mostrar, String fechaInicio, String fechaFinal, int posicionPagina, int filasPorPagina) {

@@ -100,7 +100,7 @@ public class FxOrdenCompraDetalleController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return OrdenCompraADO.ObtenerOrdenCompraId(idOrdenCompra);
+                return OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
             }
         };
         task.setOnScheduled(e -> {

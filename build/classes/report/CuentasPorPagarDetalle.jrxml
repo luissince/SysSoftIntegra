@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1a629070-32bd-40c6-81a0-c9f68832968f">
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="192"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
@@ -234,25 +234,25 @@
 	<pageFooter>
 		<band height="21">
 			<textField pattern="dd/MM/yyyy h:mm a">
-				<reportElement mode="Transparent" x="394" y="0" width="161" height="21" forecolor="#020203" backcolor="#020203" uuid="66622f0a-9707-4985-bf6c-f081edf2bb0a"/>
+				<reportElement mode="Transparent" x="394" y="0" width="161" height="21" forecolor="#333333" backcolor="#020203" uuid="66622f0a-9707-4985-bf6c-f081edf2bb0a"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+					<font fontName="Arial" size="6" isBold="false"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="0" y="0" width="160" height="21" forecolor="#020203" backcolor="#020203" uuid="c787bec2-b57d-4ebe-b5b7-587c1fcd2808"/>
+				<reportElement mode="Transparent" x="0" y="0" width="160" height="21" forecolor="#333333" backcolor="#020203" uuid="c787bec2-b57d-4ebe-b5b7-587c1fcd2808"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7"/>
+					<font fontName="Arial" size="6"/>
 					<paragraph lineSpacing="AtLeast"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}+" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="160" y="0" width="234" height="21" forecolor="#020203" backcolor="#020203" uuid="8c6f7c2c-8c89-4f27-88a9-3d8001f905d5"/>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="160" y="0" width="234" height="21" forecolor="#333333" backcolor="#020203" uuid="8c6f7c2c-8c89-4f27-88a9-3d8001f905d5"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Generado por SYS SOFT INTEGRA]]></text>
 			</staticText>

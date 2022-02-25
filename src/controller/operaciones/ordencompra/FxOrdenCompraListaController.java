@@ -1,5 +1,6 @@
 package controller.operaciones.ordencompra;
 
+import controller.operaciones.compras.FxComprasController;
 import controller.tools.Session;
 import controller.tools.Tools;
 import java.net.URL;
@@ -57,6 +58,8 @@ public class FxOrdenCompraListaController implements Initializable {
 
     private FxOrdenCompraController ordenCompraController;
 
+    private FxComprasController comprasController;
+
     private int paginacion;
 
     private int totalPaginacion;
@@ -92,7 +95,7 @@ public class FxOrdenCompraListaController implements Initializable {
         ));
     }
 
-    public void initLoad() {
+    public void loadInit() {
         if (!lblLoad.isVisible()) {
             paginacion = 1;
             fillOrdenCompraTable(0, "", "", "");
@@ -167,9 +170,16 @@ public class FxOrdenCompraListaController implements Initializable {
     }
 
     private void onEvenAceptar() {
-        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            ordenCompraController.loadOrdenCompra(tvList.getSelectionModel().getSelectedItem().getIdOrdenCompra());
+        if (ordenCompraController != null) {
+            if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+                ordenCompraController.resetOrdenCompra();
+                Tools.Dispose(apWindow);
+                ordenCompraController.loadOrdenCompra(tvList.getSelectionModel().getSelectedItem().getIdOrdenCompra());
+            }
+        } else if (comprasController != null) {
+            comprasController.clearComponents();
             Tools.Dispose(apWindow);
+            comprasController.loadOrdenCompra(tvList.getSelectionModel().getSelectedItem().getIdOrdenCompra());
         }
     }
 
@@ -195,13 +205,13 @@ public class FxOrdenCompraListaController implements Initializable {
     @FXML
     private void onkeyPressedRecargar(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            initLoad();
+            loadInit();
         }
     }
 
     @FXML
     private void onActionRecargar(ActionEvent event) {
-        initLoad();
+        loadInit();
     }
 
     @FXML
@@ -310,6 +320,10 @@ public class FxOrdenCompraListaController implements Initializable {
 
     public void setInitOrdenCompraListarController(FxOrdenCompraController ordenCompraController) {
         this.ordenCompraController = ordenCompraController;
+    }
+
+    public void setInitCompras(FxComprasController comprasController) {
+        this.comprasController = comprasController;
     }
 
 }

@@ -28,6 +28,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -41,6 +42,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CompraADO;
 import model.CompraTB;
+import model.DetalleADO;
+import model.DetalleTB;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -89,6 +92,10 @@ public class FxCompraReporteController implements Initializable {
     private RadioButton rbTarjeta;
     @FXML
     private RadioButton rbDeposito;
+    @FXML
+    private CheckBox cbComprobanteSeleccionar;
+    @FXML
+    private ComboBox<DetalleTB> cbComprobantes;
 
     private FxPrincipalController fxPrincipalController;
 
@@ -108,6 +115,8 @@ public class FxCompraReporteController implements Initializable {
         rbTarjeta.setToggleGroup(groupFormaPago);
         rbDeposito.setToggleGroup(groupFormaPago);
         idProveedor = "";
+
+        cbComprobantes.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0015", ""));
     }
 
     private void openWindowProveedores() {
@@ -132,8 +141,10 @@ public class FxCompraReporteController implements Initializable {
     }
 
     private Object reportGenerate() throws JRException {
-        Object object = CompraADO.GetReporteGenetalCompras(Tools.getDatePicker(dpFechaInicial),
+        Object object = CompraADO.GetReporteGenetalCompras(
+                Tools.getDatePicker(dpFechaInicial),
                 Tools.getDatePicker(dpFechaFinal),
+                cbComprobanteSeleccionar.isSelected() ? 0 : cbComprobantes.getSelectionModel().getSelectedItem().getIdDetalle(),
                 idProveedor,
                 cbTipoCompra.isSelected() ? 0 : rbContado.isSelected() ? 1 : 2,
                 !cbMetodoPagoSeleccionar.isSelected(),
@@ -177,6 +188,7 @@ public class FxCompraReporteController implements Initializable {
 
                 Map map = new HashMap();
                 map.put("PERIODO", dpFechaInicial.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")) + " - " + dpFechaFinal.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")));
+                map.put("COMPROBANTE", cbComprobanteSeleccionar.isSelected() ? "TODOS" : cbComprobantes.getSelectionModel().getSelectedItem().getNombre());
                 map.put("TIPO", cbTipoCompra.isSelected() ? "TODOS" : rbContado.isSelected() ? "AL CONTADO" : "AL CRÉDITO");
                 map.put("PROVEEDOR", cbProveedoresSeleccionar.isSelected() ? "TODOS" : txtProveedor.getText().toUpperCase());
                 map.put("METODO", cbMetodoPagoSeleccionar.isSelected() ? "TODOS" : rbEfectivo.isSelected() ? "EFECTIVO" : rbTarjeta.isSelected() ? "TARJETA" : "DEPOSITO");
@@ -186,7 +198,7 @@ public class FxCompraReporteController implements Initializable {
                 map.put("EFECTIVO", Tools.roundingValue(efectivo, 2));
                 map.put("TARJETA", Tools.roundingValue(tarjeta, 2));
                 map.put("DEPOSITO", Tools.roundingValue(deposito, 2));
-                
+
                 InputStream dir = getClass().getResourceAsStream("/report/CompraGeneral.jasper");
                 return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(list));
             } else {
@@ -198,8 +210,11 @@ public class FxCompraReporteController implements Initializable {
     }
 
     private void openViewVisualizar() {
-        if (!cbProveedoresSeleccionar.isSelected() && idProveedor.equalsIgnoreCase("") && txtProveedor.getText().isEmpty()) {
-            Tools.AlertMessageWarning(vbWindow, "Reporte General de Compras", "Ingrese un proveedor para generar el reporte.");
+        if (!cbComprobanteSeleccionar.isSelected() && cbComprobantes.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(vbWindow, "Reporte General de Compras", "Seleccione un comprobante para continuar.");
+            cbComprobantes.requestFocus();
+        } else if (!cbProveedoresSeleccionar.isSelected() && idProveedor.equalsIgnoreCase("") && txtProveedor.getText().isEmpty()) {
+            Tools.AlertMessageWarning(vbWindow, "Reporte General de Compras", "Ingrese un proveedor para continuar.");
             btnProveedor.requestFocus();
         } else {
             ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
@@ -257,6 +272,8 @@ public class FxCompraReporteController implements Initializable {
             });
 
             task.setOnFailed(w -> {
+                Tools.println(task.getException().getLocalizedMessage());
+                Tools.println(task.getException().getMessage());
                 Tools.showAlertNotification(
                         "/view/image/warning_large.png",
                         "Generar Vista",
@@ -269,7 +286,7 @@ public class FxCompraReporteController implements Initializable {
                 Tools.showAlertNotification(
                         "/view/image/pdf.png",
                         "Generar Vista",
-                        Tools.newLineString("Se está generando el modal de ventas."),
+                        Tools.newLineString("Se está generando el modal de compras."),
                         Duration.seconds(5),
                         Pos.BOTTOM_RIGHT);
             });
@@ -282,7 +299,10 @@ public class FxCompraReporteController implements Initializable {
     }
 
     private void onEventPdf() {
-        if (!cbProveedoresSeleccionar.isSelected() && idProveedor.equalsIgnoreCase("") && txtProveedor.getText().isEmpty()) {
+        if (cbComprobanteSeleccionar.isSelected() && cbComprobantes.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(vbWindow, "Reporte General de Compras", "Seleccione.");
+            cbComprobantes.requestFocus();
+        } else if (!cbProveedoresSeleccionar.isSelected() && idProveedor.equalsIgnoreCase("") && txtProveedor.getText().isEmpty()) {
             Tools.AlertMessageWarning(vbWindow, "Reporte General de Compras", "Ingrese un proveedor para generar el reporte.");
             btnProveedor.requestFocus();
         } else {
@@ -370,7 +390,10 @@ public class FxCompraReporteController implements Initializable {
     }
 
     private void onEventExcel() {
-        if (!cbProveedoresSeleccionar.isSelected() && idProveedor.equalsIgnoreCase("") && txtProveedor.getText().isEmpty()) {
+        if (cbComprobanteSeleccionar.isSelected() && cbComprobantes.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(vbWindow, "Reporte General de Compras", "Seleccione.");
+            cbComprobantes.requestFocus();
+        } else if (!cbProveedoresSeleccionar.isSelected() && idProveedor.equalsIgnoreCase("") && txtProveedor.getText().isEmpty()) {
             Tools.AlertMessageWarning(vbWindow, "Reporte General de Compras", "Ingrese un proveedor para generar el reporte.");
             btnProveedor.requestFocus();
         } else {
@@ -407,6 +430,7 @@ public class FxCompraReporteController implements Initializable {
                 Object object = CompraADO.GetReporteGenetalCompras(
                         Tools.getDatePicker(dpFechaInicial),
                         Tools.getDatePicker(dpFechaFinal),
+                        cbComprobanteSeleccionar.isSelected() ? 0 : cbComprobantes.getSelectionModel().getSelectedItem().getIdDetalle(),
                         idProveedor,
                         cbTipoCompra.isSelected() ? 0 : rbContado.isSelected() ? 1 : 2,
                         !cbMetodoPagoSeleccionar.isSelected(),
@@ -632,6 +656,11 @@ public class FxCompraReporteController implements Initializable {
         if (event.getCode() == KeyCode.ENTER) {
             openWindowProveedores();
         }
+    }
+
+    @FXML
+    private void onActionCbComprobantesSeleccionar(ActionEvent event) {
+        cbComprobantes.setDisable(cbComprobanteSeleccionar.isSelected());
     }
 
     @FXML

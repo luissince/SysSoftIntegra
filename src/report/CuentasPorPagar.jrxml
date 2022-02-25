@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1a629070-32bd-40c6-81a0-c9f68832968f">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
@@ -175,24 +175,24 @@
 	<pageFooter>
 		<band height="21">
 			<textField pattern="dd/MM/yyyy h:mm a">
-				<reportElement mode="Transparent" x="393" y="0" width="162" height="21" forecolor="#020203" backcolor="#020203" uuid="32904047-056b-4ba2-9806-7fac485379b2"/>
+				<reportElement mode="Transparent" x="393" y="0" width="162" height="21" forecolor="#333333" backcolor="#020203" uuid="32904047-056b-4ba2-9806-7fac485379b2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+					<font fontName="Arial" size="6" isBold="false"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="160" y="0" width="234" height="21" forecolor="#020203" backcolor="#020203" uuid="a3e09cc0-df81-49b7-a440-89ed288aca1f"/>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="160" y="0" width="234" height="21" forecolor="#333333" backcolor="#020203" uuid="a3e09cc0-df81-49b7-a440-89ed288aca1f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Generado por SYS SOFT INTEGRA]]></text>
 			</staticText>
 			<textField>
-				<reportElement mode="Transparent" x="0" y="0" width="160" height="21" forecolor="#020203" backcolor="#020203" uuid="c38bfd2f-3541-4abb-862d-0bbbc38f6b7d"/>
+				<reportElement mode="Transparent" x="0" y="0" width="160" height="21" forecolor="#333333" backcolor="#020203" uuid="c38bfd2f-3541-4abb-862d-0bbbc38f6b7d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7"/>
+					<font fontName="Arial" size="6"/>
 					<paragraph lineSpacing="AtLeast"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}+" / " + $V{PAGE_NUMBER}]]></textFieldExpression>

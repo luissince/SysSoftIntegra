@@ -92,7 +92,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#onActionCompras" onKeyPressed="#onKeyPressedCompras" styleClass="buttonLight" text="Orden de Compra(F7)">
+                        <Button mnemonicParsing="false" onAction="#onActionOrdenCompra" onKeyPressed="#onKeyPressedOrdenCompra" styleClass="buttonLight" text="Orden de Compra(F7)">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

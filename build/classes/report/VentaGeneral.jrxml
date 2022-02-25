@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5aa49b8b-1bb2-4be2-945b-96f1decae4ba">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="64"/>
+	<property name="ireport.y" value="16"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="PERIODO" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -303,37 +303,34 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="21" splitType="Stretch">
-			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="160" y="0" width="234" height="21" forecolor="#FFFFFF" backcolor="#020203" uuid="b9c5c1f0-0f1f-410f-b670-c92ebd3c8cc6"/>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="20" forecolor="#333333" uuid="cff991d5-ab1c-4e42-8506-42dc50d73fc3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+					<font fontName="Arial" size="6" isBold="false"/>
+					<paragraph lineSpacing="AtLeast" leftIndent="5"/>
 				</textElement>
-				<text><![CDATA[Generado por SYS SOFT INTEGRA]]></text>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}+" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="140" y="0" width="277" height="20" forecolor="#333333" uuid="32e17502-7ad7-40d1-ae72-203c4b91193d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Generado por SysSoft Integra]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy h:mm a">
-				<reportElement mode="Opaque" x="394" y="0" width="161" height="21" forecolor="#FFFFFF" backcolor="#020203" uuid="98525202-5276-42a4-8c78-db780cc18d66"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="false"/>
+				<reportElement stretchType="RelativeToTallestObject" x="415" y="0" width="140" height="20" forecolor="#333333" uuid="444e8afe-01ba-42ba-a12f-ad4622bd2b75"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6" isBold="false"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement mode="Opaque" x="0" y="0" width="160" height="21" forecolor="#FFFFFF" backcolor="#020203" uuid="c82916d0-6e5d-460f-8aa9-fa6516543fa5"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="7"/>
-					<paragraph lineSpacing="AtLeast"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}+" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
 	<summary>
 		<band height="90" splitType="Stretch">
-			<line>
-				<reportElement x="0" y="0" width="555" height="1" forecolor="#000000" uuid="c4f6d1f5-6174-450e-9d41-65be0dc86651"/>
-			</line>
 			<textField>
 				<reportElement x="0" y="22" width="223" height="23" forecolor="#020203" uuid="81a5cdee-11ba-4f97-8d65-7e5619851fa3"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">

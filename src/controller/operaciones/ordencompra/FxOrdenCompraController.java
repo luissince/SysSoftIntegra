@@ -407,7 +407,7 @@ public class FxOrdenCompraController implements Initializable {
         }
     }
 
-    private void resetOrdenCompra() {
+    public void resetOrdenCompra() {
         idOrdenCompra = "";
         cbProveedor.getItems().clear();
         Tools.actualDate(Tools.getDate(), dtFechaEmision);
@@ -433,7 +433,7 @@ public class FxOrdenCompraController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> principalController.closeFondoModal());
-            stage.setOnShown(w -> controller.initLoad());
+            stage.setOnShown(w -> controller.loadInit());
             stage.show();
         } catch (IOException ex) {
             Tools.println("Error en la función openWindowOrdenCompra():" + ex.getLocalizedMessage());
@@ -449,7 +449,7 @@ public class FxOrdenCompraController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return OrdenCompraADO.ObtenerOrdenCompraId(idOrdenCompra);
+                return OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
             }
         };
         task.setOnScheduled(w -> {

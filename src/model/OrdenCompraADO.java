@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import static model.DBUtil.getConnection;
 
 public class OrdenCompraADO {
 
@@ -82,9 +83,10 @@ public class OrdenCompraADO {
         }
     }
 
-    public static Object ObtenerOrdenCompraId(String idOrdenCompra) {
+    public static Object Obtener_Orden_Compra_ById(String idOrdenCompra) {
         PreparedStatement statementOrdenCompra = null;
         PreparedStatement statementDetalleOrden = null;
+        PreparedStatement preparedPrecio = null;
         ResultSet resultSet = null;
         try {
             DBUtil.dbConnect();
@@ -128,24 +130,54 @@ public class OrdenCompraADO {
                     compraDetalleTB.setIdOrdenCompra(resultSet.getString("IdOrdenCompra"));
                     compraDetalleTB.setIdSuministro(resultSet.getString("IdSuministro"));
 
-                    SuministroTB suministroTB = new SuministroTB();
-                    suministroTB.setIdSuministro(resultSet.getString("IdSuministro"));
-                    suministroTB.setClave(resultSet.getString("Clave"));
-                    suministroTB.setNombreMarca(resultSet.getString("NombreMarca"));
-                    suministroTB.setUnidadCompraName(resultSet.getString("Nombre"));
-                    compraDetalleTB.setSuministroTB(suministroTB);
-
-                    compraDetalleTB.setCantidad(resultSet.getDouble("Cantidad"));
-                    compraDetalleTB.setCosto(resultSet.getDouble("Costo"));
-                    compraDetalleTB.setDescuento(resultSet.getDouble("Descuento"));
-                    compraDetalleTB.setIdImpuesto(resultSet.getInt("IdImpuesto")); 
- 
                     ImpuestoTB impuestoTB = new ImpuestoTB();
+                    impuestoTB.setIdImpuesto(resultSet.getInt("IdImpuesto"));
                     impuestoTB.setNombre(resultSet.getString("NombreImpuesto"));
                     impuestoTB.setValor(resultSet.getDouble("Valor"));
                     compraDetalleTB.setImpuestoTB(impuestoTB);
 
+                    compraDetalleTB.setCantidad(resultSet.getDouble("Cantidad"));
+                    compraDetalleTB.setCosto(resultSet.getDouble("Costo"));
+                    compraDetalleTB.setDescuento(resultSet.getDouble("Descuento"));
+                    compraDetalleTB.setIdImpuesto(resultSet.getInt("IdImpuesto"));
+
                     compraDetalleTB.setObservacion(resultSet.getString("Observacion"));
+
+                    //SUMINISTRO
+                    SuministroTB suministroTB = new SuministroTB();
+                    suministroTB.setIdSuministro(resultSet.getString("IdSuministro"));
+                    suministroTB.setClave(resultSet.getString("Clave"));
+                    suministroTB.setNombreMarca(resultSet.getString("NombreMarca"));
+                    suministroTB.setUnidadCompraName(resultSet.getString("UnidadCompra"));
+
+                    preparedPrecio = DBUtil.getConnection().prepareStatement("SELECT s.TipoPrecio,s.PrecioCompra,i.IdImpuesto,i.Nombre,i.Valor "
+                            + "FROM "
+                            + "SuministroTB AS s "
+                            + "INNER JOIN ImpuestoTB AS i ON i.IdImpuesto = s.Impuesto "
+                            + "WHERE s.IdSuministro = ?");
+                    preparedPrecio.setString(1, resultSet.getString("IdSuministro"));
+                    ResultSet rsEmps = preparedPrecio.executeQuery();
+                    rsEmps.next();
+                    suministroTB.setTipoPrecio(rsEmps.getBoolean("TipoPrecio"));
+                    suministroTB.setPrecioVentaGeneral(rsEmps.getDouble("PrecioCompra"));
+                    suministroTB.setIdImpuesto(rsEmps.getInt("IdImpuesto"));
+                    suministroTB.setImpuestoTB(new ImpuestoTB(rsEmps.getInt("IdImpuesto"), rsEmps.getString("Nombre"), rsEmps.getDouble("Valor")));
+                    
+                    ArrayList<PreciosTB> preciosTBs = new ArrayList();
+                    preparedPrecio = getConnection().prepareStatement("SELECT * FROM PreciosTB WHERE IdSuministro = ?");
+                    preparedPrecio.setString(1, resultSet.getString("IdSuministro"));
+                    rsEmps = preparedPrecio.executeQuery();
+                    while (rsEmps.next()) {
+                        PreciosTB preciosTB = new PreciosTB();
+                        preciosTB.setIdPrecios(rsEmps.getInt("IdPrecios"));
+                        preciosTB.setNombre(rsEmps.getString("Nombre"));
+                        preciosTB.setValor(rsEmps.getDouble("Valor"));
+                        preciosTB.setFactor(rsEmps.getDouble("Factor"));
+                        preciosTBs.add(preciosTB);
+                    }
+                    suministroTB.setPreciosTBs(preciosTBs);
+
+                    compraDetalleTB.setSuministroTB(suministroTB);
 
                     Button button = new Button("X");
                     button.getStyleClass().add("buttonDark");
@@ -171,6 +203,9 @@ public class OrdenCompraADO {
                 }
                 if (resultSet != null) {
                     resultSet.close();
+                }
+                if (preparedPrecio != null) {
+                    preparedPrecio.close();
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
