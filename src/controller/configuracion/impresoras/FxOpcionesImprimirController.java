@@ -72,11 +72,7 @@ public class FxOpcionesImprimirController implements Initializable {
 
     private String idVenta;
 
-    private String idVentaCredito;
-
     private String idCompra;
-
-    private String idCompraCredito;
 
     private String idCaja;
 
@@ -218,10 +214,10 @@ public class FxOpcionesImprimirController implements Initializable {
             cajaController.openWindowLogin();
         } else if (ticketCuentasPorCobrar != null) {
             Tools.Dispose(apWindow);
-            ticketCuentasPorCobrar.imprimir(idVenta, idVentaCredito);
+            ticketCuentasPorCobrar.imprimir(idVenta);
         } else if (ticketCuentasPorPagar != null) {
             Tools.Dispose(apWindow);
-            ticketCuentasPorPagar.imprimir(idCompra, idCompraCredito);
+            ticketCuentasPorPagar.imprimir(idCompra);
         } else if (ticketGuiaRemision != null) {
             Tools.Dispose(apWindow);
             ticketGuiaRemision.imprimir(idGuiaRemision);
@@ -249,10 +245,10 @@ public class FxOpcionesImprimirController implements Initializable {
             cajaController.openWindowLogin();
         } else if (ticketCuentasPorCobrar != null) {
             Tools.Dispose(apWindow);
-            ticketCuentasPorCobrar.mostrarReporte(idVenta, idVentaCredito);
+            ticketCuentasPorCobrar.mostrarReporte(idVenta);
         } else if (ticketCuentasPorPagar != null) {
             Tools.Dispose(apWindow);
-            ticketCuentasPorPagar.mostrarReporte(idCompra, idCompraCredito);
+            ticketCuentasPorPagar.mostrarReporte(idCompra);
         } else if (ticketGuiaRemision != null) {
             Tools.Dispose(apWindow);
             ticketGuiaRemision.mostrarReporte(idGuiaRemision);
@@ -369,16 +365,8 @@ public class FxOpcionesImprimirController implements Initializable {
         this.idVenta = idVenta;
     }
 
-    public void setIdVentaCredito(String idVentaCredito) {
-        this.idVentaCredito = idVentaCredito;
-    }
-
     public void setIdCompra(String idCompra) {
         this.idCompra = idCompra;
-    }
-
-    public void setIdCompraCredito(String idCompraCredito) {
-        this.idCompraCredito = idCompraCredito;
     }
 
     public void setIdGuiaRemision(String idGuiaRemision) {

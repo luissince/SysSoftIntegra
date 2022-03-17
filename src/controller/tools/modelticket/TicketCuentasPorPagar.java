@@ -12,6 +12,7 @@ import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +40,9 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class TicketCuentasPorPagar {
 
@@ -60,7 +64,7 @@ public class TicketCuentasPorPagar {
         this.hbPie = hbPie;
     }
 
-    public void imprimir(String idCompra, String idCompraCredito) {
+    public void imprimir(String idCompra) {
         if (!Session.ESTADO_IMPRESORA_CUENTA_POR_PAGAR && Tools.isText(Session.NOMBRE_IMPRESORA_CUENTA_POR_PAGAR) && Tools.isText(Session.FORMATO_IMPRESORA_CUENTA_POR_PAGAR)) {
             Tools.AlertMessageWarning(node, "Abono", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
             return;
@@ -72,7 +76,6 @@ public class TicketCuentasPorPagar {
             } else {
                 executeProcessPrinterCuentaPorPagar(
                         idCompra,
-                        idCompraCredito,
                         Session.DESING_IMPRESORA_CUENTA_POR_PAGAR,
                         Session.TICKET_CUENTA_POR_PAGAR_ID,
                         Session.TICKET_CUENTA_POR_PAGAR_RUTA,
@@ -87,7 +90,7 @@ public class TicketCuentasPorPagar {
         }
     }
 
-    private void executeProcessPrinterCuentaPorPagar(String idCompra, String idCompraCredito, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) {
+    private void executeProcessPrinterCuentaPorPagar(String idCompra, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -97,38 +100,20 @@ public class TicketCuentasPorPagar {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                if (!Tools.isText(idCompra) && !Tools.isText(idCompraCredito)) {
-                    Object object = CompraADO.ImprimirCompraCreditoById(idCompra, idCompraCredito);
-                    if (object instanceof CompraCreditoTB) {
-                        CompraCreditoTB compraCreditoTB = (CompraCreditoTB) object;
-                        try {
-                            if (desing.equalsIgnoreCase("withdesing")) {
-                                return printTicketWithDesingCuentaPagarUnico(compraCreditoTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
-                            } else {
-                                return "empty";
-                            }
-                        } catch (PrinterException | IOException | PrintException ex) {
-                            return "Error en imprimir: " + ex.getLocalizedMessage();
+                Object object = CompraADO.Obtener_Compra_ById_For_Credito(idCompra);
+                if (object instanceof CompraTB) {
+                    CompraTB compraTB = (CompraTB) object;
+                    try {
+                        if (desing.equalsIgnoreCase("withdesing")) {
+                            return printTicketWithDesingCuentaPagar(compraTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
+                        } else {
+                            return "empty";
                         }
-                    } else {
-                        return (String) object;
+                    } catch (PrinterException | IOException | PrintException ex) {
+                        return "Error en imprimir: " + ex.getLocalizedMessage();
                     }
                 } else {
-                    Object object = CompraADO.Obtener_Compra_ById_For_Credito(idCompra);
-                    if (object instanceof CompraTB) {
-                        CompraTB compraTB = (CompraTB) object;
-                        try {
-                            if (desing.equalsIgnoreCase("withdesing")) {
-                                return printTicketWithDesingCuentaPagar(compraTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
-                            } else {
-                                return "empty";
-                            }
-                        } catch (PrinterException | IOException | PrintException ex) {
-                            return "Error en imprimir: " + ex.getLocalizedMessage();
-                        }
-                    } else {
-                        return (String) object;
-                    }
+                    return (String) object;
                 }
             }
         };
@@ -179,118 +164,6 @@ public class TicketCuentasPorPagar {
         exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();
-        }
-
-    }
-
-    private String printTicketWithDesingCuentaPagarUnico(CompraCreditoTB compraCreditoTB, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
-        billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
-
-        for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
-            HBox box = ((HBox) hbEncabezado.getChildren().get(i));
-            billPrintable.hbEncebezado(box,
-                    "",
-                    "AMORTIZAR",
-                    compraCreditoTB.getIdCompraCredito(),
-                    compraCreditoTB.getCompraTB().getProveedorTB().getNumeroDocumento(),
-                    compraCreditoTB.getCompraTB().getProveedorTB().getRazonSocial(),
-                    compraCreditoTB.getCompraTB().getProveedorTB().getCelular(),
-                    compraCreditoTB.getCompraTB().getProveedorTB().getDireccion(),
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    Tools.roundingValue(compraCreditoTB.getCompraTB().getMontoTotal(), 2),
-                    Tools.roundingValue(compraCreditoTB.getCompraTB().getMontoPagado(), 2),
-                    Tools.roundingValue(compraCreditoTB.getCompraTB().getMontoRestante(), 2),
-                    "",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "");
-        }
-
-        AnchorPane hbDetalle = new AnchorPane();
-        ObservableList<CompraCreditoTB> arrList = FXCollections.observableArrayList(compraCreditoTB);
-        for (int m = 0; m < arrList.size(); m++) {
-            for (int i = 0; i < hbDetalleCabecera.getChildren().size(); i++) {
-                HBox hBox = new HBox();
-                hBox.setId("dc_" + m + "" + i);
-                HBox box = ((HBox) hbDetalleCabecera.getChildren().get(i));
-                billPrintable.hbDetalleCuentaPagar(hBox, box, arrList, m);
-                hbDetalle.getChildren().add(hBox);
-            }
-        }
-
-        for (int i = 0; i < hbPie.getChildren().size(); i++) {
-            HBox box = ((HBox) hbPie.getChildren().get(i));
-
-            billPrintable.hbPie(box,
-                    "M",
-                    "0.00",
-                    "0.00",
-                    "0.00",
-                    "0.00",
-                    "0.00",
-                    "0.00",
-                    "0.00",
-                    "0.00",
-                    compraCreditoTB.getCompraTB().getProveedorTB().getNumeroDocumento(),
-                    compraCreditoTB.getCompraTB().getProveedorTB().getRazonSocial(),
-                    "",
-                    compraCreditoTB.getCompraTB().getProveedorTB().getCelular(),
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "");
-        }
-
-        billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
-
-        PrintService printService = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices());
-        if (printService != null) {
-            DocPrintJob job = printService.createPrintJob();
-            PrinterJob pj = PrinterJob.getPrinterJob();
-            pj.setPrintService(job.getPrintService());
-            pj.setJobName(nombreImpresora);
-            Book book = new Book();
-            book.append(billPrintable, billPrintable.getPageFormat(pj));
-            pj.setPageable(book);
-            pj.print();
-            if (cortaPapel) {
-                billPrintable.printCortarPapel(nombreImpresora);
-            }
-            return "completed";
-        } else {
-            return "error_name";
         }
     }
 
@@ -405,7 +278,7 @@ public class TicketCuentasPorPagar {
         }
     }
 
-    public void mostrarReporte(String idCompra, String idCompraCredito) {
+    public void mostrarReporte(String idCompra) {
         ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -413,11 +286,32 @@ public class TicketCuentasPorPagar {
         });
         Task<Object> task = new Task<Object>() {
             @Override
-            public Object call() {
+            public Object call() throws UnsupportedEncodingException {
                 Object object = CompraADO.Obtener_Compra_ById_For_Credito(idCompra);
                 if (object instanceof CompraTB) {
                     try {
                         CompraTB compraTB = (CompraTB) object;
+
+                        if (compraTB.getCompraCreditoTBs().isEmpty()) {
+                            return "No hay pagos para mostrar";
+                        }
+
+                        JSONArray array = new JSONArray();
+                        compraTB.getCompraCreditoTBs().stream().map(creditoTB -> {
+                            JSONObject jsono = new JSONObject();
+                            jsono.put("id", creditoTB.getId());
+                            jsono.put("observacion", creditoTB.getObservacion().toUpperCase());
+                            jsono.put("fechaPago", creditoTB.getFechaPago());
+                            jsono.put("horaPago", creditoTB.getHoraPago());
+                            jsono.put("monto", Tools.roundingValue(creditoTB.getMonto(), 2));
+                            jsono.put("estado", "PAGADO");
+                            return jsono;
+                        }).forEachOrdered(jsono -> {
+                            array.add(jsono);
+                        });
+
+                        String json = new String(array.toJSONString().getBytes(), "UTF-8");
+                        ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(json.getBytes());
 
                         InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_ICON);
                         InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
@@ -440,7 +334,7 @@ public class TicketCuentasPorPagar {
                         map.put("MONTO_PAGADO", Tools.roundingValue(compraTB.getMontoPagado(), 2));
                         map.put("MONTO_RESTANTE", Tools.roundingValue(compraTB.getMontoRestante(), 2));
 
-                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, compraTB.getCompraCreditoTBs().isEmpty() ? new JREmptyDataSource() : new JRBeanCollectionDataSource(compraTB.getCompraCreditoTBs()));
+                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
 
                         return jasperPrint;
                     } catch (JRException ex) {
@@ -510,162 +404,4 @@ public class TicketCuentasPorPagar {
         stage.requestFocus();
     }
 
-//    private String printTicketNoDesingCuentaPagarUnico(CompraCreditoTB compraCreditoTB, String nombreImpresora, boolean cortaPapel) {
-//        ArrayList<HBox> object = new ArrayList<>();
-//        int rows = 0;
-//        int lines = 0;
-//        for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
-//            object.add((HBox) hbEncabezado.getChildren().get(i));
-//            HBox box = ((HBox) hbEncabezado.getChildren().get(i));
-//            rows++;
-//            lines += billPrintable.hbEncebezado(box,
-//                    "AMORTIZAR",
-//                    compraCreditoTB.getIdCompraCredito(),
-//                    compraCreditoTB.getProveedorTB().getNumeroDocumento(),
-//                    compraCreditoTB.getProveedorTB().getRazonSocial(),
-//                    compraCreditoTB.getProveedorTB().getCelular(),
-//                    compraCreditoTB.getProveedorTB().getDireccion(),
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "0",
-//                    "0",
-//                    "0",
-//                    "",
-//                    "0",
-//                    "0",
-//                    "0",
-//                    "0",
-//                    "0");
-//        }
-//
-//        ObservableList<CompraCreditoTB> arrList = FXCollections.observableArrayList(compraCreditoTB);
-//        for (int m = 0; m < arrList.size(); m++) {
-//            for (int i = 0; i < hbDetalleCabecera.getChildren().size(); i++) {
-//                HBox hBox = new HBox();
-//                hBox.setId("dc_" + m + "" + i);
-//                HBox box = ((HBox) hbDetalleCabecera.getChildren().get(i));
-//                rows++;
-//                lines += billPrintable.hbDetalleCuentaPagar(hBox, box, arrList, m);
-//                object.add(hBox);
-//            }
-//        }
-//
-//        for (int i = 0; i < hbPie.getChildren().size(); i++) {
-//            object.add((HBox) hbPie.getChildren().get(i));
-//            HBox box = ((HBox) hbPie.getChildren().get(i));
-//            rows++;
-//            lines += billPrintable.hbPie(box,
-//                    "M",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    compraCreditoTB.getProveedorTB().getNumeroDocumento(),
-//                    compraCreditoTB.getProveedorTB().getRazonSocial(),
-//                    "",
-//                    compraCreditoTB.getProveedorTB().getCelular(),
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "");
-//        }
-//        return billPrintable.modelTicket(rows + lines + 1 + 10, lines, object, nombreImpresora, cortaPapel);
-//    }
-//    private String printTicketNoDesingCuentaPagar(CompraTB compraTB, String nombreImpresora, boolean cortaPapel) {
-//        ArrayList<HBox> object = new ArrayList<>();
-//        int rows = 0;
-//        int lines = 0;
-//        for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
-//            object.add((HBox) hbEncabezado.getChildren().get(i));
-//            HBox box = ((HBox) hbEncabezado.getChildren().get(i));
-//            rows++;
-//            lines += billPrintable.hbEncebezado(box,
-//                    "AMORTIZAR",
-//                    "CP",
-//                    compraTB.getProveedorTB().getNumeroDocumento(),
-//                    compraTB.getProveedorTB().getRazonSocial(),
-//                    compraTB.getProveedorTB().getCelular(),
-//                    compraTB.getProveedorTB().getDireccion(),
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "0",
-//                    "0",
-//                    "0",
-//                    "",
-//                    "0",
-//                    "0",
-//                    "0",
-//                    "0",
-//                    "0");
-//        }
-//
-//        ObservableList<CompraCreditoTB> arrList = FXCollections.observableArrayList(compraTB.getCompraCreditoTBs());
-//        for (int m = 0; m < arrList.size(); m++) {
-//            for (int i = 0; i < hbDetalleCabecera.getChildren().size(); i++) {
-//                HBox hBox = new HBox();
-//                hBox.setId("dc_" + m + "" + i);
-//                HBox box = ((HBox) hbDetalleCabecera.getChildren().get(i));
-//                rows++;
-//                lines += billPrintable.hbDetalleCuentaPagar(hBox, box, arrList, m);
-//                object.add(hBox);
-//            }
-//        }
-//
-//        for (int i = 0; i < hbPie.getChildren().size(); i++) {
-//            object.add((HBox) hbPie.getChildren().get(i));
-//            HBox box = ((HBox) hbPie.getChildren().get(i));
-//            rows++;
-//            lines += billPrintable.hbPie(box,
-//                    "M",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    compraTB.getProveedorTB().getNumeroDocumento(),
-//                    compraTB.getProveedorTB().getRazonSocial(),
-//                    "",
-//                    compraTB.getProveedorTB().getCelular(),
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "");
-//        }
-//        return billPrintable.modelTicket(rows + lines + 1 + 10, lines, object, nombreImpresora, cortaPapel);
-//    }
 }

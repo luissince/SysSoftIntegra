@@ -57,6 +57,8 @@ public class VentaTB {
     
     private double deposito;
     
+    private int tipoCredito;
+    
     private String codigo;
     
     private String numeroOperacion;
@@ -304,6 +306,14 @@ public class VentaTB {
 
     public void setDeposito(double deposito) {
         this.deposito = deposito;
+    }
+
+    public int getTipoCredito() {
+        return tipoCredito;
+    }
+
+    public void setTipoCredito(int tipoCredito) {
+        this.tipoCredito = tipoCredito;
     }
 
     public String getCodigo() {

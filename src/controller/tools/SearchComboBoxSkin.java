@@ -40,7 +40,7 @@ public class SearchComboBoxSkin<T> extends ComboBoxListViewSkin {
 
         // cambia el foco del TextField al ListView usando las teclas ENTER y ESC
         if (search) {
-            searchBox.setOnKeyPressed(t -> {
+            searchBox.setOnKeyPressed(t -> {               
                 if (t.getCode() == KeyCode.ENTER) {
                     if (!itemView.getItems().isEmpty()) {
                         itemView.getSelectionModel().select(0);
@@ -101,7 +101,7 @@ public class SearchComboBoxSkin<T> extends ComboBoxListViewSkin {
             ComboBox<T> scb = ((ComboBox) getSkinnable());
             box.setMinWidth(scb.getWidth());
             box.setPrefWidth(scb.getWidth());
-            if (scb.isShowing()) {
+            if (scb.isShowing()) {              
                 searchBox.clear();
                 searchBox.requestFocus();
                 itemView.getSelectionModel().select(scb.getValue());

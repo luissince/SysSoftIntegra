@@ -492,15 +492,25 @@ public class EmpleadoADO {
     }
 
     public static List<EmpleadoTB> getSearchComboBoxEmpleados(String buscar) {
-        String selectStmt = "SELECT IdEmpleado,NumeroDocumento,Apellidos,Nombres FROM EmpleadoTB WHERE NumeroDocumento LIKE ? OR Apellidos LIKE ? OR Nombres LIKE ?";
+        String selectStmt = "SELECT "
+                + "IdEmpleado,"
+                + "NumeroDocumento,"
+                + "Apellidos,"
+                + "Nombres "
+                + "FROM EmpleadoTB "
+                + "WHERE ? = '' "
+                + "OR NumeroDocumento LIKE ? "
+                + "OR Apellidos LIKE ? "
+                + "OR Nombres LIKE ?";
         PreparedStatement preparedStatement = null;
         List<EmpleadoTB> empleadoTBs = new ArrayList<>();
         try {
             DBUtil.dbConnect();
             preparedStatement = DBUtil.getConnection().prepareStatement(selectStmt);
-            preparedStatement.setString(1, buscar + "%");
+            preparedStatement.setString(1, buscar);
             preparedStatement.setString(2, buscar + "%");
             preparedStatement.setString(3, buscar + "%");
+            preparedStatement.setString(4, buscar + "%");
             try (ResultSet rsEmps = preparedStatement.executeQuery()) {
                 while (rsEmps.next()) {
                     EmpleadoTB empleadoTB = new EmpleadoTB();

@@ -17,7 +17,7 @@ import javafx.scene.image.ImageView;
 
 public class NotaCreditoADO {
 
-    public static Object ListarComprobanteParaNotaCredito(String comprobante) {
+    public static Object Obtener_Nota_Credito_ById_Venta(String comprobante) {
         PreparedStatement statementNotaCredito = null;
         try {
             DBUtil.dbConnect();
@@ -123,7 +123,7 @@ public class NotaCreditoADO {
                     + "s.ValorInventario \n"
                     + "FROM DetalleVentaTB AS dv \n"
                     + "INNER JOIN SuministroTB AS s ON s.IdSuministro = dv.IdArticulo\n"
-                    + "LEFT JOIN DetalleTB AS d ON d.IdDetalle = s.UnidadCompra AND d.IdMantenimiento = '0013'\n"
+                    + "LEFT JOIN DetalleTB AS d ON d.IdDetalle = dv.IdMedida AND d.IdMantenimiento = '0013'\n"
                     + "WHERE dv.IdVenta = ?");
             statementNotaCredito.setString(1, ventaTB.getIdVenta());
             ArrayList<DetalleVentaTB> arrayDetalleVenta = new ArrayList<>();

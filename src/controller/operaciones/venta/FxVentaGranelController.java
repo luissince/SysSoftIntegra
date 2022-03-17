@@ -6,11 +6,14 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import model.DetalleADO;
+import model.DetalleTB;
 import model.SuministroTB;
 
 public class FxVentaGranelController implements Initializable {
@@ -22,7 +25,7 @@ public class FxVentaGranelController implements Initializable {
     @FXML
     private TextField txtImporte;
     @FXML
-    private Label lblArticulo;
+    private ComboBox<DetalleTB> cbUnidadMedida;
 
     private FxVentaEstructuraController ventaEstructuraController;
 
@@ -35,14 +38,20 @@ public class FxVentaGranelController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
+        cbUnidadMedida.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0013", ""));
     }
 
     public void initComponents(String value, SuministroTB suministroTB, boolean opcion) {
         lblTitle.setText(value);
         this.suministroTB = suministroTB;
         this.opcion = opcion;
-        lblArticulo.setText(suministroTB.getNombreMarca());
         oldPrecio = suministroTB.getPrecioVentaGeneral();
+        for (DetalleTB dtb : cbUnidadMedida.getItems()) {
+            if (dtb.getIdDetalle() == suministroTB.getUnidadCompra()) {
+                cbUnidadMedida.getSelectionModel().select(dtb);
+                break;
+            }
+        }
     }
 
     private void executeEventAceptar() {
@@ -53,7 +62,9 @@ public class FxVentaGranelController implements Initializable {
                 ? (Double.parseDouble(txtImporte.getText()) <= 0
                 ? oldPrecio : Double.parseDouble(txtImporte.getText()))
                 : oldPrecio;
-
+        
+        suministroTB.setUnidadCompra(cbUnidadMedida.getSelectionModel().getSelectedItem().getIdDetalle());
+        suministroTB.setUnidadCompraName(cbUnidadMedida.getSelectionModel().getSelectedItem().getNombre());
         suministroTB.setPrecioVentaGeneral(importe);
 
         ventaEstructuraController.getTvList().refresh();

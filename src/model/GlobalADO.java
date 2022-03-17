@@ -187,93 +187,93 @@ public class GlobalADO {
             int ventas_cobrar = 0;
             int compras_pagar = 0;
 
-            PreparedStatement ptVentas = DBUtil.getConnection().prepareStatement("SELECT\n"
+            try (PreparedStatement ptVentas = DBUtil.getConnection().prepareStatement("SELECT\n"
                     + "ISNULL(SUM(dv.Cantidad * (dv.PrecioVenta-dv.Descuento)),0) AS Total\n"
                     + "FROM VentaTB AS v\n"
                     + "LEFT JOIN NotaCreditoTB AS n ON v.IdVenta = n.IdVenta\n"
                     + "INNER JOIN DetalleVentaTB AS dv ON dv.IdVenta = v.IdVenta\n"
-                    + "WHERE v.Estado <> 3  AND n.IdNotaCredito IS NULL AND v.FechaVenta = CAST(GETDATE() AS DATE)");
-            resultLista = ptVentas.executeQuery();
-            if (resultLista.next()) {
-                ventasTotales = resultLista.getDouble("Total");
+                    + "WHERE v.Estado <> 3  AND n.IdNotaCredito IS NULL AND v.FechaVenta = CAST(GETDATE() AS DATE)")) {
+                resultLista = ptVentas.executeQuery();
+                if (resultLista.next()) {
+                    ventasTotales = resultLista.getDouble("Total");
+                }
             }
-            ptVentas.close();
 
-            PreparedStatement ptCompras = DBUtil.getConnection().prepareStatement("SELECT\n"
+            try (PreparedStatement ptCompras = DBUtil.getConnection().prepareStatement("SELECT\n"
                     + "ISNULL(sum(d.Cantidad*(d.PrecioCompra-d.Descuento)),0) AS Total \n"
                     + "FROM CompraTB AS c \n"
                     + "INNER JOIN DetalleCompraTB AS d ON d.IdCompra = c.IdCompra\n"
-                    + "WHERE c.FechaCompra =  CAST(GETDATE() AS DATE)");
-            resultLista = ptCompras.executeQuery();
-            if (resultLista.next()) {
-                comprasTotales = resultLista.getDouble("Total");
+                    + "WHERE c.FechaCompra =  CAST(GETDATE() AS DATE)")) {
+                resultLista = ptCompras.executeQuery();
+                if (resultLista.next()) {
+                    comprasTotales = resultLista.getDouble("Total");
+                }
             }
-            ptCompras.close();
 
-            PreparedStatement ptCuentasCobrar = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total\n"
-                    + "FROM VentaTB WHERE Tipo = 2 AND Estado = 2");
-            resultLista = ptCuentasCobrar.executeQuery();
-            if (resultLista.next()) {
-                ventas_cobrar = resultLista.getInt("Total");
+            try (PreparedStatement ptCuentasCobrar = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total\n"
+                    + "FROM VentaTB WHERE Tipo = 2 AND Estado = 2")) {
+                resultLista = ptCuentasCobrar.executeQuery();
+                if (resultLista.next()) {
+                    ventas_cobrar = resultLista.getInt("Total");
+                }
             }
-            ptCuentasCobrar.close();
 
-            PreparedStatement ptCuentasPagar = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total\n"
-                    + "FROM CompraTB WHERE TipoCompra = 2 AND EstadoCompra = 2");
-            resultLista = ptCuentasPagar.executeQuery();
-            if (resultLista.next()) {
-                compras_pagar = resultLista.getInt("Total");
+            try (PreparedStatement ptCuentasPagar = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total\n"
+                    + "FROM CompraTB WHERE TipoCompra = 2 AND EstadoCompra = 2")) {
+                resultLista = ptCuentasPagar.executeQuery();
+                if (resultLista.next()) {
+                    compras_pagar = resultLista.getInt("Total");
+                }
             }
-            ptCuentasPagar.close();
 
-            PreparedStatement ptProdcuctoTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM SuministroTB");
-            resultLista = ptProdcuctoTotal.executeQuery();
-            if (resultLista.next()) {
-                articulos = resultLista.getInt("Total");
+            try (PreparedStatement ptProdcuctoTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM SuministroTB")) {
+                resultLista = ptProdcuctoTotal.executeQuery();
+                if (resultLista.next()) {
+                    articulos = resultLista.getInt("Total");
+                }
             }
-            ptProdcuctoTotal.close();
 
-            PreparedStatement ptClienteTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM ClienteTB");
-            resultLista = ptClienteTotal.executeQuery();
-            if (resultLista.next()) {
-                clientes = resultLista.getInt("Total");
+            try (PreparedStatement ptClienteTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM ClienteTB")) {
+                resultLista = ptClienteTotal.executeQuery();
+                if (resultLista.next()) {
+                    clientes = resultLista.getInt("Total");
+                }
             }
-            ptClienteTotal.close();
 
-            PreparedStatement ptProveedorTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM ProveedorTB");
-            resultLista = ptProveedorTotal.executeQuery();
-            if (resultLista.next()) {
-                proveedores = resultLista.getInt("Total");
+            try (PreparedStatement ptProveedorTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM ProveedorTB")) {
+                resultLista = ptProveedorTotal.executeQuery();
+                if (resultLista.next()) {
+                    proveedores = resultLista.getInt("Total");
+                }
             }
-            ptProveedorTotal.close();
 
-            PreparedStatement ptTrabajadoresTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM EmpleadoTB");
-            resultLista = ptTrabajadoresTotal.executeQuery();
-            if (resultLista.next()) {
-                trabajadores = resultLista.getInt("Total");
+            try (PreparedStatement ptTrabajadoresTotal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM EmpleadoTB")) {
+                resultLista = ptTrabajadoresTotal.executeQuery();
+                if (resultLista.next()) {
+                    trabajadores = resultLista.getInt("Total");
+                }
             }
-            ptTrabajadoresTotal.close();
 
-            PreparedStatement ptPNegativos = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad <= 0");
-            resultLista = ptPNegativos.executeQuery();
-            if (resultLista.next()) {
-                cantidad_negativas = resultLista.getInt("Total");
+            try (PreparedStatement ptPNegativos = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad <= 0")) {
+                resultLista = ptPNegativos.executeQuery();
+                if (resultLista.next()) {
+                    cantidad_negativas = resultLista.getInt("Total");
+                }
             }
-            ptPNegativos.close();
 
-            PreparedStatement ptPIntermedio = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad > 0 AND Cantidad < StockMinimo");
-            resultLista = ptPIntermedio.executeQuery();
-            if (resultLista.next()) {
-                cantidad_intermedias = resultLista.getInt("Total");
+            try (PreparedStatement ptPIntermedio = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad > 0 AND Cantidad < StockMinimo")) {
+                resultLista = ptPIntermedio.executeQuery();
+                if (resultLista.next()) {
+                    cantidad_intermedias = resultLista.getInt("Total");
+                }
             }
-            ptPIntermedio.close();
 
-            PreparedStatement ptPNecesario = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad >= StockMinimo AND Cantidad < StockMaximo");
-            resultLista = ptPNecesario.executeQuery();
-            if (resultLista.next()) {
-                cantidad_necesarias = resultLista.getInt("Total");
+            try (PreparedStatement ptPNecesario = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad >= StockMinimo AND Cantidad < StockMaximo")) {
+                resultLista = ptPNecesario.executeQuery();
+                if (resultLista.next()) {
+                    cantidad_necesarias = resultLista.getInt("Total");
+                }
             }
-            ptPNecesario.close();
 
             PreparedStatement ptPExcedentes = DBUtil.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad >= StockMaximo");
             resultLista = ptPExcedentes.executeQuery();
@@ -318,7 +318,7 @@ public class GlobalADO {
                     + "td.Facturacion");
             resultLista = ptHistorialVentasTipos.executeQuery();
             JSONArray arrayHVentasTipos = new JSONArray();
-            while (resultLista.next()) {              
+            while (resultLista.next()) {
                 JSONObject jsono = new JSONObject();
                 jsono.put("mes", resultLista.getInt("Mes"));
                 jsono.put("sunat", resultLista.getDouble("Sunat"));
@@ -580,13 +580,9 @@ public class GlobalADO {
                     + "           ,Celular"
                     + "           ,Email"
                     + "           ,Direccion"
-                    + "           ,Pais"
-                    + "           ,Ciudad"
-                    + "           ,Provincia"
-                    + "           ,Distrito"
                     + "           ,Usuario"
                     + "           ,Clave"
-                    + "           ,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    + "           ,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             statementEmpleado.setString(1, idEmpleado);
             statementEmpleado.setInt(2, empleadoTB.getTipoDocumento());
@@ -602,13 +598,9 @@ public class GlobalADO {
             statementEmpleado.setString(12, "");
             statementEmpleado.setString(13, "");
             statementEmpleado.setString(14, "");
-            statementEmpleado.setString(15, "");
-            statementEmpleado.setInt(16, 0);
-            statementEmpleado.setInt(17, 0);
-            statementEmpleado.setInt(18, 0);
-            statementEmpleado.setString(19, empleadoTB.getUsuario());
-            statementEmpleado.setString(20, empleadoTB.getClave());
-            statementEmpleado.setBoolean(21, true);
+            statementEmpleado.setString(15, empleadoTB.getUsuario());
+            statementEmpleado.setString(16, empleadoTB.getClave());
+            statementEmpleado.setBoolean(17, true);
             statementEmpleado.addBatch();
 
             statementImpuesto = DBUtil.getConnection().prepareStatement("INSERT INTO ImpuestoTB(Operacion,Nombre,Valor,Codigo,Numeracion,NombreImpuesto,Letra,Categoria,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?)");

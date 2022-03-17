@@ -68,7 +68,7 @@ public class FxComprasListaController implements Initializable {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
         tcFecha.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFechaCompra() + "\n" + cellData.getValue().getHoraCompra()));
-        tcSerie.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getComprobante() + "\n" + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()));
+        tcSerie.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getComprobante() + "\n" + cellData.getValue().getSerie().toUpperCase() + "-" + cellData.getValue().getNumeracion()));
         tcProveedor.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getProveedorTB().getNumeroDocumento() + "\n" + cellData.getValue().getProveedorTB().getRazonSocial()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
         tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));

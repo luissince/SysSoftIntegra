@@ -74,7 +74,7 @@
                                     <HBox style="-fx-spacing: 0.8333333333333334em;" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <children>
                                           <TextField fx:id="txtCantidad" onKeyTyped="#onKeyTypedCantidad" prefHeight="30.0" prefWidth="240.0" promptText="0" styleClass="text-field-normal" />
-                                          <CheckBox fx:id="cbCantidadVariable" mnemonicParsing="false" onAction="#onActionCantidadVariable" styleClass="check-box-contenido" text="Cantidad Variable" />
+                                          <CheckBox fx:id="cbCantidadVariable" mnemonicParsing="false" onAction="#onActionCantidadVariable" prefHeight="30.0" styleClass="check-box-contenido" text="Cantidad Variable" />
                                        </children>
                                     </HBox>
                                     <Label styleClass="labelRoboto13" text="Cantidad:" textFill="#020203" GridPane.rowIndex="2">
@@ -105,7 +105,7 @@
                                  <children>
                                     <Button mnemonicParsing="false" onAction="#onActionSiguiente" onKeyPressed="#onKeyPressedSiguiente" styleClass="buttonLightDefault" text="Siguiente">
                                        <graphic>
-                                          <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../../image/right.png" />
                                              </image>
@@ -228,7 +228,7 @@
                                        <children>
                                           <Button fx:id="btnAgregar" mnemonicParsing="false" onAction="#onActonAgregar" onKeyPressed="#onKeyPressedAgregar" styleClass="buttonLightWarning" text="Insumo">
                                              <graphic>
-                                                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../../image/plus.png" />
                                                    </image>
@@ -273,7 +273,7 @@
                                              <children>
                                                 <Button mnemonicParsing="false" onAction="#onActonMerma" onKeyPressed="#onKeyPressedMerma" styleClass="buttonLight" text="Merma">
                                                    <graphic>
-                                                      <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                      <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
                                                             <Image url="@../../image/plus.png" />
                                                          </image>

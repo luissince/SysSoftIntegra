@@ -6,11 +6,14 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import model.DetalleADO;
+import model.DetalleTB;
 import model.SuministroTB;
 
 public class FxPostVentaGranelController implements Initializable {
@@ -22,7 +25,7 @@ public class FxPostVentaGranelController implements Initializable {
     @FXML
     private TextField txtImporte;
     @FXML
-    private Label lblArticulo;
+    private ComboBox<DetalleTB> cbUnidadMedida;
 
     private FxPostVentaEstructuraController ventaEstructuraController;
 
@@ -35,43 +38,34 @@ public class FxPostVentaGranelController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
+        cbUnidadMedida.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0013", ""));
     }
 
     public void initComponents(String value, SuministroTB suministroTB, boolean opcion) {
         lblTitle.setText(value);
         this.suministroTB = suministroTB;
         this.opcion = opcion;
-        lblArticulo.setText(suministroTB.getNombreMarca());
         oldPrecio = suministroTB.getPrecioVentaGeneral();
+        for (DetalleTB dtb : cbUnidadMedida.getItems()) {
+            if (dtb.getIdDetalle() == suministroTB.getUnidadCompra()) {
+                cbUnidadMedida.getSelectionModel().select(dtb);
+                break;
+            }
+        }
     }
 
     private void executeEventAceptar() {
         double importe = opcion
-                ? Tools.isNumeric(txtImporte.getText()) ? (Double.parseDouble(txtImporte.getText()) <= 0 ? oldPrecio 
+                ? Tools.isNumeric(txtImporte.getText()) ? (Double.parseDouble(txtImporte.getText()) <= 0 ? oldPrecio
                 : oldPrecio + Double.parseDouble(txtImporte.getText())) : oldPrecio
                 : Tools.isNumeric(txtImporte.getText())
-                ? (Double.parseDouble(txtImporte.getText()) <= 0 
+                ? (Double.parseDouble(txtImporte.getText()) <= 0
                 ? oldPrecio : Double.parseDouble(txtImporte.getText()))
                 : oldPrecio;
 
-        double valor_sin_impuesto = importe / ((suministroTB.getImpuestoTB().getValor()/ 100.00) + 1);
-        double descuento = suministroTB.getDescuento();
-        double porcentajeRestante = valor_sin_impuesto * (descuento / 100.00);
-        double preciocalculado = valor_sin_impuesto - porcentajeRestante;
-
-        suministroTB.setDescuentoCalculado(porcentajeRestante);
-        suministroTB.setDescuentoSumado(porcentajeRestante * suministroTB.getCantidad());
-
-        suministroTB.setPrecioVentaGeneralUnico(valor_sin_impuesto);
-        suministroTB.setPrecioVentaGeneralReal(preciocalculado);
-
-        double impuesto = Tools.calculateTax(suministroTB.getImpuestoTB().getValor(), suministroTB.getPrecioVentaGeneralReal());
-//        suministroTB.setImpuestoSumado(suministroTB.getCantidad() * impuesto);
-        suministroTB.setPrecioVentaGeneral(suministroTB.getPrecioVentaGeneralReal() + impuesto);
-
-//        suministroTB.setImporteBruto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralUnico() );
-//        suministroTB.setSubImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneralReal());
-//        suministroTB.setImporteNeto(suministroTB.getCantidad() * suministroTB.getPrecioVentaGeneral());
+        suministroTB.setUnidadCompra(cbUnidadMedida.getSelectionModel().getSelectedItem().getIdDetalle());
+        suministroTB.setUnidadCompraName(cbUnidadMedida.getSelectionModel().getSelectedItem().getNombre());
+        suministroTB.setPrecioVentaGeneral(importe);
 
         ventaEstructuraController.getTvList().refresh();
         ventaEstructuraController.calculateTotales();

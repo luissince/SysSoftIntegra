@@ -13,8 +13,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 
 public class CompraADO extends DBUtil {
@@ -801,6 +803,55 @@ public class CompraADO extends DBUtil {
                         preciosTB.setNombre(rsEmps.getString("Nombre"));
                         preciosTB.setValor(rsEmps.getDouble("Valor"));
                         preciosTB.setFactor(rsEmps.getDouble("Factor"));
+
+                        TextField tfNombre = new TextField(rsEmps.getString("Nombre"));
+                        tfNombre.getStyleClass().add("text-field-normal");
+                        tfNombre.setOnKeyReleased(event -> {
+                            preciosTB.setNombre(tfNombre.getText());
+                        });
+
+                        TextField tfValor = new TextField(Tools.roundingValue(rsEmps.getDouble("Valor"), 2));
+                        tfValor.getStyleClass().add("text-field-normal");
+                        tfValor.setOnKeyReleased(event -> {
+                            preciosTB.setValor(!Tools.isNumeric(tfValor.getText()) ? 0 : Double.parseDouble(tfValor.getText()));
+                        });
+                        tfValor.setOnKeyTyped((KeyEvent event) -> {
+                            char c = event.getCharacter().charAt(0);
+                            if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+                                event.consume();
+                            }
+                            if (c == '.' && tfValor.getText().contains(".")) {
+                                event.consume();
+                            }
+                        });
+
+                        TextField tfFactor = new TextField(Tools.roundingValue(rsEmps.getDouble("Factor"), 2));
+                        tfFactor.getStyleClass().add("text-field-normal");
+                        tfFactor.setOnKeyReleased(event -> {
+                            preciosTB.setFactor(!Tools.isNumeric(tfFactor.getText()) ? 1 : Double.parseDouble(tfFactor.getText()));
+                        });
+                        tfFactor.setOnKeyTyped((KeyEvent event) -> {
+                            char c = event.getCharacter().charAt(0);
+                            if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+                                event.consume();
+                            }
+                            if (c == '.' && tfFactor.getText().contains(".")) {
+                                event.consume();
+                            }
+                        });
+
+                        Button button = new Button();
+                        button.getStyleClass().add("buttonDark");
+                        ImageView view = new ImageView(new Image("/view/image/remove.png"));
+                        view.setFitWidth(22);
+                        view.setFitHeight(22);
+                        button.setGraphic(view);
+
+                        preciosTB.setTxtNombre(tfNombre);
+                        preciosTB.setTxtValor(tfValor);
+                        preciosTB.setTxtFactor(tfFactor);
+                        preciosTB.setBtnOpcion(button);
+
                         preciosTBs.add(preciosTB);
                     }
                     suministroTB.setPreciosTBs(preciosTBs);
@@ -1265,7 +1316,7 @@ public class CompraADO extends DBUtil {
                 }
                 dbDisconnect();
             } catch (SQLException ex) {
-                
+
             }
         }
     }
@@ -1276,17 +1327,17 @@ public class CompraADO extends DBUtil {
         try {
             DBUtil.dbConnect();
             ArrayList<CompraTB> arrayList = new ArrayList<>();
-  
+
             preparedStatement = DBUtil.getConnection().prepareCall("{call Sp_Reporte_General_Compras(?,?,?,?,?,?,?)}");
             preparedStatement.setString(1, fechaInicial);
             preparedStatement.setString(2, fechaFinal);
             preparedStatement.setInt(3, idComprobante);
-            preparedStatement.setString(4, idProveedor);            
+            preparedStatement.setString(4, idProveedor);
             preparedStatement.setInt(5, tipoCompra);
             preparedStatement.setBoolean(6, forma);
             preparedStatement.setInt(7, metodo);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {              
+            while (resultSet.next()) {
                 CompraTB compraTB = new CompraTB();
                 compraTB.setFechaCompra(resultSet.getDate("FechaCompra").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 compraTB.setIdProveedor(resultSet.getString("NumeroDocumento") + "\n" + resultSet.getString("Proveedor").toUpperCase());
@@ -1416,67 +1467,6 @@ public class CompraADO extends DBUtil {
                     rsEmps.close();
                 }
                 dbDisconnect();
-            } catch (SQLException ex) {
-                return ex.getLocalizedMessage();
-            }
-        }
-    }
-
-    public static Object ImprimirCompraCreditoById(String idCompra, String idCompraCredito) {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        try {
-            DBUtil.dbConnect();
-            preparedStatement = DBUtil.getConnection().prepareCall("select IdCompraCredito,Monto,FechaPago,HoraPago,Observacion from CompraCreditoTB where IdCompraCredito = ?");
-            preparedStatement.setString(1, idCompraCredito);
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                CompraCreditoTB compraCreditoTB = new CompraCreditoTB();
-                compraCreditoTB.setIdCompraCredito(resultSet.getString("IdCompraCredito"));
-                compraCreditoTB.setMonto(resultSet.getDouble("Monto"));
-                compraCreditoTB.setFechaPago(resultSet.getDate("FechaPago").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                compraCreditoTB.setHoraPago(resultSet.getTime("HoraPago").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
-                compraCreditoTB.setObservacion(resultSet.getString("Observacion"));
-
-                preparedStatement = DBUtil.getConnection().prepareCall("{call Sp_Obtener_Compra_ById_For_Credito(?)}");
-                preparedStatement.setString(1, idCompra);
-                resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()) {
-                    CompraTB compraTB = new CompraTB();
-                    compraTB.setIdCompra(idCompra);
-                    compraTB.setProveedorTB(new ProveedorTB(resultSet.getString("NumeroDocumento"), resultSet.getString("RazonSocial"), resultSet.getString("Telefono"), resultSet.getString("Celular"), resultSet.getString("Email"), resultSet.getString("Direccion")));
-                    compraTB.setSerie(resultSet.getString("Serie"));
-                    compraTB.setNumeracion(resultSet.getString("Numeracion"));
-                    compraTB.setEstado(resultSet.getInt("EstadoCompra"));
-                    compraTB.setEstadoName(resultSet.getString("Estado"));
-                    compraTB.setMontoTotal(resultSet.getDouble("MontoTotal"));
-                    compraTB.setMontoPagado(resultSet.getDouble("MontoPagado"));
-                    compraTB.setMontoRestante(resultSet.getDouble("MontoTotal") - resultSet.getDouble("MontoPagado"));
-
-                    MonedaTB monedaTB = new MonedaTB();
-                    monedaTB.setNombre(resultSet.getString("Moneda"));
-                    monedaTB.setSimbolo(resultSet.getString("Simbolo"));
-                    compraTB.setMonedaTB(monedaTB);
-
-                    compraCreditoTB.setCompraTB(compraTB);
-                }
-                return compraCreditoTB;
-            } else {
-                throw new Exception("No se pudo obtener los datos de la consulta.");
-            }
-        } catch (SQLException ex) {
-            return ex.getLocalizedMessage();
-        } catch (Exception ex) {
-            return ex.getLocalizedMessage();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
                 return ex.getLocalizedMessage();
             }

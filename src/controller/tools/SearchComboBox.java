@@ -1,5 +1,6 @@
 package controller.tools;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javafx.collections.FXCollections;
@@ -10,18 +11,21 @@ import javafx.scene.control.ComboBox;
 public class SearchComboBox<T> {
 
     private SearchComboBoxSkin searchComboBoxSkin;
-    private final ComboBox comboBox;
+    private final ComboBox<T> comboBox;
     private final FilteredList<T> filterList;
     private BiPredicate<T, String> filter;
+    private CompletableFuture completableFuture;
 
-    public SearchComboBox(ComboBox comboBox, boolean search) {
+    public SearchComboBox(ComboBox<T> comboBox, boolean search) {
         this(comboBox, FXCollections.observableArrayList(), search);
     }
 
-    public SearchComboBox(ComboBox comboBox, ObservableList<T> items, boolean search) {
+    public SearchComboBox(ComboBox<T> comboBox, ObservableList<T> items, boolean search) {
         this.comboBox = comboBox;
         this.filterList = new FilteredList<>(items);
-        this.filter = (i, s) -> true;
+        this.filter = (T i, String s) -> {
+            return true;
+        };
         this.comboBox.setItems(items);
         this.searchComboBoxSkin = new SearchComboBoxSkin(this, search);
         this.comboBox.setSkin(searchComboBoxSkin);
@@ -49,6 +53,14 @@ public class SearchComboBox<T> {
 
     public ComboBox getComboBox() {
         return comboBox;
+    }
+
+    public CompletableFuture getCompletableFuture() {
+        return completableFuture;
+    }
+
+    public void setCompletableFuture(CompletableFuture completableFuture) {
+        this.completableFuture = completableFuture;
     }
 
 }

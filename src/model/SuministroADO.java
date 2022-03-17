@@ -989,8 +989,8 @@ public class SuministroADO {
                 suministroTB.setCantidad(rsEmps.getDouble("Cantidad"));
                 suministroTB.setCostoCompra(rsEmps.getDouble("PrecioCompra"));
                 suministroTB.setPrecioVentaGeneral(rsEmps.getDouble("PrecioVentaGeneral"));
-                suministroTB.setUnidadCompra(rsEmps.getInt("IdUnidadCompra"));
-                suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
+                suministroTB.setUnidadCompra(rsEmps.getInt("UnidadCompra"));
+                suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompraName"));
                 suministroTB.setUnidadVenta(rsEmps.getInt("UnidadVenta"));
                 suministroTB.setLote(rsEmps.getBoolean("Lote"));
 

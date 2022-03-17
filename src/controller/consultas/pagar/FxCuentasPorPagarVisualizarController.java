@@ -134,11 +134,11 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
                 lblDiferencia.setText(Tools.roundingValue(compraTB.getMontoRestante(), 2));
                 compraTB.getCompraCreditoTBs().forEach(vc -> {
                     vc.getBtnImprimir().setOnAction(event -> {
-                        openModalImpresion(idCompra, vc.getIdCompraCredito());
+                        openModalImpresion(idCompra);
                     });
                     vc.getBtnImprimir().setOnKeyPressed(event -> {
                         if (event.getCode() == KeyCode.ENTER) {
-                            openModalImpresion(idCompra, vc.getIdCompraCredito());
+                            openModalImpresion(idCompra);
                         }
                     });
                 });
@@ -242,7 +242,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
         }
     }
 
-    public void openModalImpresion(String idCompra, String idCompraCredito) {
+    public void openModalImpresion(String idCompra) {
         try {
             fxPrincipalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_OPCIONES_IMPRIMIR);
@@ -251,8 +251,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
             //Controlller here
             FxOpcionesImprimirController controller = fXMLLoader.getController();
             controller.loadTicketCuentaPorPagar(controller.getApWindow());
-            controller.setIdCompra(idCompra);
-            controller.setIdCompraCredito(idCompraCredito);
+            controller.setIdCompra(idCompra);          
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Imprimir", apWindow.getScene().getWindow());
             stage.setResizable(false);
@@ -295,7 +294,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
     private void onKeyPressedReporte(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             if (compraTB != null) {
-                fxOpcionesImprimirController.getTicketCuentasPorPagar().mostrarReporte(compraTB.getIdCompra(), "");
+                fxOpcionesImprimirController.getTicketCuentasPorPagar().mostrarReporte(compraTB.getIdCompra());
             }
         }
     }
@@ -303,7 +302,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
     @FXML
     private void onActionReporte(ActionEvent event) {
         if (compraTB != null) {
-            fxOpcionesImprimirController.getTicketCuentasPorPagar().mostrarReporte(compraTB.getIdCompra(), "");
+            fxOpcionesImprimirController.getTicketCuentasPorPagar().mostrarReporte(compraTB.getIdCompra());
         }
     }
 
@@ -311,7 +310,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
     private void onKeyPressedTicket(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             if (compraTB != null) {
-                fxOpcionesImprimirController.getTicketCuentasPorPagar().imprimir(compraTB.getIdCompra(), "");
+                fxOpcionesImprimirController.getTicketCuentasPorPagar().imprimir(compraTB.getIdCompra());
             }
         }
     }
@@ -319,7 +318,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
     @FXML
     private void onActionTicket(ActionEvent event) {
         if (compraTB != null) {
-            fxOpcionesImprimirController.getTicketCuentasPorPagar().imprimir(compraTB.getIdCompra(), "");
+            fxOpcionesImprimirController.getTicketCuentasPorPagar().imprimir(compraTB.getIdCompra());
         }
     }
 

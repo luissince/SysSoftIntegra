@@ -3,6 +3,7 @@ package model;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
@@ -24,8 +25,10 @@ public class VentaCreditoTB {
     private TextField tfMonto;
     private DatePicker dpFecha;
     private CheckBox cbMontoInicial;
+    private Button btnPagar;
     private Button btnImprimir;
     private Button btnQuitar;
+    private ComboBox<String> cbForma;
     
     public VentaCreditoTB(){
         
@@ -135,6 +138,14 @@ public class VentaCreditoTB {
         this.cbMontoInicial = cbMontoInicial;
     }
 
+    public Button getBtnPagar() {
+        return btnPagar;
+    }
+
+    public void setBtnPagar(Button btnPagar) {
+        this.btnPagar = btnPagar;
+    }
+
     public Button getBtnImprimir() {
         return btnImprimir;
     }
@@ -150,6 +161,14 @@ public class VentaCreditoTB {
     public void setBtnQuitar(Button btnQuitar) {
         this.btnQuitar = btnQuitar;
     }
+
+    public ComboBox<String> getCbForma() {
+        return cbForma;
+    }
+
+    public void setCbForma(ComboBox<String> cbForma) {
+        this.cbForma = cbForma;
+    }    
 
     public String getIdUsuario() {
         return idUsuario;

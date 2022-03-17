@@ -114,7 +114,7 @@ public class FxNotaCreditoController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return NotaCreditoADO.ListarComprobanteParaNotaCredito(comprobante);
+                return NotaCreditoADO.Obtener_Nota_Credito_ById_Venta(comprobante);
             }
         };
 

@@ -13,8 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16" fx:controller="controller.operaciones.ordencompra.FxOrdenCompraListaController">
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.ordencompra.FxOrdenCompraListaController">
    <children>
       <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -109,7 +108,7 @@
                               <TableColumn fx:id="tcProveedor" prefWidth="190.0" style="-fx-alignment: CENTER-LEFT;" text="Proveedor" />
                               <TableColumn fx:id="tcOrdenCompra" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Orden de Compra" />
                               <TableColumn fx:id="tcObservacion" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Observación" />
-                              <TableColumn fx:id="tcTotal" prefWidth="160.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
+                              <TableColumn fx:id="tcTotal" prefWidth="150.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
                            </columns>
                         </TableView>
                      </children>

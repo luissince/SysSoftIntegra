@@ -80,8 +80,9 @@ public class SplashScreen extends Preloader {
                     if (DBUtil.getConnection() != null) {
 
                         boolean validateRegister = EmpresaADO.isConfiguration();
-                        if (!validateRegister) {
+                        if (!validateRegister) {                        
                             Session.CONFIGURATION_STATE = true;
+                            Session.CONNECTION_SESSION = true;
                         } else {
                             Session.CONNECTION_SESSION = true;
 

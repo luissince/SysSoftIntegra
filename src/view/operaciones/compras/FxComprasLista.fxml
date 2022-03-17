@@ -50,7 +50,7 @@
                                     <Font name="Calibri" size="15.0" />
                                  </font>
                                  <graphic>
-                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../image/search.png" />
                                        </image>
@@ -67,7 +67,7 @@
                                     <Font name="Calibri" size="15.0" />
                                  </font>
                                  <graphic>
-                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../image/calendar.png" />
                                        </image>
@@ -84,7 +84,7 @@
                                     <Font name="Calibri" size="15.0" />
                                  </font>
                                  <graphic>
-                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../image/calendar.png" />
                                        </image>
@@ -105,7 +105,7 @@
                                     <TableColumn fx:id="tcNumero" prefWidth="50.0" style="-fx-alignment: CENTER;" text="N°" />
                                     <TableColumn fx:id="tcFecha" prefWidth="100.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha" />
                                     <TableColumn fx:id="tcSerie" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Serie/Numeración" />
-                                    <TableColumn fx:id="tcProveedor" prefWidth="250.0" style="-fx-alignment: CENTER-LEFT;" text="Proveedor" />
+                                    <TableColumn fx:id="tcProveedor" prefWidth="240.0" style="-fx-alignment: CENTER-LEFT;" text="Proveedor" />
                                     <TableColumn fx:id="tcEstado" prefWidth="140.0" style="-fx-alignment: CENTER-RIGHT;" text="Estado" />
                                     <TableColumn fx:id="tcTotal" prefWidth="100.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
                                  </columns>

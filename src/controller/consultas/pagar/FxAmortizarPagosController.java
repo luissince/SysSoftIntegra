@@ -124,7 +124,7 @@ public class FxAmortizarPagosController implements Initializable {
                     ModeloObject result = CompraADO.Registrar_Amortizacion(compraCreditoTB, ingresoTB, null);
                     if (result.getState().equalsIgnoreCase("inserted")) {
                         Tools.Dispose(apWindow);
-                        cuentasPorPagarVisualizarController.openModalImpresion(compraTB.getIdCompra(), result.getIdResult());
+                        cuentasPorPagarVisualizarController.openModalImpresion(compraTB.getIdCompra());
                         cuentasPorPagarVisualizarController.loadTableCompraCredito(compraTB.getIdCompra());
                     } else if (result.getState().equalsIgnoreCase("error")) {
                         Tools.AlertMessageWarning(apWindow, "Amortizar", result.getMessage());
@@ -175,7 +175,7 @@ public class FxAmortizarPagosController implements Initializable {
                             ModeloObject result = CompraADO.Registrar_Amortizacion(compraCreditoTB, null, movimientoCajaTB);
                             if (result.getState().equalsIgnoreCase("inserted")) {
                                 Tools.Dispose(apWindow);
-                                cuentasPorPagarVisualizarController.openModalImpresion(compraTB.getIdCompra(), result.getIdResult());
+                                cuentasPorPagarVisualizarController.openModalImpresion(compraTB.getIdCompra());
                                 cuentasPorPagarVisualizarController.loadTableCompraCredito(compraTB.getIdCompra());
                             } else if (result.getState().equalsIgnoreCase("error")) {
                                 Tools.AlertMessageWarning(apWindow, "Amortizar", result.getMessage());

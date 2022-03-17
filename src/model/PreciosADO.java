@@ -124,7 +124,7 @@ public class PreciosADO {
         return result;
     }
 
-    public static ObservableList<PreciosTB> Get_Lista_Precios_By_IdSuministro(String idSuministro) {      
+    public static ObservableList<PreciosTB> Get_Lista_Precios_By_IdSuministro(String idSuministro) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
         ObservableList<PreciosTB> list = FXCollections.observableArrayList();
@@ -177,10 +177,10 @@ public class PreciosADO {
                 });
 
                 Button button = new Button();
-                button.getStyleClass().add("buttonLightWarning");
-                ImageView view = new ImageView(new Image("/view/image/remove-black.png"));
-                view.setFitWidth(24);
-                view.setFitHeight(24);
+                button.getStyleClass().add("buttonDark");
+                ImageView view = new ImageView(new Image("/view/image/remove.png"));
+                view.setFitWidth(22);
+                view.setFitHeight(22);
                 button.setGraphic(view);
 
                 preciosTB.setTxtNombre(tfNombre);

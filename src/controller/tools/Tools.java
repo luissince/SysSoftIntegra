@@ -452,7 +452,7 @@ public class Tools {
     public static Label placeHolderTableView(String message, String styleCss, boolean viewImage) {
         Label label = new Label(message);
         label.setStyle(styleCss);
-        label.getStyleClass().add("labelRoboto14");
+        label.getStyleClass().add("labelRoboto13");
         if (viewImage) {
             ImageView imageView = new ImageView(new Image("/view/image/load.gif"));
             imageView.setFitWidth(48);

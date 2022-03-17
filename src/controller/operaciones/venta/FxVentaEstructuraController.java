@@ -370,8 +370,8 @@ public class FxVentaEstructuraController implements Initializable {
             tcPrecio.setCellFactory(TextFieldTableCell.forTableColumn());
             tcPrecio.setOnEditCommit(data -> {
                 final Double value = Tools.isNumeric(data.getNewValue())
-                        ? (Double.parseDouble(data.getNewValue()) <= 0 
-                        ? Double.parseDouble(data.getOldValue()) 
+                        ? (Double.parseDouble(data.getNewValue()) <= 0
+                        ? Double.parseDouble(data.getOldValue())
                         : Double.parseDouble(data.getNewValue()))
                         : Double.parseDouble(data.getOldValue());
                 SuministroTB suministroTB = data.getTableView().getItems().get(data.getTablePosition().getRow());

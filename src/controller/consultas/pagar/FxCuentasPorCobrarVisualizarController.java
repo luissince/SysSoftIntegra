@@ -29,6 +29,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.SuministroTB;
 import model.VentaADO;
@@ -64,6 +65,8 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
     private Label lblObservacion;
     @FXML
     private GridPane gpDetalle;
+    @FXML
+    private Button btnCobrar;
     @FXML
     private HBox hbLoad;
     @FXML
@@ -134,15 +137,22 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
                 lblObservacion.setText(ventaTB.getObservaciones());
 
                 ventaTB.getVentaCreditoTBs().forEach(vc -> {
-                    vc.getBtnImprimir().setOnAction(event -> openModalImpresion(idVenta, vc.getIdVentaCredito()));
-                    vc.getBtnImprimir().setOnKeyPressed(event -> {
+                    vc.getBtnPagar().setOnAction(event -> {
+                        onEventAmortizarUpdate(vc.getIdVentaCredito(),vc.getMonto());
+                    });
+                    vc.getBtnPagar().setOnKeyPressed(event -> {
                         if (event.getCode() == KeyCode.ENTER) {
-                            openModalImpresion(idVenta, vc.getIdVentaCredito());
+                            onEventAmortizarUpdate(vc.getIdVentaCredito(),vc.getMonto());
+                            event.consume();
                         }
                     });
                 });
 
-                fillVentasDetalleTable();
+                if (ventaTB.getTipoCredito() == 1) {
+                    btnCobrar.setDisable(true);
+                }
+
+                fillVentaCreditoTable();
                 fillVentasDetalleTable(ventaTB.getSuministroTBs());
                 spBody.setDisable(false);
                 hbLoad.setVisible(false);
@@ -167,15 +177,15 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
         }
     }
 
-    private void fillVentasDetalleTable() {
+    private void fillVentaCreditoTable() {
         for (int i = 0; i < ventaTB.getVentaCreditoTBs().size(); i++) {
-            gpList.add(addElementGridPane("l1" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getId() + "", Pos.CENTER, null), 0, (i + 1));
-            gpList.add(addElementGridPane("l2" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getIdVentaCredito(), Pos.CENTER, null), 1, (i + 1));
-            gpList.add(addElementGridPane("l3" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getFechaPago(), Pos.CENTER, null), 2, (i + 1));
-            gpList.add(addElementGridPane("l4" + (i + 1), "Completado", Pos.CENTER, null), 3, (i + 1));
-            gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(ventaTB.getVentaCreditoTBs().get(i).getMonto(), 2), Pos.CENTER, null), 4, (i + 1));
-            gpList.add(addElementGridPane("l6" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getObservacion(), Pos.CENTER, null), 5, (i + 1));
-            gpList.add(addElementGridPane("l7" + (i + 1), "", Pos.CENTER, ventaTB.getVentaCreditoTBs().get(i).getBtnImprimir()), 6, (i + 1));
+            gpList.add(addElementGridPane("l1" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getId() + "", Pos.CENTER, null, "#020203"), 0, (i + 1));
+            gpList.add(addElementGridPane("l2" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getIdVentaCredito(), Pos.CENTER, null, "#020203"), 1, (i + 1));
+            gpList.add(addElementGridPane("l3" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getFechaPago(), Pos.CENTER, null, "#020203"), 2, (i + 1));
+            gpList.add(addElementGridPane("l4" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getEstado() == 1 ? "COBRADO" : "POR COBRAR", Pos.CENTER, null, ventaTB.getVentaCreditoTBs().get(i).getEstado() == 1 ? "#0771d3" : "#c62303"), 3, (i + 1));
+            gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(ventaTB.getVentaCreditoTBs().get(i).getMonto(), 2), Pos.CENTER, null, "#020203"), 4, (i + 1));
+            gpList.add(addElementGridPane("l6" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getObservacion(), Pos.CENTER, null, "#020203"), 5, (i + 1));
+            gpList.add(addElementGridPane("l7" + (i + 1), "", Pos.CENTER, ventaTB.getVentaCreditoTBs().get(i).getEstado() == 1 ? null : ventaTB.getVentaCreditoTBs().get(i).getBtnPagar(), "#020203"), 6, (i + 1));
         }
     }
 
@@ -184,19 +194,21 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             gpDetalle.add(addElementGridPaneLabel("l1" + (i + 1), arrList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
             gpDetalle.add(addElementGridPaneLabel("l2" + (i + 1), arrList.get(i).getClave() + "\n" + arrList.get(i).getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
             gpDetalle.add(addElementGridPaneLabel("l3" + (i + 1), Tools.roundingValue(arrList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l4" + (i + 1), arrList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l5" + (i + 1), arrList.get(i).getImpuestoTB().getNombreImpuesto(), Pos.CENTER_RIGHT), 4, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l6" + (i + 1), Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l7" + (i + 1), Tools.roundingValue(arrList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l8" + (i + 1), Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral() * (arrList.get(i).getCantidad() - arrList.get(i).getDescuento()), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l4" + (i + 1), Tools.roundingValue(arrList.get(i).getBonificacion(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l5" + (i + 1), arrList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 4, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l6" + (i + 1), arrList.get(i).getImpuestoTB().getNombreImpuesto(), Pos.CENTER_RIGHT), 5, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l7" + (i + 1), Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l8" + (i + 1), Tools.roundingValue(arrList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l9" + (i + 1), Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral() * (arrList.get(i).getCantidad() - arrList.get(i).getDescuento()), 2), Pos.CENTER_RIGHT), 8, (i + 1));
         }
     }
 
-    private Label addElementGridPane(String id, String nombre, Pos pos, Node node) {
+    private Label addElementGridPane(String id, String nombre, Pos pos, Node node, String color) {
         Label label = new Label(nombre);
         label.setId(id);
         label.setGraphic(node);
-        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
+        label.setTextFill(Color.web(color));
+        label.setStyle("-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.getStyleClass().add("labelRoboto13");
         label.setAlignment(pos);
         label.setWrapText(true);
@@ -242,6 +254,27 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
         }
     }
 
+    private void onEventAmortizarUpdate(String idVentaCredito,double monto) {
+        try {
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_VENTA_ABONO_PROCESO);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            //Controlller here
+            FxVentaAbonoProcesoController controller = fXMLLoader.getController();
+            controller.setInitLoadVentaAbono(ventaTB, idVentaCredito,monto);
+            controller.setInitVentaAbonarController(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Generar Cobro", apWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println("Controller banco" + ex.getLocalizedMessage());
+        }
+    }
+
     public void openModalImpresion(String idVenta, String idVentaCredito) {
         try {
             fxPrincipalController.openFondoModal();
@@ -252,7 +285,6 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             FxOpcionesImprimirController controller = fXMLLoader.getController();
             controller.loadTicketCuentaPorCobrar(controller.getApWindow());
             controller.setIdVenta(idVenta);
-            controller.setIdVentaCredito(idVentaCredito);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Imprimir", apWindow.getScene().getWindow());
             stage.setResizable(false);
@@ -294,7 +326,7 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
     @FXML
     private void onActionReporte(ActionEvent event) {
         if (ventaTB != null) {
-            fxOpcionesImprimirController.getTicketCuentasPorCobrar().mostrarReporte(ventaTB.getIdVenta(), "");
+            fxOpcionesImprimirController.getTicketCuentasPorCobrar().mostrarReporte(ventaTB.getIdVenta());
         }
     }
 
@@ -302,7 +334,7 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
     private void onKeyPressedReporte(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             if (ventaTB != null) {
-                fxOpcionesImprimirController.getTicketCuentasPorCobrar().mostrarReporte(ventaTB.getIdVenta(), "");
+                fxOpcionesImprimirController.getTicketCuentasPorCobrar().mostrarReporte(ventaTB.getIdVenta());
             }
         }
     }
@@ -310,7 +342,7 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
     @FXML
     private void onActionTicket(ActionEvent event) {
         if (ventaTB != null) {
-            fxOpcionesImprimirController.getTicketCuentasPorCobrar().imprimir(ventaTB.getIdVenta(), "");
+            fxOpcionesImprimirController.getTicketCuentasPorCobrar().imprimir(ventaTB.getIdVenta());
         }
     }
 
@@ -318,7 +350,7 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
     private void onKeyPressedTicket(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             if (ventaTB != null) {
-                fxOpcionesImprimirController.getTicketCuentasPorCobrar().imprimir(ventaTB.getIdVenta(), "");
+                fxOpcionesImprimirController.getTicketCuentasPorCobrar().imprimir(ventaTB.getIdVenta());
             }
         }
     }

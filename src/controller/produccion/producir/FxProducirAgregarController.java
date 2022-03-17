@@ -10,8 +10,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -231,13 +233,36 @@ public class FxProducirAgregarController implements Initializable {
                 sCbSuministro.getComboBox().hide();
             }
         });
+
         sCbSuministro.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
-            if (!Tools.isText(sCbSuministro.getSearchComboBoxSkin().getSearchBox().getText())) {
-                sCbSuministro.getComboBox().getItems().clear();
-                List<SuministroTB> list = SuministroADO.getSearchComboBoxSuministros(sCbSuministro.getSearchComboBoxSkin().getSearchBox().getText().trim(), false);
-                list.forEach(p -> cbProducto.getItems().add(p));
+            String search = sCbSuministro.getSearchComboBoxSkin().getSearchBox().getText().trim();
+            if (search.isEmpty()) {
+                return;
             }
+            if (sCbSuministro.getCompletableFuture() != null) {
+                return;
+            }
+            if (t.getCode() == KeyCode.ENTER || t.getCode() == KeyCode.TAB) {
+                return;
+            }
+            Platform.runLater(() -> {
+                sCbSuministro.getComboBox().getItems().clear();
+                sCbSuministro.getComboBox().setPromptText("Cargando información...");
+            });
+            sCbSuministro.setCompletableFuture(CompletableFuture.supplyAsync(() -> {
+                return SuministroADO.getSearchComboBoxSuministros(search, false);
+            }).thenAcceptAsync(complete -> {
+                if (complete instanceof List) {
+                    Platform.runLater(() -> {
+                        sCbSuministro.getComboBox().getItems().addAll(complete);
+                        sCbSuministro.getComboBox().setPromptText("");
+                        sCbSuministro.setCompletableFuture(null);
+                    });
+                }
+            }));
+            t.consume();
         });
+
         sCbSuministro.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             switch (t.getCode()) {
                 case ENTER:
@@ -267,29 +292,47 @@ public class FxProducirAgregarController implements Initializable {
     }
 
     private void comboBoxEmpleados() {
-        SearchComboBox<EmpleadoTB> searchComboBox = new SearchComboBox<>(cbPersonaEncargada, false);
-        searchComboBox.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
+        SearchComboBox<EmpleadoTB> scbEmpleado = new SearchComboBox<>(cbPersonaEncargada, false);
+        scbEmpleado.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
             if (t.getCode() == KeyCode.ENTER) {
-                if (!searchComboBox.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
-                    searchComboBox.getSearchComboBoxSkin().getItemView().getSelectionModel().select(0);
-                    searchComboBox.getSearchComboBoxSkin().getItemView().requestFocus();
+                if (!scbEmpleado.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
+                    scbEmpleado.getSearchComboBoxSkin().getItemView().getSelectionModel().select(0);
+                    scbEmpleado.getSearchComboBoxSkin().getItemView().requestFocus();
                 }
             } else if (t.getCode() == KeyCode.ESCAPE) {
-                searchComboBox.getComboBox().hide();
+                scbEmpleado.getComboBox().hide();
             }
         });
-        searchComboBox.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
-            if (!Tools.isText(searchComboBox.getSearchComboBoxSkin().getSearchBox().getText())) {
-                searchComboBox.getComboBox().getItems().clear();
-                cbPersonaEncargada.getItems().addAll(EmpleadoADO.getSearchComboBoxEmpleados(searchComboBox.getSearchComboBoxSkin().getSearchBox().getText().trim()));
+        scbEmpleado.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
+            if (scbEmpleado.getCompletableFuture() != null) {
+                return;
             }
+            if (t.getCode() == KeyCode.ENTER || t.getCode() == KeyCode.TAB) {
+                return;
+            }
+            Platform.runLater(() -> {
+                scbEmpleado.getComboBox().getItems().clear();
+                scbEmpleado.getComboBox().setPromptText("Cargando información...");
+            });
+            scbEmpleado.setCompletableFuture(CompletableFuture.supplyAsync(() -> {
+                return EmpleadoADO.getSearchComboBoxEmpleados(scbEmpleado.getSearchComboBoxSkin().getSearchBox().getText().trim());
+            }).thenAcceptAsync(complete -> {
+                if (complete instanceof List) {
+                    Platform.runLater(() -> {
+                        scbEmpleado.getComboBox().getItems().addAll(complete);
+                        scbEmpleado.getComboBox().setPromptText("");
+                        scbEmpleado.setCompletableFuture(null);
+                    });
+                }
+            }));
+            t.consume();
         });
-        searchComboBox.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
+        scbEmpleado.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             switch (t.getCode()) {
                 case ENTER:
                 case SPACE:
                 case ESCAPE:
-                    searchComboBox.getComboBox().hide();
+                    scbEmpleado.getComboBox().hide();
                     break;
                 case UP:
                 case DOWN:
@@ -297,16 +340,16 @@ public class FxProducirAgregarController implements Initializable {
                 case RIGHT:
                     break;
                 default:
-                    searchComboBox.getSearchComboBoxSkin().getSearchBox().requestFocus();
-                    searchComboBox.getSearchComboBoxSkin().getSearchBox().selectAll();
+                    scbEmpleado.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                    scbEmpleado.getSearchComboBoxSkin().getSearchBox().selectAll();
                     break;
             }
         });
-        searchComboBox.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty().addListener((p, o, item) -> {
+        scbEmpleado.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty().addListener((p, o, item) -> {
             if (item != null) {
-                searchComboBox.getComboBox().getSelectionModel().select(item);
-                if (searchComboBox.getSearchComboBoxSkin().isClickSelection()) {
-                    searchComboBox.getComboBox().hide();
+                scbEmpleado.getComboBox().getSelectionModel().select(item);
+                if (scbEmpleado.getSearchComboBoxSkin().isClickSelection()) {
+                    scbEmpleado.getComboBox().hide();
                 }
             }
         });
@@ -333,13 +376,36 @@ public class FxProducirAgregarController implements Initializable {
                 searchComboBox.getComboBox().hide();
             }
         });
+
         searchComboBox.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
-            if (!Tools.isText(searchComboBox.getSearchComboBoxSkin().getSearchBox().getText())) {
-                searchComboBox.getComboBox().getItems().clear();
-                List<SuministroTB> suministroTBs = SuministroADO.getSearchComboBoxSuministros(searchComboBox.getSearchComboBoxSkin().getSearchBox().getText().trim(), false);
-                suministroTBs.forEach(p -> suministroTB.getCbSuministro().getItems().add(p));
+            String search = searchComboBox.getSearchComboBoxSkin().getSearchBox().getText().trim();
+            if (search.isEmpty()) {
+                return;
             }
+            if (searchComboBox.getCompletableFuture() != null) {
+                return;
+            }
+            if (t.getCode() == KeyCode.ENTER || t.getCode() == KeyCode.TAB) {
+                return;
+            }
+            Platform.runLater(() -> {
+                searchComboBox.getComboBox().getItems().clear();
+                searchComboBox.getComboBox().setPromptText("Cargando información...");
+            });
+            searchComboBox.setCompletableFuture(CompletableFuture.supplyAsync(() -> {
+                return SuministroADO.getSearchComboBoxSuministros(search, false);
+            }).thenAcceptAsync(complete -> {
+                if (complete instanceof List) {
+                    Platform.runLater(() -> {
+                        searchComboBox.getComboBox().getItems().addAll(complete);
+                        searchComboBox.getComboBox().setPromptText("");
+                        searchComboBox.setCompletableFuture(null);
+                    });
+                }
+            }));
+            t.consume();
         });
+
         searchComboBox.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             switch (t.getCode()) {
                 case ENTER:

@@ -1,5 +1,6 @@
 package model;
 
+import controller.tools.Tools;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +10,10 @@ import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import static model.DBUtil.getConnection;
 
 public class OrdenCompraADO {
@@ -162,7 +167,7 @@ public class OrdenCompraADO {
                     suministroTB.setPrecioVentaGeneral(rsEmps.getDouble("PrecioCompra"));
                     suministroTB.setIdImpuesto(rsEmps.getInt("IdImpuesto"));
                     suministroTB.setImpuestoTB(new ImpuestoTB(rsEmps.getInt("IdImpuesto"), rsEmps.getString("Nombre"), rsEmps.getDouble("Valor")));
-                    
+
                     ArrayList<PreciosTB> preciosTBs = new ArrayList();
                     preparedPrecio = getConnection().prepareStatement("SELECT * FROM PreciosTB WHERE IdSuministro = ?");
                     preparedPrecio.setString(1, resultSet.getString("IdSuministro"));
@@ -173,6 +178,55 @@ public class OrdenCompraADO {
                         preciosTB.setNombre(rsEmps.getString("Nombre"));
                         preciosTB.setValor(rsEmps.getDouble("Valor"));
                         preciosTB.setFactor(rsEmps.getDouble("Factor"));
+
+                        TextField tfNombre = new TextField(rsEmps.getString("Nombre"));
+                        tfNombre.getStyleClass().add("text-field-normal");
+                        tfNombre.setOnKeyReleased(event -> {
+                            preciosTB.setNombre(tfNombre.getText());
+                        });
+
+                        TextField tfValor = new TextField(Tools.roundingValue(rsEmps.getDouble("Valor"), 2));
+                        tfValor.getStyleClass().add("text-field-normal");
+                        tfValor.setOnKeyReleased(event -> {
+                            preciosTB.setValor(!Tools.isNumeric(tfValor.getText()) ? 0 : Double.parseDouble(tfValor.getText()));
+                        });
+                        tfValor.setOnKeyTyped((KeyEvent event) -> {
+                            char c = event.getCharacter().charAt(0);
+                            if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+                                event.consume();
+                            }
+                            if (c == '.' && tfValor.getText().contains(".")) {
+                                event.consume();
+                            }
+                        });
+
+                        TextField tfFactor = new TextField(Tools.roundingValue(rsEmps.getDouble("Factor"), 2));
+                        tfFactor.getStyleClass().add("text-field-normal");
+                        tfFactor.setOnKeyReleased(event -> {
+                            preciosTB.setFactor(!Tools.isNumeric(tfFactor.getText()) ? 1 : Double.parseDouble(tfFactor.getText()));
+                        });
+                        tfFactor.setOnKeyTyped((KeyEvent event) -> {
+                            char c = event.getCharacter().charAt(0);
+                            if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+                                event.consume();
+                            }
+                            if (c == '.' && tfFactor.getText().contains(".")) {
+                                event.consume();
+                            }
+                        });
+
+                        Button button = new Button();
+                        button.getStyleClass().add("buttonDark");
+                        ImageView view = new ImageView(new Image("/view/image/remove.png"));
+                        view.setFitWidth(22);
+                        view.setFitHeight(22);
+                        button.setGraphic(view);
+
+                        preciosTB.setTxtNombre(tfNombre);
+                        preciosTB.setTxtValor(tfValor);
+                        preciosTB.setTxtFactor(tfFactor);
+                        preciosTB.setBtnOpcion(button);
+
                         preciosTBs.add(preciosTB);
                     }
                     suministroTB.setPreciosTBs(preciosTBs);

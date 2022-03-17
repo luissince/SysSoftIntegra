@@ -50,6 +50,10 @@ public class FxVentaAbonoProcesoController implements Initializable {
 
     private VentaTB ventaTB;
 
+    private String idVentaCredito;
+
+    private double monto;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
@@ -63,10 +67,20 @@ public class FxVentaAbonoProcesoController implements Initializable {
         rbEfectivo.setToggleGroup(toggleGroupForma);
         rbTarjeta.setToggleGroup(toggleGroupForma);
         rbDeposito.setToggleGroup(toggleGroupForma);
+
+        idVentaCredito = "";
     }
 
     public void setInitLoadVentaAbono(VentaTB ventaTB) {
         this.ventaTB = ventaTB;
+    }
+
+    public void setInitLoadVentaAbono(VentaTB ventaTB, String idVentaCredito, double monto) {
+        this.ventaTB = ventaTB;
+        this.idVentaCredito = idVentaCredito;
+        this.monto = monto;
+        txtMonto.setText(Tools.roundingValue(monto, 2));
+        txtMonto.setDisable(true);
     }
 
     private void saveAbono() {
@@ -86,6 +100,7 @@ public class FxVentaAbonoProcesoController implements Initializable {
                     btnAceptar.setDisable(true);
                     VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
                     ventaCreditoTB.setIdVenta(ventaTB.getIdVenta());
+                    ventaCreditoTB.setIdVentaCredito(idVentaCredito);
                     ventaCreditoTB.setMonto(Double.parseDouble(txtMonto.getText()));
                     ventaCreditoTB.setFechaPago(Tools.getDate());
                     ventaCreditoTB.setHoraPago(Tools.getTime());
@@ -121,7 +136,7 @@ public class FxVentaAbonoProcesoController implements Initializable {
                     ingresoTB.setForma(rbEfectivo.isSelected() ? 1 : rbTarjeta.isSelected() ? 2 : 3);
                     ingresoTB.setMonto(Double.parseDouble(txtMonto.getText()));
 
-                    ModeloObject result = VentaADO.RegistrarAbono(ventaCreditoTB, ingresoTB, null);
+                    ModeloObject result = idVentaCredito.equals("") ? VentaADO.RegistrarAbono(ventaCreditoTB, ingresoTB, null) : VentaADO.RegistrarAbonoUpdateById(ventaCreditoTB, ingresoTB, null);
                     if (result.getState().equalsIgnoreCase("inserted")) {
                         Tools.Dispose(window);
                         cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(), result.getIdResult());
@@ -156,6 +171,7 @@ public class FxVentaAbonoProcesoController implements Initializable {
                             btnAceptar.setDisable(true);
                             VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
                             ventaCreditoTB.setIdVenta(ventaTB.getIdVenta());
+                            ventaCreditoTB.setIdVentaCredito(idVentaCredito);
                             ventaCreditoTB.setMonto(Double.parseDouble(txtMonto.getText()));
                             ventaCreditoTB.setFechaPago(Tools.getDate());
                             ventaCreditoTB.setHoraPago(Tools.getTime());
@@ -171,7 +187,7 @@ public class FxVentaAbonoProcesoController implements Initializable {
                             movimientoCajaTB.setTipoMovimiento(rbEfectivo.isSelected() ? 4 : rbTarjeta.isSelected() ? 7 : 8);
                             movimientoCajaTB.setMonto(Double.parseDouble(txtMonto.getText()));
 
-                            ModeloObject result = VentaADO.RegistrarAbono(ventaCreditoTB, null, movimientoCajaTB);
+                            ModeloObject result = idVentaCredito.equals("") ? VentaADO.RegistrarAbono(ventaCreditoTB, null, movimientoCajaTB) : VentaADO.RegistrarAbonoUpdateById(ventaCreditoTB, null, movimientoCajaTB);
                             if (result.getState().equalsIgnoreCase("inserted")) {
                                 Tools.Dispose(window);
                                 cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(), result.getIdResult());

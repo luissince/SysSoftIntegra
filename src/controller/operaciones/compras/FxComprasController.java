@@ -560,7 +560,7 @@ public class FxComprasController implements Initializable {
                     detalleCompraTB.setCantidad(dctb.getCantidad());
                     detalleCompraTB.setDescuento(dctb.getDescuento());
                     detalleCompraTB.setPrecioCompra(dctb.getPrecioCompra());
-
+                    detalleCompraTB.setCambiarPrecio(true);
                     detalleCompraTB.setImpuestoTB(dctb.getImpuestoTB());
 
                     //SUMINISTRO
@@ -694,7 +694,7 @@ public class FxComprasController implements Initializable {
                     detalleCompraTB.setCantidad(dctb.getCantidad());
                     detalleCompraTB.setDescuento(dctb.getDescuento());
                     detalleCompraTB.setPrecioCompra(dctb.getCosto());
-
+                    detalleCompraTB.setCambiarPrecio(true);
                     detalleCompraTB.setImpuestoTB(dctb.getImpuestoTB());
 
                     //SUMINISTRO

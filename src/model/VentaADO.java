@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -139,10 +140,11 @@ public class VentaADO {
                         + ",Tarjeta\n"
                         + ",Codigo\n"
                         + ",Deposito\n"
+                        + ",TipoCredito\n"
                         + ",NumeroOperacion\n"
                         + ",Procedencia)\n"
                         + "VALUES\n"
-                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)");
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)");
 
                 comprobante = DBUtil.getConnection().prepareStatement("INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
@@ -161,9 +163,10 @@ public class VentaADO {
                         + ",ValorImpuesto\n"
                         + ",Bonificacion\n"
                         + ",PorLlevar\n"
-                        + ",Estado)\n"
+                        + ",Estado\n"
+                        + ",IdMedida)\n"
                         + "VALUES\n"
-                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
                 suministro_kardex = DBUtil.getConnection().prepareStatement("INSERT INTO "
                         + "KardexSuministroTB("
@@ -198,7 +201,8 @@ public class VentaADO {
                 venta.setDouble(17, ventaTB.getTarjeta());
                 venta.setString(18, Integer.toString(dig5) + id_comprabante[1]);
                 venta.setDouble(19, ventaTB.getDeposito());
-                venta.setString(20, ventaTB.getNumeroOperacion());
+                venta.setInt(20, ventaTB.getTipoCredito());
+                venta.setString(21, ventaTB.getNumeroOperacion());
                 venta.addBatch();
 
                 comprobante.setInt(1, ventaTB.getIdComprobante());
@@ -238,6 +242,7 @@ public class VentaADO {
                     detalle_venta.setDouble(11, sm.getBonificacion());
                     detalle_venta.setDouble(12, cantidad);
                     detalle_venta.setString(13, "C");
+                    detalle_venta.setInt(14, sm.getUnidadCompra());
                     detalle_venta.addBatch();
 
                     if (sm.isInventario() && sm.getValorInventario() == 1) {
@@ -394,6 +399,9 @@ public class VentaADO {
         PreparedStatement cliente = null;
         PreparedStatement comprobante = null;
         PreparedStatement detalle_venta = null;
+        PreparedStatement venta_credito_codigo = null;
+        PreparedStatement venta_credito = null;
+        PreparedStatement ingreso = null;
         PreparedStatement suministro_update = null;
         PreparedStatement suministro_kardex = null;
         PreparedStatement cotizacion = null;
@@ -500,10 +508,11 @@ public class VentaADO {
                         + ",Tarjeta\n"
                         + ",Codigo\n"
                         + ",Deposito\n"
+                        + ",TipoCredito\n"
                         + ",NumeroOperacion\n"
                         + ",Procedencia)\n"
                         + "VALUES\n"
-                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)");
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)");
 
                 comprobante = DBUtil.getConnection().prepareStatement("INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
@@ -522,9 +531,10 @@ public class VentaADO {
                         + ",ValorImpuesto\n"
                         + ",Bonificacion\n"
                         + ",PorLlevar\n"
-                        + ",Estado)\n"
+                        + ",Estado\n"
+                        + ",IdMedida)\n"
                         + "VALUES\n"
-                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
                 suministro_update = DBUtil.getConnection().prepareStatement("UPDATE "
                         + "SuministroTB "
@@ -563,8 +573,9 @@ public class VentaADO {
                 venta.setDouble(16, ventaTB.getVuelto());
                 venta.setDouble(17, ventaTB.getTarjeta());
                 venta.setString(18, Integer.toString(dig5) + id_comprabante[1]);
-                venta.setDouble(19, 0);
-                venta.setString(20, "");
+                venta.setDouble(19, ventaTB.getDeposito());
+                venta.setInt(20, ventaTB.getTipoCredito());
+                venta.setString(21, ventaTB.getNumeroOperacion());
                 venta.addBatch();
 
                 comprobante.setInt(1, ventaTB.getIdComprobante());
@@ -577,6 +588,71 @@ public class VentaADO {
                     cotizacion.setString(1, id_venta);
                     cotizacion.setString(2, ventaTB.getIdCotizacion());
                     cotizacion.addBatch();
+                }
+
+                venta_credito = DBUtil.getConnection().prepareStatement("INSERT INTO VentaCreditoTB(IdVenta,IdVentaCredito,Monto,FechaPago,HoraPago,Estado,IdUsuario,Observacion)VALUES(?,?,?,?,?,?,?,?)");
+                ingreso = DBUtil.getConnection().prepareStatement("INSERT INTO IngresoTB(IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)VALUES(?,?,?,?,?,?,?,?)");
+
+                if (ventaTB.getVentaCreditoTBs() != null) {
+                    venta_credito_codigo = DBUtil.getConnection().prepareStatement("SELECT IdVentaCredito FROM VentaCreditoTB ");
+                    ResultSet resultSet = venta_credito_codigo.executeQuery();
+                    ArrayList<Integer> listCodigos = new ArrayList();
+                    while (resultSet.next()) {
+                        listCodigos.add(Integer.parseInt(resultSet.getString("IdVentaCredito").replace("VC", "")));
+                    }
+
+                    int valorActual = 0;
+                    if (!listCodigos.isEmpty()) {
+                        valorActual = Collections.max(listCodigos);
+                        valorActual++;
+                    }
+
+                    for (VentaCreditoTB creditoTB : ventaTB.getVentaCreditoTBs()) {
+                        String idCodigoCredito;
+                        if (valorActual > 0) {
+                            int incremental = valorActual;
+                            String codigoGenerado;
+                            if (incremental <= 9) {
+                                codigoGenerado = "VC000" + incremental;
+                            } else if (incremental >= 10 && incremental <= 99) {
+                                codigoGenerado = "VC00" + incremental;
+                            } else if (incremental >= 100 && incremental <= 999) {
+                                codigoGenerado = "VC0" + incremental;
+                            } else {
+                                codigoGenerado = "VC" + incremental;
+                            }
+                            valorActual++;
+                            idCodigoCredito = codigoGenerado;
+                        } else {
+                            valorActual = 2;
+                            idCodigoCredito = "VC0001";
+                        }
+
+                        venta_credito.setString(1, id_venta);
+                        venta_credito.setString(2, idCodigoCredito);
+                        venta_credito.setDouble(3, Double.parseDouble(creditoTB.getTfMonto().getText()));
+                        venta_credito.setString(4, Tools.getDatePicker(creditoTB.getDpFecha()));
+                        venta_credito.setString(5, creditoTB.getHoraPago());
+                        venta_credito.setShort(6, creditoTB.getCbMontoInicial().isSelected() ? (short) 1 : (short) 0);
+                        venta_credito.setString(7, ventaTB.getVendedor());
+                        venta_credito.setString(8, creditoTB.getCbMontoInicial().isSelected() ? "PAGO ADELANTADO DE LA VENTA AL CRÉDITO" : "");
+                        venta_credito.addBatch();
+
+                        if (creditoTB.getCbMontoInicial().isSelected()) {
+                            ingreso.setString(1, idCodigoCredito);
+                            ingreso.setString(2, ventaTB.getVendedor());
+                            ingreso.setString(3, "PAGO ADELANTADO DE LA VENTA AL CRÉDITO");
+                            ingreso.setInt(4, 5);
+                            ingreso.setString(5, Tools.getDate());
+                            ingreso.setString(6, Tools.getTime());
+                            ingreso.setInt(7,
+                                    creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 0 ? 1
+                                    : creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 1 ? 2
+                                    : 3);
+                            ingreso.setDouble(8, Double.parseDouble(creditoTB.getTfMonto().getText()));
+                            ingreso.addBatch();
+                        }
+                    }
                 }
 
                 for (SuministroTB sm : ventaTB.getSuministroTBs()) {
@@ -599,6 +675,7 @@ public class VentaADO {
                     detalle_venta.setDouble(11, sm.getBonificacion());
                     detalle_venta.setDouble(12, cantidad);
                     detalle_venta.setString(13, "C");
+                    detalle_venta.setInt(14, sm.getUnidadCompra());
                     detalle_venta.addBatch();
 
                     if (sm.isInventario() && sm.getValorInventario() == 1) {
@@ -643,6 +720,8 @@ public class VentaADO {
                 suministro_update.executeBatch();
                 suministro_kardex.executeBatch();
                 cotizacion.executeBatch();
+                venta_credito.executeBatch();
+                ingreso.executeBatch();
 
                 DBUtil.getConnection().commit();
                 resultTransaction.setCode("register");
@@ -667,6 +746,15 @@ public class VentaADO {
                 }
                 if (venta != null) {
                     venta.close();
+                }
+                if (venta_credito != null) {
+                    venta_credito.close();
+                }
+                if (venta_credito_codigo != null) {
+                    venta_credito_codigo.close();
+                }
+                if (ingreso != null) {
+                    ingreso.close();
                 }
                 if (ventaVerificar != null) {
                     ventaVerificar.close();
@@ -795,10 +883,11 @@ public class VentaADO {
                     + ",Tarjeta\n"
                     + ",Codigo\n"
                     + ",Deposito\n"
+                    + ",TipoCredito\n"
                     + ",NumeroOperacion\n"
                     + ",Procedencia)\n"
                     + "VALUES\n"
-                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)");
+                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)");
 
             comprobante = DBUtil.getConnection().prepareStatement("INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
@@ -817,9 +906,10 @@ public class VentaADO {
                     + ",ValorImpuesto\n"
                     + ",Bonificacion\n"
                     + ",PorLlevar\n"
-                    + ",Estado)\n"
+                    + ",Estado\n"
+                    + ",IdMedida)\n"
                     + "VALUES\n"
-                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             venta.setString(1, id_venta);
             venta.setString(2, ventaTB.getIdCliente());
@@ -840,7 +930,8 @@ public class VentaADO {
             venta.setDouble(17, ventaTB.getTarjeta());
             venta.setString(18, Integer.toString(dig5) + id_comprabante[1]);
             venta.setDouble(19, ventaTB.getDeposito());
-            venta.setString(20, ventaTB.getNumeroOperacion());
+            venta.setInt(20, ventaTB.getTipoCredito());
+            venta.setString(21, ventaTB.getNumeroOperacion());
             venta.addBatch();
 
             comprobante.setInt(1, ventaTB.getIdComprobante());
@@ -874,6 +965,7 @@ public class VentaADO {
                 detalle_venta.setDouble(11, sm.getBonificacion());
                 detalle_venta.setDouble(12, 0);
                 detalle_venta.setString(13, "L");
+                detalle_venta.setInt(14, sm.getUnidadCompra());
                 detalle_venta.addBatch();
             }
 
@@ -1092,10 +1184,11 @@ public class VentaADO {
                         + ",Tarjeta\n"
                         + ",Codigo\n"
                         + ",Deposito\n"
+                        + ",TipoCredito\n"
                         + ",NumeroOperacion\n"
                         + ",Procedencia)\n"
                         + "VALUES\n"
-                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)");
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)");
 
                 comprobante = DBUtil.getConnection().prepareStatement("INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
@@ -1114,9 +1207,10 @@ public class VentaADO {
                         + ",ValorImpuesto\n"
                         + ",Bonificacion\n"
                         + ",PorLlevar\n"
-                        + ",Estado)\n"
+                        + ",Estado\n"
+                        + ",IdMedida)\n"
                         + "VALUES\n"
-                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
                 suministro_kardex = DBUtil.getConnection().prepareStatement("INSERT INTO "
                         + "KardexSuministroTB("
@@ -1151,7 +1245,8 @@ public class VentaADO {
                 venta.setDouble(17, ventaTB.getTarjeta());
                 venta.setString(18, Integer.toString(dig5) + id_comprabante[1]);
                 venta.setDouble(19, ventaTB.getDeposito());
-                venta.setString(20, ventaTB.getNumeroOperacion());
+                venta.setInt(20, ventaTB.getTipoCredito());
+                venta.setString(21, ventaTB.getNumeroOperacion());
                 venta.addBatch();
 
                 comprobante.setInt(1, ventaTB.getIdComprobante());
@@ -1188,6 +1283,7 @@ public class VentaADO {
                     detalle_venta.setDouble(11, sm.getBonificacion());
                     detalle_venta.setDouble(12, cantidad);
                     detalle_venta.setString(13, "C");
+                    detalle_venta.setInt(14, sm.getUnidadCompra());
                     detalle_venta.addBatch();
 
                     if (sm.isInventario() && sm.getValorInventario() == 1) {
@@ -1450,10 +1546,11 @@ public class VentaADO {
                         + ",Tarjeta\n"
                         + ",Codigo\n"
                         + ",Deposito\n"
+                        + ",TipoCredito\n"
                         + ",NumeroOperacion\n"
                         + ",Procedencia)\n"
                         + "VALUES\n"
-                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)");
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)");
 
                 comprobante = DBUtil.getConnection().prepareStatement("INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
@@ -1472,9 +1569,10 @@ public class VentaADO {
                         + ",ValorImpuesto\n"
                         + ",Bonificacion\n"
                         + ",PorLlevar\n"
-                        + ",Estado)\n"
+                        + ",Estado\n"
+                        + ",IdMedida)\n"
                         + "VALUES\n"
-                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
                 suministro_update = DBUtil.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
 
@@ -1510,8 +1608,9 @@ public class VentaADO {
                 venta.setDouble(16, ventaTB.getVuelto());
                 venta.setDouble(17, ventaTB.getTarjeta());
                 venta.setString(18, Integer.toString(dig5) + id_comprabante[1]);
-                venta.setDouble(19, 0);
-                venta.setString(20, "");
+                venta.setDouble(19, ventaTB.getDeposito());
+                venta.setInt(20, ventaTB.getTipoCredito());
+                venta.setString(21, ventaTB.getNumeroOperacion());;
                 venta.addBatch();
 
                 comprobante.setInt(1, ventaTB.getIdComprobante());
@@ -1545,6 +1644,7 @@ public class VentaADO {
                     detalle_venta.setDouble(11, sm.getBonificacion());
                     detalle_venta.setDouble(12, cantidad);
                     detalle_venta.setString(13, "C");
+                    detalle_venta.setInt(14, sm.getUnidadCompra());
                     detalle_venta.addBatch();
 
                     if (sm.isInventario() && sm.getValorInventario() == 1) {
@@ -1743,12 +1843,13 @@ public class VentaADO {
                     + ",Efectivo\n"
                     + ",Vuelto\n"
                     + ",Tarjeta\n"
-                    + ",Codigo"
-                    + ",Deposito"
-                    + ",NumeroOperacion"
+                    + ",Codigo\n"
+                    + ",Deposito\n"
+                    + ",TipoCredito\n"
+                    + ",NumeroOperacion\n"
                     + ",Procedencia)\n"
                     + "VALUES\n"
-                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)");
+                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)");
 
             comprobante = DBUtil.getConnection().prepareStatement("INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
@@ -1767,9 +1868,10 @@ public class VentaADO {
                     + ",ValorImpuesto\n"
                     + ",Bonificacion\n"
                     + ",PorLlevar\n"
-                    + ",Estado)\n"
+                    + ",Estado\n"
+                    + ",IdMedida)\n"
                     + "VALUES\n"
-                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             venta.setString(1, id_venta);
             venta.setString(2, ventaTB.getIdCliente());
@@ -1823,6 +1925,7 @@ public class VentaADO {
                 detalle_venta.setDouble(11, sm.getBonificacion());
                 detalle_venta.setDouble(12, 0);
                 detalle_venta.setString(13, "L");
+                detalle_venta.setInt(14, sm.getUnidadCompra());
                 detalle_venta.addBatch();
             }
 
@@ -3210,6 +3313,7 @@ public class VentaADO {
                 ventaTB.setNumeracion(resultSet.getString("Numeracion"));
                 ventaTB.setEstado(resultSet.getInt("Estado"));
                 ventaTB.setEstadoName(resultSet.getString("EstadoName"));
+                ventaTB.setTipoCredito(resultSet.getInt("TipoCredito"));
                 ventaTB.setMontoTotal(resultSet.getDouble("MontoTotal"));
                 ventaTB.setMontoCobrado(resultSet.getDouble("MontoCobrado"));
                 ventaTB.setMontoRestante(resultSet.getDouble("MontoTotal") - resultSet.getDouble("MontoCobrado"));
@@ -3235,13 +3339,14 @@ public class VentaADO {
                     ventaCreditoTB.setEmpleadoTB(new EmpleadoTB(resultSet.getString("NumeroDocumento"), resultSet.getString("Apellidos"), resultSet.getString("Nombres")));
                     ventaCreditoTB.setMonto(resultSet.getDouble("Monto"));
 
-                    Button btnImprimir = new Button();
-                    ImageView imageViewVisualizar = new ImageView(new Image("/view/image/print.png"));
+                    Button btnPagar = new Button();
+                    ImageView imageViewVisualizar = new ImageView(new Image("/view/image/recibo.png"));
                     imageViewVisualizar.setFitWidth(24);
                     imageViewVisualizar.setFitHeight(24);
-                    btnImprimir.setGraphic(imageViewVisualizar);
-                    btnImprimir.getStyleClass().add("buttonLightSuccess");
-                    ventaCreditoTB.setBtnImprimir(btnImprimir);
+                    btnPagar.setGraphic(imageViewVisualizar);
+                    btnPagar.getStyleClass().add("buttonLightSuccess");
+                    ventaCreditoTB.setBtnPagar(btnPagar);
+
                     ventaCreditoTBs.add(ventaCreditoTB);
                 }
                 ventaTB.setVentaCreditoTBs(ventaCreditoTBs);
@@ -3255,7 +3360,8 @@ public class VentaADO {
                     suministroTB.setId(resultSetLista.getRow());
                     suministroTB.setIdSuministro(resultSetLista.getString("IdSuministro"));
                     suministroTB.setClave(resultSetLista.getString("Clave"));
-                    suministroTB.setNombreMarca(resultSetLista.getString("NombreMarca") + (resultSetLista.getDouble("Bonificacion") <= 0 ? "" : "\nBONIFICACIÓN: " + resultSetLista.getDouble("Bonificacion")));
+                    suministroTB.setNombreMarca(resultSetLista.getString("NombreMarca"));
+                    suministroTB.setBonificacion(resultSetLista.getDouble("Bonificacion"));
                     suministroTB.setInventario(resultSetLista.getBoolean("Inventario"));
                     suministroTB.setValorInventario(resultSetLista.getShort("ValorInventario"));
                     suministroTB.setUnidadCompraName(resultSetLista.getString("UnidadCompra"));
@@ -3328,7 +3434,7 @@ public class VentaADO {
             DBUtil.dbConnect();
             DBUtil.getConnection().setAutoCommit(false);
 
-            statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE Estado = 3");
+            statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE Estado = 3 AND IdVenta = ?");
             statementValidate.setString(1, ventaCreditoTB.getIdVenta());
             if (statementValidate.executeQuery().next()) {
                 DBUtil.getConnection().rollback();
@@ -3458,67 +3564,138 @@ public class VentaADO {
 
             }
         }
-
     }
 
-    public static Object Imprimir_Venta_Credito_ById(String idVenta, String idVentaCredito) {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
+    public static ModeloObject RegistrarAbonoUpdateById(VentaCreditoTB ventaCreditoTB, IngresoTB ingresoTB, MovimientoCajaTB movimientoCajaTB) {
+        ModeloObject result = new ModeloObject();
+        PreparedStatement statementValidate = null;
+        PreparedStatement statementVenta = null;
+        PreparedStatement statementAbono = null;
+        PreparedStatement statementIngreso = null;
+        PreparedStatement statementMovimientoCaja = null;
         try {
             DBUtil.dbConnect();
-            preparedStatement = DBUtil.getConnection().prepareCall("{CALL Sp_Obtener_VentaCredito_By_Id(?)}");
-            preparedStatement.setString(1, idVentaCredito);
-            resultSet = preparedStatement.executeQuery();
+            DBUtil.getConnection().setAutoCommit(false);
+
+            statementValidate = DBUtil.getConnection().prepareStatement("SELECT "
+                    + "sum(dv.Cantidad*(dv.PrecioVenta - dv.Descuento)) as Total from VentaTB as v "
+                    + "inner join DetalleVentaTB as dv on dv.IdVenta = v.IdVenta "
+                    + "where v.IdVenta = ?");
+            statementValidate.setString(1, ventaCreditoTB.getIdVenta());
+            ResultSet resultSet = statementValidate.executeQuery();
             if (resultSet.next()) {
-                VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
-                ventaCreditoTB.setIdVentaCredito(resultSet.getString("IdVentaCredito"));
-                ventaCreditoTB.setMonto(resultSet.getDouble("Monto"));
-                ventaCreditoTB.setFechaPago(resultSet.getDate("FechaPago").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                ventaCreditoTB.setHoraPago(resultSet.getTime("HoraPago").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
-                ventaCreditoTB.setObservacion(resultSet.getString("Observacion"));
+                double total = Double.parseDouble(Tools.roundingValue(resultSet.getDouble("Total"), 2));
 
-                preparedStatement = DBUtil.getConnection().prepareCall("{call Sp_Obtener_Venta_ById_For_Credito(?)}");
-                preparedStatement.setString(1, idVenta);
-                resultSet = preparedStatement.executeQuery();
-                resultSet.next();
-                VentaTB ventaTB = new VentaTB();
-                ventaTB.setIdVenta(idVenta);
-                ventaTB.setClienteTB(new ClienteTB(resultSet.getString("NumeroDocumento"), resultSet.getString("Informacion"), resultSet.getString("Celular"), resultSet.getString("Email"), resultSet.getString("Direccion")));
-                ventaTB.setSerie(resultSet.getString("Serie"));
-                ventaTB.setNumeracion(resultSet.getString("Numeracion"));
-                ventaTB.setEstado(resultSet.getInt("Estado"));
-                ventaTB.setEstadoName(resultSet.getString("EstadoName"));
-                ventaTB.setMontoTotal(resultSet.getDouble("MontoTotal"));
-                ventaTB.setMontoCobrado(resultSet.getDouble("MontoCobrado"));
-                ventaTB.setMontoRestante(resultSet.getDouble("MontoTotal") - resultSet.getDouble("MontoCobrado"));
+                statementAbono = DBUtil.getConnection().prepareStatement("UPDATE VentaCreditoTB SET Estado = ?,Observacion=? WHERE IdVentaCredito = ?");
+                statementAbono.setInt(1, ventaCreditoTB.getEstado());
+                statementAbono.setString(2, ventaCreditoTB.getObservacion());
+                statementAbono.setString(3, ventaCreditoTB.getIdVentaCredito());
+                statementAbono.addBatch();
 
-                MonedaTB monedaTB = new MonedaTB();
-                monedaTB.setIdMoneda(resultSet.getInt("IdMoneda"));
-                monedaTB.setNombre(resultSet.getString("Nombre"));
-                monedaTB.setSimbolo(resultSet.getString("Simbolo"));
-                ventaTB.setMonedaTB(monedaTB);
+                statementIngreso = DBUtil.getConnection().prepareStatement("INSERT INTO IngresoTB(\n"
+                        + "IdProcedencia,\n"
+                        + "IdUsuario,\n"
+                        + "Detalle,\n"
+                        + "Procedencia,\n"
+                        + "Fecha,\n"
+                        + "Hora,\n"
+                        + "Forma,\n"
+                        + "Monto)\n"
+                        + "VALUES(?,?,?,?,?,?,?,?)");
+                if (ingresoTB != null) {
+                    statementIngreso.setString(1, ventaCreditoTB.getIdVentaCredito());
+                    statementIngreso.setString(2, ingresoTB.getIdUsuario());
+                    statementIngreso.setString(3, ingresoTB.getDetalle());
+                    statementIngreso.setInt(4, ingresoTB.getProcedencia());
+                    statementIngreso.setString(5, ingresoTB.getFecha());
+                    statementIngreso.setString(6, ingresoTB.getHora());
+                    statementIngreso.setInt(7, ingresoTB.getForma());
+                    statementIngreso.setDouble(8, ingresoTB.getMonto());
+                    statementIngreso.addBatch();
+                }
 
-                ventaCreditoTB.setVentaTB(ventaTB);
+                statementMovimientoCaja = DBUtil.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB(\n"
+                        + "IdCaja,\n"
+                        + "FechaMovimiento,\n"
+                        + "HoraMovimiento,\n"
+                        + "Comentario,\n"
+                        + "TipoMovimiento,\n"
+                        + "Monto,\n"
+                        + "IdProcedencia)\n"
+                        + "VALUES(?,?,?,?,?,?,?)");
+                if (movimientoCajaTB != null) {
+                    statementMovimientoCaja.setString(1, movimientoCajaTB.getIdCaja());
+                    statementMovimientoCaja.setString(2, movimientoCajaTB.getFechaMovimiento());
+                    statementMovimientoCaja.setString(3, movimientoCajaTB.getHoraMovimiento());
+                    statementMovimientoCaja.setString(4, movimientoCajaTB.getComentario());
+                    statementMovimientoCaja.setInt(5, movimientoCajaTB.getTipoMovimiento());
+                    statementMovimientoCaja.setDouble(6, movimientoCajaTB.getMonto());
+                    statementMovimientoCaja.setString(7, ventaCreditoTB.getIdVentaCredito());
+                    statementMovimientoCaja.addBatch();
+                }
 
-                return ventaCreditoTB;
+                statementValidate = DBUtil.getConnection().prepareStatement("SELECT Monto FROM VentaCreditoTB WHERE IdVenta = ? AND Estado = 1");
+                statementValidate.setString(1, ventaCreditoTB.getIdVenta());
+                resultSet = statementValidate.executeQuery();
+
+                double montoTotal = 0;
+                while (resultSet.next()) {
+                    montoTotal += resultSet.getDouble("Monto");
+                }
+
+                statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = 1 WHERE IdVenta = ?");
+                if ((montoTotal + ventaCreditoTB.getMonto()) >= total) {
+                    statementVenta.setString(1, ventaCreditoTB.getIdVenta());
+                    statementVenta.addBatch();
+                }
+
+                statementAbono.executeBatch();
+                statementIngreso.executeBatch();
+                statementVenta.executeBatch();
+                statementMovimientoCaja.executeBatch();
+                DBUtil.getConnection().commit();
+
+                result.setId((short) 1);
+                result.setIdResult(ventaCreditoTB.getIdVentaCredito());
+                result.setMessage("Se completo correctamente el proceso.");
+                result.setState("inserted");
+                return result;
             } else {
-                throw new Exception("No se pudo obtener los datos de la consulta.");
+                DBUtil.getConnection().rollback();
+                result.setId((short) 2);
+                result.setMessage("Problemas al encontrar le venta con el id indicado " + ventaCreditoTB.getIdVenta());
+                result.setState("error");
+                return result;
             }
-        } catch (SQLException ex) {
-            return ex.getLocalizedMessage();
-        } catch (Exception ex) {
-            return ex.getLocalizedMessage();
+        } catch (SQLException | NullPointerException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
+
+            }
+            result.setId((short) 2);
+            result.setMessage(ex.getLocalizedMessage());
+            result.setState("error");
+            return result;
         } finally {
             try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
+                if (statementAbono != null) {
+                    statementAbono.close();
                 }
-                if (resultSet != null) {
-                    resultSet.close();
+                if (statementIngreso != null) {
+                    statementIngreso.close();
+                }
+                if (statementValidate != null) {
+                    statementValidate.close();
+                }
+                if (statementVenta != null) {
+                    statementVenta.close();
+                }
+                if (statementMovimientoCaja != null) {
+                    statementMovimientoCaja.close();
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-                return ex.getLocalizedMessage();
             }
         }
     }

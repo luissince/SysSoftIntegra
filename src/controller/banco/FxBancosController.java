@@ -122,6 +122,7 @@ public class FxBancosController implements Initializable {
             }
             lblLoad.setVisible(false);
         });
+        
         task.setOnFailed((WorkerStateEvent event) -> {
             lblLoad.setVisible(false);
             tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
@@ -142,7 +143,6 @@ public class FxBancosController implements Initializable {
 
     private void eventViewBanco() {
         try {
-
             FXMLLoader fXMLPrincipal = new FXMLLoader(getClass().getResource(FilesRouters.FX_BANCO_HISTORIAL));
             HBox node = fXMLPrincipal.load();
 

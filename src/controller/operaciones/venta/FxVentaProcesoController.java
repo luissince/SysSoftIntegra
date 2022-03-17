@@ -3,15 +3,24 @@ package controller.operaciones.venta;
 import controller.tools.ConvertMonedaCadena;
 import controller.tools.Tools;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -20,6 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.ResultTransaction;
 import model.VentaADO;
+import model.VentaCreditoTB;
 import model.VentaTB;
 
 public class FxVentaProcesoController implements Initializable {
@@ -88,6 +98,26 @@ public class FxVentaProcesoController implements Initializable {
     private TextField txtDepositoAdelantado;
     @FXML
     private TextField txtNumOperacionAdelantado;
+    @FXML
+    private RadioButton rbCreditoVariable;
+    @FXML
+    private HBox hbCVariable;
+    @FXML
+    private RadioButton rbCreditoFijo;
+    @FXML
+    private VBox vbCFijo;
+    @FXML
+    private TableView<VentaCreditoTB> tvListPlazos;
+    @FXML
+    private TableColumn<VentaCreditoTB, Button> tcQuitar;
+    @FXML
+    private TableColumn<VentaCreditoTB, DatePicker> tcFecha;
+    @FXML
+    private TableColumn<VentaCreditoTB, TextField> tcMonto;
+    @FXML
+    private TableColumn<VentaCreditoTB, CheckBox> tcAdelanto;
+    @FXML
+    private TableColumn<VentaCreditoTB, ComboBox<String>> tcForma;
 
     private FxVentaEstructuraController ventaEstructuraController;
 
@@ -119,6 +149,66 @@ public class FxVentaProcesoController implements Initializable {
         monedaCadena = new ConvertMonedaCadena();
         lblVueltoNombre.setText("SU CAMBIO: ");
         lblVueltoNombreAdelantado.setText("SU CAMBIO: ");
+
+        ToggleGroup toggleGroupTipo = new ToggleGroup();
+        rbCreditoVariable.setToggleGroup(toggleGroupTipo);
+        rbCreditoFijo.setToggleGroup(toggleGroupTipo);
+
+        loadInitTablePlazos();
+    }
+
+    private void loadInitTablePlazos() {
+        tcQuitar.setCellValueFactory(new PropertyValueFactory<>("btnQuitar"));
+        tcFecha.setCellValueFactory(new PropertyValueFactory<>("dpFecha"));
+        tcMonto.setCellValueFactory(new PropertyValueFactory<>("tfMonto"));
+        tcAdelanto.setCellValueFactory(new PropertyValueFactory<>("cbMontoInicial"));
+        tcForma.setCellValueFactory(new PropertyValueFactory<>("cbForma"));
+        tvListPlazos.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+    }
+
+    private void addPlazos() {
+        if (!rbCreditoFijo.isSelected()) {
+            return;
+        }
+        VentaCreditoTB creditoTB = new VentaCreditoTB();
+
+        Button btnQuitar = new Button("X");
+        btnQuitar.getStyleClass().add("buttonDark");
+        btnQuitar.setOnAction(b -> {
+            tvListPlazos.getItems().remove(creditoTB);
+        });
+        btnQuitar.setOnKeyPressed(b -> {
+            if (b.getCode() == KeyCode.ENTER) {
+                tvListPlazos.getItems().remove(creditoTB);
+            }
+        });
+        creditoTB.setBtnQuitar(btnQuitar);
+
+        DatePicker dpFecha = new DatePicker();
+        dpFecha.setPrefWidth(200);
+        dpFecha.setPrefHeight(30);
+        creditoTB.setDpFecha(dpFecha);
+
+        creditoTB.setHoraPago(Tools.getTime());
+
+        TextField txtMonto = new TextField("");
+        txtMonto.getStyleClass().add("text-field-normal");
+        txtMonto.setPrefWidth(200);
+        txtMonto.setPrefHeight(30);
+        creditoTB.setTfMonto(txtMonto);
+
+        CheckBox cbMontoInicial = new CheckBox();
+        cbMontoInicial.getStyleClass().add("check-box-contenido");
+        cbMontoInicial.setPrefHeight(30);
+        creditoTB.setCbMontoInicial(cbMontoInicial);
+
+        ComboBox<String> cbForma = new ComboBox<>();
+        cbForma.prefWidth(200);
+        cbForma.setPrefHeight(30);
+        cbForma.getItems().addAll("EFECTIVO", "TARJETA", "DEPOSITO");
+        creditoTB.setCbForma(cbForma);
+
+        tvListPlazos.getItems().add(creditoTB);
     }
 
     public void setInitComponents(VentaTB ventaTB, boolean provilegios) {
@@ -241,6 +331,8 @@ public class FxVentaProcesoController implements Initializable {
                     ventaTB.setDeposito(0);
                     ventaTB.setNumeroOperacion("");
 
+                    ventaTB.setTipoCredito(0);
+
                     if (cbDeposito.isSelected()) {
                         if (!Tools.isNumeric(txtDeposito.getText())) {
                             Tools.AlertMessageWarning(window, "Venta", "El monto del deposito tiene que ser numérico.");
@@ -255,6 +347,7 @@ public class FxVentaProcesoController implements Initializable {
                             ventaTB.setNumeroOperacion(txtNumOperacion.getText().trim());
                         }
                     } else {
+                        
                         if (Tools.isNumeric(txtEfectivo.getText()) && Double.parseDouble(txtEfectivo.getText()) > 0) {
                             ventaTB.setEfectivo(Double.parseDouble(txtEfectivo.getText()));
                         }
@@ -315,22 +408,119 @@ public class FxVentaProcesoController implements Initializable {
                 break;
 
             case 1:
-                if (txtFechaVencimiento.getValue() == null) {
+                if (rbCreditoVariable.isSelected() && txtFechaVencimiento.getValue() == null) {
                     Tools.AlertMessageWarning(window, "Venta", "Ingrese la fecha de vencimiento.");
                     txtFechaVencimiento.requestFocus();
                 } else {
                     ventaTB.setTipo(2);
                     ventaTB.setEstado(2);
                     ventaTB.setVuelto(0);
+                    ventaTB.setObservaciones("");
 
                     ventaTB.setEfectivo(0);
                     ventaTB.setTarjeta(0);
                     ventaTB.setDeposito(0);
                     ventaTB.setNumeroOperacion("");
-                    ventaTB.setObservaciones("");
 
-                    ventaTB.setFechaVencimiento(Tools.getDatePicker(txtFechaVencimiento));
-                    ventaTB.setHoraVencimiento(Tools.getTime());
+                    if (rbCreditoVariable.isSelected()) {
+                        LocalDate now = LocalDate.now();
+                        LocalDate localDate = txtFechaVencimiento.getValue();
+                        if (now.isAfter(localDate)) {
+                            Tools.AlertMessageWarning(window, "Venta", "La fecha de pago no puede ser manor ala fecha de emisión.");
+                            return;
+                        }
+
+                        ventaTB.setFechaVencimiento(Tools.getDatePicker(txtFechaVencimiento));
+                        ventaTB.setHoraVencimiento(Tools.getTime());
+                        ventaTB.setTipoCredito(0);
+                    } else {
+                        if (tvListPlazos.getItems().isEmpty()) {
+                            Tools.AlertMessageWarning(window, "Venta", "No hay plazos a pagar en la tabla.");
+                            return;
+                        }
+
+                        int fecha = 0;
+                        int monto = 0;
+                        int distint = 0;
+                        int fechavl = 0;
+                        int totalvl = 0;
+                        int pagoval = 0;
+
+                        for (int i = 0; i < tvListPlazos.getItems().size(); i++) {
+                            if (tvListPlazos.getItems().get(i).getDpFecha().getValue() == null) {
+                                fecha++;
+                            } else {
+                                LocalDate now = LocalDate.now();
+                                LocalDate localDate = tvListPlazos.getItems().get(i).getDpFecha().getValue();
+                                if (now.isAfter(localDate)) {
+                                    fechavl++;
+                                }
+
+                                if (i > 0) {
+                                    LocalDate localDateBefore = tvListPlazos.getItems().get(i - 1).getDpFecha().getValue();
+                                    LocalDate localDateAfter = tvListPlazos.getItems().get(i).getDpFecha().getValue();
+
+                                    if (localDateBefore.isAfter(localDateAfter)) {
+                                        distint++;
+                                    }
+                                }
+                            }
+
+                            if (!Tools.isNumeric(tvListPlazos.getItems().get(i).getTfMonto().getText())) {
+                                monto++;
+                            }
+
+                            if (Tools.isNumeric(tvListPlazos.getItems().get(i).getTfMonto().getText()) && Double.parseDouble(tvListPlazos.getItems().get(i).getTfMonto().getText()) <= 0) {
+                                monto++;
+                            }
+
+                            if (Tools.isNumeric(tvListPlazos.getItems().get(i).getTfMonto().getText())) {
+                                totalvl += Double.parseDouble(tvListPlazos.getItems().get(i).getTfMonto().getText());
+                            }
+
+                            if (tvListPlazos.getItems().get(i).getCbMontoInicial().isSelected()) {
+                                if (tvListPlazos.getItems().get(i).getCbForma().getSelectionModel().getSelectedIndex() < 0) {
+                                    pagoval++;
+                                }
+                            }
+
+                        }
+
+                        if (fecha > 0) {
+                            Tools.AlertMessageWarning(window, "Venta", "Los valores ingresados en la fila fecha de pago no son validos.");
+                            return;
+                        }
+
+                        if (monto > 0) {
+                            Tools.AlertMessageWarning(window, "Venta", "Los valores ingresados en la fila monto no son númericos o son menores o igual a 0.");
+                            return;
+                        }
+
+                        if (distint > 0) {
+                            Tools.AlertMessageWarning(window, "Venta", "Las fechas de pago ingresas son desconcordantes.");
+                            return;
+                        }
+
+                        if (totalvl < total_venta) {
+                            Tools.AlertMessageWarning(window, "Venta", "El monto total de plazos es menor al monto total de la venta.");
+                            return;
+                        }
+
+                        if (fechavl > 0) {
+                            Tools.AlertMessageWarning(window, "Venta", "Una de las fechas o todas son menores qure la actual.");
+                            return;
+                        }
+
+                        if (pagoval > 0) {
+                            Tools.AlertMessageWarning(window, "Venta", "Hay plazos adelantados que necesitan tener la forma de pago.");
+                            return;
+                        }
+
+                        ventaTB.setFechaVencimiento(Tools.getDatePicker(tvListPlazos.getItems().get(tvListPlazos.getItems().size() - 1).getDpFecha()));
+                        ventaTB.setHoraVencimiento(Tools.getTime());
+                        ventaTB.setVentaCreditoTBs(new ArrayList<>(tvListPlazos.getItems()));
+                        ventaTB.setTipoCredito(1);
+                    }
 
                     short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Está seguro de continuar?");
                     if (confirmation == 1) {
@@ -376,6 +566,7 @@ public class FxVentaProcesoController implements Initializable {
                     ventaTB.setTarjeta(0);
                     ventaTB.setDeposito(0);
                     ventaTB.setNumeroOperacion("");
+                    ventaTB.setTipoCredito(0);
 
                     if (cbDepositoAdelantado.isSelected()) {
                         if (!Tools.isNumeric(txtDepositoAdelantado.getText())) {
@@ -449,7 +640,6 @@ public class FxVentaProcesoController implements Initializable {
 
                 }
                 break;
-
         }
     }
 
@@ -642,6 +832,29 @@ public class FxVentaProcesoController implements Initializable {
             vbDepositoViewAdelantado.setVisible(true);
             txtNumOperacionAdelantado.requestFocus();
         }
+    }
+
+    @FXML
+    private void onActionCredito(ActionEvent event) {
+        if (rbCreditoVariable.isSelected()) {
+            hbCVariable.setDisable(false);
+            vbCFijo.setDisable(true);
+        } else {
+            hbCVariable.setDisable(true);
+            vbCFijo.setDisable(false);
+        }
+    }
+
+    @FXML
+    private void onKeyPressedPlazos(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            addPlazos();
+        }
+    }
+
+    @FXML
+    private void onActionPlazos(ActionEvent event) {
+        addPlazos();
     }
 
     public void setInitVentaEstructuraController(FxVentaEstructuraController ventaEstructuraController) {

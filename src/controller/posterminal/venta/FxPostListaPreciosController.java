@@ -67,8 +67,8 @@ public class FxPostListaPreciosController implements Initializable {
             double valor = tvList.getSelectionModel().getSelectedItem().getValor();
             double factor = tvList.getSelectionModel().getSelectedItem().getFactor();
 
-            double precio = factor <= 0 ? valor : valor / factor;
-            double cantidad = factor <= 0 ? suministroTB.getCantidad() : factor;
+            double precio = factor == 1 ? valor : factor <= 0 ? valor : valor / factor;
+            double cantidad = factor == 1 ? suministroTB.getCantidad() : factor <= 0 ? suministroTB.getCantidad() : factor;
 
             suministroTB.setCantidad(cantidad);
             suministroTB.setPrecioVentaGeneral(precio);
