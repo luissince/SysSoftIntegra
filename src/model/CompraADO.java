@@ -198,9 +198,11 @@ public class CompraADO extends DBUtil {
                     detalle_compra.setString(10, dc.getDescripcion());
                     detalle_compra.addBatch();
 
-                    suministro_costo.setDouble(1, dc.getPrecioCompra());
-                    suministro_costo.setString(2, dc.getIdSuministro());
-                    suministro_costo.addBatch();
+                    if (compraTB.isActualizarAlmacen()) {
+                        suministro_costo.setDouble(1, dc.getPrecioCompra());
+                        suministro_costo.setString(2, dc.getIdSuministro());
+                        suministro_costo.addBatch();
+                    }
                     //---------------------------------------------------------------------                    
                     if (compraTB.getIdAlmacen() == 0) {
                         suministro_cantidad.setDouble(1, dc.getCantidad());
@@ -478,9 +480,11 @@ public class CompraADO extends DBUtil {
                     detalle_compra.setString(10, dc.getDescripcion());
                     detalle_compra.addBatch();
 
-                    suministro_costo.setDouble(1, dc.getPrecioCompra());
-                    suministro_costo.setString(2, dc.getIdSuministro());
-                    suministro_costo.addBatch();
+                    if (compraTB.isActualizarAlmacen()) {
+                        suministro_costo.setDouble(1, dc.getPrecioCompra());
+                        suministro_costo.setString(2, dc.getIdSuministro());
+                        suministro_costo.addBatch();
+                    }
 //---------------------------------------------------------------------                    
                     if (compraTB.getIdAlmacen() == 0) {
                         suministro_cantidad.setDouble(1, dc.getCantidad());

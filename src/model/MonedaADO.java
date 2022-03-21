@@ -298,37 +298,38 @@ public class MonedaADO {
         }
     }
 
-    public static List<MonedaTB> GetMonedasComboBox() {
-        List<MonedaTB> list = new ArrayList<>();
-        DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statement = null;
-            ResultSet resultSet = null;
+    public static ArrayList<MonedaTB> GetMonedasComboBox() {
+        ArrayList<MonedaTB> list = new ArrayList<>();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            DBUtil.dbConnect();
+
+            statement = DBUtil.getConnection().prepareStatement("SELECT IdMoneda,Nombre,Simbolo,Abreviado,Predeterminado,TipoCambio FROM MonedaTB");
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setIdMoneda(resultSet.getInt("IdMoneda"));
+                monedaTB.setNombre(resultSet.getString("Nombre"));
+                monedaTB.setSimbolo(resultSet.getString("Simbolo"));
+                monedaTB.setAbreviado(resultSet.getString("Abreviado"));
+                monedaTB.setPredeterminado(resultSet.getBoolean("Predeterminado"));
+                monedaTB.setTipoCambio(resultSet.getDouble("TipoCambio"));
+                list.add(monedaTB);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error Moneda: " + ex.getLocalizedMessage());
+        } finally {
             try {
-                statement = DBUtil.getConnection().prepareStatement("SELECT IdMoneda,Nombre,Simbolo,Predeterminado FROM MonedaTB");
-                resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    MonedaTB monedaTB = new MonedaTB();
-                    monedaTB.setIdMoneda(resultSet.getInt("IdMoneda"));
-                    monedaTB.setNombre(resultSet.getString("Nombre"));
-                    monedaTB.setSimbolo(resultSet.getString("Simbolo"));
-                    monedaTB.setPredeterminado(resultSet.getBoolean("Predeterminado"));
-                    list.add(monedaTB);
+                if (statement != null) {
+                    statement.close();
                 }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
                 System.out.println("Error Moneda: " + ex.getLocalizedMessage());
-            } finally {
-                try {
-                    if (statement != null) {
-                        statement.close();
-                    }
-                    if (resultSet != null) {
-                        resultSet.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    System.out.println("Error Moneda: " + ex.getLocalizedMessage());
-                }
             }
         }
         return list;

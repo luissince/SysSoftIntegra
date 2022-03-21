@@ -15,6 +15,10 @@ public class OrdenCompraTB {
     
     private String idEmpleado;
     
+    private int idMoneda;
+    
+    private double tipoCambio;
+    
     private String fechaRegistro;
     
     private String horaRegistro;
@@ -28,6 +32,10 @@ public class OrdenCompraTB {
     private ProveedorTB proveedorTB;
     
     private EmpleadoTB empleadoTB;
+    
+    private MonedaTB monedaTB;
+    
+    private ArrayList<MonedaTB> monedaTBs;
     
     private ArrayList<OrdenCompraDetalleTB> ordenCompraDetalleTBs;
     
@@ -75,6 +83,22 @@ public class OrdenCompraTB {
 
     public void setIdEmpleado(String idEmpleado) {
         this.idEmpleado = idEmpleado;
+    }
+
+    public int getIdMoneda() {
+        return idMoneda;
+    }
+
+    public void setIdMoneda(int idMoneda) {
+        this.idMoneda = idMoneda;
+    }
+
+    public double getTipoCambio() {
+        return tipoCambio;
+    }
+
+    public void setTipoCambio(double tipoCambio) {
+        this.tipoCambio = tipoCambio;
     }
 
     public String getFechaRegistro() {
@@ -125,6 +149,14 @@ public class OrdenCompraTB {
         this.proveedorTB = proveedorTB;
     }
 
+    public ArrayList<MonedaTB> getMonedaTBs() {
+        return monedaTBs;
+    }
+
+    public void setMonedaTBs(ArrayList<MonedaTB> monedaTBs) {
+        this.monedaTBs = monedaTBs;
+    }
+
     public ArrayList<OrdenCompraDetalleTB> getOrdenCompraDetalleTBs() {
         return ordenCompraDetalleTBs;
     }
@@ -139,6 +171,14 @@ public class OrdenCompraTB {
 
     public void setEmpleadoTB(EmpleadoTB empleadoTB) {
         this.empleadoTB = empleadoTB;
+    }
+
+    public MonedaTB getMonedaTB() {
+        return monedaTB;
+    }
+
+    public void setMonedaTB(MonedaTB monedaTB) {
+        this.monedaTB = monedaTB;
     }
 
     public double getTotal() {

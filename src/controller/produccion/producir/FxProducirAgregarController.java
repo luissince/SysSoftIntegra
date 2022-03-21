@@ -403,6 +403,7 @@ public class FxProducirAgregarController implements Initializable {
                     });
                 }
             }));
+            
             t.consume();
         });
 

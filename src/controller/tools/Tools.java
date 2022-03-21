@@ -461,6 +461,14 @@ public class Tools {
         }
         return label;
     }
+    
+    public static String colorFxDefault(){
+        return "-fx-text-fill:#020203;";
+    }
+    
+    public static String colorFxError(){
+        return "-fx-text-fill:#a70820;";
+    }
 
     public static double newSizeImagePorcent(double width, double porcent) {
         return width - (width * (porcent / 100));

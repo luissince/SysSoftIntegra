@@ -26,6 +26,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import model.MonedaADO;
+import model.MonedaTB;
 import model.OrdenCompraADO;
 import model.OrdenCompraDetalleTB;
 import model.OrdenCompraTB;
@@ -72,6 +74,10 @@ public class FxOrdenCompraDetalleController implements Initializable {
     private Label lblMessageLoad;
     @FXML
     private Button btnAceptarLoad;
+    @FXML
+    private Label lblCambioMonedaTexto;
+    @FXML
+    private Label lblCambioMonedaMonto;
 
     private FxOrdenCompraRealizadasController ordenCompraRealizadasController;
 
@@ -99,8 +105,15 @@ public class FxOrdenCompraDetalleController implements Initializable {
 
         Task<Object> task = new Task<Object>() {
             @Override
-            protected Object call() {
-                return OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
+            protected Object call() {      
+                Object result = OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
+                if(result instanceof OrdenCompraTB){
+                    OrdenCompraTB ordenCompraTB = (OrdenCompraTB) result;
+                    ordenCompraTB.setMonedaTBs(MonedaADO.GetMonedasComboBox());
+                    return ordenCompraTB;
+                }else{
+                    return result;
+                }
             }
         };
         task.setOnScheduled(e -> {
@@ -130,7 +143,7 @@ public class FxOrdenCompraDetalleController implements Initializable {
                 lblObservaciones.setText(ordenCompraTB.getObservacion());
                 lblVendedor.setText(ordenCompraTB.getEmpleadoTB().getApellidos() + ", " + ordenCompraTB.getEmpleadoTB().getNombres());
 
-                fillDetalleTable(ordenCompraTB.getOrdenCompraDetalleTBs());
+                fillDetalleTable(ordenCompraTB);
 
                 spBody.setDisable(false);
                 hbLoad.setVisible(false);
@@ -147,18 +160,19 @@ public class FxOrdenCompraDetalleController implements Initializable {
         }
     }
 
-    private void fillDetalleTable(ArrayList<OrdenCompraDetalleTB> empList) {
+    private void fillDetalleTable(OrdenCompraTB ordenCompraTB) {
+        ArrayList<OrdenCompraDetalleTB> empList = ordenCompraTB.getOrdenCompraDetalleTBs();
         for (int i = 0; i < empList.size(); i++) {
             gpList.add(addElementGridPane("l1" + (i + 1), empList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
             gpList.add(addElementGridPane("l2" + (i + 1), empList.get(i).getSuministroTB().getClave() + "\n" + empList.get(i).getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
             gpList.add(addElementGridPane("l3" + (i + 1), Tools.roundingValue(empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
             gpList.add(addElementGridPane("l4" + (i + 1), empList.get(i).getSuministroTB().getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
             gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(empList.get(i).getImpuestoTB().getValor(), 2) + "%", Pos.CENTER_RIGHT), 4, (i + 1));
-            gpList.add(addElementGridPane("l6" + (i + 1), Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(empList.get(i).getCosto(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
+            gpList.add(addElementGridPane("l6" + (i + 1), ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(empList.get(i).getCosto(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
             gpList.add(addElementGridPane("l7" + (i + 1), Tools.roundingValue(empList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPane("l8" + (i + 1), Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(empList.get(i).getCosto() * empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpList.add(addElementGridPane("l8" + (i + 1), ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(empList.get(i).getCosto() * empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
         }
-        calculateTotales(empList);
+        calculateTotales(ordenCompraTB);
     }
 
     private Label addElementGridPane(String id, String nombre, Pos pos) {
@@ -175,14 +189,14 @@ public class FxOrdenCompraDetalleController implements Initializable {
         return label;
     }
 
-    public void calculateTotales(ArrayList<OrdenCompraDetalleTB> empList) {
+    public void calculateTotales(OrdenCompraTB ordenCompraTB) {
         double importeBrutoTotal = 0;
         double descuentoTotal = 0;
         double subImporteNetoTotal = 0;
         double impuestoTotal = 0;
         double importeNetoTotal = 0;
 
-        for (OrdenCompraDetalleTB ocdtb : empList) {
+        for (OrdenCompraDetalleTB ocdtb : ordenCompraTB.getOrdenCompraDetalleTBs()) {
             double importeBruto = ocdtb.getCosto() * ocdtb.getCantidad();
             double descuento = ocdtb.getDescuento();
             double subImporteBruto = importeBruto - descuento;
@@ -197,11 +211,28 @@ public class FxOrdenCompraDetalleController implements Initializable {
             importeNetoTotal += importeNeto;
         }
 
-        lblImporteBruto.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(importeBrutoTotal, 2));
-        lblDescuento.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(descuentoTotal, 2));
-        lblSubImporteNeto.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(subImporteNetoTotal, 2));
-        lblImpuesto.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(impuestoTotal, 2));
-        lblImporteNeto.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(importeNetoTotal, 2));
+        lblImporteBruto.setText(ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBrutoTotal, 2));
+        lblDescuento.setText(ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(descuentoTotal, 2));
+        lblSubImporteNeto.setText(ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+        lblImpuesto.setText(ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
+        lblImporteNeto.setText(ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNetoTotal, 2));
+
+        
+//         if (cbMoneda.getSelectionModel().getSelectedIndex() >= 0) {
+//            double cambio = cbMoneda.getSelectionModel().getSelectedItem().getTipoCambio();
+//            if (cbMoneda.getSelectionModel().getSelectedItem().isPredeterminado()) {
+//                lblCambioMonedaTexto.setText("");
+//                lblCambioMonedaMonto.setText("");
+//            } else {
+//                for (int i = 0; i < cbMoneda.getItems().size(); i++) {
+//                    if (cbMoneda.getItems().get(i).isPredeterminado()) {
+//                        lblCambioMonedaTexto.setText("Importe Neto " + cbMoneda.getItems().get(i).getAbreviado() + ":");
+//                        lblCambioMonedaMonto.setText(cbMoneda.getItems().get(i).getSimbolo() + " " + Tools.roundingValue(cambio * importeNetoTotal, 2));
+//                        break;
+//                    }
+//                }
+//            }
+//        }
     }
 
     private void onEventClose() {

@@ -11,6 +11,9 @@ import java.awt.print.Book;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -56,6 +59,8 @@ public class TicketOrdenCompra {
     private final AnchorPane hbPie;
 
     private String fileName = "";
+
+    private final String filePath = "./report/OrdendeCompra.jasper";
 
     public TicketOrdenCompra(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
@@ -253,7 +258,7 @@ public class TicketOrdenCompra {
         for (int i = 0; i < hbPie.getChildren().size(); i++) {
             HBox box = ((HBox) hbPie.getChildren().get(i));
             billPrintable.hbPie(box,
-                    Session.MONEDA_SIMBOLO,
+                    ordenCompraTB.getMonedaTB().getSimbolo(),
                     Tools.roundingValue(totalBruto, 2),
                     Tools.roundingValue(totalDescuento, 2),
                     Tools.roundingValue(totalSubTotal, 2),
@@ -303,6 +308,11 @@ public class TicketOrdenCompra {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
+
+                File archivoc = new File(filePath);
+                if (!archivoc.exists()) {
+                    return "El documento no existe o la ruta no es accesible.";
+                }
                 try {
                     Object object = OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
                     if (object instanceof OrdenCompraTB) {
@@ -347,8 +357,8 @@ public class TicketOrdenCompra {
                         if (Session.COMPANY_IMAGE != null) {
                             imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
                         }
-
-                        InputStream dir = getClass().getResourceAsStream("/report/OrdendeCompra.jasper");
+                     
+                        InputStream dir = new FileInputStream(archivoc.getPath());
 
                         Map map = new HashMap();
                         map.put("LOGO", imgInputStream);
@@ -362,31 +372,30 @@ public class TicketOrdenCompra {
                         map.put("DOCUMENTOEMPRESA", Session.COMPANY_NUMERO_DOCUMENTO);
                         map.put("NOMBREDOCUMENTO", "ORDEN DE COMPRA");
                         map.put("NUMERODOCUMENTO", "N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion()));
-                        map.put("FECHA_REGISTRO", ordenCompraTB.getFechaRegistro());
-                        map.put("FECHA_VENCIMIENTO", ordenCompraTB.getFechaVencimiento());
+                        map.put("FECHAORDEN", ordenCompraTB.getFechaRegistro());
+                        map.put("FECHAENTREGA", ordenCompraTB.getFechaVencimiento());
 
-                        map.put("NUMERODOCUMENTO_PROVEEDOR", ordenCompraTB.getProveedorTB().getNumeroDocumento());
-                        map.put("INFORMACION_PROVEEDOR", ordenCompraTB.getProveedorTB().getRazonSocial());
-                        map.put("EMAIL_PROVEEDOR", ordenCompraTB.getProveedorTB().getEmail());
-                        map.put("CELULAR_PROVEEDOR", ordenCompraTB.getProveedorTB().getCelular());
-                        map.put("DIRECCION_PROVEEDOR", ordenCompraTB.getProveedorTB().getDireccion());
+                        map.put("PROVEEDORDOCUMENTO", ordenCompraTB.getProveedorTB().getNumeroDocumento());
+                        map.put("PROVEEDORINFORMACION", ordenCompraTB.getProveedorTB().getRazonSocial());
+                        map.put("PROVEEDOREMAIL", ordenCompraTB.getProveedorTB().getEmail());
+                        map.put("PROVEEDORCELULAR", ordenCompraTB.getProveedorTB().getCelular());
+                        map.put("PROVEEDORDIRECCION", ordenCompraTB.getProveedorTB().getDireccion());
 
-                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, Session.MONEDA_NOMBRE));
+                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, ordenCompraTB.getMonedaTB().getNombre()));
                         map.put("OBSERVACION", ordenCompraTB.getObservacion());
 
-                        map.put("IMPORTE_BRUTO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(importeBrutoTotal, 2));
-                        map.put("DESCUENTO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(descuentoTotal, 2));
-                        map.put("SUB_IMPORTE", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(subImporteNetoTotal, 2));
-                        map.put("IMPUESTO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(impuestoTotal, 2));
-                        map.put("IMPORTE_NETO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(importeNetoTotal, 2));
+                        map.put("IMPORTEBRUTO", ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBrutoTotal, 2));
+                        map.put("DESCUENTOTOTAL", ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(descuentoTotal, 2));
+                        map.put("SUBIMPORTE", ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+                        map.put("IMPUESTO", ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
+                        map.put("IMPORTENETO", ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNetoTotal, 2));
 
                         fileName = "ORDEN DE COMRA N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion());
-
                         return JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
                     } else {
                         return (String) object;
                     }
-                } catch (JRException | UnsupportedEncodingException ex) {
+                } catch (JRException | UnsupportedEncodingException | FileNotFoundException ex) {
                     return ex.getLocalizedMessage();
                 }
             }
@@ -399,6 +408,8 @@ public class TicketOrdenCompra {
                     Pos.BOTTOM_RIGHT);
         });
         task.setOnFailed(w -> {
+            Tools.println(task.getMessage());
+            Tools.println(task.getException().getLocalizedMessage());
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Generando reporte",
                     Tools.newLineString("Se produjo un problema al generar."),

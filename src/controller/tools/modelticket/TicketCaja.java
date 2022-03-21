@@ -373,21 +373,14 @@ public class TicketCaja {
                         map.put("DIFERENCIA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(cajaTB.getDiferencia(), 2));
                         map.put("CAJEROASISTENTE", cajaTB.getEmpleadoTB().getNombres() + " " + cajaTB.getEmpleadoTB().getApellidos());
 
-                        map.put("BASE", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(montoInicial, 2));
+                        map.put("INGRESOEFECTIVO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(montoInicial + ventaEfectivo + ingresoEfectivo, 2));
+                        map.put("SALIDAEFECTIVO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
 
-                        map.put("VENTASENEFECTIVO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaEfectivo, 2));
-                        map.put("VENTASCONTARJETA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaTarjeta, 2));
-                        map.put("VENTASCONDEPOSITO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaDeposito, 2));
+                        map.put("INGRESOTARJETA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaTarjeta + ingresoTarjeta, 2));
+                        map.put("SALIDATARJETA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaTarjeta, 2));
 
-                        map.put("INGRESODEEFECTIVO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoEfectivo, 2));
-                        map.put("INGRESOCONTARJETA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoTarjeta, 2));
-                        map.put("INGRESOCONDEPOSITO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoDeposito, 2));
-
-                        map.put("SALIDADEEFECTIVO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
-                        map.put("SALIDACONTARJETA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaTarjeta, 2));
+                        map.put("INGRESODEPOSITO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaDeposito + ingresoDeposito, 2));
                         map.put("SALIDADEPOSITO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
-
-                        map.put("TOTAL", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue((montoInicial + ventaEfectivo + ingresoEfectivo) - salidaEfectivo, 2));
 
                         JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(newList));
 

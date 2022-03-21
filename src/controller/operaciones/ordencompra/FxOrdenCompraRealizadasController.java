@@ -2,7 +2,6 @@ package controller.operaciones.ordencompra;
 
 import controller.menus.FxPrincipalController;
 import controller.tools.FilesRouters;
-import controller.tools.Session;
 import controller.tools.Tools;
 import java.io.IOException;
 import java.net.URL;
@@ -93,7 +92,7 @@ public class FxOrdenCompraRealizadasController implements Initializable {
                 cellData.getValue().getObservacion().toUpperCase()
         ));
         tcTotal.setCellValueFactory(cellData -> Bindings.concat(
-                Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)
+                cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)
         ));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));

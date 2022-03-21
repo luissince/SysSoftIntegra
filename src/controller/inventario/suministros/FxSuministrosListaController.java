@@ -629,7 +629,12 @@ public class FxSuministrosListaController implements Initializable {
             Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
-            stage.setOnShown(e -> controller.loadComponents(suministroTB));
+            stage.setOnHiding(w -> {
+                if (!controller.getCompletableFuture().isDone()) {
+                    controller.getCompletableFuture().cancel(true);
+                }
+            });
+            stage.setOnShown(e -> controller.loadComponent(suministroTB));
             stage.show();
         } catch (IOException ex) {
             System.out.println("Error en suministro orden de compra:" + ex.getLocalizedMessage());

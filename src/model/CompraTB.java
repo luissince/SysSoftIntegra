@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
@@ -26,6 +25,7 @@ public class CompraTB {
     private String notas;
     private String destino;
     private int idAlmacen;
+    private boolean actualizarAlmacen;
 
     private int tipo;
     private String tipoName;
@@ -207,6 +207,14 @@ public class CompraTB {
 
     public void setIdAlmacen(int idAlmacen) {
         this.idAlmacen = idAlmacen;
+    }
+
+    public boolean isActualizarAlmacen() {
+        return actualizarAlmacen;
+    }
+
+    public void setActualizarAlmacen(boolean actualizarAlmacen) {
+        this.actualizarAlmacen = actualizarAlmacen;
     }
 
     public ProveedorTB getProveedorTB() {

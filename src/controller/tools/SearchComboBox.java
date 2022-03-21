@@ -60,7 +60,8 @@ public class SearchComboBox<T> {
     }
 
     public void setCompletableFuture(CompletableFuture completableFuture) {
-        this.completableFuture = completableFuture;
+        this.completableFuture = completableFuture;       
     }
+    
 
 }

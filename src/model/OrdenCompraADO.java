@@ -49,6 +49,11 @@ public class OrdenCompraADO {
                 proveedorTB.setNumeroDocumento(resultSetOrdenCompra.getString("NumeroDocumento"));
                 proveedorTB.setRazonSocial(resultSetOrdenCompra.getString("RazonSocial"));
 
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setSimbolo(resultSetOrdenCompra.getString("Simbolo"));
+                monedaTB.setAbreviado(resultSetOrdenCompra.getString("Abreviado"));
+                ordenCompraTB.setMonedaTB(monedaTB);
+
                 ordenCompraTB.setTotal(resultSetOrdenCompra.getDouble("Total"));
 
                 ordenCompraTB.setProveedorTB(proveedorTB);
@@ -123,6 +128,13 @@ public class OrdenCompraADO {
                 empleadoTB.setApellidos(resultSet.getString("Apellidos"));
                 empleadoTB.setNombres(resultSet.getString("Nombres"));
                 ordenCompraTB.setEmpleadoTB(empleadoTB);
+
+                MonedaTB monedaTB = new MonedaTB();
+                monedaTB.setIdMoneda(resultSet.getInt("IdMoneda"));
+                monedaTB.setNombre(resultSet.getString("Nombre"));
+                monedaTB.setSimbolo(resultSet.getString("Simbolo"));
+                monedaTB.setAbreviado(resultSet.getString("Abreviado"));
+                ordenCompraTB.setMonedaTB(monedaTB);
 
                 ArrayList<OrdenCompraDetalleTB> compraDetalleTBs = new ArrayList();
 
@@ -286,21 +298,25 @@ public class OrdenCompraADO {
 
                 statementOrdenCompra = DBUtil.getConnection().prepareStatement("UPDATE OrdenCompraTB "
                         + "SET IdProveedor = ?,"
-                        + "IdEmpledo = ?, "
-                        + "FechaRegistro=?, "
-                        + "HoraRegistro=?, "
-                        + "FechaVencimiento=?, "
-                        + "HoraVencimiento=?, "
+                        + "IdEmpledo = ?,"
+                        + "IdMoneda = ?,"
+                        + "TipoCambio = ?,"
+                        + "FechaRegistro = ?,"
+                        + "HoraRegistro = ?,"
+                        + "FechaVencimiento = ?,"
+                        + "HoraVencimiento = ?,"
                         + "Observacion=? "
                         + "WHERE IdOrdenCompra = ?");
                 statementOrdenCompra.setString(1, ordenCompraTB.getIdProveedor());
                 statementOrdenCompra.setString(2, ordenCompraTB.getIdEmpleado());
-                statementOrdenCompra.setString(3, ordenCompraTB.getFechaRegistro());
-                statementOrdenCompra.setString(4, ordenCompraTB.getHoraVencimiento());
-                statementOrdenCompra.setString(5, ordenCompraTB.getFechaVencimiento());
+                statementOrdenCompra.setInt(3, ordenCompraTB.getIdMoneda());
+                statementOrdenCompra.setDouble(4, ordenCompraTB.getTipoCambio());
+                statementOrdenCompra.setString(5, ordenCompraTB.getFechaRegistro());
                 statementOrdenCompra.setString(6, ordenCompraTB.getHoraVencimiento());
-                statementOrdenCompra.setString(7, ordenCompraTB.getObservacion());
-                statementOrdenCompra.setString(8, ordenCompraTB.getIdOrdenCompra());
+                statementOrdenCompra.setString(7, ordenCompraTB.getFechaVencimiento());
+                statementOrdenCompra.setString(8, ordenCompraTB.getHoraVencimiento());
+                statementOrdenCompra.setString(9, ordenCompraTB.getObservacion());
+                statementOrdenCompra.setString(10, ordenCompraTB.getIdOrdenCompra());
                 statementOrdenCompra.addBatch();
                 statementOrdenCompra.executeBatch();
 
@@ -353,21 +369,25 @@ public class OrdenCompraADO {
                         + "Numeracion,"
                         + "IdProveedor,"
                         + "IdEmpledo,"
+                        + "IdMoneda,"
+                        + "TipoCambio,"
                         + "FechaRegistro,"
                         + "HoraRegistro,"
                         + "FechaVencimiento,"
                         + "HoraVencimiento,"
                         + "Observacion"
-                        + ")VALUES(?,?,?,?,?,?,?,?,?)");
+                        + ")VALUES(?,?,?,?,?,?,?,?,?,?)");
                 statementOrdenCompra.setString(1, idOrdenCompra);
                 statementOrdenCompra.setInt(2, numeracion);
                 statementOrdenCompra.setString(3, ordenCompraTB.getIdProveedor());
                 statementOrdenCompra.setString(4, ordenCompraTB.getIdEmpleado());
-                statementOrdenCompra.setString(5, ordenCompraTB.getFechaRegistro());
-                statementOrdenCompra.setString(6, ordenCompraTB.getHoraRegistro());
-                statementOrdenCompra.setString(7, ordenCompraTB.getFechaVencimiento());
-                statementOrdenCompra.setString(8, ordenCompraTB.getHoraVencimiento());
-                statementOrdenCompra.setString(9, ordenCompraTB.getObservacion());
+                statementOrdenCompra.setInt(5, ordenCompraTB.getIdMoneda());
+                statementOrdenCompra.setDouble(6, ordenCompraTB.getTipoCambio());
+                statementOrdenCompra.setString(7, ordenCompraTB.getFechaRegistro());
+                statementOrdenCompra.setString(8, ordenCompraTB.getHoraRegistro());
+                statementOrdenCompra.setString(9, ordenCompraTB.getFechaVencimiento());
+                statementOrdenCompra.setString(10, ordenCompraTB.getHoraVencimiento());
+                statementOrdenCompra.setString(11, ordenCompraTB.getObservacion());
                 statementOrdenCompra.addBatch();
                 statementOrdenCompra.executeBatch();
 

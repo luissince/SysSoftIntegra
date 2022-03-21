@@ -1440,6 +1440,9 @@ public class VentaADO {
         PreparedStatement cliente = null;
         PreparedStatement comprobante = null;
         PreparedStatement detalle_venta = null;
+        PreparedStatement venta_credito_codigo = null;
+        PreparedStatement venta_credito = null;
+        PreparedStatement movimiento_caja = null;
         PreparedStatement suministro_update = null;
         PreparedStatement suministro_kardex = null;
         PreparedStatement cotizacion = null;
@@ -1610,7 +1613,7 @@ public class VentaADO {
                 venta.setString(18, Integer.toString(dig5) + id_comprabante[1]);
                 venta.setDouble(19, ventaTB.getDeposito());
                 venta.setInt(20, ventaTB.getTipoCredito());
-                venta.setString(21, ventaTB.getNumeroOperacion());;
+                venta.setString(21, ventaTB.getNumeroOperacion());
                 venta.addBatch();
 
                 comprobante.setInt(1, ventaTB.getIdComprobante());
@@ -1623,6 +1626,70 @@ public class VentaADO {
                     cotizacion.setString(1, id_venta);
                     cotizacion.setString(2, ventaTB.getIdCotizacion());
                     cotizacion.addBatch();
+                }
+
+                venta_credito = DBUtil.getConnection().prepareStatement("INSERT INTO VentaCreditoTB(IdVenta,IdVentaCredito,Monto,FechaPago,HoraPago,Estado,IdUsuario,Observacion)VALUES(?,?,?,?,?,?,?,?)");
+                movimiento_caja = DBUtil.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB(IdCaja,FechaMovimiento,HoraMovimiento,Comentario,TipoMovimiento,Monto,IdProcedencia)VALUES(?,?,?,?,?,?,?)");
+
+                if (ventaTB.getVentaCreditoTBs() != null) {
+                    venta_credito_codigo = DBUtil.getConnection().prepareStatement("SELECT IdVentaCredito FROM VentaCreditoTB ");
+                    ResultSet resultSet = venta_credito_codigo.executeQuery();
+                    ArrayList<Integer> listCodigos = new ArrayList();
+                    while (resultSet.next()) {
+                        listCodigos.add(Integer.parseInt(resultSet.getString("IdVentaCredito").replace("VC", "")));
+                    }
+
+                    int valorActual = 0;
+                    if (!listCodigos.isEmpty()) {
+                        valorActual = Collections.max(listCodigos);
+                        valorActual++;
+                    }
+
+                    for (VentaCreditoTB creditoTB : ventaTB.getVentaCreditoTBs()) {
+                        String idCodigoCredito;
+                        if (valorActual > 0) {
+                            int incremental = valorActual;
+                            String codigoGenerado;
+                            if (incremental <= 9) {
+                                codigoGenerado = "VC000" + incremental;
+                            } else if (incremental >= 10 && incremental <= 99) {
+                                codigoGenerado = "VC00" + incremental;
+                            } else if (incremental >= 100 && incremental <= 999) {
+                                codigoGenerado = "VC0" + incremental;
+                            } else {
+                                codigoGenerado = "VC" + incremental;
+                            }
+                            valorActual++;
+                            idCodigoCredito = codigoGenerado;
+                        } else {
+                            valorActual = 2;
+                            idCodigoCredito = "VC0001";
+                        }
+
+                        venta_credito.setString(1, id_venta);
+                        venta_credito.setString(2, idCodigoCredito);
+                        venta_credito.setDouble(3, Double.parseDouble(creditoTB.getTfMonto().getText()));
+                        venta_credito.setString(4, Tools.getDatePicker(creditoTB.getDpFecha()));
+                        venta_credito.setString(5, creditoTB.getHoraPago());
+                        venta_credito.setShort(6, creditoTB.getCbMontoInicial().isSelected() ? (short) 1 : (short) 0);
+                        venta_credito.setString(7, ventaTB.getVendedor());
+                        venta_credito.setString(8, creditoTB.getCbMontoInicial().isSelected() ? "PAGO ADELANTADO DE LA VENTA AL CRÉDITO" : "");
+                        venta_credito.addBatch();
+
+                        if (creditoTB.getCbMontoInicial().isSelected()) {
+                            movimiento_caja.setString(1, Session.CAJA_ID);
+                            movimiento_caja.setString(2, ventaTB.getFechaVenta());
+                            movimiento_caja.setString(3, ventaTB.getHoraVenta());
+                            movimiento_caja.setString(4, "PAGO ADELANTADO DE LA VENTA AL CRÉDITO DEL COMPROBANTE " + id_comprabante[0] + "-" + id_comprabante[1]);
+                            movimiento_caja.setInt(5,
+                                    creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 0 ? 2
+                                    : creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 1 ? 3
+                                    : 6);
+                            movimiento_caja.setDouble(6, Double.parseDouble(creditoTB.getTfMonto().getText()));
+                            movimiento_caja.setString(7, idCodigoCredito);
+                            movimiento_caja.addBatch();
+                        }
+                    }
                 }
 
                 for (SuministroTB sm : ventaTB.getSuministroTBs()) {
@@ -1689,6 +1756,8 @@ public class VentaADO {
                 suministro_update.executeBatch();
                 suministro_kardex.executeBatch();
                 cotizacion.executeBatch();
+                venta_credito.executeBatch();
+                movimiento_caja.executeBatch();
 
                 DBUtil.getConnection().commit();
                 resultTransaction.setCode("register");
@@ -1714,6 +1783,15 @@ public class VentaADO {
                 if (venta != null) {
                     venta.close();
                 }
+                if (venta_credito_codigo != null) {
+                    venta_credito_codigo.close();
+                }
+                if (venta_credito != null) {
+                    venta_credito.close();
+                }
+                if (movimiento_caja != null) {
+                    movimiento_caja.close();
+                }
                 if (cotizacion != null) {
                     cotizacion.close();
                 }
@@ -1723,18 +1801,15 @@ public class VentaADO {
                 if (clienteVerificar != null) {
                     clienteVerificar.close();
                 }
-
                 if (cliente != null) {
                     cliente.close();
                 }
                 if (comprobante != null) {
                     comprobante.close();
                 }
-
                 if (detalle_venta != null) {
                     detalle_venta.close();
                 }
-
                 if (suministro_update != null) {
                     suministro_update.close();
                 }

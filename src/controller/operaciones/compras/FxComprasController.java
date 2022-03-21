@@ -13,7 +13,6 @@ import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,6 +26,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -120,6 +120,8 @@ public class FxComprasController implements Initializable {
     private Label lblMessageLoad;
     @FXML
     private Button btnAceptarLoad;
+    @FXML
+    private CheckBox cbActualizarInventario;
 
     private FxPrincipalController fxPrincipalController;
 
@@ -224,8 +226,7 @@ public class FxComprasController implements Initializable {
         });
         searchComboBox.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             searchComboBox.getComboBox().getItems().clear();
-            List<ProveedorTB> proveedorTBs = ProveedorADO.getSearchComboBoxProveedores(searchComboBox.getSearchComboBoxSkin().getSearchBox().getText().trim());
-            proveedorTBs.forEach(p -> cbProveedor.getItems().add(p));
+            searchComboBox.getComboBox().getItems().addAll(ProveedorADO.getSearchComboBoxProveedores(searchComboBox.getSearchComboBoxSkin().getSearchBox().getText().trim()));
         });
         searchComboBox.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             switch (t.getCode()) {
@@ -320,6 +321,7 @@ public class FxComprasController implements Initializable {
         Tools.actualDate(Tools.getDate(), tpFechaCompra);
         tvList.getItems().clear();
         loteTBs.clear();
+        cbActualizarInventario.setSelected(false);
 
         searchComboBoxAlmacen.getComboBox().getItems().clear();
         searchComboBoxAlmacen.getComboBox().getItems().addAll(AlmacenADO.GetSearchComboBoxAlmacen());
@@ -379,6 +381,7 @@ public class FxComprasController implements Initializable {
             compraTB.setNotas(txtNotas.getText().trim().isEmpty() ? "" : txtNotas.getText().trim());
             compraTB.setUsuario(Session.USER_ID);
             compraTB.setIdAlmacen(cbAlmacen.getSelectionModel().getSelectedItem().getIdAlmacen());
+            compraTB.setActualizarAlmacen(cbActualizarInventario.isSelected());
 
             fxPrincipalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_COMPRAS_PROCESO);

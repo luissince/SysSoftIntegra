@@ -2,7 +2,10 @@ package controller.operaciones.ordencompra;
 
 import controller.tools.Tools;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,12 +26,16 @@ import model.DetalleCompraTB;
 import model.ImpuestoADO;
 import model.ImpuestoTB;
 import model.OrdenCompraDetalleTB;
+import model.OrdenCompraTB;
+import model.SuministroADO;
 import model.SuministroTB;
 
 public class FxOrdenCompraProductoController implements Initializable {
 
     @FXML
     private AnchorPane apWindow;
+    @FXML
+    private Label lblTitle;
     @FXML
     private Label lblProducto;
     @FXML
@@ -58,6 +65,10 @@ public class FxOrdenCompraProductoController implements Initializable {
 
     private SuministroTB suministroTB;
 
+    private OrdenCompraDetalleTB ordenCompraDetalleTB;
+
+    private CompletableFuture<Object> completableFuture;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
@@ -67,12 +78,13 @@ public class FxOrdenCompraProductoController implements Initializable {
         tcCantidad.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
         tcFechaCompra.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFechaRegistro() + "\n" + cellData.getValue().getHoraRegistro()));
         tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservacion()));
+        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         cbImpuestoCompra.getItems().clear();
         cbImpuestoCompra.getItems().addAll(ImpuestoADO.GetTipoImpuestoCombBox());
     }
 
-    public void loadComponents(SuministroTB suministroTB) {
+    public void loadComponent(SuministroTB suministroTB) {
         this.suministroTB = suministroTB;
         lblProducto.setText(suministroTB.getNombreMarca());
         txtCosto.setText(Tools.roundingValue(suministroTB.getCostoCompra(), 2));
@@ -83,11 +95,52 @@ public class FxOrdenCompraProductoController implements Initializable {
             }
         }
 
-        Object object = CompraADO.Listar_Detalle_Compra_ByIdSuministro(suministroTB.getIdSuministro());
-        if (object instanceof ObservableList) {
-            ObservableList<DetalleCompraTB> detalleCompraTBs = (ObservableList) object;
-            tvList.setItems(detalleCompraTBs);
+        loadTableCompras(suministroTB.getIdSuministro());
+    }
+
+    public void loadEditComponent(OrdenCompraDetalleTB ordenCompraDetalleTB) {
+        lblTitle.setText("Editar Producto");
+        this.ordenCompraDetalleTB = ordenCompraDetalleTB;
+        SuministroTB inter = ordenCompraDetalleTB.getSuministroTB();
+        lblProducto.setText(inter.getNombreMarca());
+        txtCantidad.setText(Tools.roundingValue(ordenCompraDetalleTB.getCantidad(), 2));
+        txtCosto.setText(Tools.roundingValue(ordenCompraDetalleTB.getCosto(), 2));
+        txObservacion.setText(ordenCompraDetalleTB.getObservacion());
+        for (ImpuestoTB impuestoTB : cbImpuestoCompra.getItems()) {
+            if (impuestoTB.getIdImpuesto() == ordenCompraDetalleTB.getIdImpuesto()) {
+                cbImpuestoCompra.getSelectionModel().select(impuestoTB);
+                break;
+            }
         }
+
+        loadTableCompras(ordenCompraDetalleTB.getIdSuministro());
+    }
+
+    private void loadTableCompras(String idSuministro) {
+        tvList.getItems().clear();
+        tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", Tools.colorFxDefault(), true));
+        completableFuture = CompletableFuture.supplyAsync(() -> {
+            return CompraADO.Listar_Detalle_Compra_ByIdSuministro(idSuministro);
+        });
+        completableFuture.exceptionally(ex -> {
+            return "Error interno, comuníquese con su proveedor.";
+        }).thenAcceptAsync(complete -> {
+            Platform.runLater(() -> {
+                tvList.getItems().clear();
+                if (complete instanceof ObservableList) {
+                    ObservableList<DetalleCompraTB> detalleCompraTBs = (ObservableList) complete;
+                    if (!detalleCompraTBs.isEmpty()) {
+                        tvList.setItems(detalleCompraTBs);
+                    } else {
+                        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", Tools.colorFxDefault(), false));
+                    }
+                } else {
+                    tvList.setPlaceholder(Tools.placeHolderTableView((String) complete, Tools.colorFxError(), false));
+                }
+            });
+        });
+
+//        completableFuture.cancel(true);
     }
 
     private void addOrdenCompra() {
@@ -101,28 +154,40 @@ public class FxOrdenCompraProductoController implements Initializable {
             Tools.AlertMessageWarning(apWindow, "Orden de Compra", "Seleccione el impuesto.");
             cbImpuestoCompra.requestFocus();
         } else {
-            OrdenCompraDetalleTB compraDetalleTB = new OrdenCompraDetalleTB();
-            compraDetalleTB.setIdSuministro(suministroTB.getIdSuministro());
-            compraDetalleTB.setCantidad(Double.parseDouble(txtCantidad.getText().trim()));
-            compraDetalleTB.setCosto(Double.parseDouble(txtCosto.getText().trim()));
-            compraDetalleTB.setDescuento(0);
-            compraDetalleTB.setIdImpuesto(cbImpuestoCompra.getSelectionModel().getSelectedItem().getIdImpuesto());
-            compraDetalleTB.setObservacion(txObservacion.getText().trim().toUpperCase());
+            if (suministroTB != null) {
+                OrdenCompraDetalleTB compraDetalleTB = new OrdenCompraDetalleTB();
+                compraDetalleTB.setIdSuministro(suministroTB.getIdSuministro());
+                compraDetalleTB.setCantidad(Double.parseDouble(txtCantidad.getText().trim()));
+                compraDetalleTB.setCosto(Double.parseDouble(txtCosto.getText().trim()));
+                compraDetalleTB.setDescuento(0);
+                compraDetalleTB.setIdImpuesto(cbImpuestoCompra.getSelectionModel().getSelectedItem().getIdImpuesto());
+                compraDetalleTB.setObservacion(txObservacion.getText().trim().toUpperCase());
 
-            compraDetalleTB.setImpuestoTB(cbImpuestoCompra.getSelectionModel().getSelectedItem());
+                compraDetalleTB.setImpuestoTB(cbImpuestoCompra.getSelectionModel().getSelectedItem());
 
-            SuministroTB newsSuministroTB = new SuministroTB();
-            newsSuministroTB.setClave(suministroTB.getClave());
-            newsSuministroTB.setNombreMarca(suministroTB.getNombreMarca());
-            newsSuministroTB.setUnidadCompraName(suministroTB.getUnidadCompraName());
-            compraDetalleTB.setSuministroTB(newsSuministroTB);
+                SuministroTB newsSuministroTB = new SuministroTB();
+                newsSuministroTB.setClave(suministroTB.getClave());
+                newsSuministroTB.setNombreMarca(suministroTB.getNombreMarca());
+                newsSuministroTB.setUnidadCompraName(suministroTB.getUnidadCompraName());
+                compraDetalleTB.setSuministroTB(newsSuministroTB);
 
-            Button btnRemove = new Button("X");
-            btnRemove.getStyleClass().add("buttonDark");
-            compraDetalleTB.setBtnRemove(btnRemove);
+                Button btnRemove = new Button("X");
+                btnRemove.getStyleClass().add("buttonDark");
+                compraDetalleTB.setBtnRemove(btnRemove);
 
-            ordenCompraController.getAddDetalle(compraDetalleTB);
-            Tools.Dispose(apWindow);
+                ordenCompraController.getAddDetalle(compraDetalleTB);
+                Tools.Dispose(apWindow);
+            } else {
+                ordenCompraDetalleTB.setCantidad(Double.parseDouble(txtCantidad.getText().trim()));
+                ordenCompraDetalleTB.setCosto(Double.parseDouble(txtCosto.getText().trim()));
+                ordenCompraDetalleTB.setDescuento(0);
+                ordenCompraDetalleTB.setIdImpuesto(cbImpuestoCompra.getSelectionModel().getSelectedItem().getIdImpuesto());
+                ordenCompraDetalleTB.setObservacion(txObservacion.getText().trim().toUpperCase());
+
+                ordenCompraDetalleTB.setImpuestoTB(cbImpuestoCompra.getSelectionModel().getSelectedItem());
+                ordenCompraController.calculateTotales();
+                Tools.Dispose(apWindow);
+            }
         }
     }
 
@@ -188,6 +253,10 @@ public class FxOrdenCompraProductoController implements Initializable {
     @FXML
     private void onActionCancel(ActionEvent event) {
         Tools.Dispose(apWindow);
+    }
+
+    public CompletableFuture<Object> getCompletableFuture() {
+        return completableFuture;
     }
 
     public void setInitOrdenCompraController(FxOrdenCompraController ordenCompraController) {
