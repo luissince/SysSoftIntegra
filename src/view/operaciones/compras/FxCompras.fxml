@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.compras.FxComprasController">
+<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.compras.FxComprasController">
    <children>
       <HBox fx:id="hbBody" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -150,7 +150,7 @@
                                                 </ImageView>
                                              </graphic>
                                           </Label>
-                                          <CheckBox fx:id="cbActualizarInventario" mnemonicParsing="false" prefHeight="30.0" selected="true" styleClass="check-box-contenido" text="Actualizar costo de Inventario" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <CheckBox fx:id="cbActualizarInventario" mnemonicParsing="false" prefHeight="30.0" selected="true" styleClass="check-box-contenido" text="Actualizar costo de Inventa" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                        </children>
                                     </GridPane>
                                     <GridPane hgap="10.0" vgap="10.0" HBox.hgrow="ALWAYS">
