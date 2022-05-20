@@ -105,6 +105,12 @@ public class FxVentaEstructuraNuevoController implements Initializable {
     private HBox hbLoadCliente;
     @FXML
     private Button btnCancelarProceso;
+    @FXML
+    private Button btnMovimientoCaja;
+    @FXML
+    private Button btnVentas;
+    @FXML
+    private Button btnPrintTiket;
 
     private FxPrincipalController fxPrincipalController;
 
@@ -112,9 +118,13 @@ public class FxVentaEstructuraNuevoController implements Initializable {
 
     private ObservableList<SuministroTB> listSuministros;
 
-    private AutoCompletionBinding<String> autoCompletionBinding;
+    private AutoCompletionBinding<String> autoCompletionBindingDocumento;
+    
+    private AutoCompletionBinding<ClienteTB> autoCompletionBindingInfo;
 
-    private final Set<String> posiblesWord = new HashSet<>();
+    private final Set<String> posiblesWordDocumento = new HashSet<>();
+    
+    private final Set<ClienteTB> posiblesWordInfo = new HashSet<>();
 
     private String monedaSimbolo;
 
@@ -139,6 +149,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
     private double impuestoNetoTotal;
 
     private double importeNetoTotal;
+    
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -153,10 +165,18 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         monedaSimbolo = "M";
         idCliente = "";
         loadDataComponent();
-        autoCompletionBinding = TextFields.bindAutoCompletion(txtNumeroDocumento, posiblesWord);
-        autoCompletionBinding.setOnAutoCompleted(e -> {
+        autoCompletionBindingDocumento = TextFields.bindAutoCompletion(txtNumeroDocumento, posiblesWordDocumento);
+        autoCompletionBindingDocumento.setOnAutoCompleted(e -> {
             if (!Tools.isText(txtNumeroDocumento.getText())) {
                 onExecuteCliente((short) 2, txtNumeroDocumento.getText().trim());
+                txtSearch.requestFocus();
+            }
+        });
+        
+        autoCompletionBindingInfo = TextFields.bindAutoCompletion(txtDatosCliente, posiblesWordInfo);
+        autoCompletionBindingInfo.setOnAutoCompleted(e -> {
+            if (!Tools.isText(e.getCompletion().getNumeroDocumento())) {
+                onExecuteCliente((short) 2, e.getCompletion().getNumeroDocumento());
                 txtSearch.requestFocus();
             }
         });
@@ -203,7 +223,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         txtCorreoElectronico.setText(Session.CLIENTE_EMAIL);
         txtDireccionCliente.setText(Session.CLIENTE_DIRECCION);
 
-        ObjectGlobal.DATA_CLIENTS.forEach(c -> posiblesWord.add(c));
+        ObjectGlobal.DATA_CLIENTS.forEach(c -> posiblesWordDocumento.add(c));
+        ObjectGlobal.DATA_INFO_CLIENTS.forEach(c -> posiblesWordInfo.add(c));
 
         if (!cbTipoDocumento.getItems().isEmpty()) {
             for (DetalleTB detalleTB : cbTipoDocumento.getItems()) {
@@ -215,7 +236,19 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         }
     }
 
-    public void loadPrivilegios(ObservableList<PrivilegioTB> privilegioTBs) {
+    public void loadPrivilegios(ObservableList<PrivilegioTB> privilegioTBs) {        
+        if (privilegioTBs.get(9).getIdPrivilegio() != 0 && !privilegioTBs.get(9).isEstado()) {
+            btnMovimientoCaja.setDisable(true);
+        }
+        
+        if (privilegioTBs.get(10).getIdPrivilegio() != 0 && !privilegioTBs.get(10).isEstado()) {
+            btnPrintTiket.setDisable(true);
+        }
+        
+        if (privilegioTBs.get(15).getIdPrivilegio() != 0 && !privilegioTBs.get(15).isEstado()) {
+            btnVentas.setDisable(true);
+        }
+        
         vender_con_cantidades_negativas = privilegioTBs.get(34).getIdPrivilegio() != 0 && !privilegioTBs.get(34).isEstado();
     }
 
@@ -682,6 +715,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         };
 
         task.setOnScheduled(e -> {
+            txtNumeroDocumento.setText("");
             txtDatosCliente.setText("");
             txtCelularCliente.setText("");
             txtCorreoElectronico.setText("");
@@ -732,6 +766,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
                         Pos.TOP_RIGHT);
 
                 idCliente = clienteTB.getIdCliente();
+                txtNumeroDocumento.setText(clienteTB.getNumeroDocumento());
                 txtDatosCliente.setText(clienteTB.getInformacion());
                 txtCelularCliente.setText(clienteTB.getCelular());
                 txtCorreoElectronico.setText(clienteTB.getEmail());
@@ -1126,6 +1161,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             Tools.println("Venta estructura openWindowMostrarVentas: " + ex.getLocalizedMessage());
         }
     }
+    
 
     @FXML
     private void onKeyReleasedWindow(KeyEvent event) {
@@ -1166,12 +1202,12 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         }
     }
 
-    private void learnWord(String text) {
-        posiblesWord.add(text);
-        if (autoCompletionBinding != null) {
-            autoCompletionBinding.dispose();
+    private void learnWordDocumento(String text) {
+        posiblesWordDocumento.add(text);
+        if (autoCompletionBindingDocumento != null) {
+            autoCompletionBindingDocumento.dispose();
         }
-        autoCompletionBinding = TextFields.bindAutoCompletion(txtNumeroDocumento, posiblesWord);
+        autoCompletionBindingDocumento = TextFields.bindAutoCompletion(txtNumeroDocumento, posiblesWordDocumento);
     }
 
     @FXML
@@ -1345,14 +1381,14 @@ public class FxVentaEstructuraNuevoController implements Initializable {
     private void onKeyPressedCliente(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             onExecuteCliente((short) 2, txtNumeroDocumento.getText().trim());
-            learnWord(txtNumeroDocumento.getText().trim());
+            learnWordDocumento(txtNumeroDocumento.getText().trim());
         }
     }
 
     @FXML
     private void onActionCliente(ActionEvent event) {
         onExecuteCliente((short) 2, txtNumeroDocumento.getText().trim());
-        learnWord(txtNumeroDocumento.getText().trim());
+        learnWordDocumento(txtNumeroDocumento.getText().trim());
     }
 
     @FXML
@@ -1427,28 +1463,28 @@ public class FxVentaEstructuraNuevoController implements Initializable {
     private void onKeyPressedSunat(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             executeApiSunat();
-            learnWord(txtNumeroDocumento.getText().trim());
+            learnWordDocumento(txtNumeroDocumento.getText().trim());
         }
     }
 
     @FXML
     private void onActionSunat(ActionEvent event) {
         executeApiSunat();
-        learnWord(txtNumeroDocumento.getText().trim());
+        learnWordDocumento(txtNumeroDocumento.getText().trim());
     }
 
     @FXML
     private void onKeyPressedReniec(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             executeApiReniec();
-            learnWord(txtNumeroDocumento.getText().trim());
+            learnWordDocumento(txtNumeroDocumento.getText().trim());
         }
     }
 
     @FXML
     private void onActionReniec(ActionEvent event) {
         executeApiReniec();
-        learnWord(txtNumeroDocumento.getText().trim());
+        learnWordDocumento(txtNumeroDocumento.getText().trim());
     }
 
     public TextField getTxtSearch() {

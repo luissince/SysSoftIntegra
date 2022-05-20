@@ -4,10 +4,13 @@ import controller.reporte.FxReportViewController;
 import controller.reporte.FxVentaReporteController;
 import controller.tools.BillPrintable;
 import controller.tools.FilesRouters;
+import controller.tools.Session;
 import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.awt.HeadlessException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +69,20 @@ public class TicketTraslado {
                 if (object instanceof TrasladoTB) {
                     TrasladoTB trasladoTB = (TrasladoTB) object;
 
+                    InputStream logo = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+                    if (Session.COMPANY_IMAGE != null) {
+                        logo = new ByteArrayInputStream(Session.COMPANY_IMAGE);
+                    }
+
                     Map map = new HashMap();
+                    map.put("LOGO", logo);
+                    map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
+                    map.put("RUC", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
+                    map.put("DIRECCION", Session.COMPANY_DOMICILIO);
+                    map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL));
+                    map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
+                    map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
+
                     map.put("FECHA_ENVIO", trasladoTB.getFecha());
                     map.put("FECHA_SALIDA", trasladoTB.getFechaTraslado());
                     map.put("LUGAR_PARTIDA", trasladoTB.getPuntoPartida());
@@ -109,7 +125,7 @@ public class TicketTraslado {
                 } else {
                     Tools.showAlertNotification(
                             "/view/image/warning_large.png",
-                            "Generar Vista",
+                            "Reporte",
                             Tools.newLineString((String) object),
                             Duration.seconds(10),
                             Pos.BOTTOM_RIGHT);
@@ -117,7 +133,7 @@ public class TicketTraslado {
             } catch (HeadlessException | IOException ex) {
                 Tools.showAlertNotification(
                         "/view/image/warning_large.png",
-                        "Generar Vista",
+                        "Reporte",
                         Tools.newLineString("Error al generar el reporte : " + ex.getLocalizedMessage()),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
@@ -127,7 +143,7 @@ public class TicketTraslado {
         task.setOnFailed(w -> {
             Tools.showAlertNotification(
                     "/view/image/warning_large.png",
-                    "Generar Vista",
+                    "Reporte",
                     Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
@@ -136,8 +152,8 @@ public class TicketTraslado {
         task.setOnScheduled(w -> {
             Tools.showAlertNotification(
                     "/view/image/pdf.png",
-                    "Generar Vista",
-                    Tools.newLineString("Se está generando el modal de ventas."),
+                    "Reporte",
+                    Tools.newLineString("Se está generando el reporte de traslado."),
                     Duration.seconds(5),
                     Pos.BOTTOM_RIGHT);
         });

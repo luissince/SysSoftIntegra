@@ -10,6 +10,8 @@ import controller.tools.modelticket.TicketCotizacion;
 import controller.tools.modelticket.TicketCuentasPorCobrar;
 import controller.tools.modelticket.TicketCuentasPorPagar;
 import controller.tools.modelticket.TicketGuiaRemision;
+import controller.tools.modelticket.TicketInventario;
+import controller.tools.modelticket.TicketMovimiento;
 import controller.tools.modelticket.TicketNotaCredito;
 import controller.tools.modelticket.TicketOrdenCompra;
 import controller.tools.modelticket.TicketPreVenta;
@@ -69,6 +71,10 @@ public class FxOpcionesImprimirController implements Initializable {
     private TicketOrdenCompra ticketOrdenCompra;
 
     private TicketNotaCredito ticketNotaCredito;
+
+    private TicketInventario ticketInventario;
+
+    private TicketMovimiento ticketMovimiento;
 
     private String idVenta;
 
@@ -180,6 +186,14 @@ public class FxOpcionesImprimirController implements Initializable {
         ticketNotaCredito = new TicketNotaCredito(node, billPrintable, hbEncabezado, hbDetalleCabecera, hbPie, monedaCadena);
     }
 
+    public void loadTicjetInventario(Node node) {
+        ticketInventario = new TicketInventario(node, billPrintable, hbEncabezado, hbDetalleCabecera, hbPie, monedaCadena);
+    }
+
+    public void loadTicketMovimiento(Node node) {
+        ticketMovimiento = new TicketMovimiento(node, billPrintable, hbEncabezado, hbDetalleCabecera, hbPie, monedaCadena);
+    }
+
     private void onEventAceptar() {
         if (ticketCotizacion != null) {
             Tools.Dispose(apWindow);
@@ -200,6 +214,10 @@ public class FxOpcionesImprimirController implements Initializable {
         } else if (ticketCompra != null) {
             Tools.Dispose(apWindow);
         } else if (ticketOrdenCompra != null) {
+            Tools.Dispose(apWindow);
+        } else if (ticketInventario != null) {
+            Tools.Dispose(apWindow);
+        } else if (ticketMovimiento != null) {
             Tools.Dispose(apWindow);
         }
     }

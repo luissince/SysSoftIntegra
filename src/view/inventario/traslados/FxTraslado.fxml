@@ -127,13 +127,13 @@
                               <TableView fx:id="tvList" fixedCellSize="-0.0" prefHeight="327.0" styleClass="table-view-principal" VBox.vgrow="ALWAYS">
                                  <columns>
                                     <TableColumn fx:id="tcNumero" prefWidth="50.0" style="-fx-alignment: CENTER;" text="N°" />
-                                    <TableColumn fx:id="tcFecha" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Fecha y Hora" />
+                                    <TableColumn fx:id="tcFecha" prefWidth="140.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha" />
                                     <TableColumn fx:id="tcGuia" prefWidth="130.0" style="-fx-alignment: CENTER-LEFT;" text="Guía" />
                                     <TableColumn fx:id="tcTipo" prefWidth="130.0" style="-fx-alignment: CENTER-LEFT;" text="Tipo" />
                                     <TableColumn fx:id="tcEstado" prefWidth="130.0" style="-fx-alignment: CENTER-LEFT;" text="Estado" />
                                     <TableColumn fx:id="tcUsuario" prefWidth="148.0" style="-fx-alignment: CENTER-LEFT;" text="Usuario" />
-                                    <TableColumn fx:id="tcObservacion" prefWidth="220.0" style="-fx-alignment: CENTER-LEFT;" text="Observación" />
-                                    <TableColumn fx:id="tcOpcion" prefWidth="130.0" style="-fx-alignment: CENTER;" text="Detalle" />
+                                    <TableColumn fx:id="tcDetalle" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Detalle" />
+                                    <TableColumn fx:id="tcReporte" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Reporte" />
                                  </columns>
                               </TableView>
                            </children>

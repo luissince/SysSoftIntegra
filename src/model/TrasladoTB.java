@@ -28,6 +28,7 @@ public class TrasladoTB {
     private VentaTB ventaTB;
     private EmpleadoTB empleadoTB;
     private Button btnDetalle;
+    private Button btnReporte;
     private ArrayList<TrasladoHistorialTB> historialTBs;
 
     public TrasladoTB() {
@@ -215,6 +216,14 @@ public class TrasladoTB {
 
     public void setBtnDetalle(Button btnDetalle) {
         this.btnDetalle = btnDetalle;
+    }
+
+    public Button getBtnReporte() {
+        return btnReporte;
+    }
+
+    public void setBtnReporte(Button btnReporte) {
+        this.btnReporte = btnReporte;
     }
 
     public ArrayList<TrasladoHistorialTB> getHistorialTBs() {

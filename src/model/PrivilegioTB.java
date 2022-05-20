@@ -42,4 +42,11 @@ public class PrivilegioTB {
         this.estado = estado;
     }
 
+    @Override
+    public String toString() {
+        return "PrivilegioTB{" + "idPrivilegio=" + idPrivilegio + ", idSubmenu=" + idSubmenu + ", nombre=" + nombre + ", estado=" + estado + '}';
+    }
+    
+    
+
 }

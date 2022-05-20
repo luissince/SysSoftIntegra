@@ -389,6 +389,8 @@ public class SplashScreen extends Preloader {
                             }
 
                             ClienteADO.ListarClienteNumeroDocumento().forEach(c -> ObjectGlobal.DATA_CLIENTS.add(c));
+                            ClienteADO.ListarClienteInformacion().forEach( inf -> ObjectGlobal.DATA_INFO_CLIENTS.add(inf));
+                            
                         }
                     } else {
                         Session.CONNECTION_SESSION = false;

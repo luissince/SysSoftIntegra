@@ -1,6 +1,5 @@
 package controller.inventario.traslados;
 
-import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.tools.Tools;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -10,13 +9,11 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import model.TrasladoADO;
@@ -31,8 +28,6 @@ public class FxTrasladoDetalleController implements Initializable {
     private Label lblLoad;
     @FXML
     private Label lblFechaRegistro;
-    @FXML
-    private Label lblFechaTraslado;
     @FXML
     private Label lblPuntoPartida;
     @FXML
@@ -58,28 +53,18 @@ public class FxTrasladoDetalleController implements Initializable {
     @FXML
     private Label lblEstadoTraslado;
 
-    private FxOpcionesImprimirController fxOpcionesImprimirController;
-
-    private String idTraslado;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
-        fxOpcionesImprimirController = new FxOpcionesImprimirController();
-        fxOpcionesImprimirController.loadComponents();
-        fxOpcionesImprimirController.loadTicketTraslado(apWindow);
+        Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);       
 
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
         tcProducto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getSuministroTB().getClave() + "\n" + cellData.getValue().getSuministroTB().getNombreMarca()));
         tcCantidad.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
         tcPeso.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getPeso(), 2)));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
-
-        idTraslado = "";
     }
 
     public void loadTraslado(String idTraslado) {
-        this.idTraslado = idTraslado;
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -96,7 +81,6 @@ public class FxTrasladoDetalleController implements Initializable {
             if (object instanceof TrasladoTB) {
                 TrasladoTB trasladoTB = (TrasladoTB) object;
                 lblFechaRegistro.setText(trasladoTB.getFecha() + " " + trasladoTB.getHora());
-                lblFechaTraslado.setText(trasladoTB.getFechaTraslado() + " " + trasladoTB.getHoraTraslado());
                 lblPuntoPartida.setText(trasladoTB.getPuntoPartida());
                 lblPuntoLlegada.setText(trasladoTB.getPuntoLlegada());
                 lblTipoTraslado.setText(trasladoTB.getTipo() == 1 ? "INTERNO" : "EXTERNO");
@@ -110,36 +94,20 @@ public class FxTrasladoDetalleController implements Initializable {
             } else {
                 tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
             }
+            lblLoad.setVisible(false);
         });
         task.setOnFailed(w -> {
             tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
+            lblLoad.setVisible(false);
         });
         task.setOnScheduled(w -> {
             tvList.getItems().clear();
             tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            lblLoad.setVisible(true);
         });
         exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();
         }
-    }
-
-    private void onEventReporte() {
-        if (!"".equals(idTraslado)) {
-            fxOpcionesImprimirController.getTicketTraslado().mostrarReporte(idTraslado);
-        }
-    }
-
-    @FXML
-    private void onKeyPressedReporte(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            onEventReporte();
-            event.consume();
-        }
-    }
-
-    @FXML
-    private void onActionReporte(ActionEvent event) {
-        onEventReporte();
     }
 }

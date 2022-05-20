@@ -1,5 +1,6 @@
 package controller.inventario.traslados;
 
+import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.inventario.movimientos.FxMovimientosController;
 import controller.menus.FxPrincipalController;
 import controller.tools.FilesRouters;
@@ -49,8 +50,6 @@ public class FxTrasladoController implements Initializable {
     @FXML
     private TableColumn<TrasladoTB, String> tcFecha;
     @FXML
-    private TableColumn<TrasladoTB, String> tcObservacion;
-    @FXML
     private TableColumn<TrasladoTB, String> tcGuia;
     @FXML
     private TableColumn<TrasladoTB, String> tcTipo;
@@ -59,7 +58,9 @@ public class FxTrasladoController implements Initializable {
     @FXML
     private TableColumn<TrasladoTB, String> tcUsuario;
     @FXML
-    private TableColumn<TrasladoTB, Button> tcOpcion;
+    private TableColumn<TrasladoTB, Button> tcDetalle;
+    @FXML
+    private TableColumn<TrasladoTB, Button> tcReporte;
     @FXML
     private Label lblPaginaActual;
     @FXML
@@ -79,6 +80,8 @@ public class FxTrasladoController implements Initializable {
 
     private FxTrasladoGuiaController controllerTrasladoGuia;
 
+    private FxOpcionesImprimirController fxOpcionesImprimirController;
+
     private int paginacion;
 
     private int totalPaginacion;
@@ -90,6 +93,10 @@ public class FxTrasladoController implements Initializable {
         paginacion = 1;
         opcion = 0;
 
+        fxOpcionesImprimirController = new FxOpcionesImprimirController();
+        fxOpcionesImprimirController.loadComponents();
+        fxOpcionesImprimirController.loadTicketTraslado(vbWindow);
+
         Tools.actualDate(Tools.getDate(), dtFechaInicio);
         Tools.actualDate(Tools.getDate(), dtFechaFinal);
 
@@ -98,21 +105,21 @@ public class FxTrasladoController implements Initializable {
                 cellData.getValue().getFecha() + "\n"
                 + cellData.getValue().getHora()
         ));
-        tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservacion()));
         tcGuia.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getVentaTB() != null ? "" + cellData.getValue().getNumeracion() + "\n" + cellData.getValue().getVentaTB().getSerie() + "-" + cellData.getValue().getVentaTB().getNumeracion() : "Guía-" + cellData.getValue().getNumeracion()));
         tcTipo.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getTipo() == 1 ? "INTERNO" : "EXTERNO"));
         tcEstado.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getEstado() == 1 ? "COMPLETADO" : "ANULADO"));
         tcUsuario.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getEmpleadoTB().getApellidos() + ", " + cellData.getValue().getEmpleadoTB().getNombres()));
-        tcOpcion.setCellValueFactory(new PropertyValueFactory<>("btnDetalle"));
+        tcDetalle.setCellValueFactory(new PropertyValueFactory<>("btnDetalle"));
+        tcReporte.setCellValueFactory(new PropertyValueFactory<>("btnReporte"));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
-        tcFecha.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
-        tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
-        tcGuia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tcTipo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tcUsuario.prefWidthProperty().bind(tvList.widthProperty().multiply(0.17));
-        tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.07));
+        tcFecha.prefWidthProperty().bind(tvList.widthProperty().multiply(0.16));
+        tcGuia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcTipo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcUsuario.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
+        tcDetalle.prefWidthProperty().bind(tvList.widthProperty().multiply(0.07));
+        tcReporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.07));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         loadInit();
@@ -162,6 +169,16 @@ public class FxTrasladoController implements Initializable {
                     e.getBtnDetalle().setOnKeyPressed(event -> {
                         if (event.getCode() == KeyCode.ENTER) {
                             openWindonDetalleTraslado(e.getIdTraslado());
+                            event.consume();
+                        }
+                    });
+
+                    e.getBtnReporte().setOnAction(event -> {
+                        fxOpcionesImprimirController.getTicketTraslado().mostrarReporte(e.getIdTraslado());
+                    });
+                    e.getBtnReporte().setOnKeyPressed(event -> {
+                        if (event.getCode() == KeyCode.ENTER) {
+                            fxOpcionesImprimirController.getTicketTraslado().mostrarReporte(e.getIdTraslado());
                             event.consume();
                         }
                     });

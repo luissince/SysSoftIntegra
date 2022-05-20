@@ -336,7 +336,7 @@ public class ClienteADO {
                 clienteTB.setDireccion(rsEmps.getString("Direccion"));
             }
         } catch (SQLException e) {
-            System.out.println("El clienteADO-> GetSearchClienteNumeroDocumento error: " + e);
+            Tools.println("Error en GetSearchClienteNumeroDocumento()");
         } finally {
             try {
                 if (preparedStatement != null) {
@@ -517,6 +517,36 @@ public class ClienteADO {
         }
         return result;
 
+    }
+    
+    public static ArrayList<ClienteTB> ListarClienteInformacion(){
+        PreparedStatement statementLista = null;
+        ArrayList<ClienteTB> arrayList = new ArrayList<>();
+        
+        try {
+            DBUtil.dbConnect();
+            statementLista = DBUtil.getConnection().prepareStatement("SELECT NumeroDocumento,Informacion FROM ClienteTB");
+            try (ResultSet resultSet = statementLista.executeQuery()) {
+                while (resultSet.next()) {
+                    ClienteTB clienteTB = new ClienteTB();
+                    clienteTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
+                    clienteTB.setInformacion(resultSet.getString("Informacion"));
+                    clienteTB.setTipoSelect(true);
+                    arrayList.add(clienteTB);
+                }
+            }
+        } catch (SQLException ex) {
+            Tools.println("Error en ClienteADO: " + ex.getLocalizedMessage());
+        } finally {
+            try {
+                if (statementLista != null) {
+                    statementLista.close();
+                }
+            } catch (SQLException ex) {
+
+            }
+        }
+        return arrayList;
     }
 
     public static ArrayList<String> ListarClienteNumeroDocumento() {

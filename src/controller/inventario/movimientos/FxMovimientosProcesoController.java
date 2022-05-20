@@ -6,13 +6,9 @@ import controller.tools.FilesRouters;
 import controller.tools.SearchComboBox;
 import controller.tools.Tools;
 import controller.tools.WindowStage;
-import java.awt.HeadlessException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,9 +37,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javax.swing.ImageIcon;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import model.AjusteInventarioADO;
 import model.AjusteInventarioTB;
 import model.AlmacenADO;
@@ -52,13 +45,6 @@ import model.SuministroADO;
 import model.SuministroTB;
 import model.TipoMovimientoADO;
 import model.TipoMovimientoTB;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.view.JasperViewer;
 
 public class FxMovimientosProcesoController implements Initializable {
 
@@ -436,41 +422,6 @@ public class FxMovimientosProcesoController implements Initializable {
         }
     }
 
-    private void executeGenerarReporte() {
-        try {
-            if (cbAjuste.getSelectionModel().getSelectedIndex() < 0) {
-                Tools.AlertMessageWarning(apWindow, "Ajuste de Inventario - Movimiento", "Seleccione el tipo de movimiento.");
-                cbAjuste.requestFocus();
-            } else {
-                if (tvList.getItems().isEmpty()) {
-                    Tools.AlertMessageWarning(apWindow, "Ajuste de Inventario - Movimiento", "No hay registros para mostrar en el reporte.");
-                    return;
-                }
-
-                InputStream dir = getClass().getResourceAsStream("/report/MovimientoProductos.jasper");
-
-                JasperReport jasperReport = (JasperReport) JRLoader.loadObject(dir);
-                Map map = new HashMap();
-                map.put("TIPO_AJUSTE", rbIncremento.isSelected() ? "INCREMENTO" : "DECREMETNO");
-                map.put("TIPO_MOVIMIENTO", cbAjuste.getSelectionModel().getSelectedItem().getNombre());
-
-                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, new JRBeanCollectionDataSource(tvList.getItems()));
-
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-                JasperViewer jasperViewer = new JasperViewer(jasperPrint, false);
-                jasperViewer.setIconImage(new ImageIcon(getClass().getResource(FilesRouters.IMAGE_ICON)).getImage());
-                jasperViewer.setTitle("Ajuste de Inventario - Movimiento");
-                jasperViewer.setSize(840, 650);
-                jasperViewer.setLocationRelativeTo(null);
-                jasperViewer.setVisible(true);
-                jasperViewer.requestFocus();
-            }
-        } catch (HeadlessException | JRException | ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            Tools.AlertMessageError(apWindow, "Movimiento", "Error al generar el reporte : " + ex);
-        }
-    }
-
     private void closeWindow() {
         fxPrincipalController.getVbContent().getChildren().remove(apWindow);
         fxPrincipalController.getVbContent().getChildren().clear();
@@ -555,18 +506,6 @@ public class FxMovimientosProcesoController implements Initializable {
     @FXML
     private void onActionSuministro(ActionEvent event) {
         openWindowSuministros();
-    }
-
-    @FXML
-    private void onKeyPressedGenerarReport(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            executeGenerarReporte();
-        }
-    }
-
-    @FXML
-    private void onActionGenerarReporte(ActionEvent event) {
-        executeGenerarReporte();
     }
 
     @FXML

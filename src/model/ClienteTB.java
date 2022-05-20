@@ -1,5 +1,6 @@
 package model;
 
+import controller.tools.Tools;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.ImageView;
 
@@ -22,6 +23,7 @@ public class ClienteTB {
     private boolean sistema;
     private ImageView imagePredeterminado;
     private String idAuxiliar;
+    private boolean tipoSelect;
 
     public ClienteTB() {
 
@@ -210,9 +212,21 @@ public class ClienteTB {
         this.idAuxiliar = idAuxiliar;
     }
 
+    public boolean isTipoSelect() {
+        return tipoSelect;
+    }
+
+    public void setTipoSelect(boolean tipoSelect) {
+        this.tipoSelect = tipoSelect;
+    }
+
     @Override
     public String toString() {
-        return numeroDocumento+" - "+informacion;
+        if (tipoSelect) {
+            return informacion;
+        } else {
+            return numeroDocumento + " - " + informacion;
+        }
     }
 
 }

@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="window" onKeyReleased="#onKeyReleasedWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.posterminal.venta.FxPostVentaEstructuraController">
+<VBox fx:id="window" onKeyReleased="#onKeyReleasedWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.posterminal.venta.FxPostVentaEstructuraController">
    <children>
       <AnchorPane VBox.vgrow="ALWAYS">
          <children>
@@ -89,7 +89,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionTicket" onKeyPressed="#onKeyPressedTicket" styleClass="buttonLight" text="Ticket(F9)">
+                        <Button fx:id="btnPrintTiket" contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionTicket" onKeyPressed="#onKeyPressedTicket" styleClass="buttonLight" text="Ticket(F9)">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

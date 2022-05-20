@@ -1,24 +1,36 @@
 package controller.tools.modelticket;
 
+import controller.reporte.FxReportViewController;
+import controller.reporte.FxVentaReporteController;
 import controller.tools.BillPrintable;
 import controller.tools.ConvertMonedaCadena;
+import controller.tools.FilesRouters;
 import controller.tools.Session;
 import controller.tools.Tools;
-import java.awt.print.Book;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
+import controller.tools.WindowStage;
+import java.awt.HeadlessException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.concurrent.Task;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
-import javax.print.DocPrintJob;
-import org.controlsfx.control.Notifications;
+import model.TrasladoADO;
+import model.TrasladoTB;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 public class TicketInventario {
 
@@ -34,201 +46,127 @@ public class TicketInventario {
 
     private final AnchorPane hbPie;
 
-    public TicketInventario(Node node, BillPrintable billPrintable, ConvertMonedaCadena monedaCadena, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie) {
+    public TicketInventario(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
         this.billPrintable = billPrintable;
-        this.monedaCadena = monedaCadena;
         this.hbEncabezado = hbEncabezado;
         this.hbDetalleCabecera = hbDetalleCabecera;
         this.hbPie = hbPie;
+        this.monedaCadena = monedaCadena;
     }
 
     public void imprimir() {
-//        if (!Session.ESTADO_IMPRESORA_VENTA && Session.NOMBRE_IMPRESORA_VENTA == null) {
-//            Tools.AlertMessageWarning(vbWindow, "Inventario general", "No hay ruta de impresión, no se ha configurado la ruta de impresión");
-//            return;
-//        }
-//
-//        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
-//            Thread t = new Thread(runnable);
-//            t.setDaemon(true);
-//            return t;
-//        });
-//        try {
-//            Task<String> task = new Task<String>() {
-//                @Override
-//                public String call() {
-//                    try {
-//                        billPrintable.loadEstructuraTicket(idTicket, rutaTicket, apEncabezado, apDetalleCabecera, apPie);
-//
-//                        for (int i = 0; i < apEncabezado.getChildren().size(); i++) {
-//                            HBox box = ((HBox) apEncabezado.getChildren().get(i));
-//                            billPrintable.hbEncebezado(box,
-//                                    "TICKET",
-//                                    "00000000",
-//                                    "SIN DOCUMENTO",
-//                                    "PUBLICO GENERAL",
-//                                    "SIN CELULAR",
-//                                    "SIN DIRECCION",
-//                                    "SIN CODIGO",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "0",
-//                                    "0",
-//                                    "0",
-//                                    "0",
-//                                    "0");
-//                        }
-//
-//                        AnchorPane hbDetalle = new AnchorPane();
-//                        for (int m = 0; m < tvList.getItems().size(); m++) {
-//                            for (int i = 0; i < apDetalleCabecera.getChildren().size(); i++) {
-//                                HBox hBox = new HBox();
-//                                hBox.setId("dc_" + m + "" + i);
-//                                HBox box = ((HBox) apDetalleCabecera.getChildren().get(i));
-//                                billPrintable.hbDetalle(hBox, box, tvList.getItems(), m);
-//                                hbDetalle.getChildren().add(hBox);
-//                            }
-//                        }
-//
-//                        for (int i = 0; i < apPie.getChildren().size(); i++) {
-//                            HBox box = ((HBox) apPie.getChildren().get(i));
-//                            billPrintable.hbPie(box, "",
-//                                    Tools.roundingValue(0, 2),
-//                                    "-" + Tools.roundingValue(0, 2),
-//                                    Tools.roundingValue(0, 2),
-//                                    Tools.roundingValue(0, 2),
-//                                    Tools.roundingValue(0, 2),
-//                                    Tools.roundingValue(0, 2),
-//                                    Tools.roundingValue(0, 2),
-//                                    Tools.roundingValue(0, 2),
-//                                    Tools.roundingValue(0, 2),
-//                                    "SIN DOCUMENTO",
-//                                    "PUBLICO GENERAL", "SIN CODIGO", "SIN CELULAR", "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "");
-//                        }
-//
-//                        billPrintable.generatePDFPrint(apEncabezado, hbDetalle, apPie);
-//
-//                        DocPrintJob job = billPrintable.findPrintService(Session.NOMBRE_IMPRESORA_VENTA, PrinterJob.lookupPrintServices()).createPrintJob();
-//
-//                        if (job != null) {
-//                            PrinterJob pj = PrinterJob.getPrinterJob();
-//                            pj.setPrintService(job.getPrintService());
-//                            pj.setJobName(Session.NOMBRE_IMPRESORA_VENTA);
-//                            Book book = new Book();
-//                            book.append(billPrintable, billPrintable.getPageFormat(pj));
-//                            pj.setPageable(book);
-//                            pj.print();
-//                            if (Session.CORTAPAPEL_IMPRESORA_VENTA) {
-////                                billPrintable.printCortarPapel(Session.NOMBRE_IMPRESORA);
-//                            }
-//                            return "completed";
-//                        } else {
-//                            return "error_name";
-//                        }
-//                    } catch (PrinterException/* | IOException | PrintException*/ ex) {
-//                        return "Error en imprimir: " + ex.getLocalizedMessage();
-//                    }
-//                }
-//            };
-//
-//            task.setOnSucceeded(w -> {
-//                String result = task.getValue();
-//                if (result.equalsIgnoreCase("completed")) {
-//                    Image image = new Image("/view/image/information_large.png");
-//                    Notifications notifications = Notifications.create()
-//                            .title("Envío de impresión")
-//                            .text("Se completo el proceso de impresión correctamente.")
-//                            .graphic(new ImageView(image))
-//                            .hideAfter(Duration.seconds(5))
-//                            .position(Pos.BOTTOM_RIGHT)
-//                            .onAction(n -> {
-//                                Tools.println(n);
-//                            });
-//                    notifications.darkStyle();
-//                    notifications.show();
-//                } else if (result.equalsIgnoreCase("error_name")) {
-//                    Image image = new Image("/view/image/warning_large.png");
-//                    Notifications notifications = Notifications.create()
-//                            .title("Envío de impresión")
-//                            .text("Error en encontrar el nombre de la impresión por problemas de puerto o driver.")
-//                            .graphic(new ImageView(image))
-//                            .hideAfter(Duration.seconds(10))
-//                            .position(Pos.CENTER)
-//                            .onAction(n -> {
-//                                Tools.println(n);
-//                            });
-//                    notifications.darkStyle();
-//                    notifications.show();
-//                } else {
-//                    Image image = new Image("/view/image/error_large.png");
-//                    Notifications notifications = Notifications.create()
-//                            .title("Envío de impresión")
-//                            .text("Error en la configuración de su impresora: " + result)
-//                            .graphic(new ImageView(image))
-//                            .hideAfter(Duration.seconds(10))
-//                            .position(Pos.CENTER)
-//                            .onAction(n -> {
-//                                Tools.println(n);
-//                            });
-//                    notifications.darkStyle();
-//                    notifications.show();
-//                }
-//            });
-//
-//            task.setOnFailed(w -> {
-//                Image image = new Image("/view/image/warning_large.png");
-//                Notifications notifications = Notifications.create()
-//                        .title("Envío de impresión")
-//                        .text("Se produjo un problema en el proceso de envío, \n intente nuevamente o comuníquese \ncon su proveedor del sistema.")
-//                        .graphic(new ImageView(image))
-//                        .hideAfter(Duration.seconds(10))
-//                        .position(Pos.BOTTOM_RIGHT)
-//                        .onAction(n -> {
-//                            Tools.println(n);
-//                        });
-//                notifications.darkStyle();
-//                notifications.show();
-//            });
-//
-//            task.setOnScheduled(w -> {
-//                Image image = new Image("/view/image/print.png");
-//                Notifications notifications = Notifications.create()
-//                        .title("Envío de impresión")
-//                        .text("Se envió la impresión a la cola, este\n proceso puede tomar unos segundos.")
-//                        .graphic(new ImageView(image))
-//                        .hideAfter(Duration.seconds(5))
-//                        .position(Pos.BOTTOM_RIGHT)
-//                        .onAction(n -> {
-//                            Tools.println(n);
-//                        });
-//                notifications.darkStyle();
-//                notifications.show();
-//            });
-//            exec.execute(task);
-//
-//        } finally {
-//            exec.shutdown();
-//        }
+
     }
+    
+    public void reporteInventarioGeneral(){
+         ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<Object> task = new Task<Object>() {
+            @Override
+            public Object call() throws JRException {
+                Object object = TrasladoADO.ObtenerTrasladoById("");
+                if (object instanceof TrasladoTB) {
+                    TrasladoTB trasladoTB = (TrasladoTB) object;
+
+                    InputStream logo = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
+                    if (Session.COMPANY_IMAGE != null) {
+                        logo = new ByteArrayInputStream(Session.COMPANY_IMAGE);
+                    }
+
+                    Map map = new HashMap();
+                    map.put("LOGO", logo);
+                    map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
+                    map.put("RUC", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
+                    map.put("DIRECCION", Session.COMPANY_DOMICILIO);
+                    map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL));
+                    map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
+                    map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
+
+                    map.put("FECHA_ENVIO", trasladoTB.getFecha());
+                    map.put("FECHA_SALIDA", trasladoTB.getFechaTraslado());
+                    map.put("LUGAR_PARTIDA", trasladoTB.getPuntoPartida());
+                    map.put("LUGAR_LLEGADA", trasladoTB.getPuntoLlegada());
+                    map.put("USUARIO", trasladoTB.getEmpleadoTB().getApellidos() + ", " + trasladoTB.getEmpleadoTB().getNombres());
+                    map.put("CANTIDAD_ITEMS", trasladoTB.getHistorialTBs().size() + "");
+                    map.put("TIPO", trasladoTB.getTipo() == 1 ? "INTERNO" : "EXTERNO");
+
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(FxVentaReporteController.class.getResourceAsStream("/report/TrasladoInventario.jasper"), map, new JRBeanCollectionDataSource(trasladoTB.getHistorialTBs()));
+                    return jasperPrint;
+                } else {
+                    return (String) object;
+                }
+            }
+        };
+
+        task.setOnSucceeded(w -> {
+            Object object = task.getValue();
+            try {
+                if (object instanceof JasperPrint) {
+                    Tools.showAlertNotification(
+                            "/view/image/information_large.png",
+                            "Generar Vista",
+                            Tools.newLineString("Se completo la creación del modal correctamente."),
+                            Duration.seconds(10),
+                            Pos.BOTTOM_RIGHT);
+
+                    URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
+                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                    Parent parent = fXMLLoader.load(url.openStream());
+                    //Controlller here
+                    FxReportViewController controller = fXMLLoader.getController();
+                    controller.setFileName("Reporte de Traslado");
+                    controller.setJasperPrint((JasperPrint) object);
+                    controller.show();
+                    Stage stage = WindowStage.StageLoader(parent, "Reporte de Traslado");
+                    stage.setResizable(true);
+                    stage.show();
+                    stage.requestFocus();
+                } else {
+                    Tools.showAlertNotification(
+                            "/view/image/warning_large.png",
+                            "Reporte",
+                            Tools.newLineString((String) object),
+                            Duration.seconds(10),
+                            Pos.BOTTOM_RIGHT);
+                }
+            } catch (HeadlessException | IOException ex) {
+                Tools.showAlertNotification(
+                        "/view/image/warning_large.png",
+                        "Reporte",
+                        Tools.newLineString("Error al generar el reporte : " + ex.getLocalizedMessage()),
+                        Duration.seconds(10),
+                        Pos.BOTTOM_RIGHT);
+            }
+        });
+
+        task.setOnFailed(w -> {
+            Tools.showAlertNotification(
+                    "/view/image/warning_large.png",
+                    "Reporte",
+                    Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Duration.seconds(10),
+                    Pos.BOTTOM_RIGHT);
+        });
+
+        task.setOnScheduled(w -> {
+            Tools.showAlertNotification(
+                    "/view/image/pdf.png",
+                    "Reporte",
+                    Tools.newLineString("Se está generando el reporte de traslado."),
+                    Duration.seconds(5),
+                    Pos.BOTTOM_RIGHT);
+        });
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+    
+
 
 }

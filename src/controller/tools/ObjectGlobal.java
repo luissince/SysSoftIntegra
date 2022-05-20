@@ -2,6 +2,7 @@ package controller.tools;
 
 import java.util.ArrayList;
 import javafx.scene.layout.AnchorPane;
+import model.ClienteTB;
 
 public class ObjectGlobal {
 
@@ -20,6 +21,7 @@ public class ObjectGlobal {
     public static String QR_PERU_DATA = "|0|0|0|0|0|0|0|0|";
 
     public static ArrayList<String> DATA_CLIENTS = new ArrayList<>();
+    public static ArrayList<ClienteTB> DATA_INFO_CLIENTS = new ArrayList<>();
 
     static {
         PANE_PRINCIPAL = new AnchorPane();

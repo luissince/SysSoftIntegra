@@ -346,12 +346,20 @@ public class TrasladoADO {
 
                 Button btnDetalle = new Button();
                 btnDetalle.getStyleClass().add("buttonLight");
-                ImageView view = new ImageView(new Image("/view/image/asignacion.png"));
-                view.setFitWidth(22);
-                view.setFitHeight(22);
-                btnDetalle.setGraphic(view);
-
+                ImageView ivDetalle = new ImageView(new Image("/view/image/asignacion.png"));
+                ivDetalle.setFitWidth(22);
+                ivDetalle.setFitHeight(22);
+                btnDetalle.setGraphic(ivDetalle);
                 trasladoTB.setBtnDetalle(btnDetalle);
+
+                Button btnReporte = new Button();
+                btnReporte.getStyleClass().add("buttonLight");
+                ImageView ivReporte = new ImageView(new Image("/view/image/reports.png"));
+                ivReporte.setFitWidth(22);
+                ivReporte.setFitHeight(22);
+                btnReporte.setGraphic(ivReporte);
+                trasladoTB.setBtnReporte(btnReporte);
+
                 empList.add(trasladoTB);
             }
 

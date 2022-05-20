@@ -157,12 +157,16 @@ public class FxPostVentaEstructuraController implements Initializable {
     private Label lblMessageLoad;
     @FXML
     private Button btnAceptarLoad;
+    @FXML
+    private Button btnPrintTiket;
 
     private FxPrincipalController fxPrincipalController;
 
     private FxOpcionesImprimirController fxOpcionesImprimirController;
 
-    private AutoCompletionBinding<String> autoCompletionBinding;
+    private AutoCompletionBinding<String> autoCompletionBindingDocumento;
+    
+    private AutoCompletionBinding<ClienteTB> autoCompletionBindingInfo;
 
     private String monedaSimbolo;
 
@@ -170,7 +174,9 @@ public class FxPostVentaEstructuraController implements Initializable {
 
     private String idCotizacion;
 
-    private final Set<String> posiblesWord = new HashSet<>();
+    private final Set<String> posiblesWordDocumento = new HashSet<>();
+    
+    private final Set<ClienteTB> posiblesWordInfo = new HashSet<>();
 
     private boolean unidades_cambio_cantidades;
 
@@ -216,10 +222,18 @@ public class FxPostVentaEstructuraController implements Initializable {
 
         initTable();
         loadDataComponent();
-        autoCompletionBinding = TextFields.bindAutoCompletion(txtNumeroDocumento, posiblesWord);
-        autoCompletionBinding.setOnAutoCompleted(e -> {
+        autoCompletionBindingDocumento = TextFields.bindAutoCompletion(txtNumeroDocumento, posiblesWordDocumento);
+        autoCompletionBindingDocumento.setOnAutoCompleted(e -> {
             if (!Tools.isText(txtNumeroDocumento.getText())) {
                 executeCliente((short) 2, txtNumeroDocumento.getText().trim());
+                btnArticulo.requestFocus();
+            }
+        });
+        
+        autoCompletionBindingInfo = TextFields.bindAutoCompletion(txtDatosCliente, posiblesWordInfo);
+        autoCompletionBindingInfo.setOnAutoCompleted(e -> {
+            if (!Tools.isText(e.getCompletion().getNumeroDocumento())) {
+                executeCliente((short) 2, e.getCompletion().getNumeroDocumento());
                 btnArticulo.requestFocus();
             }
         });
@@ -268,7 +282,9 @@ public class FxPostVentaEstructuraController implements Initializable {
         txtCorreoElectronico.setText(Session.CLIENTE_EMAIL);
         txtDireccionCliente.setText(Session.CLIENTE_DIRECCION);
 
-        ObjectGlobal.DATA_CLIENTS.forEach(c -> posiblesWord.add(c));
+        ObjectGlobal.DATA_CLIENTS.forEach(c -> posiblesWordDocumento.add(c));
+
+        ObjectGlobal.DATA_INFO_CLIENTS.forEach(c -> posiblesWordInfo.add(c));
 
         if (!cbTipoDocumento.getItems().isEmpty()) {
             for (DetalleTB detalleTB : cbTipoDocumento.getItems()) {
@@ -324,7 +340,7 @@ public class FxPostVentaEstructuraController implements Initializable {
             hbBotonesSuperior.getChildren().remove(btnMovimiento);
         }
         if (privilegioTBs.get(10).getIdPrivilegio() != 0 && !privilegioTBs.get(10).isEstado()) {
-//            hbBotonesInferior.getChildren().remove(btnImpresora);
+            hbBotonesSuperior.getChildren().remove(btnPrintTiket);
         }
         if (privilegioTBs.get(11).getIdPrivilegio() != 0 && !privilegioTBs.get(11).isEstado()) {
             hbBotonesSuperior.getChildren().remove(btnCancelar);
@@ -1311,6 +1327,7 @@ public class FxPostVentaEstructuraController implements Initializable {
         };
 
         task.setOnScheduled(e -> {
+            txtNumeroDocumento.setText("");
             txtDatosCliente.setText("");
             txtCelularCliente.setText("");
             txtCorreoElectronico.setText("");
@@ -1362,6 +1379,7 @@ public class FxPostVentaEstructuraController implements Initializable {
                         Pos.TOP_RIGHT);
 
                 idCliente = clienteTB.getIdCliente();
+                txtNumeroDocumento.setText(clienteTB.getNumeroDocumento());
                 txtDatosCliente.setText(clienteTB.getInformacion());
                 txtCelularCliente.setText(clienteTB.getCelular());
                 txtCorreoElectronico.setText(clienteTB.getEmail());
@@ -1701,12 +1719,12 @@ public class FxPostVentaEstructuraController implements Initializable {
 
     }
 
-    private void learnWord(String text) {
-        posiblesWord.add(text);
-        if (autoCompletionBinding != null) {
-            autoCompletionBinding.dispose();
+    private void learnWordDocumento(String text) {
+        posiblesWordDocumento.add(text);
+        if (autoCompletionBindingDocumento != null) {
+            autoCompletionBindingDocumento.dispose();
         }
-        autoCompletionBinding = TextFields.bindAutoCompletion(txtNumeroDocumento, posiblesWord);
+        autoCompletionBindingDocumento = TextFields.bindAutoCompletion(txtNumeroDocumento, posiblesWordDocumento);
     }
 
     @FXML
@@ -1927,42 +1945,42 @@ public class FxPostVentaEstructuraController implements Initializable {
     private void onKeyPressedCliente(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             executeCliente((short) 2, txtNumeroDocumento.getText().trim());
-            learnWord(txtNumeroDocumento.getText().trim());
+            learnWordDocumento(txtNumeroDocumento.getText().trim());
         }
     }
 
     @FXML
     private void onActionCliente(ActionEvent event) {
         executeCliente((short) 2, txtNumeroDocumento.getText().trim());
-        learnWord(txtNumeroDocumento.getText().trim());
+        learnWordDocumento(txtNumeroDocumento.getText().trim());
     }
 
     @FXML
     private void onKeyPressedSunat(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             executeApiSunat();
-            learnWord(txtNumeroDocumento.getText().trim());
+            learnWordDocumento(txtNumeroDocumento.getText().trim());
         }
     }
 
     @FXML
     private void onActionSunat(ActionEvent event) {
         executeApiSunat();
-        learnWord(txtNumeroDocumento.getText().trim());
+        learnWordDocumento(txtNumeroDocumento.getText().trim());
     }
 
     @FXML
     private void onKeyPressedReniec(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             executeApiReniec();
-            learnWord(txtNumeroDocumento.getText().trim());
+            learnWordDocumento(txtNumeroDocumento.getText().trim());
         }
     }
 
     @FXML
     private void onActionReniec(ActionEvent event) {
         executeApiReniec();
-        learnWord(txtNumeroDocumento.getText().trim());
+        learnWordDocumento(txtNumeroDocumento.getText().trim());
     }
 
     @FXML

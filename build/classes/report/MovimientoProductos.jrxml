@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8b29d31e-6951-4410-a336-0788b681bb9c">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="186"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="TIPO_AJUSTE" class="java.lang.String"/>
 	<parameter name="TIPO_MOVIMIENTO" class="java.lang.String"/>
@@ -14,11 +14,11 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="54" splitType="Stretch">
+		<band height="74" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="555" height="30" forecolor="#FFFFFF" backcolor="#020203" uuid="988d31c5-f62f-4fb0-bab9-fa8793da0087"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="8" isBold="true"/>
+				<reportElement mode="Transparent" x="0" y="0" width="555" height="30" forecolor="#000000" backcolor="#020203" uuid="988d31c5-f62f-4fb0-bab9-fa8793da0087"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[Ajuste de Inventario - Ajuste]]></text>
@@ -39,14 +39,14 @@
 				<textFieldExpression><![CDATA[$P{TIPO_AJUSTE}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="289" y="30" width="104" height="22" forecolor="#000000" uuid="7337483d-d2f4-4a53-921d-7d4a9aaa1320"/>
+				<reportElement x="0" y="52" width="104" height="22" forecolor="#000000" uuid="7337483d-d2f4-4a53-921d-7d4a9aaa1320"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tipo de movimiento:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="393" y="30" width="162" height="22" forecolor="#1A2226" uuid="697e5f3b-023f-4910-aa55-c7d3b0cbceef"/>
+				<reportElement x="104" y="52" width="162" height="22" forecolor="#1A2226" uuid="697e5f3b-023f-4910-aa55-c7d3b0cbceef"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>
