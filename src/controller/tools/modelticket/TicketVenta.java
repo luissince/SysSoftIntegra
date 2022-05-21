@@ -431,7 +431,7 @@ public class TicketVenta {
         }
     }
 
-    private JasperPrint reportA4(VentaTB ventaTB) throws JRException, WriterException,UnsupportedEncodingException {
+    private JasperPrint reportA4(VentaTB ventaTB) throws JRException, WriterException, UnsupportedEncodingException {
         double importeBrutoTotal = 0;
         double descuentoTotal = 0;
         double subImporteNetoTotal = 0;
@@ -616,7 +616,7 @@ public class TicketVenta {
 
         task.setOnScheduled(w -> {
             Tools.showAlertNotification("/view/image/information_large.png",
-                    "Generando reporte",
+                    "Reporte",
                     Tools.newLineString("Se envió los datos para generar el reporte."),
                     Duration.seconds(5),
                     Pos.BOTTOM_RIGHT);
@@ -624,8 +624,8 @@ public class TicketVenta {
 
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
-                    "Generando reporte",
-                    Tools.newLineString("Se produjo un problema al generar."),
+                    "Reporte",
+                    Tools.newLineString("Se produjo un problema al generar el reporte."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -635,8 +635,8 @@ public class TicketVenta {
                 Object object = task.getValue();
                 if (object instanceof JasperPrint) {
                     Tools.showAlertNotification("/view/image/succes_large.png",
-                            "Generando reporte",
-                            Tools.newLineString("Se genero correctamente el reporte."),
+                            "Reporte",
+                            Tools.newLineString("Se genero correctamente el reporte de venta."),
                             Duration.seconds(5),
                             Pos.BOTTOM_RIGHT);
 
@@ -655,14 +655,14 @@ public class TicketVenta {
 
                 } else {
                     Tools.showAlertNotification("/view/image/error_large.png",
-                            "Generando reporte",
+                            "Reporte",
                             Tools.newLineString((String) object),
                             Duration.seconds(10),
                             Pos.BOTTOM_RIGHT);
                 }
             } catch (IOException ex) {
                 Tools.showAlertNotification("/view/image/error_large.png",
-                        "Generando reporte",
+                        "Reporte",
                         Tools.newLineString(ex.getLocalizedMessage()),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);

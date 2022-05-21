@@ -249,8 +249,6 @@ public final class FilesRouters {
 
     public static final String FX_INVENTARIO_AJUSTE = "/view/inventario/valorinventario/FxInventarioAjuste.fxml";
 
-    public static final String FX_REPORTE_OPCIONES_INVENTARIO = "/view/inventario/valorinventario/FxReporteOpcionesInventario.fxml";
-
     public static final String FX_EQUIPOS = "/view/produccion/equipos/FxEquipos.fxml";
 
     public static final String FX_EQUIPOS_PROCESO = "/view/produccion/equipos/FxEquiposProceso.fxml";

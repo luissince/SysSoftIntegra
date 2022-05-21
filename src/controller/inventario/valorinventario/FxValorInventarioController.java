@@ -1,7 +1,7 @@
 package controller.inventario.valorinventario;
 
+import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
-import controller.tools.BillPrintable;
 import controller.tools.FilesRouters;
 import controller.tools.SearchComboBox;
 import controller.tools.Session;
@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -70,8 +71,6 @@ public class FxValorInventarioController implements Initializable {
     private TableColumn<SuministroTB, Integer> tcNumero;
     @FXML
     private TableColumn<SuministroTB, String> tcDescripcion;
-//    private TableColumn<SuministroTB, String> tcCostoPromedio;
-//    private TableColumn<SuministroTB, String> tcPrecio;
     @FXML
     private TableColumn<SuministroTB, Label> tcExistencia;
     @FXML
@@ -117,7 +116,7 @@ public class FxValorInventarioController implements Initializable {
 
     private SearchComboBox<DetalleTB> searchComboBoxMarca;
 
-    private BillPrintable billPrintable;
+    private FxOpcionesImprimirController fxOpcionesImprimirController;
 
     private int paginacion;
 
@@ -127,12 +126,14 @@ public class FxValorInventarioController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        fxOpcionesImprimirController = new FxOpcionesImprimirController();
+        fxOpcionesImprimirController.loadComponents();
+        fxOpcionesImprimirController.loadTicketInventario(vbWindow);
+
         tcNumero.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
         tcDescripcion.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getClave() + (cellData.getValue().getClaveAlterna().isEmpty() ? "" : " - ") + cellData.getValue().getClaveAlterna()
                 + "\n" + cellData.getValue().getNombreMarca()));
-//        tcCostoPromedio.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getCostoCompra(), 2)));
-//        tcPrecio.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getPrecioVentaGeneral(), 2)));
         tcCategoria.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getCategoriaName()));
         tcMarca.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMarcaName()));
         tcExistencia.setCellValueFactory(new PropertyValueFactory<>("lblCantidad"));
@@ -144,23 +145,15 @@ public class FxValorInventarioController implements Initializable {
         tcDescripcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.24));
         tcCategoria.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
         tcMarca.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
-//        tcCostoPromedio.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
-//        tcPrecio.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
         tcExistencia.prefWidthProperty().bind(tvList.widthProperty().multiply(0.16));
         tcStock.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
         cbInventario.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
         cbEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
-        billPrintable = new BillPrintable();
-        apEncabezado = new AnchorPane();
-        apDetalleCabecera = new AnchorPane();
-        apPie = new AnchorPane();
-
         paginacion = 1;
         filtercbCategoria();
         loadInit();
-
     }
 
     private void loadInit() {
@@ -456,26 +449,6 @@ public class FxValorInventarioController implements Initializable {
         }
     }
 
-    private void generarReporte() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_REPORTE_OPCIONES_INVENTARIO);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
-            FxReporteOpcionesInventarioController controller = fXMLLoader.getController();
-            controller.setInitValorInventarioController(this);
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Inventario general", vbWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding((w) -> fxPrincipalController.closeFondoModal());
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println(ex.getLocalizedMessage());
-        }
-    }
-
     public void onEventPaginacion() {
         switch (opcion) {
             case 0:
@@ -499,27 +472,6 @@ public class FxValorInventarioController implements Initializable {
         }
     }
 
-//    private void onEventTicketBusqueda() {
-//        try {
-//            fxPrincipalController.openFondoModal();
-//            URL url = getClass().getResource(FilesRouters.FX_TICKET_BUSQUEDA);
-//            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-//            Parent parent = fXMLLoader.load(url.openStream());
-//            //Controlller here
-//            FxTicketBusquedaController controller = fXMLLoader.getController();
-//            controller.setInitValorInventarioController(this);
-//            controller.loadComponents(3, false);
-//            //
-//            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccionar formato", vbWindow.getScene().getWindow());
-//            stage.setResizable(false);
-//            stage.sizeToScene();
-//            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-//            stage.show();
-//
-//        } catch (IOException ex) {
-//            System.out.println(ex.getLocalizedMessage());
-//        }
-//    }
     private void onEventReload() {
         searchComboBoxAlmacen.getComboBox().getItems().clear();
         searchComboBoxAlmacen.getComboBox().getItems().addAll(AlmacenADO.GetSearchComboBoxAlmacen());
@@ -535,10 +487,6 @@ public class FxValorInventarioController implements Initializable {
         loadInit();
     }
 
-    private void setGenerarTicket(int idTicket, String rutaTicket) {
-
-    }
-
     private void onEventExcel(File file, int idAlmacen) {
         ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
             Thread t = new Thread(runnable);
@@ -548,10 +496,10 @@ public class FxValorInventarioController implements Initializable {
         Task<String> task = new Task<String>() {
             @Override
             public String call() throws InterruptedException {
-                Object object = SuministroADO.GetReporteGeneralInventario(idAlmacen,0,0,0,0,0);
-                if (object instanceof ObservableList) {
+                Object object = SuministroADO.GetReporteGeneralInventario(idAlmacen, 0, 0, 0, 0, 0);
+                if (object instanceof ArrayList) {
                     try {
-                        ObservableList<SuministroTB> empList = (ObservableList<SuministroTB>) object;
+                        ArrayList<SuministroTB> empList = (ArrayList<SuministroTB>) object;
                         Workbook workbook;
                         if (file.getName().endsWith("xls")) {
                             workbook = new HSSFWorkbook();
@@ -818,15 +766,81 @@ public class FxValorInventarioController implements Initializable {
     }
 
     @FXML
+    private void onActionReporte(ActionEvent event) {
+        if (cbAlmacen.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(vbWindow, "Inventario", "Seleccione un almacen para continuar.");
+            return;
+        }
+
+        if (tvList.getItems().isEmpty()) {
+            Tools.AlertMessageWarning(vbWindow, "Inventario", "No hay productos en la lista para continuar.");
+            return;
+        }
+
+        fxOpcionesImprimirController.getTicketInventario().reporteInventarioActual(cbAlmacen.getSelectionModel().getSelectedItem().getNombre(), tvList.getItems());
+    }
+
+    @FXML
     private void onKeyPressedReporte(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            generarReporte();
+            if (cbAlmacen.getSelectionModel().getSelectedIndex() < 0) {
+                Tools.AlertMessageWarning(vbWindow, "Inventario", "Seleccione un almacen para continuar.");
+                return;
+            }
+
+            if (tvList.getItems().isEmpty()) {
+                Tools.AlertMessageWarning(vbWindow, "Inventario", "No hay productos en la lista para continuar.");
+                return;
+            }
+
+            fxOpcionesImprimirController.getTicketInventario().reporteInventarioActual(cbAlmacen.getSelectionModel().getSelectedItem().getNombre(), tvList.getItems());
+            event.consume();
         }
     }
 
     @FXML
-    private void onActionReporte(ActionEvent event) {
-        generarReporte();
+    private void onActionReptAjuste(ActionEvent event) {
+        if (cbAlmacen.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(vbWindow, "Inventario", "Seleccione un almacen para continuar.");
+            return;
+        }
+
+        if (tvList.getItems().isEmpty()) {
+            Tools.AlertMessageWarning(vbWindow, "Inventario", "No hay productos en la lista para continuar.");
+            return;
+        }
+
+        fxOpcionesImprimirController.getTicketInventario().reporteInventarioAjuste(cbAlmacen.getSelectionModel().getSelectedItem().getNombre(), tvList.getItems());
+    }
+
+    @FXML
+    private void onKeyPressedReptAjuste(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (cbAlmacen.getSelectionModel().getSelectedIndex() < 0) {
+                Tools.AlertMessageWarning(vbWindow, "Inventario", "Seleccione un almacen para continuar.");
+                return;
+            }
+
+            if (tvList.getItems().isEmpty()) {
+                Tools.AlertMessageWarning(vbWindow, "Inventario", "No hay productos en la lista para continuar.");
+                return;
+            }
+
+            fxOpcionesImprimirController.getTicketInventario().reporteInventarioAjuste(cbAlmacen.getSelectionModel().getSelectedItem().getNombre(), tvList.getItems());
+            event.consume();
+        }
+    }
+
+    @FXML
+    private void onKeyPressedExcel(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            onEventGenerateExcel();
+        }
+    }
+
+    @FXML
+    private void onActionExcel(ActionEvent event) {
+        onEventGenerateExcel();
     }
 
     @FXML
@@ -875,15 +889,6 @@ public class FxValorInventarioController implements Initializable {
         }
     }
 
-//    private void onKeyPressedTicket(KeyEvent event) {
-//        if (event.getCode() == KeyCode.ENTER) {
-//            onEventTicketBusqueda();
-//        }
-//    }
-//
-//    private void onActionTicket(ActionEvent event) {
-//        onEventTicketBusqueda();
-//    }
     @FXML
     private void onKeyPressedAnterior(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
@@ -933,18 +938,6 @@ public class FxValorInventarioController implements Initializable {
         if (cbAlmacen.getSelectionModel().getSelectedIndex() >= 0) {
             fillInventarioTable("", 0, "", 0, 0, 0, cbAlmacen.getSelectionModel().getSelectedItem().getIdAlmacen());
         }
-    }
-
-    @FXML
-    private void onKeyPressedExcel(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            onEventGenerateExcel();
-        }
-    }
-
-    @FXML
-    private void onActionExcel(ActionEvent event) {
-        onEventGenerateExcel();
     }
 
     public TableView<SuministroTB> getTvList() {

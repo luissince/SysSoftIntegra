@@ -345,15 +345,15 @@ public class TrasladoADO {
                 }
 
                 Button btnDetalle = new Button();
-                btnDetalle.getStyleClass().add("buttonLight");
-                ImageView ivDetalle = new ImageView(new Image("/view/image/asignacion.png"));
+                btnDetalle.getStyleClass().add("buttonLightWarning");
+                ImageView ivDetalle = new ImageView(new Image("/view/image/search.png"));
                 ivDetalle.setFitWidth(22);
                 ivDetalle.setFitHeight(22);
                 btnDetalle.setGraphic(ivDetalle);
                 trasladoTB.setBtnDetalle(btnDetalle);
 
                 Button btnReporte = new Button();
-                btnReporte.getStyleClass().add("buttonLight");
+                btnReporte.getStyleClass().add("buttonLightWarning");
                 ImageView ivReporte = new ImageView(new Image("/view/image/reports.png"));
                 ivReporte.setFitWidth(22);
                 ivReporte.setFitHeight(22);

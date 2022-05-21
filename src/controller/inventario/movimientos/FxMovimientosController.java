@@ -1,5 +1,6 @@
 package controller.inventario.movimientos;
 
+import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
 import controller.tools.FilesRouters;
 import controller.tools.Tools;
@@ -59,7 +60,9 @@ public class FxMovimientosController implements Initializable {
     @FXML
     private TableColumn<AjusteInventarioTB, Label> tcEstado;
     @FXML
-    private TableColumn<AjusteInventarioTB, Button> tcOpcion;
+    private TableColumn<AjusteInventarioTB, Button> tcDetalle;
+    @FXML
+    private TableColumn<AjusteInventarioTB, Button> tcReporte;
     @FXML
     private DatePicker dtFechaInicio;
     @FXML
@@ -77,9 +80,9 @@ public class FxMovimientosController implements Initializable {
 
     private FxMovimientosProcesoController controllerMovimientoDetalle;
 
-    private ObservableList<PrivilegioTB> privilegioTBs;
-
     private FxPrincipalController fxPrincipalController;
+
+    private FxOpcionesImprimirController fxOpcionesImprimirController;
 
     private short opcion;
 
@@ -89,21 +92,27 @@ public class FxMovimientosController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        fxOpcionesImprimirController = new FxOpcionesImprimirController();
+        fxOpcionesImprimirController.loadComponents();
+        fxOpcionesImprimirController.loadTicketMovimiento(hbWindow);
+
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
         tcTipoMovimiento.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getTipoMovimientoName()));
         tcFecha.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFecha() + "\n" + cellData.getValue().getHora()));
         tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservacion()));
         tcInformacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getInformacion()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("lblEstado"));
-        tcOpcion.setCellValueFactory(new PropertyValueFactory<>("validar"));
+        tcDetalle.setCellValueFactory(new PropertyValueFactory<>("btnDetalle"));
+        tcReporte.setCellValueFactory(new PropertyValueFactory<>("btnReporte"));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
         tcTipoMovimiento.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
-        tcFecha.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
-        tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.22));
-        tcInformacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
+        tcFecha.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
+        tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
+        tcInformacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
         tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
-        tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
+        tcDetalle.prefWidthProperty().bind(tvList.widthProperty().multiply(0.08));
+        tcReporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.08));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         cbMovimiento.getItems().add(new TipoMovimientoTB(0, "--TODOS--", false));
@@ -123,7 +132,6 @@ public class FxMovimientosController implements Initializable {
     }
 
     public void loadPrivilegios(ObservableList<PrivilegioTB> privilegioTBs) {
-        this.privilegioTBs = privilegioTBs;
         if (privilegioTBs.get(0).getIdPrivilegio() != 0 && !privilegioTBs.get(0).isEstado()) {
             btnRealizarMovimiento.setDisable(!privilegioTBs.get(0).isEstado());
         }
@@ -155,17 +163,28 @@ public class FxMovimientosController implements Initializable {
                 ObservableList<AjusteInventarioTB> inventarioTBs = (ObservableList<AjusteInventarioTB>) objects[0];
                 if (!inventarioTBs.isEmpty()) {
                     for (AjusteInventarioTB mi : inventarioTBs) {
-                        mi.getValidar().setOnAction(event -> {
+                        mi.getBtnDetalle().setOnAction(event -> {
                             openWindowMovimientoDetalle(mi.getIdMovimientoInventario());
                         });
-                        mi.getValidar().setOnKeyPressed(event -> {
+                        mi.getBtnDetalle().setOnKeyPressed(event -> {
                             if (event.getCode() == KeyCode.ENTER) {
                                 openWindowMovimientoDetalle(mi.getIdMovimientoInventario());
+                                event.consume();
+                            }
+                        });
+
+                        mi.getBtnReporte().setOnAction(event -> {
+                            fxOpcionesImprimirController.getTicketMovimiento().reporteMovimiento(mi.getIdMovimientoInventario());
+                        });
+                        mi.getBtnReporte().setOnKeyPressed(event -> {
+                            if (event.getCode() == KeyCode.ENTER) {
+                                fxOpcionesImprimirController.getTicketMovimiento().reporteMovimiento(mi.getIdMovimientoInventario());
+                                event.consume();
                             }
                         });
                     }
                     tvList.setItems(inventarioTBs);
-                    
+
                     totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));
                     lblPaginaActual.setText(paginacion + "");
                     lblPaginaSiguiente.setText(totalPaginacion + "");

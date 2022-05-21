@@ -1215,7 +1215,7 @@ public class SuministroADO {
         try {
             DBUtil.dbConnect();
 
-            List<SuministroTB> empList = new ArrayList();
+            ArrayList<SuministroTB> empList = new ArrayList();
             preparedStatementSuministros = DBUtil.getConnection().prepareStatement("{call Sp_Reporte_General_Inventario(?,?,?,?,?,?)}");
             preparedStatementSuministros.setInt(1, idInventario);
             preparedStatementSuministros.setInt(2, idUnidad);

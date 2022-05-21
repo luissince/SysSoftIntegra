@@ -186,7 +186,7 @@ public class FxOpcionesImprimirController implements Initializable {
         ticketNotaCredito = new TicketNotaCredito(node, billPrintable, hbEncabezado, hbDetalleCabecera, hbPie, monedaCadena);
     }
 
-    public void loadTicjetInventario(Node node) {
+    public void loadTicketInventario(Node node) {
         ticketInventario = new TicketInventario(node, billPrintable, hbEncabezado, hbDetalleCabecera, hbPie, monedaCadena);
     }
 
@@ -361,6 +361,22 @@ public class FxOpcionesImprimirController implements Initializable {
 
     public TicketNotaCredito getTicketNotaCredito() {
         return ticketNotaCredito;
+    }
+
+    public TicketPreVenta getTicketPreVenta() {
+        return ticketPreVenta;
+    }
+
+    public TicketCompra getTicketCompra() {
+        return ticketCompra;
+    }
+
+    public TicketInventario getTicketInventario() {
+        return ticketInventario;
+    }
+
+    public TicketMovimiento getTicketMovimiento() {
+        return ticketMovimiento;
     }
 
     public AnchorPane getApWindow() {

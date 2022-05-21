@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -219,13 +218,22 @@ public class AjusteInventarioADO {
 
                 movimientoInventarioTB.setLblEstado(label);
 
-                Button btn = new Button();
-                ImageView view = new ImageView(new Image("/view/image/search.png"));
-                view.setFitWidth(22);
-                view.setFitHeight(22);
-                btn.setGraphic(view);
-                btn.getStyleClass().add("buttonLightWarning");                
-                movimientoInventarioTB.setValidar(btn);
+                Button btnDetalle = new Button();
+                ImageView viDetalle = new ImageView(new Image("/view/image/search.png"));
+                viDetalle.setFitWidth(22);
+                viDetalle.setFitHeight(22);
+                btnDetalle.setGraphic(viDetalle);
+                btnDetalle.getStyleClass().add("buttonLightWarning");
+                movimientoInventarioTB.setBtnDetalle(btnDetalle);
+
+                Button btnReporte = new Button();
+                ImageView vwReporte = new ImageView(new Image("/view/image/reports.png"));
+                vwReporte.setFitWidth(22);
+                vwReporte.setFitHeight(22);
+                btnReporte.setGraphic(vwReporte);
+                btnReporte.getStyleClass().add("buttonLightWarning");
+                movimientoInventarioTB.setBtnReporte(btnReporte);
+
                 empList.add(movimientoInventarioTB);
             }
             objects[0] = empList;
@@ -260,30 +268,30 @@ public class AjusteInventarioADO {
         }
     }
 
-    public static ArrayList<Object> Obtener_Movimiento_Inventario_By_Id(String idMovimiento) {
-        ArrayList<Object> list = new ArrayList<>();
+    public static Object Obtener_Movimiento_Inventario_By_Id(String idMovimiento) {
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement preparedStatement = null;
-            PreparedStatement preparedStatementList = null;
+        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatementList = null;
+        try {
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Get_Movimiento_Inventario_By_Id(?)}");
+            preparedStatement.setString(1, idMovimiento);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                AjusteInventarioTB inventarioTB = new AjusteInventarioTB();
+                
+                AlmacenTB almacenTB = new AlmacenTB();
+                almacenTB.setNombre(resultSet.getString("Almacen"));
+                inventarioTB.setAlmacenTB(almacenTB);
+                
+                inventarioTB.setTipoMovimientoName(resultSet.getString("TipoMovimiento"));
+                inventarioTB.setFecha(resultSet.getDate("Fecha").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                inventarioTB.setHora(resultSet.getTime("Hora").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                inventarioTB.setTipoAjuste(resultSet.getBoolean("TipoAjuste"));
+                inventarioTB.setTipoMovimiento(resultSet.getInt("TipoMovimientoId"));
+                inventarioTB.setObservacion(resultSet.getString("Observacion"));
+                inventarioTB.setEstadoName(resultSet.getString("Estado"));
 
-            AjusteInventarioTB inventarioTB = null;
-            ObservableList<MovimientoInventarioDetalleTB> empList = FXCollections.observableArrayList();
-            try {
-                preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Get_Movimiento_Inventario_By_Id(?)}");
-                preparedStatement.setString(1, idMovimiento);
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()) {
-                    inventarioTB = new AjusteInventarioTB();
-                    inventarioTB.setTipoMovimientoName(resultSet.getString("TipoMovimiento"));
-                    inventarioTB.setFecha(resultSet.getString("Fecha"));
-                    inventarioTB.setHora(resultSet.getTime("Hora").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
-                    inventarioTB.setTipoAjuste(resultSet.getBoolean("TipoAjuste"));
-                    inventarioTB.setTipoMovimiento(resultSet.getInt("TipoMovimientoId"));
-                    inventarioTB.setObservacion(resultSet.getString("Observacion"));
-                    inventarioTB.setEstadoName(resultSet.getString("Estado"));
-                }
-                list.add(inventarioTB);
+                ArrayList<MovimientoInventarioDetalleTB> movimientoInventarioDetalleTBs = new ArrayList<>();
 
                 preparedStatementList = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Movimiento_Inventario_Detalle_By_Id(?)}");
                 preparedStatementList.setString(1, idMovimiento);
@@ -297,44 +305,39 @@ public class AjusteInventarioADO {
                     detalleTB.setCosto(rsEmps.getDouble("Costo"));
                     detalleTB.setPrecio(rsEmps.getDouble("Precio"));
 
-                    CheckBox checkBox = new CheckBox();
-                    checkBox.setDisable(true);
-                    checkBox.getStyleClass().add("check-box-movimiento");
-                    detalleTB.setVerificar(checkBox);
-
-                    CheckBox checkBoxPrecios = new CheckBox();
-                    checkBoxPrecios.getStyleClass().add("check-box-movimiento");
-                    detalleTB.setActualizarPrecio(checkBoxPrecios);
-
                     SuministroTB suministroTB = new SuministroTB();
                     suministroTB.setClave(rsEmps.getString("Clave"));
                     suministroTB.setNombreMarca(rsEmps.getString("NombreMarca"));
+                    suministroTB.setUnidadCompraName(rsEmps.getString("UnidadCompra"));
+                    suministroTB.setCategoriaName(rsEmps.getString("Categoria"));
+                    suministroTB.setMarcaName(rsEmps.getString("Marca"));
                     detalleTB.setSuministroTB(suministroTB);
-                    empList.add(detalleTB);
+                    movimientoInventarioDetalleTBs.add(detalleTB);
                 }
+                inventarioTB.setMovimientoInventarioDetalleTBs(movimientoInventarioDetalleTBs);
 
-                list.add(empList);
-
+                return inventarioTB;
+            } else {
+                return "No se puedo obtener la información requerida, intente nuevamente.";
+            }
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (preparedStatementList != null) {
+                    preparedStatementList.close();
+                }
+                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-                System.out.println("Error en:" + ex.getLocalizedMessage());
-            } finally {
-                try {
-                    if (preparedStatement != null) {
-                        preparedStatement.close();
-                    }
-                    if (preparedStatementList != null) {
-                        preparedStatementList.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-
-                }
+                return ex.getLocalizedMessage();
             }
         }
-        return list;
     }
 
-    public static String RegistrarMovimientoSuministro(AjusteInventarioTB inventarioTB, ObservableList<MovimientoInventarioDetalleTB> tableView) {
+    public static String RegistrarMovimientoSuministro(AjusteInventarioTB inventarioTB) {
         PreparedStatement statementValidar = null;
         PreparedStatement statementMovimiento = null;
         PreparedStatement suministro_update = null;
@@ -377,20 +380,20 @@ public class AjusteInventarioADO {
                             + "Total) "
                             + "VALUES(?,?,?,?,?,?,?,?,?)");
 
-                    for (int i = 0; i < tableView.size(); i++) {
-                        suministro_update.setDouble(1, tableView.get(i).getCantidad());
-                        suministro_update.setString(2, tableView.get(i).getIdSuministro());
+                    for (MovimientoInventarioDetalleTB detalleTB : inventarioTB.getMovimientoInventarioDetalleTBs()) {
+                        suministro_update.setDouble(1, detalleTB.getCantidad());
+                        suministro_update.setString(2, detalleTB.getIdSuministro());
                         suministro_update.addBatch();
 
-                        suministro_kardex.setString(1, tableView.get(i).getIdSuministro());
+                        suministro_kardex.setString(1, detalleTB.getIdSuministro());
                         suministro_kardex.setString(2, Tools.getDate());
                         suministro_kardex.setString(3, Tools.getTime());
                         suministro_kardex.setShort(4, inventarioTB.isTipoAjuste() ? (short) 1 : (short) 2);
                         suministro_kardex.setInt(5, inventarioTB.getTipoMovimiento());
                         suministro_kardex.setString(6, inventarioTB.getObservacion());
-                        suministro_kardex.setDouble(7, tableView.get(i).getCantidad());
-                        suministro_kardex.setDouble(8, tableView.get(i).getCosto());
-                        suministro_kardex.setDouble(9, tableView.get(i).getCantidad() * tableView.get(i).getCosto());
+                        suministro_kardex.setDouble(7, detalleTB.getCantidad());
+                        suministro_kardex.setDouble(8, detalleTB.getCosto());
+                        suministro_kardex.setDouble(9, detalleTB.getCantidad() * detalleTB.getCosto());
                         suministro_kardex.addBatch();
                     }
 

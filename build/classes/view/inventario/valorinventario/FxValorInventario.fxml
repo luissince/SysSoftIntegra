@@ -4,7 +4,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -14,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="vbWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.valorinventario.FxValorInventarioController">
+<VBox fx:id="vbWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.inventario.valorinventario.FxValorInventarioController">
    <children>
       <HBox alignment="CENTER_LEFT" minHeight="-Infinity" style="-fx-border-width: 0  0 2px 0; -fx-border-color: #3c8dbc; -fx-background-color: #FFFF; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" styleClass="paddinContainer">
          <children>
@@ -59,11 +58,20 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#onActionReporte" onKeyPressed="#onKeyPressedReporte" styleClass="buttonLight" text="Visualizar">
+                  <Button mnemonicParsing="false" onAction="#onActionReporte" onKeyPressed="#onKeyPressedReporte" styleClass="buttonLight" text="Reporte">
                      <graphic>
                         <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../image/view.png" />
+                              <Image url="@../../image/reports.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionReptAjuste" onKeyPressed="#onKeyPressedReptAjuste" styleClass="buttonLight" text="Rept. Ajuste">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/ajuste-inventario.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -77,14 +85,13 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <ComboBox fx:id="cbAlmacen" onAction="#onActionAlmacen" prefHeight="30.0" prefWidth="240.0" promptText="ALMACEN PRINCIPAL" />
                </children></HBox>
             <HBox style="-fx-spacing: 0.8333333333333334em;">
                <children>
                   <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #d6d5d5; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
                      <children>
                         <Label styleClass="labelRobotoBold15" text="Cantidad de Items" textFill="#006cf8" />
-                        <Label fx:id="lblCantidadTotal" styleClass="labelRoboto15" text="00.00" textFill="#020203" />
+                        <Label fx:id="lblCantidadTotal" styleClass="labelRoboto15" text="0.00" textFill="#020203" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #d6d5d5; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
@@ -114,7 +121,7 @@
                                     </ImageView>
                                  </graphic>
                               </Label>
-                              <TextField fx:id="txtProducto" onKeyReleased="#onKeyReleasedProducto" prefHeight="30.0" prefWidth="160.0" promptText="Clave o clave alterna" styleClass="text-field-normal" />
+                              <TextField fx:id="txtProducto" onKeyReleased="#onKeyReleasedProducto" prefHeight="30.0" prefWidth="240.0" promptText="Clave o clave alterna" styleClass="text-field-normal" />
                            </children>
                         </VBox>
                         <VBox style="-fx-spacing: 0.3333333333333333em;" HBox.hgrow="ALWAYS">
@@ -128,12 +135,30 @@
                                     </ImageView>
                                  </graphic>
                               </Label>
-                              <TextField fx:id="txtNameProduct" onKeyReleased="#onKeyReleasedNameProduct" prefHeight="30.0" prefWidth="240.0" promptText="Nombre de articulo" styleClass="text-field-normal" VBox.vgrow="ALWAYS" />
+                              <TextField fx:id="txtNameProduct" onKeyReleased="#onKeyReleasedNameProduct" prefHeight="30.0" prefWidth="220.0" promptText="Nombre de articulo" styleClass="text-field-normal" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
                         <VBox style="-fx-spacing: 0.3333333333333333em;">
                            <children>
-                              <Label styleClass="labelRoboto13" text="Opciones de cantidades" textFill="#020203">
+                              <Label styleClass="labelRoboto13" text="Almacen" textFill="#020203">
+                                 <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/almacen.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                              <ComboBox fx:id="cbAlmacen" onAction="#onActionAlmacen" prefHeight="30.0" prefWidth="240.0" promptText="ALMACEN PRINCIPAL" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;">
+                     <children>
+                        <VBox style="-fx-spacing: 0.3333333333333333em;">
+                           <children>
+                              <Label styleClass="labelRoboto13" text="Cantidades" textFill="#020203">
                                  <graphic>
                                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -142,7 +167,7 @@
                                     </ImageView>
                                  </graphic>
                               </Label>
-                              <ComboBox fx:id="cbExistencia" prefHeight="30.0" prefWidth="200.0" promptText="-- Seleccione --" />
+                              <ComboBox fx:id="cbExistencia" prefHeight="30.0" prefWidth="240.0" promptText="-- Seleccione --" />
                            </children>
                         </VBox>
                         <VBox style="-fx-spacing: 0.3333333333333333em;">
@@ -156,7 +181,7 @@
                                     </ImageView>
                                  </graphic>
                               </Label>
-                              <ComboBox fx:id="cbCategoria" prefHeight="30.0" prefWidth="200.0" promptText="-- Seleccione --" />
+                              <ComboBox fx:id="cbCategoria" prefHeight="30.0" prefWidth="240.0" promptText="-- Seleccione --" />
                            </children>
                         </VBox>
                         <VBox style="-fx-spacing: 0.3333333333333333em;">
@@ -170,56 +195,7 @@
                                     </ImageView>
                                  </graphic>
                               </Label>
-                              <ComboBox fx:id="cbMarca" prefHeight="30.0" prefWidth="200.0" promptText="-- Seleccione --" />
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-                  <Separator />
-                  <HBox style="-fx-spacing: 0.8333333333333334em;">
-                     <children>
-                        <VBox HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label styleClass="labelRoboto13" text="Negativas: son cantidades menores que cero" textFill="RED">
-                                 <graphic>
-                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../image/note.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Label>
-                              <Label styleClass="labelRoboto13" text="Intermedias: son cantidades mayores que cero y menores que el stock mínimo" textFill="ORANGE">
-                                 <graphic>
-                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../image/note.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Label>
-                           </children>
-                        </VBox>
-                        <VBox HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label prefHeight="28.0" styleClass="labelRoboto13" text="Necesarias: son cantidades mayores que el stock mínimo y menores que el stock máximo" textFill="GREEN">
-                                 <graphic>
-                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../image/note.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Label>
-                              <Label styleClass="labelRoboto13" text="Excedentes: son cantidades mayores que el stock máximo" textFill="#02539a">
-                                 <graphic>
-                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../image/note.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Label>
+                              <ComboBox fx:id="cbMarca" prefHeight="30.0" prefWidth="240.0" promptText="-- Seleccione --" />
                            </children>
                         </VBox>
                      </children>

@@ -1,7 +1,6 @@
 package controller.tools.modelticket;
 
 import controller.reporte.FxReportViewController;
-import controller.reporte.FxVentaReporteController;
 import controller.tools.BillPrintable;
 import controller.tools.FilesRouters;
 import controller.tools.Session;
@@ -68,6 +67,8 @@ public class TicketTraslado {
                 Object object = TrasladoADO.ObtenerTrasladoById(idTraslado);
                 if (object instanceof TrasladoTB) {
                     TrasladoTB trasladoTB = (TrasladoTB) object;
+                    
+                    InputStream dir = getClass().getResourceAsStream("/report/TrasladoInventario.jasper");
 
                     InputStream logo = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
                     if (Session.COMPANY_IMAGE != null) {
@@ -77,7 +78,7 @@ public class TicketTraslado {
                     Map map = new HashMap();
                     map.put("LOGO", logo);
                     map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
-                    map.put("RUC", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
+                    map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
                     map.put("DIRECCION", Session.COMPANY_DOMICILIO);
                     map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL));
                     map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
@@ -91,7 +92,7 @@ public class TicketTraslado {
                     map.put("CANTIDAD_ITEMS", trasladoTB.getHistorialTBs().size() + "");
                     map.put("TIPO", trasladoTB.getTipo() == 1 ? "INTERNO" : "EXTERNO");
 
-                    JasperPrint jasperPrint = JasperFillManager.fillReport(FxVentaReporteController.class.getResourceAsStream("/report/TrasladoInventario.jasper"), map, new JRBeanCollectionDataSource(trasladoTB.getHistorialTBs()));
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(trasladoTB.getHistorialTBs()));
                     return jasperPrint;
                 } else {
                     return (String) object;
@@ -105,8 +106,8 @@ public class TicketTraslado {
                 if (object instanceof JasperPrint) {
                     Tools.showAlertNotification(
                             "/view/image/information_large.png",
-                            "Generar Vista",
-                            Tools.newLineString("Se completo la creación del modal correctamente."),
+                            "Reporte",
+                            Tools.newLineString("Se completo la creación del reporte de traslado."),
                             Duration.seconds(10),
                             Pos.BOTTOM_RIGHT);
 

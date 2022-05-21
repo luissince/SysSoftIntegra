@@ -7,23 +7,44 @@ import javafx.scene.control.Label;
 public class AjusteInventarioTB {
 
     private int id;
-    private String idMovimientoInventario;
-    private String fecha;
-    private String hora;
-    private boolean tipoAjuste;
-    private int tipoMovimiento;
-    private String tipoMovimientoName;
-    private String observacion;
-    private String informacion;
-    private boolean suministro;
-    private int estado;
-    private String estadoName;
-    private String codigoVerificacion;
-    private int idAlmacen;
-    private ArrayList<SuministroTB>  suministroTBs;
 
-    private Button validar;
+    private String idMovimientoInventario;
+
+    private String fecha;
+
+    private String hora;
+
+    private boolean tipoAjuste;
+
+    private int tipoMovimiento;
+
+    private String tipoMovimientoName;
+
+    private String observacion;
+
+    private String informacion;
+
+    private boolean suministro;
+
+    private int estado;
+
+    private String estadoName;
+
+    private String codigoVerificacion;
+
+    private int idAlmacen;
+
+    private Button btnDetalle;
+
+    private Button btnReporte;
+
     private Label lblEstado;
+    
+    private AlmacenTB almacenTB;
+
+    private ArrayList<SuministroTB> suministroTBs;
+    
+    private ArrayList<MovimientoInventarioDetalleTB> movimientoInventarioDetalleTBs;
 
     public AjusteInventarioTB() {
     }
@@ -148,12 +169,20 @@ public class AjusteInventarioTB {
         this.suministroTBs = suministroTBs;
     }
 
-    public Button getValidar() {
-        return validar;
+    public Button getBtnDetalle() {
+        return btnDetalle;
     }
 
-    public void setValidar(Button validar) {
-        this.validar = validar;
+    public void setBtnDetalle(Button btnDetalle) {
+        this.btnDetalle = btnDetalle;
+    }
+
+    public Button getBtnReporte() {
+        return btnReporte;
+    }
+
+    public void setBtnReporte(Button btnReporte) {
+        this.btnReporte = btnReporte;
     }
 
     public Label getLblEstado() {
@@ -162,6 +191,22 @@ public class AjusteInventarioTB {
 
     public void setLblEstado(Label lblEstado) {
         this.lblEstado = lblEstado;
+    }
+
+    public AlmacenTB getAlmacenTB() {
+        return almacenTB;
+    }
+
+    public void setAlmacenTB(AlmacenTB almacenTB) {
+        this.almacenTB = almacenTB;
+    }
+
+    public ArrayList<MovimientoInventarioDetalleTB> getMovimientoInventarioDetalleTBs() {
+        return movimientoInventarioDetalleTBs;
+    }
+
+    public void setMovimientoInventarioDetalleTBs(ArrayList<MovimientoInventarioDetalleTB> movimientoInventarioDetalleTBs) {
+        this.movimientoInventarioDetalleTBs = movimientoInventarioDetalleTBs;
     }
 
 }

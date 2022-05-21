@@ -2,12 +2,12 @@ package controller.inventario.movimientos;
 
 import controller.tools.Tools;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -60,9 +60,7 @@ public class FxMovimientosDetalleController implements Initializable {
 
     private String idMovimientoInventario;
 
-    private AjusteInventarioTB inventarioTB;
-
-    private ObservableList<MovimientoInventarioDetalleTB> detalleTBs;
+    private AjusteInventarioTB ajusteInventarioTB;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -85,9 +83,9 @@ public class FxMovimientosDetalleController implements Initializable {
             return t;
         });
 
-        Task<ArrayList<Object>> task = new Task<ArrayList<Object>>() {
+        Task<Object> task = new Task<Object>() {
             @Override
-            public ArrayList<Object> call() {
+            public Object call() {
                 return AjusteInventarioADO.Obtener_Movimiento_Inventario_By_Id(value);
             }
         };
@@ -101,29 +99,27 @@ public class FxMovimientosDetalleController implements Initializable {
         });
 
         task.setOnSucceeded((e) -> {
-            ArrayList<Object> objects = task.getValue();
-            if (!objects.isEmpty()) {
+            Object object = task.getValue();
+            if (object instanceof AjusteInventarioTB) {
+                ajusteInventarioTB = (AjusteInventarioTB) object;
+                ObservableList<MovimientoInventarioDetalleTB> detalleTBs = FXCollections.observableArrayList(ajusteInventarioTB.getMovimientoInventarioDetalleTBs());
 
-                inventarioTB = (AjusteInventarioTB) objects.get(0);
-                detalleTBs = (ObservableList<MovimientoInventarioDetalleTB>) objects.get(1);
-
-                if (inventarioTB != null) {
-                    lblTIpoMovimiento.setText(inventarioTB.getTipoMovimientoName());
-                    lblHoraFecha.setText(inventarioTB.getFecha() + " " + inventarioTB.getHora());
-                    lblObservacion.setText(inventarioTB.getObservacion());             
-                    lblEstado.setText(inventarioTB.getEstadoName());
-                    if (inventarioTB.getEstadoName().equalsIgnoreCase("COMPLETADO")) {
-                        btnRegistrar.setDisable(true);
-                        lblEstado.getStyleClass().add("label-asignacion");
-                    } else if (inventarioTB.getEstadoName().equalsIgnoreCase("EN PROCESO")) {
-                        lblEstado.getStyleClass().add("label-medio");
-                    } else if (inventarioTB.getEstadoName().equalsIgnoreCase("CANCELADO")) {
-                        btnRegistrar.setDisable(true);
-                        lblEstado.getStyleClass().add("label-proceso");
-                    } else {
-                        lblEstado.getStyleClass().add("label-asignacion");
-                    }
+                lblTIpoMovimiento.setText(ajusteInventarioTB.getTipoMovimientoName());
+                lblHoraFecha.setText(ajusteInventarioTB.getFecha() + " " + ajusteInventarioTB.getHora());
+                lblObservacion.setText(ajusteInventarioTB.getObservacion());
+                lblEstado.setText(ajusteInventarioTB.getEstadoName());
+                if (ajusteInventarioTB.getEstadoName().equalsIgnoreCase("COMPLETADO")) {
+                    btnRegistrar.setDisable(true);
+                    lblEstado.getStyleClass().add("label-asignacion");
+                } else if (ajusteInventarioTB.getEstadoName().equalsIgnoreCase("EN PROCESO")) {
+                    lblEstado.getStyleClass().add("label-medio");
+                } else if (ajusteInventarioTB.getEstadoName().equalsIgnoreCase("CANCELADO")) {
+                    btnRegistrar.setDisable(true);
+                    lblEstado.getStyleClass().add("label-proceso");
+                } else {
+                    lblEstado.getStyleClass().add("label-asignacion");
                 }
+
                 tvList.setItems(detalleTBs);
             }
             lblLoad.setVisible(false);
@@ -136,13 +132,13 @@ public class FxMovimientosDetalleController implements Initializable {
     }
 
     private void executeRegistrar() {
-        if (inventarioTB != null && detalleTBs != null && !detalleTBs.isEmpty()) {
-            inventarioTB.setIdMovimientoInventario(idMovimientoInventario);
-            inventarioTB.setCodigoVerificacion(txtCofigoVerificacion.getText().trim());
+        if (ajusteInventarioTB != null) {
+            ajusteInventarioTB.setIdMovimientoInventario(idMovimientoInventario);
+            ajusteInventarioTB.setCodigoVerificacion(txtCofigoVerificacion.getText().trim());
             short option = Tools.AlertMessageConfirmation(apWindow, "Movimiento", "¿Esta seguro de continuar?");
             if (option == 1) {
                 btnRegistrar.setDisable(true);
-                String result = AjusteInventarioADO.RegistrarMovimientoSuministro(inventarioTB, detalleTBs);
+                String result = AjusteInventarioADO.RegistrarMovimientoSuministro(ajusteInventarioTB);
                 if (result.equalsIgnoreCase("updated")) {
                     Tools.AlertMessageInformation(apWindow, "Movimiento", "Se registraron los cambios correctamente.");
                     Tools.Dispose(apWindow);
@@ -174,16 +170,10 @@ public class FxMovimientosDetalleController implements Initializable {
         executeRegistrar();
     }
 
-    @FXML
     private void onKeyPressedReporte(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
 
         }
-    }
-
-    @FXML
-    private void onActionReporte(ActionEvent event) {
-
     }
 
 }

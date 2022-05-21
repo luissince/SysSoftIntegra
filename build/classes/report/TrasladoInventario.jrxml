@@ -5,7 +5,7 @@
 	<property name="ireport.y" value="0"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
 	<parameter name="EMPRESA" class="java.lang.String"/>
-	<parameter name="RUC" class="java.lang.String"/>
+	<parameter name="DOCUMENTOEMPRESA" class="java.lang.String"/>
 	<parameter name="EMAIL" class="java.lang.String"/>
 	<parameter name="TELEFONOCELULAR" class="java.lang.String"/>
 	<parameter name="PAGINAWEB" class="java.lang.String"/>
@@ -176,15 +176,15 @@
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 			<textField isStretchWithOverflow="true">
-				<reportElement mode="Transparent" x="168" y="0" width="237" height="38" forecolor="#000000" uuid="40f83374-1aa5-4003-b2b2-a20a4a669513"/>
+				<reportElement mode="Transparent" x="178" y="0" width="237" height="38" forecolor="#000000" uuid="40f83374-1aa5-4003-b2b2-a20a4a669513"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{EMPRESA}+"\n"+$P{RUC}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{EMPRESA}+"\n"+$P{DOCUMENTOEMPRESA}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="168" y="37" width="237" height="53" forecolor="#000000" uuid="2bac395b-57cc-4b7b-820b-b33c038a2083"/>
+				<reportElement stretchType="RelativeToBandHeight" x="178" y="37" width="237" height="53" forecolor="#000000" uuid="2bac395b-57cc-4b7b-820b-b33c038a2083"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph lineSpacing="1_1_2" leftIndent="5" rightIndent="5"/>
