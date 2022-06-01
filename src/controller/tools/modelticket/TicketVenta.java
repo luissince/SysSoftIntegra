@@ -49,6 +49,8 @@ import javax.print.attribute.standard.PrinterName;
 import model.BancoADO;
 import model.EmpresaADO;
 import model.SuministroTB;
+import model.TicketTB;
+import model.TipoDocumentoADO;
 import model.VentaADO;
 import model.VentaTB;
 import net.sf.jasperreports.engine.JRException;
@@ -162,7 +164,15 @@ public class TicketVenta {
                             }
 
                             if (Session.DESING_IMPRESORA_VENTA.equalsIgnoreCase("withdesing")) {
-                                billPrintable.loadEstructuraTicket(Session.TICKET_VENTA_ID, Session.TICKET_VENTA_RUTA, hbEncabezado, hbDetalleCabecera, hbPie);
+
+                                Object object = TipoDocumentoADO.GetIdTicketForTipoDocumento(idVenta);
+                                if (object instanceof TicketTB) {
+                                    TicketTB ticketTB = (TicketTB) object;
+                                    billPrintable.loadEstructuraTicket(ticketTB.getId(), ticketTB.getRuta(), hbEncabezado, hbDetalleCabecera, hbPie);
+                                } else {
+                                    billPrintable.loadEstructuraTicket(Session.TICKET_VENTA_ID, Session.TICKET_VENTA_RUTA, hbEncabezado, hbDetalleCabecera, hbPie);
+                                }
+
                                 ObjectGlobal.QR_PERU_DATA = "|" + Session.COMPANY_NUMERO_DOCUMENTO + "|" + ventaTB.getCodigoAlterno() + "|" + ventaTB.getSerie() + "|" + ventaTB.getNumeracion() + "|" + Tools.roundingValue(impuestoTotal, 2) + "|" + Tools.roundingValue(importeNetoTotal, 2) + "|" + ventaTB.getFechaVenta() + "|" + ventaTB.getClienteTB().getIdAuxiliar() + "|" + ventaTB.getClienteTB().getNumeroDocumento() + "|";
 
                                 for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {

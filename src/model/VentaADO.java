@@ -1018,7 +1018,6 @@ public class VentaADO {
             DBUtil.getConnection().commit();
             resultTransaction.setCode("register");
             resultTransaction.setResult(id_venta);
-
         } catch (SQLException ex) {
             try {
                 DBUtil.getConnection().rollback();
@@ -2499,7 +2498,7 @@ public class VentaADO {
             while (rsEmps.next()) {
                 VentaTB ventaTB = new VentaTB();
                 ventaTB.setId(rsEmps.getRow() + posicionPagina);
-                ventaTB.setClienteTB(new ClienteTB(rsEmps.getString("Cliente")));
+                ventaTB.setClienteTB(new ClienteTB(rsEmps.getString("NumeroDocumento"),rsEmps.getString("Cliente")));
                 ventaTB.setIdVenta(rsEmps.getString("IdVenta"));
                 ventaTB.setFechaVenta(rsEmps.getDate("FechaVenta").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 ventaTB.setHoraVenta(rsEmps.getTime("HoraVenta").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));

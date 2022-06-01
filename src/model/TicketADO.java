@@ -343,39 +343,70 @@ public class TicketADO {
         return list;
     }
 
-    public static TicketTB GetTicketRuta(int idTicket) {
-        TicketTB ticketTB = null;
+    public static Object GetTicketRuta(int idTicket) {
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementLista = null;
-            ResultSet resultSet = null;
+        PreparedStatement statementLista = null;
+        ResultSet resultSet = null;
+        try {
+            statementLista = DBUtil.getConnection().prepareStatement("SELECT idTicket,ruta FROM TicketTB WHERE tipo = ? and predeterminado = 1");
+            statementLista.setInt(1, idTicket);
+            resultSet = statementLista.executeQuery();
+            if (resultSet.next()) {
+                TicketTB ticketTB = new TicketTB();
+                ticketTB.setId(resultSet.getInt("idTicket"));
+                ticketTB.setRuta(resultSet.getString("ruta"));
+                return ticketTB;
+            } else {
+                return null;
+            }
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
+        } finally {
             try {
-                statementLista = DBUtil.getConnection().prepareStatement("SELECT idTicket,ruta FROM TicketTB WHERE tipo = ? and predeterminado = 1");
-                statementLista.setInt(1, idTicket);
-                resultSet = statementLista.executeQuery();
-                if (resultSet.next()) {
-                    ticketTB = new TicketTB();
-                    ticketTB.setId(resultSet.getInt("idTicket"));
-                    ticketTB.setRuta(resultSet.getString("ruta"));
+                if (statementLista != null) {
+                    statementLista.close();
                 }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-
-            } finally {
-                try {
-                    if (statementLista != null) {
-                        statementLista.close();
-                    }
-                    if (resultSet != null) {
-                        resultSet.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-
-                }
-
+                return ex.getLocalizedMessage();
             }
         }
-        return ticketTB;
+    }
+
+    public static Object GetTicketRutaById(int idTicket) {
+        DBUtil.dbConnect();
+        PreparedStatement statementLista = null;
+        ResultSet resultSet = null;
+        try {
+            statementLista = DBUtil.getConnection().prepareStatement("SELECT idTicket,ruta FROM TicketTB WHERE idTicket = ?");
+            statementLista.setInt(1, idTicket);
+            resultSet = statementLista.executeQuery();
+            if (resultSet.next()) {
+                TicketTB ticketTB = new TicketTB();
+                ticketTB.setId(resultSet.getInt("idTicket"));
+                ticketTB.setRuta(resultSet.getString("ruta"));
+                return ticketTB;
+            } else {
+                return null;
+            }
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementLista != null) {
+                    statementLista.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
     }
 
     public static String ChangeDefaultState(int idTicket, int tipoTicket) {

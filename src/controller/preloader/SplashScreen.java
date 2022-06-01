@@ -80,7 +80,7 @@ public class SplashScreen extends Preloader {
                     if (DBUtil.getConnection() != null) {
 
                         boolean validateRegister = EmpresaADO.isConfiguration();
-                        if (!validateRegister) {                        
+                        if (!validateRegister) {
                             Session.CONFIGURATION_STATE = true;
                             Session.CONNECTION_SESSION = true;
                         } else {
@@ -245,109 +245,122 @@ public class SplashScreen extends Preloader {
                             LoadFont loadFont = new LoadFont();
                             loadFont.loadFont();
 
-                            TicketTB ticketVentaTB = TicketADO.GetTicketRuta(1);
-                            if (ticketVentaTB != null) {
-                                Session.TICKET_VENTA_ID = ticketVentaTB.getId();
-                                Session.TICKET_VENTA_RUTA = ticketVentaTB.getRuta();
+                            Object ticketVentaTB = TicketADO.GetTicketRuta(1);
+                            if (ticketVentaTB instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketVentaTB;
+                                Session.TICKET_VENTA_ID = ticketTB.getId();
+                                Session.TICKET_VENTA_RUTA = ticketTB.getRuta();
+//                                Tools.println(ticketVentaTB.getRuta()); 
                             } else {
                                 Session.TICKET_VENTA_ID = 0;
                                 Session.TICKET_VENTA_RUTA = "";
                             }
 
-                            TicketTB ticketCompraTB = TicketADO.GetTicketRuta(2);
-                            if (ticketCompraTB != null) {
-                                Session.TICKET_COMPRA_ID = ticketCompraTB.getId();
-                                Session.TICKET_COMPRA_RUTA = ticketCompraTB.getRuta();
+                            Object ticketCompraTB = TicketADO.GetTicketRuta(2);
+                            if (ticketCompraTB instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketCompraTB;
+                                Session.TICKET_COMPRA_ID = ticketTB.getId();
+                                Session.TICKET_COMPRA_RUTA = ticketTB.getRuta();
                             } else {
                                 Session.TICKET_COMPRA_ID = 0;
                                 Session.TICKET_COMPRA_RUTA = "";
                             }
 
-                            TicketTB ticketCorteCajaTB = TicketADO.GetTicketRuta(5);
-                            if (ticketCorteCajaTB != null) {
-                                Session.TICKET_CORTE_CAJA_ID = ticketCorteCajaTB.getId();
-                                Session.TICKET_CORTE_CAJA_RUTA = ticketCorteCajaTB.getRuta();
+                            Object ticketCorteCajaTB = TicketADO.GetTicketRuta(5);
+                            if (ticketCorteCajaTB instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketCorteCajaTB;
+                                Session.TICKET_CORTE_CAJA_ID = ticketTB.getId();
+                                Session.TICKET_CORTE_CAJA_RUTA = ticketTB.getRuta();
                             } else {
                                 Session.TICKET_CORTE_CAJA_ID = 0;
                                 Session.TICKET_CORTE_CAJA_RUTA = "";
                             }
 
-                            TicketTB ticketPreVentaTB = TicketADO.GetTicketRuta(7);
-                            if (ticketPreVentaTB != null) {
-                                Session.TICKET_PRE_VENTA_ID = ticketPreVentaTB.getId();
-                                Session.TICKET_PRE_VENTA_RUTA = ticketPreVentaTB.getRuta();
+                            Object ticketPreVentaTB = TicketADO.GetTicketRuta(7);
+                            if (ticketPreVentaTB instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketPreVentaTB;
+                                Session.TICKET_PRE_VENTA_ID = ticketTB.getId();
+                                Session.TICKET_PRE_VENTA_RUTA = ticketTB.getRuta();
                             } else {
                                 Session.TICKET_PRE_VENTA_ID = 0;
                                 Session.TICKET_PRE_VENTA_RUTA = "";
                             }
 
-                            TicketTB ticketCotizacionTB = TicketADO.GetTicketRuta(8);
-                            if (ticketCotizacionTB != null) {
-                                Session.TICKET_COTIZACION_ID = ticketCotizacionTB.getId();
-                                Session.TICKET_COTIZACION_RUTA = ticketCotizacionTB.getRuta();
+                            Object ticketCotizacionTB = TicketADO.GetTicketRuta(8);
+                            if (ticketCotizacionTB instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketCotizacionTB;
+                                Session.TICKET_COTIZACION_ID = ticketTB .getId();
+                                Session.TICKET_COTIZACION_RUTA = ticketTB .getRuta();
                             } else {
                                 Session.TICKET_COTIZACION_ID = 0;
                                 Session.TICKET_COTIZACION_RUTA = "";
                             }
 
-                            TicketTB ticketCuentasPorCobrarTB = TicketADO.GetTicketRuta(9);
-                            if (ticketCuentasPorCobrarTB != null) {
-                                Session.TICKET_CUENTA_POR_COBRAR_ID = ticketCuentasPorCobrarTB.getId();
-                                Session.TICKET_CUENTA_POR_COBRAR_RUTA = ticketCuentasPorCobrarTB.getRuta();
+                            Object ticketCuentasPorCobrarTB = TicketADO.GetTicketRuta(9);
+                            if (ticketCuentasPorCobrarTB instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketCuentasPorCobrarTB;
+                                Session.TICKET_CUENTA_POR_COBRAR_ID = ticketTB.getId();
+                                Session.TICKET_CUENTA_POR_COBRAR_RUTA = ticketTB.getRuta();
                             } else {
                                 Session.TICKET_CUENTA_POR_COBRAR_ID = 0;
                                 Session.TICKET_CUENTA_POR_COBRAR_RUTA = "";
                             }
 
-                            TicketTB ticketCuentasPorPagarTB = TicketADO.GetTicketRuta(10);
-                            if (ticketCuentasPorPagarTB != null) {
-                                Session.TICKET_CUENTA_POR_PAGAR_ID = ticketCuentasPorPagarTB.getId();
-                                Session.TICKET_CUENTA_POR_PAGAR_RUTA = ticketCuentasPorPagarTB.getRuta();
+                            Object ticketCuentasPorPagarTB = TicketADO.GetTicketRuta(10);
+                            if (ticketCuentasPorPagarTB instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketCuentasPorPagarTB;
+                                Session.TICKET_CUENTA_POR_PAGAR_ID = ticketTB.getId();
+                                Session.TICKET_CUENTA_POR_PAGAR_RUTA = ticketTB.getRuta();
                             } else {
                                 Session.TICKET_CUENTA_POR_PAGAR_ID = 0;
                                 Session.TICKET_CUENTA_POR_PAGAR_RUTA = "";
                             }
 
-                            TicketTB ticketGuiaRemision = TicketADO.GetTicketRuta(11);
-                            if (ticketGuiaRemision != null) {
-                                Session.TICKET_GUIA_REMISION_ID = ticketGuiaRemision.getId();
-                                Session.TICKET_GUIA_REMISION_RUTA = ticketGuiaRemision.getRuta();
+                            Object ticketGuiaRemision = TicketADO.GetTicketRuta(11);
+                            if (ticketGuiaRemision instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketGuiaRemision;
+                                Session.TICKET_GUIA_REMISION_ID = ticketTB.getId();
+                                Session.TICKET_GUIA_REMISION_RUTA = ticketTB.getRuta();
                             } else {
                                 Session.TICKET_GUIA_REMISION_ID = 0;
                                 Session.TICKET_GUIA_REMISION_RUTA = "";
                             }
 
-                            TicketTB ticketHistorialSuministroLlevar = TicketADO.GetTicketRuta(12);
-                            if (ticketHistorialSuministroLlevar != null) {
-                                Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = ticketHistorialSuministroLlevar.getId();
-                                Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = ticketHistorialSuministroLlevar.getRuta();
+                            Object ticketHistorialSuministroLlevar = TicketADO.GetTicketRuta(12);
+                            if (ticketHistorialSuministroLlevar instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketHistorialSuministroLlevar;
+                                Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = ticketTB.getId();
+                                Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = ticketTB.getRuta();
                             } else {
                                 Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = 0;
                                 Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = "";
                             }
 
-                            TicketTB ticketPedido = TicketADO.GetTicketRuta(13);
-                            if (ticketPedido != null) {
-                                Session.TICKET_PEDIDO_ID = ticketPedido.getId();
-                                Session.TICKET_PEDIDO_RUTA = ticketPedido.getRuta();
+                            Object ticketPedido = TicketADO.GetTicketRuta(13);
+                            if (ticketPedido instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketPedido;
+                                Session.TICKET_PEDIDO_ID = ticketTB.getId();
+                                Session.TICKET_PEDIDO_RUTA = ticketTB.getRuta();
                             } else {
                                 Session.TICKET_PEDIDO_ID = 0;
                                 Session.TICKET_PEDIDO_RUTA = "";
                             }
 
-                            TicketTB ticketOrdenCompra = TicketADO.GetTicketRuta(14);
-                            if (ticketOrdenCompra != null) {
-                                Session.TICKET_ORDEN_COMPRA_ID = ticketOrdenCompra.getId();
-                                Session.TICKET_ORDEN_COMPRA_RUTA = ticketOrdenCompra.getRuta();
+                            Object ticketOrdenCompra = TicketADO.GetTicketRuta(14);
+                            if (ticketOrdenCompra instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketOrdenCompra;
+                                Session.TICKET_ORDEN_COMPRA_ID = ticketTB.getId();
+                                Session.TICKET_ORDEN_COMPRA_RUTA = ticketTB.getRuta();
                             } else {
                                 Session.TICKET_ORDEN_COMPRA_ID = 0;
                                 Session.TICKET_ORDEN_COMPRA_RUTA = "";
                             }
 
-                            TicketTB ticketNotaCredito = TicketADO.GetTicketRuta(15);
-                            if (ticketNotaCredito != null) {
-                                Session.TICKET_NOTA_CREDITO_ID = ticketNotaCredito.getId();
-                                Session.TICKET_NOTA_CREDITO_RUTA = ticketNotaCredito.getRuta();
+                            Object ticketNotaCredito = TicketADO.GetTicketRuta(15);
+                            if (ticketNotaCredito instanceof TicketTB) {
+                                TicketTB ticketTB = (TicketTB) ticketNotaCredito;
+                                Session.TICKET_NOTA_CREDITO_ID = ticketTB.getId();
+                                Session.TICKET_NOTA_CREDITO_RUTA = ticketTB.getRuta();
                             } else {
                                 Session.TICKET_NOTA_CREDITO_ID = 0;
                                 Session.TICKET_NOTA_CREDITO_RUTA = "";
@@ -389,8 +402,8 @@ public class SplashScreen extends Preloader {
                             }
 
                             ClienteADO.ListarClienteNumeroDocumento().forEach(c -> ObjectGlobal.DATA_CLIENTS.add(c));
-                            ClienteADO.ListarClienteInformacion().forEach( inf -> ObjectGlobal.DATA_INFO_CLIENTS.add(inf));
-                            
+                            ClienteADO.ListarClienteInformacion().forEach(inf -> ObjectGlobal.DATA_INFO_CLIENTS.add(inf));
+
                         }
                     } else {
                         Session.CONNECTION_SESSION = false;

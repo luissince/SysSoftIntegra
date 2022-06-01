@@ -34,7 +34,7 @@ public class TipoDocumentoADO {
                         DBUtil.getConnection().rollback();
                         result = "duplicate";
                     } else {
-                        statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE TipoDocumentoTB SET Nombre = ?, Serie = ?,Numeracion=?,CodigoAlterno=?,Guia = ?,Facturacion=?, NotaCredito=?, Estado = ?,Campo = ?,NumeroCampo = ? WHERE IdTipoDocumento = ?");
+                        statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE TipoDocumentoTB SET Nombre = ?, Serie = ?,Numeracion=?,CodigoAlterno=?,Guia = ?,Facturacion=?, NotaCredito=?, Estado = ?,Campo = ?,NumeroCampo = ?,idTicket = ? WHERE IdTipoDocumento = ?");
                         statementUpdate.setString(1, documentoTB.getNombre());
                         statementUpdate.setString(2, documentoTB.getSerie());
                         statementUpdate.setInt(3, documentoTB.getNumeracion());
@@ -45,14 +45,14 @@ public class TipoDocumentoADO {
                         statementUpdate.setBoolean(8, documentoTB.isEstado());
                         statementUpdate.setBoolean(9, documentoTB.isCampo());
                         statementUpdate.setInt(10, documentoTB.getNumeroCampo());
-                        statementUpdate.setInt(11, documentoTB.getIdTipoDocumento());
+                        statementUpdate.setInt(11, 0);
+                        statementUpdate.setInt(12, documentoTB.getIdTipoDocumento());
                         statementUpdate.addBatch();
 
                         statementUpdate.executeBatch();
                         DBUtil.getConnection().commit();
                         result = "updated";
                     }
-
                 } else {
                     statementState = DBUtil.getConnection().prepareStatement("SELECT * FROM TipoDocumentoTB WHERE  Nombre = ? ");
                     statementState.setString(1, documentoTB.getNombre());
@@ -60,7 +60,7 @@ public class TipoDocumentoADO {
                         DBUtil.getConnection().rollback();
                         result = "duplicate";
                     } else {
-                        statementUpdate = DBUtil.getConnection().prepareStatement("INSERT INTO TipoDocumentoTB (Nombre,Serie,Numeracion,Predeterminado,Sistema,CodigoAlterno,Guia,Facturacion,NotaCredito,Estado,Campo,NumeroCampo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+                        statementUpdate = DBUtil.getConnection().prepareStatement("INSERT INTO TipoDocumentoTB (Nombre,Serie,Numeracion,Predeterminado,Sistema,CodigoAlterno,Guia,Facturacion,NotaCredito,Estado,Campo,NumeroCampo,idTicket) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
                         statementUpdate.setString(1, documentoTB.getNombre());
                         statementUpdate.setString(2, documentoTB.getSerie());
                         statementUpdate.setInt(3, documentoTB.getNumeracion());
@@ -73,15 +73,14 @@ public class TipoDocumentoADO {
                         statementUpdate.setBoolean(10, documentoTB.isEstado());
                         statementUpdate.setBoolean(11, documentoTB.isCampo());
                         statementUpdate.setInt(12, documentoTB.getNumeroCampo());
+                        statementUpdate.setInt(13, 0);
                         statementUpdate.addBatch();
 
                         statementUpdate.executeBatch();
                         DBUtil.getConnection().commit();
                         result = "inserted";
                     }
-
                 }
-
             } catch (SQLException ex) {
                 try {
                     DBUtil.getConnection().rollback();
@@ -375,6 +374,59 @@ public class TipoDocumentoADO {
             }
         }
         return result;
+    }
+
+    public static Object GetIdTicketForTipoDocumento(String idVenta) {
+        PreparedStatement statementVenta = null;
+        PreparedStatement statementTicket = null;
+        ResultSet resultSet = null;
+        try {
+            DBUtil.dbConnect();
+
+            statementVenta = DBUtil.getConnection().prepareStatement("SELECT Comprobante FROM VentaTB WHERE IdVenta = ?");
+            statementVenta.setString(1, idVenta);            
+            resultSet = statementVenta.executeQuery();
+            if (resultSet.next()) {
+
+                statementTicket = DBUtil.getConnection().prepareStatement("SELECT idTicket FROM TipoDocumentoTB WHERE IdTipoDocumento = ?");
+                statementTicket.setInt(1, resultSet.getInt("Comprobante"));               
+                resultSet = statementTicket.executeQuery();
+                if (resultSet.next()) {
+                    statementTicket = DBUtil.getConnection().prepareStatement("SELECT idTicket,ruta FROM TicketTB WHERE idTicket = ?");
+                    statementTicket.setInt(1, resultSet.getInt("idTicket"));                  
+                    resultSet = statementTicket.executeQuery();
+                    if (resultSet.next()) {
+                        TicketTB ticketTB = new TicketTB();
+                        ticketTB.setId(resultSet.getInt("idTicket"));
+                        ticketTB.setRuta(resultSet.getString("ruta"));
+
+                        return ticketTB;
+                    } else {
+                        throw new Exception("No se encontro ningún ticket asociado.");
+                    }
+                } else {
+                    throw new Exception("No se encontro ningún comprobante,");
+                }
+            } else {
+                throw new Exception("No se encontro ninguna venta.");
+            }
+        } catch (Exception ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementTicket != null) {
+                    statementTicket.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statementVenta != null) {
+                    statementVenta.close();
+                }
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
     }
 
 }

@@ -637,7 +637,6 @@ public class FxVentaProcesoController implements Initializable {
                                 break;
                         }
                     }
-
                 }
                 break;
         }
