@@ -96,7 +96,6 @@ public class FxProveedorProcesoController implements Initializable {
         cbDocumentTypeFactura.requestFocus();
         ProveedorTB proveedorTB = ProveedorADO.GetIdLisProveedor(idProveedor);
         if (proveedorTB != null) {
-            idProveedor = proveedorTB.getIdProveedor();
             ObservableList<DetalleTB> lstypefa = cbDocumentTypeFactura.getItems();
             for (int i = 0; i < lstypefa.size(); i++) {
                 if (proveedorTB.getTipoDocumento() == lstypefa.get(i).getIdDetalle()) {
