@@ -322,9 +322,21 @@ public class FxCajaConsultasController implements Initializable {
             onEventImprimir(cajaTB.getIdCaja());
         }
     }
+    
+        @FXML
+    private void onKeyPressedAjuste(KeyEvent event) {
+        if(event.getCode() == KeyCode.ENTER){
+            
+        }
+    }
+
+    @FXML
+    private void onActionAjuste(ActionEvent event) {
+        
+    }
+
 
     public void setContent(FxPrincipalController fxPrincipalController) {
         this.fxPrincipalController = fxPrincipalController;
     }
-
 }
