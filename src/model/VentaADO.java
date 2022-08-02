@@ -2919,6 +2919,7 @@ public class VentaADO {
             statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ?");
             statementValidar.setString(1, idVenta);
             ResultSet resultSet = statementValidar.executeQuery();
+            resultSet.next();
 
             statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = ?, Observaciones = ? WHERE IdVenta = ?");
             statementVenta.setInt(1, 3);
@@ -3052,6 +3053,7 @@ public class VentaADO {
             statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ?");
             statementValidar.setString(1, idVenta);
             ResultSet resultSet = statementValidar.executeQuery();
+            resultSet.next();
 
             statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = ?, Observaciones = ? WHERE IdVenta = ?");
             statementVenta.setInt(1, 3);
@@ -3126,6 +3128,7 @@ public class VentaADO {
             DBUtil.getConnection().commit();
             return "updated";
         } catch (SQLException ex) {
+            Tools.println(ex.getLocalizedMessage());
             try {
                 DBUtil.getConnection().rollback();
             } catch (SQLException e) {
