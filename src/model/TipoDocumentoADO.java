@@ -18,92 +18,89 @@ public class TipoDocumentoADO {
     public static String CrudTipoDocumento(TipoDocumentoTB documentoTB) {
         String result = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementUpdate = null;
-            PreparedStatement statementState = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementState = DBUtil.getConnection().prepareStatement("SELECT * FROM TipoDocumentoTB WHERE IdTipoDocumento = ? ");
+        PreparedStatement statementUpdate = null;
+        PreparedStatement statementState = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementState = DBUtil.getConnection().prepareStatement("SELECT * FROM TipoDocumentoTB WHERE IdTipoDocumento = ? ");
+            statementState.setInt(1, documentoTB.getIdTipoDocumento());
+            if (statementState.executeQuery().next()) {
+
+                statementState = DBUtil.getConnection().prepareStatement("SELECT * FROM TipoDocumentoTB WHERE IdTipoDocumento <> ? AND Nombre = ? ");
                 statementState.setInt(1, documentoTB.getIdTipoDocumento());
+                statementState.setString(2, documentoTB.getNombre());
                 if (statementState.executeQuery().next()) {
-
-                    statementState = DBUtil.getConnection().prepareStatement("SELECT * FROM TipoDocumentoTB WHERE IdTipoDocumento <> ? AND Nombre = ? ");
-                    statementState.setInt(1, documentoTB.getIdTipoDocumento());
-                    statementState.setString(2, documentoTB.getNombre());
-                    if (statementState.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicate";
-                    } else {
-                        statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE TipoDocumentoTB SET Nombre = ?, Serie = ?,Numeracion=?,CodigoAlterno=?,Guia = ?,Facturacion=?, NotaCredito=?, Estado = ?,Campo = ?,NumeroCampo = ?,idTicket = ? WHERE IdTipoDocumento = ?");
-                        statementUpdate.setString(1, documentoTB.getNombre());
-                        statementUpdate.setString(2, documentoTB.getSerie());
-                        statementUpdate.setInt(3, documentoTB.getNumeracion());
-                        statementUpdate.setString(4, documentoTB.getCodigoAlterno());
-                        statementUpdate.setBoolean(5, documentoTB.isGuia());
-                        statementUpdate.setBoolean(6, documentoTB.isFactura());
-                        statementUpdate.setBoolean(7, documentoTB.isNotaCredito());
-                        statementUpdate.setBoolean(8, documentoTB.isEstado());
-                        statementUpdate.setBoolean(9, documentoTB.isCampo());
-                        statementUpdate.setInt(10, documentoTB.getNumeroCampo());
-                        statementUpdate.setInt(11, 0);
-                        statementUpdate.setInt(12, documentoTB.getIdTipoDocumento());
-                        statementUpdate.addBatch();
-
-                        statementUpdate.executeBatch();
-                        DBUtil.getConnection().commit();
-                        result = "updated";
-                    }
-                } else {
-                    statementState = DBUtil.getConnection().prepareStatement("SELECT * FROM TipoDocumentoTB WHERE  Nombre = ? ");
-                    statementState.setString(1, documentoTB.getNombre());
-                    if (statementState.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicate";
-                    } else {
-                        statementUpdate = DBUtil.getConnection().prepareStatement("INSERT INTO TipoDocumentoTB (Nombre,Serie,Numeracion,Predeterminado,Sistema,CodigoAlterno,Guia,Facturacion,NotaCredito,Estado,Campo,NumeroCampo,idTicket) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
-                        statementUpdate.setString(1, documentoTB.getNombre());
-                        statementUpdate.setString(2, documentoTB.getSerie());
-                        statementUpdate.setInt(3, documentoTB.getNumeracion());
-                        statementUpdate.setBoolean(4, documentoTB.isPredeterminado());
-                        statementUpdate.setBoolean(5, false);
-                        statementUpdate.setString(6, documentoTB.getCodigoAlterno());
-                        statementUpdate.setBoolean(7, documentoTB.isGuia());
-                        statementUpdate.setBoolean(8, documentoTB.isFactura());
-                        statementUpdate.setBoolean(9, documentoTB.isNotaCredito());
-                        statementUpdate.setBoolean(10, documentoTB.isEstado());
-                        statementUpdate.setBoolean(11, documentoTB.isCampo());
-                        statementUpdate.setInt(12, documentoTB.getNumeroCampo());
-                        statementUpdate.setInt(13, 0);
-                        statementUpdate.addBatch();
-
-                        statementUpdate.executeBatch();
-                        DBUtil.getConnection().commit();
-                        result = "inserted";
-                    }
-                }
-            } catch (SQLException ex) {
-                try {
                     DBUtil.getConnection().rollback();
-                    result = ex.getLocalizedMessage();
-                } catch (SQLException e) {
-                    result = e.getLocalizedMessage();
+                    result = "duplicate";
+                } else {
+                    statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE TipoDocumentoTB SET Nombre = ?, Serie = ?,Numeracion=?,CodigoAlterno=?,Guia = ?,Facturacion=?, NotaCredito=?, Estado = ?,Campo = ?,NumeroCampo = ?,idTicket = ? WHERE IdTipoDocumento = ?");
+                    statementUpdate.setString(1, documentoTB.getNombre());
+                    statementUpdate.setString(2, documentoTB.getSerie());
+                    statementUpdate.setInt(3, documentoTB.getNumeracion());
+                    statementUpdate.setString(4, documentoTB.getCodigoAlterno());
+                    statementUpdate.setBoolean(5, documentoTB.isGuia());
+                    statementUpdate.setBoolean(6, documentoTB.isFactura());
+                    statementUpdate.setBoolean(7, documentoTB.isNotaCredito());
+                    statementUpdate.setBoolean(8, documentoTB.isEstado());
+                    statementUpdate.setBoolean(9, documentoTB.isCampo());
+                    statementUpdate.setInt(10, documentoTB.getNumeroCampo());
+                    statementUpdate.setInt(11, 0);
+                    statementUpdate.setInt(12, documentoTB.getIdTipoDocumento());
+                    statementUpdate.addBatch();
+
+                    statementUpdate.executeBatch();
+                    DBUtil.getConnection().commit();
+                    result = "updated";
                 }
-            } finally {
-                try {
-                    if (statementUpdate != null) {
-                        statementUpdate.close();
-                    }
-                    if (statementState != null) {
-                        statementState.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
+            } else {
+                statementState = DBUtil.getConnection().prepareStatement("SELECT * FROM TipoDocumentoTB WHERE  Nombre = ? ");
+                statementState.setString(1, documentoTB.getNombre());
+                if (statementState.executeQuery().next()) {
+                    DBUtil.getConnection().rollback();
+                    result = "duplicate";
+                } else {
+                    statementUpdate = DBUtil.getConnection().prepareStatement("INSERT INTO TipoDocumentoTB (Nombre,Serie,Numeracion,Predeterminado,Sistema,CodigoAlterno,Guia,Facturacion,NotaCredito,Estado,Campo,NumeroCampo,idTicket) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    statementUpdate.setString(1, documentoTB.getNombre());
+                    statementUpdate.setString(2, documentoTB.getSerie());
+                    statementUpdate.setInt(3, documentoTB.getNumeracion());
+                    statementUpdate.setBoolean(4, documentoTB.isPredeterminado());
+                    statementUpdate.setBoolean(5, false);
+                    statementUpdate.setString(6, documentoTB.getCodigoAlterno());
+                    statementUpdate.setBoolean(7, documentoTB.isGuia());
+                    statementUpdate.setBoolean(8, documentoTB.isFactura());
+                    statementUpdate.setBoolean(9, documentoTB.isNotaCredito());
+                    statementUpdate.setBoolean(10, documentoTB.isEstado());
+                    statementUpdate.setBoolean(11, documentoTB.isCampo());
+                    statementUpdate.setInt(12, documentoTB.getNumeroCampo());
+                    statementUpdate.setInt(13, 0);
+                    statementUpdate.addBatch();
+
+                    statementUpdate.executeBatch();
+                    DBUtil.getConnection().commit();
+                    result = "inserted";
                 }
             }
-        } else {
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+                result = ex.getLocalizedMessage();
+            } catch (SQLException e) {
+                result = e.getLocalizedMessage();
+            }
+        } finally {
+            try {
+                if (statementUpdate != null) {
+                    statementUpdate.close();
+                }
+                if (statementState != null) {
+                    statementState.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 
@@ -188,101 +185,99 @@ public class TipoDocumentoADO {
     public static String ChangeDefaultState(boolean state, int id) {
         String result = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementSelect = null;
-            PreparedStatement statementUpdate = null;
-            PreparedStatement statementState = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementSelect = DBUtil.getConnection().prepareStatement("SELECT Predeterminado FROM TipoDocumentoTB WHERE Predeterminado = 1");
-                if (statementSelect.executeQuery().next()) {
-                    statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE TipoDocumentoTB SET Predeterminado = 0 WHERE Predeterminado = 1");
-                    statementUpdate.addBatch();
 
-                    statementState = DBUtil.getConnection().prepareStatement("UPDATE TipoDocumentoTB SET Predeterminado = ? WHERE IdTipoDocumento = ?");
-                    statementState.setBoolean(1, state);
-                    statementState.setInt(2, id);
-                    statementState.addBatch();
+        PreparedStatement statementSelect = null;
+        PreparedStatement statementUpdate = null;
+        PreparedStatement statementState = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementSelect = DBUtil.getConnection().prepareStatement("SELECT Predeterminado FROM TipoDocumentoTB WHERE Predeterminado = 1");
+            if (statementSelect.executeQuery().next()) {
+                statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE TipoDocumentoTB SET Predeterminado = 0 WHERE Predeterminado = 1");
+                statementUpdate.addBatch();
 
-                    statementUpdate.executeBatch();
-                    statementState.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                } else {
-                    statementState = DBUtil.getConnection().prepareStatement("UPDATE TipoDocumentoTB SET Predeterminado = ? WHERE IdTipoDocumento = ?");
-                    statementState.setBoolean(1, state);
-                    statementState.setInt(2, id);
-                    statementState.addBatch();
-                    statementState.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                }
+                statementState = DBUtil.getConnection().prepareStatement("UPDATE TipoDocumentoTB SET Predeterminado = ? WHERE IdTipoDocumento = ?");
+                statementState.setBoolean(1, state);
+                statementState.setInt(2, id);
+                statementState.addBatch();
 
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                    result = ex.getLocalizedMessage();
-                } catch (SQLException e) {
-                    result = e.getLocalizedMessage();
-                }
-
-            } finally {
-                try {
-                    if (statementSelect != null) {
-                        statementSelect.close();
-                    }
-                    if (statementUpdate != null) {
-                        statementUpdate.close();
-                    }
-                    if (statementState != null) {
-                        statementState.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
-                }
+                statementUpdate.executeBatch();
+                statementState.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
+            } else {
+                statementState = DBUtil.getConnection().prepareStatement("UPDATE TipoDocumentoTB SET Predeterminado = ? WHERE IdTipoDocumento = ?");
+                statementState.setBoolean(1, state);
+                statementState.setInt(2, id);
+                statementState.addBatch();
+                statementState.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
             }
-        } else {
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
+
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+                result = ex.getLocalizedMessage();
+            } catch (SQLException e) {
+                result = e.getLocalizedMessage();
+            }
+
+        } finally {
+            try {
+                if (statementSelect != null) {
+                    statementSelect.close();
+                }
+                if (statementUpdate != null) {
+                    statementUpdate.close();
+                }
+                if (statementState != null) {
+                    statementState.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 
     public static List<TipoDocumentoTB> GetDocumentoCombBoxVentas() {
         List<TipoDocumentoTB> list = new ArrayList<>();
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statement = null;
-            ResultSet resultSet = null;
+
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = DBUtil.getConnection().prepareStatement("SELECT IdTipoDocumento,Nombre,Serie, Predeterminado,Campo,NumeroCampo FROM TipoDocumentoTB WHERE Guia <> 1 AND NotaCredito <> 1 AND Estado = 1");
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                TipoDocumentoTB documentoTB = new TipoDocumentoTB();
+                documentoTB.setIdTipoDocumento(resultSet.getInt("IdTipoDocumento"));
+                documentoTB.setNombre(resultSet.getString("Nombre"));
+                documentoTB.setSerie(resultSet.getString("Serie"));
+                documentoTB.setPredeterminado(resultSet.getBoolean("Predeterminado"));
+                documentoTB.setCampo(resultSet.getBoolean("Campo"));
+                documentoTB.setNumeroCampo(resultSet.getInt("NumeroCampo"));
+                list.add(documentoTB);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error Tipo de documento: " + ex.getLocalizedMessage());
+        } finally {
             try {
-                statement = DBUtil.getConnection().prepareStatement("SELECT IdTipoDocumento,Nombre,Serie, Predeterminado,Campo,NumeroCampo FROM TipoDocumentoTB WHERE Guia <> 1 AND NotaCredito <> 1 AND Estado = 1");
-                resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    TipoDocumentoTB documentoTB = new TipoDocumentoTB();
-                    documentoTB.setIdTipoDocumento(resultSet.getInt("IdTipoDocumento"));
-                    documentoTB.setNombre(resultSet.getString("Nombre"));
-                    documentoTB.setSerie(resultSet.getString("Serie"));
-                    documentoTB.setPredeterminado(resultSet.getBoolean("Predeterminado"));
-                    documentoTB.setCampo(resultSet.getBoolean("Campo"));
-                    documentoTB.setNumeroCampo(resultSet.getInt("NumeroCampo"));
-                    list.add(documentoTB);
+                if (statement != null) {
+                    statement.close();
                 }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
                 System.out.println("Error Tipo de documento: " + ex.getLocalizedMessage());
-            } finally {
-                try {
-                    if (statement != null) {
-                        statement.close();
-                    }
-                    if (resultSet != null) {
-                        resultSet.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    System.out.println("Error Tipo de documento: " + ex.getLocalizedMessage());
-                }
             }
         }
+
         return list;
     }
 
@@ -384,16 +379,16 @@ public class TipoDocumentoADO {
             DBUtil.dbConnect();
 
             statementVenta = DBUtil.getConnection().prepareStatement("SELECT Comprobante FROM VentaTB WHERE IdVenta = ?");
-            statementVenta.setString(1, idVenta);            
+            statementVenta.setString(1, idVenta);
             resultSet = statementVenta.executeQuery();
             if (resultSet.next()) {
 
                 statementTicket = DBUtil.getConnection().prepareStatement("SELECT idTicket FROM TipoDocumentoTB WHERE IdTipoDocumento = ?");
-                statementTicket.setInt(1, resultSet.getInt("Comprobante"));               
+                statementTicket.setInt(1, resultSet.getInt("Comprobante"));
                 resultSet = statementTicket.executeQuery();
                 if (resultSet.next()) {
                     statementTicket = DBUtil.getConnection().prepareStatement("SELECT idTicket,ruta FROM TicketTB WHERE idTicket = ?");
-                    statementTicket.setInt(1, resultSet.getInt("idTicket"));                  
+                    statementTicket.setInt(1, resultSet.getInt("idTicket"));
                     resultSet = statementTicket.executeQuery();
                     if (resultSet.next()) {
                         TicketTB ticketTB = new TicketTB();

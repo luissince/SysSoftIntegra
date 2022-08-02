@@ -18,151 +18,149 @@ public class GlobalADO {
         PreparedStatement preparedGlobal = null;
         ResultSet resultSet = null;
         ArrayList<Double> list = new ArrayList<>();
+
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            try {
+        try {
 
-                // ventas contado
-                preparedGlobal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(sum(dv.Cantidad*(dv.PrecioVenta-dv.Descuento)),0) AS Total FROM VentaTB as v INNER JOIN DetalleVentaTB as dv on dv.IdVenta = v.IdVenta LEFT JOIN NotaCreditoTB as nc on nc.IdVenta = v.IdVenta WHERE v.FechaVenta between ? AND ? AND v.Tipo = 1 AND v.Estado <> 3 AND nc.IdNotaCredito IS NULL");
-                preparedGlobal.setString(1, fechaInicial);
-                preparedGlobal.setString(2, fechaFinal);
-                resultSet = preparedGlobal.executeQuery();
-                double ventasContado = 0;
-                if (resultSet.next()) {
-                    ventasContado += resultSet.getDouble("Total");
-                }
-                list.add(ventasContado);
+            // ventas contado
+            preparedGlobal = DBUtil.getConnection().prepareStatement("SELECT ISNULL(sum(dv.Cantidad*(dv.PrecioVenta-dv.Descuento)),0) AS Total FROM VentaTB as v INNER JOIN DetalleVentaTB as dv on dv.IdVenta = v.IdVenta LEFT JOIN NotaCreditoTB as nc on nc.IdVenta = v.IdVenta WHERE v.FechaVenta between ? AND ? AND v.Tipo = 1 AND v.Estado <> 3 AND nc.IdNotaCredito IS NULL");
+            preparedGlobal.setString(1, fechaInicial);
+            preparedGlobal.setString(2, fechaFinal);
+            resultSet = preparedGlobal.executeQuery();
+            double ventasContado = 0;
+            if (resultSet.next()) {
+                ventasContado += resultSet.getDouble("Total");
+            }
+            list.add(ventasContado);
 
-                // ventas credito
-                preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as VentaTB from VentaTB where Tipo = 2 and Estado = 2 and FechaVenta between ? and ? ");
-                preparedGlobal.setString(1, fechaInicial);
-                preparedGlobal.setString(2, fechaFinal);
-                resultSet = preparedGlobal.executeQuery();
-                double ventasCredito = 0;
-                if (resultSet.next()) {
-                    ventasCredito += resultSet.getDouble("Total");
-                }
-                list.add(ventasCredito);
+            // ventas credito
+            preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as VentaTB from VentaTB where Tipo = 2 and Estado = 2 and FechaVenta between ? and ? ");
+            preparedGlobal.setString(1, fechaInicial);
+            preparedGlobal.setString(2, fechaFinal);
+            resultSet = preparedGlobal.executeQuery();
+            double ventasCredito = 0;
+            if (resultSet.next()) {
+                ventasCredito += resultSet.getDouble("Total");
+            }
+            list.add(ventasCredito);
 
-                // ventas anuladas                
-                double ventasAnuladas = 0;
-                list.add(ventasAnuladas);
+            // ventas anuladas                
+            double ventasAnuladas = 0;
+            list.add(ventasAnuladas);
 
-                // utilidad
-                preparedGlobal = DBUtil.getConnection().prepareStatement("select\n"
-                        + "case\n"
-                        + "when a.ValorInventario = 1 then (dv.Cantidad * dv.PrecioVenta)- (dv.Cantidad * dv.CostoVenta )\n"
-                        + "when a.ValorInventario = 2 then (dv.Cantidad * dv.PrecioVenta )- (dv.Cantidad * dv.CostoVenta )\n"
-                        + "when a.ValorInventario = 3 then (dv.Cantidad * dv.PrecioVenta )- (dv.Cantidad * dv.CostoVenta )\n"
-                        + "end as Utilidad\n"
-                        + "from DetalleVentaTB as dv\n"
-                        + "inner join SuministroTB as a on dv.IdArticulo = a.IdSuministro \n"
-                        + "inner join VentaTB as v on v.IdVenta = dv.IdVenta\n"
-                        + "left join NotaCreditoTB as nc on nc.IdVenta = v.IdVenta\n"
-                        + "inner join MonedaTB as m on m.IdMoneda = v.Moneda\n"
-                        + "where v.Estado <> 3 and v.FechaVenta between ? and ? and nc.IdNotaCredito is null");
-                preparedGlobal.setString(1, fechaInicial);
-                preparedGlobal.setString(2, fechaFinal);
-                resultSet = preparedGlobal.executeQuery();
-                double utilidad = 0;
-                while (resultSet.next()) {
-                    utilidad += resultSet.getObject("Utilidad") == null ? 0 : resultSet.getDouble("Utilidad");
-                }
-                list.add(utilidad);
+            // utilidad
+            preparedGlobal = DBUtil.getConnection().prepareStatement("select\n"
+                    + "case\n"
+                    + "when a.ValorInventario = 1 then (dv.Cantidad * dv.PrecioVenta)- (dv.Cantidad * dv.CostoVenta )\n"
+                    + "when a.ValorInventario = 2 then (dv.Cantidad * dv.PrecioVenta )- (dv.Cantidad * dv.CostoVenta )\n"
+                    + "when a.ValorInventario = 3 then (dv.Cantidad * dv.PrecioVenta )- (dv.Cantidad * dv.CostoVenta )\n"
+                    + "end as Utilidad\n"
+                    + "from DetalleVentaTB as dv\n"
+                    + "inner join SuministroTB as a on dv.IdArticulo = a.IdSuministro \n"
+                    + "inner join VentaTB as v on v.IdVenta = dv.IdVenta\n"
+                    + "left join NotaCreditoTB as nc on nc.IdVenta = v.IdVenta\n"
+                    + "inner join MonedaTB as m on m.IdMoneda = v.Moneda\n"
+                    + "where v.Estado <> 3 and v.FechaVenta between ? and ? and nc.IdNotaCredito is null");
+            preparedGlobal.setString(1, fechaInicial);
+            preparedGlobal.setString(2, fechaFinal);
+            resultSet = preparedGlobal.executeQuery();
+            double utilidad = 0;
+            while (resultSet.next()) {
+                utilidad += resultSet.getObject("Utilidad") == null ? 0 : resultSet.getDouble("Utilidad");
+            }
+            list.add(utilidad);
 
-                // compras al contado
-                preparedGlobal = DBUtil.getConnection().prepareStatement("SELECT SUM(d.Importe) AS Total FROM CompraTB as c inner join DetalleCompraTB as d on d.IdCompra = c.IdCompra where c.FechaCompra between ? and ? and c.EstadoCompra = 1");
-                preparedGlobal.setString(1, fechaInicial);
-                preparedGlobal.setString(2, fechaFinal);
-                resultSet = preparedGlobal.executeQuery();
-                double totalcontado = 0;
-                if (resultSet.next()) {
-                    totalcontado = resultSet.getObject("totalcontado") == null ? 0 : resultSet.getDouble("totalcontado");
-                }
-                list.add(totalcontado);
+            // compras al contado
+            preparedGlobal = DBUtil.getConnection().prepareStatement("SELECT SUM(d.Importe) AS Total FROM CompraTB as c inner join DetalleCompraTB as d on d.IdCompra = c.IdCompra where c.FechaCompra between ? and ? and c.EstadoCompra = 1");
+            preparedGlobal.setString(1, fechaInicial);
+            preparedGlobal.setString(2, fechaFinal);
+            resultSet = preparedGlobal.executeQuery();
+            double totalcontado = 0;
+            if (resultSet.next()) {
+                totalcontado = resultSet.getObject("totalcontado") == null ? 0 : resultSet.getDouble("totalcontado");
+            }
+            list.add(totalcontado);
 
 //              compras al credito
-                preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as ComprasPagar from CompraTB where TipoCompra = 2 and EstadoCompra = 2 and c.FechaCompra between ? and ?");
-                preparedGlobal.setString(1, fechaInicial);
-                preparedGlobal.setString(2, fechaFinal);
-                resultSet = preparedGlobal.executeQuery();
-                double totalcredito = 0;
-                if (resultSet.next()) {
-                    totalcredito = resultSet.getObject("totalcredito") == null ? 0 : resultSet.getDouble("totalcredito");
+            preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as ComprasPagar from CompraTB where TipoCompra = 2 and EstadoCompra = 2 and c.FechaCompra between ? and ?");
+            preparedGlobal.setString(1, fechaInicial);
+            preparedGlobal.setString(2, fechaFinal);
+            resultSet = preparedGlobal.executeQuery();
+            double totalcredito = 0;
+            if (resultSet.next()) {
+                totalcredito = resultSet.getObject("totalcredito") == null ? 0 : resultSet.getDouble("totalcredito");
+            }
+            list.add(totalcredito);
+
+            // compras anuladas         
+            double comprasAnuladas = 0;
+
+            list.add(comprasAnuladas);
+
+            // CUENTAS
+            double ventas_cobrar = 0;
+            preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as VentasCobrar from VentaTB where Tipo = 2 and Estado = 2");
+            resultSet = preparedGlobal.executeQuery();
+            if (resultSet.next()) {
+                ventas_cobrar = resultSet.getObject("VentasCobrar") == null ? 0 : resultSet.getInt("VentasCobrar");
+            }
+            list.add(ventas_cobrar);
+
+            double compras_pagar = 0;
+            preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as ComprasPagar from CompraTB where TipoCompra = 2 and EstadoCompra = 2");
+            resultSet = preparedGlobal.executeQuery();
+            if (resultSet.next()) {
+                compras_pagar = resultSet.getObject("ComprasPagar") == null ? 0 : resultSet.getInt("ComprasPagar");
+            }
+            list.add(compras_pagar);
+
+            // CANTIDADES
+            double cantidad_negativas = 0;
+            preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Negativos' from SuministroTB where Cantidad <= 0");
+            resultSet = preparedGlobal.executeQuery();
+            if (resultSet.next()) {
+                cantidad_negativas = resultSet.getObject("Productos Negativos") == null ? 0 : resultSet.getDouble("Productos Negativos");
+            }
+            list.add(cantidad_negativas);
+
+            double cantidad_intermedias = 0;
+            preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Intermedios' from SuministroTB where Cantidad > 0 and Cantidad < StockMinimo");
+            resultSet = preparedGlobal.executeQuery();
+            if (resultSet.next()) {
+                cantidad_intermedias = resultSet.getObject("Productos Intermedios") == null ? 0 : resultSet.getInt("Productos Intermedios");
+            }
+            list.add(cantidad_intermedias);
+
+            double cantidad_necesarias = 0;
+            preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Necesarios' from SuministroTB where Cantidad >= StockMinimo and Cantidad < StockMaximo");
+            resultSet = preparedGlobal.executeQuery();
+            if (resultSet.next()) {
+                cantidad_necesarias = resultSet.getObject("Productos Necesarios") == null ? 0 : resultSet.getInt("Productos Necesarios");
+            }
+            list.add(cantidad_necesarias);
+
+            double cantidad_excedentes = 0;
+            preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Execedentes' from SuministroTB where Cantidad >= StockMaximo");
+            resultSet = preparedGlobal.executeQuery();
+            if (resultSet.next()) {
+                cantidad_excedentes = resultSet.getObject("Productos Execedentes") == null ? 0 : resultSet.getInt("Productos Execedentes");
+            }
+            list.add(cantidad_excedentes);
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getLocalizedMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
                 }
-                list.add(totalcredito);
-
-                // compras anuladas         
-                double comprasAnuladas = 0;
-
-                list.add(comprasAnuladas);
-
-                // CUENTAS
-                double ventas_cobrar = 0;
-                preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as VentasCobrar from VentaTB where Tipo = 2 and Estado = 2");
-                resultSet = preparedGlobal.executeQuery();
-                if (resultSet.next()) {
-                    ventas_cobrar = resultSet.getObject("VentasCobrar") == null ? 0 : resultSet.getInt("VentasCobrar");
+                if (preparedGlobal != null) {
+                    preparedGlobal.close();
                 }
-                list.add(ventas_cobrar);
-
-                double compras_pagar = 0;
-                preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as ComprasPagar from CompraTB where TipoCompra = 2 and EstadoCompra = 2");
-                resultSet = preparedGlobal.executeQuery();
-                if (resultSet.next()) {
-                    compras_pagar = resultSet.getObject("ComprasPagar") == null ? 0 : resultSet.getInt("ComprasPagar");
-                }
-                list.add(compras_pagar);
-
-                // CANTIDADES
-                double cantidad_negativas = 0;
-                preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Negativos' from SuministroTB where Cantidad <= 0");
-                resultSet = preparedGlobal.executeQuery();
-                if (resultSet.next()) {
-                    cantidad_negativas = resultSet.getObject("Productos Negativos") == null ? 0 : resultSet.getDouble("Productos Negativos");
-                }
-                list.add(cantidad_negativas);
-
-                double cantidad_intermedias = 0;
-                preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Intermedios' from SuministroTB where Cantidad > 0 and Cantidad < StockMinimo");
-                resultSet = preparedGlobal.executeQuery();
-                if (resultSet.next()) {
-                    cantidad_intermedias = resultSet.getObject("Productos Intermedios") == null ? 0 : resultSet.getInt("Productos Intermedios");
-                }
-                list.add(cantidad_intermedias);
-
-                double cantidad_necesarias = 0;
-                preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Necesarios' from SuministroTB where Cantidad >= StockMinimo and Cantidad < StockMaximo");
-                resultSet = preparedGlobal.executeQuery();
-                if (resultSet.next()) {
-                    cantidad_necesarias = resultSet.getObject("Productos Necesarios") == null ? 0 : resultSet.getInt("Productos Necesarios");
-                }
-                list.add(cantidad_necesarias);
-
-                double cantidad_excedentes = 0;
-                preparedGlobal = DBUtil.getConnection().prepareStatement("select COUNT(*) as 'Productos Execedentes' from SuministroTB where Cantidad >= StockMaximo");
-                resultSet = preparedGlobal.executeQuery();
-                if (resultSet.next()) {
-                    cantidad_excedentes = resultSet.getObject("Productos Execedentes") == null ? 0 : resultSet.getInt("Productos Execedentes");
-                }
-                list.add(cantidad_excedentes);
-
+                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-                System.out.println(ex.getLocalizedMessage());
-            } finally {
-                try {
-                    if (resultSet != null) {
-                        resultSet.close();
-                    }
-                    if (preparedGlobal != null) {
-                        preparedGlobal.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                }
             }
         }
-
         return list;
     }
 

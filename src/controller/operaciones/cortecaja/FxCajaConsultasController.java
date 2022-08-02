@@ -189,13 +189,16 @@ public class FxCajaConsultasController implements Initializable {
 
             gpList.add(addElementGridPane("l4" + (i + 1),
                     arrList.get(i).getTipoMovimiento() == 1 ? "MONTO INICIAL"
+                            
                     : arrList.get(i).getTipoMovimiento() == 2 ? "VENTA EN EFECTIVO"
                     : arrList.get(i).getTipoMovimiento() == 3 ? "VENTA CON TARJETA"
-                    : arrList.get(i).getTipoMovimiento() == 4 ? "INGRESO EN EFECTIVO"
-                    : arrList.get(i).getTipoMovimiento() == 5 ? "SALIDA EN EFECTIVO"
                     : arrList.get(i).getTipoMovimiento() == 6 ? "VENTA CON DEPOSITO"
+                            
+                    : arrList.get(i).getTipoMovimiento() == 4 ? "INGRESO EN EFECTIVO"
                     : arrList.get(i).getTipoMovimiento() == 7 ? "INGRESO CON TARJETA"
                     : arrList.get(i).getTipoMovimiento() == 8 ? "INGRESO CON DEPOSITO"
+                            
+                    : arrList.get(i).getTipoMovimiento() == 5 ? "SALIDA EN EFECTIVO"
                     : arrList.get(i).getTipoMovimiento() == 9 ? "SALIDA CON TARJETA"
                     : "SALIDA CON DEPOSITO",
                     Pos.CENTER_LEFT, "#020203"), 3, (i + 1));
@@ -212,7 +215,7 @@ public class FxCajaConsultasController implements Initializable {
                     : "",
                     Pos.CENTER_RIGHT, "#0d4e9e"), 4, (i + 1));
             gpList.add(addElementGridPane("l6" + (i + 1),
-                       arrList.get(i).getTipoMovimiento() == 5//SALIDA EFECTIVO
+                    arrList.get(i).getTipoMovimiento() == 5//SALIDA EFECTIVO
                     || arrList.get(i).getTipoMovimiento() == 9//SALIDA TARJETA
                     || arrList.get(i).getTipoMovimiento() == 10//SALIDA DEPOSITO
                     ? Tools.roundingValue(arrList.get(i).getMonto(), 2)
@@ -258,6 +261,28 @@ public class FxCajaConsultasController implements Initializable {
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
             FxCajaBusquedaController controller = fXMLLoader.getController();
+            controller.setInitCajaConsultasController(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccionar corte de caja", window.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.show();
+
+        } catch (IOException ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
+    }
+
+    private void openWindowAjuste() {
+        try {
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_CAJA_AJUSTE);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            //Controlller here
+            FxCajaAjusteController controller = fXMLLoader.getController();
+            controller.initComponents(cajaTB.getIdCaja());
             controller.setInitCajaConsultasController(this);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Seleccionar corte de caja", window.getScene().getWindow());
@@ -322,19 +347,18 @@ public class FxCajaConsultasController implements Initializable {
             onEventImprimir(cajaTB.getIdCaja());
         }
     }
-    
-        @FXML
+
+    @FXML
     private void onKeyPressedAjuste(KeyEvent event) {
-        if(event.getCode() == KeyCode.ENTER){
-            
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowAjuste();
         }
     }
 
     @FXML
     private void onActionAjuste(ActionEvent event) {
-        
+        openWindowAjuste();
     }
-
 
     public void setContent(FxPrincipalController fxPrincipalController) {
         this.fxPrincipalController = fxPrincipalController;

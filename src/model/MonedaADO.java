@@ -16,74 +16,74 @@ public class MonedaADO {
     public static String CrudMoneda(MonedaTB monedaTB) {
         String result = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementValidate = null;
-            PreparedStatement statementMoneda = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementValidate = DBUtil.getConnection().prepareStatement("SELECT IdMoneda FROM MonedaTB WHERE IdMoneda = ?");
+
+        PreparedStatement statementValidate = null;
+        PreparedStatement statementMoneda = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementValidate = DBUtil.getConnection().prepareStatement("SELECT IdMoneda FROM MonedaTB WHERE IdMoneda = ?");
+            statementValidate.setInt(1, monedaTB.getIdMoneda());
+            if (statementValidate.executeQuery().next()) {
+                statementValidate = DBUtil.getConnection().prepareStatement("SELECT Nombre FROM MonedaTB WHERE IdMoneda <> ? AND Nombre = ?");
                 statementValidate.setInt(1, monedaTB.getIdMoneda());
+                statementValidate.setString(2, monedaTB.getNombre());
                 if (statementValidate.executeQuery().next()) {
-                    statementValidate = DBUtil.getConnection().prepareStatement("SELECT Nombre FROM MonedaTB WHERE IdMoneda <> ? AND Nombre = ?");
-                    statementValidate.setInt(1, monedaTB.getIdMoneda());
-                    statementValidate.setString(2, monedaTB.getNombre());
-                    if (statementValidate.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicated";
-                    } else {
-                        statementMoneda = DBUtil.getConnection().prepareStatement("UPDATE MonedaTB SET Nombre=?,Abreviado=?,Simbolo=?,TipoCambio=?,Predeterminado=? WHERE IdMoneda = ?");
-                        statementMoneda.setString(1, monedaTB.getNombre());
-                        statementMoneda.setString(2, monedaTB.getAbreviado());
-                        statementMoneda.setString(3, monedaTB.getSimbolo());
-                        statementMoneda.setDouble(4, monedaTB.getTipoCambio());
-                        statementMoneda.setBoolean(5, monedaTB.isPredeterminado());
-                        statementMoneda.setInt(6, monedaTB.getIdMoneda());
-                        statementMoneda.addBatch();
-                        statementMoneda.executeBatch();
-                        DBUtil.getConnection().commit();
-                        result = "updated";
-                    }
-                } else {
-                    statementValidate = DBUtil.getConnection().prepareStatement("SELECT Nombre FROM MonedaTB WHERE Nombre = ?");
-                    statementValidate.setString(1, monedaTB.getNombre());
-                    if (statementValidate.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicated";
-                    } else {
-                        statementMoneda = DBUtil.getConnection().prepareStatement("INSERT INTO MonedaTB(Nombre,Abreviado,Simbolo,TipoCambio,Predeterminado,Sistema) VALUES(?,?,?,?,?,?)");
-                        statementMoneda.setString(1, monedaTB.getNombre());
-                        statementMoneda.setString(2, monedaTB.getAbreviado());
-                        statementMoneda.setString(3, monedaTB.getSimbolo());
-                        statementMoneda.setDouble(4, monedaTB.getTipoCambio());
-                        statementMoneda.setBoolean(5, monedaTB.isPredeterminado());
-                        statementMoneda.setBoolean(6, monedaTB.getSistema());
-                        statementMoneda.addBatch();
-                        statementMoneda.executeBatch();
-                        DBUtil.getConnection().commit();
-                        result = "inserted";
-                    }
-                }
-            } catch (SQLException ex) {
-                try {
                     DBUtil.getConnection().rollback();
-                    result = ex.getLocalizedMessage();
-                } catch (SQLException e) {
-                    result = e.getLocalizedMessage();
+                    result = "duplicated";
+                } else {
+                    statementMoneda = DBUtil.getConnection().prepareStatement("UPDATE MonedaTB SET Nombre=?,Abreviado=?,Simbolo=?,TipoCambio=?,Predeterminado=? WHERE IdMoneda = ?");
+                    statementMoneda.setString(1, monedaTB.getNombre());
+                    statementMoneda.setString(2, monedaTB.getAbreviado());
+                    statementMoneda.setString(3, monedaTB.getSimbolo());
+                    statementMoneda.setDouble(4, monedaTB.getTipoCambio());
+                    statementMoneda.setBoolean(5, monedaTB.isPredeterminado());
+                    statementMoneda.setInt(6, monedaTB.getIdMoneda());
+                    statementMoneda.addBatch();
+                    statementMoneda.executeBatch();
+                    DBUtil.getConnection().commit();
+                    result = "updated";
                 }
-            } finally {
-                try {
-                    if (statementValidate != null) {
-                        statementValidate.close();
-                    }
-                    if (statementMoneda != null) {
-                        statementMoneda.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
+            } else {
+                statementValidate = DBUtil.getConnection().prepareStatement("SELECT Nombre FROM MonedaTB WHERE Nombre = ?");
+                statementValidate.setString(1, monedaTB.getNombre());
+                if (statementValidate.executeQuery().next()) {
+                    DBUtil.getConnection().rollback();
+                    result = "duplicated";
+                } else {
+                    statementMoneda = DBUtil.getConnection().prepareStatement("INSERT INTO MonedaTB(Nombre,Abreviado,Simbolo,TipoCambio,Predeterminado,Sistema) VALUES(?,?,?,?,?,?)");
+                    statementMoneda.setString(1, monedaTB.getNombre());
+                    statementMoneda.setString(2, monedaTB.getAbreviado());
+                    statementMoneda.setString(3, monedaTB.getSimbolo());
+                    statementMoneda.setDouble(4, monedaTB.getTipoCambio());
+                    statementMoneda.setBoolean(5, monedaTB.isPredeterminado());
+                    statementMoneda.setBoolean(6, monedaTB.getSistema());
+                    statementMoneda.addBatch();
+                    statementMoneda.executeBatch();
+                    DBUtil.getConnection().commit();
+                    result = "inserted";
                 }
             }
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+                result = ex.getLocalizedMessage();
+            } catch (SQLException e) {
+                result = e.getLocalizedMessage();
+            }
+        } finally {
+            try {
+                if (statementValidate != null) {
+                    statementValidate.close();
+                }
+                if (statementMoneda != null) {
+                    statementMoneda.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 
@@ -148,124 +148,120 @@ public class MonedaADO {
     public static String ChangeDefaultState(boolean state, int id) {
         String result = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementSelect = null;
-            PreparedStatement statementUpdate = null;
-            PreparedStatement statementState = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementSelect = DBUtil.getConnection().prepareStatement("SELECT Predeterminado FROM MonedaTB WHERE Predeterminado = 1");
-                if (statementSelect.executeQuery().next()) {
-                    statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE MonedaTB SET Predeterminado = 0 WHERE Predeterminado = 1");
-                    statementUpdate.addBatch();
 
-                    statementState = DBUtil.getConnection().prepareStatement("UPDATE MonedaTB SET Predeterminado = ? WHERE IdMoneda = ?");
-                    statementState.setBoolean(1, state);
-                    statementState.setInt(2, id);
-                    statementState.addBatch();
+        PreparedStatement statementSelect = null;
+        PreparedStatement statementUpdate = null;
+        PreparedStatement statementState = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementSelect = DBUtil.getConnection().prepareStatement("SELECT Predeterminado FROM MonedaTB WHERE Predeterminado = 1");
+            if (statementSelect.executeQuery().next()) {
+                statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE MonedaTB SET Predeterminado = 0 WHERE Predeterminado = 1");
+                statementUpdate.addBatch();
 
-                    statementUpdate.executeBatch();
-                    statementState.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                } else {
-                    statementState = DBUtil.getConnection().prepareStatement("UPDATE MonedaTB SET Predeterminado = ? WHERE IdMoneda = ?");
-                    statementState.setBoolean(1, state);
-                    statementState.setInt(2, id);
-                    statementState.addBatch();
-                    statementState.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                }
+                statementState = DBUtil.getConnection().prepareStatement("UPDATE MonedaTB SET Predeterminado = ? WHERE IdMoneda = ?");
+                statementState.setBoolean(1, state);
+                statementState.setInt(2, id);
+                statementState.addBatch();
 
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                    result = ex.getLocalizedMessage();
-                } catch (SQLException e) {
-                    result = e.getLocalizedMessage();
-                }
-
-            } finally {
-                try {
-                    if (statementSelect != null) {
-                        statementSelect.close();
-                    }
-                    if (statementUpdate != null) {
-                        statementUpdate.close();
-                    }
-                    if (statementState != null) {
-                        statementState.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
-                }
+                statementUpdate.executeBatch();
+                statementState.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
+            } else {
+                statementState = DBUtil.getConnection().prepareStatement("UPDATE MonedaTB SET Predeterminado = ? WHERE IdMoneda = ?");
+                statementState.setBoolean(1, state);
+                statementState.setInt(2, id);
+                statementState.addBatch();
+                statementState.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
             }
-        } else {
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
+
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+                result = ex.getLocalizedMessage();
+            } catch (SQLException e) {
+                result = e.getLocalizedMessage();
+            }
+
+        } finally {
+            try {
+                if (statementSelect != null) {
+                    statementSelect.close();
+                }
+                if (statementUpdate != null) {
+                    statementUpdate.close();
+                }
+                if (statementState != null) {
+                    statementState.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 
     public static String RemoveElement(int idMoneda) {
         String result = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementValidate = null;
-            PreparedStatement statementRemove = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM MonedaTB WHERE IdMoneda = ? AND Predeterminado = 1");
+
+        PreparedStatement statementValidate = null;
+        PreparedStatement statementRemove = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM MonedaTB WHERE IdMoneda = ? AND Predeterminado = 1");
+            statementValidate.setInt(1, idMoneda);
+            if (statementValidate.executeQuery().next()) {
+                DBUtil.getConnection().rollback();
+                result = "predetermined";
+            } else {
+                statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE Moneda = ?");
                 statementValidate.setInt(1, idMoneda);
                 if (statementValidate.executeQuery().next()) {
                     DBUtil.getConnection().rollback();
-                    result = "predetermined";
+                    result = "venta";
                 } else {
-                    statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE Moneda = ?");
+                    statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM CompraTB WHERE TipoMoneda = ?");
                     statementValidate.setInt(1, idMoneda);
                     if (statementValidate.executeQuery().next()) {
                         DBUtil.getConnection().rollback();
-                        result = "venta";
+                        result = "compra";
                     } else {
-                        statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM CompraTB WHERE TipoMoneda = ?");
-                        statementValidate.setInt(1, idMoneda);
-                        if (statementValidate.executeQuery().next()) {
-                            DBUtil.getConnection().rollback();
-                            result = "compra";
-                        } else {
-                            statementRemove = DBUtil.getConnection().prepareStatement("DELETE FROM MonedaTB WHERE IdMoneda = ?");
-                            statementRemove.setInt(1, idMoneda);
-                            statementRemove.addBatch();
-                            statementRemove.executeBatch();
-                            DBUtil.getConnection().commit();
-                            result = "removed";
-                        }
+                        statementRemove = DBUtil.getConnection().prepareStatement("DELETE FROM MonedaTB WHERE IdMoneda = ?");
+                        statementRemove.setInt(1, idMoneda);
+                        statementRemove.addBatch();
+                        statementRemove.executeBatch();
+                        DBUtil.getConnection().commit();
+                        result = "removed";
                     }
-                }
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                    result = ex.getLocalizedMessage();
-                } catch (SQLException e) {
-                    result = e.getLocalizedMessage();
-                }
-            } finally {
-                try {
-                    if (statementValidate != null) {
-                        statementValidate.close();
-                    }
-                    if (statementRemove != null) {
-                        statementRemove.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
                 }
             }
-        } else {
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+                result = ex.getLocalizedMessage();
+            } catch (SQLException e) {
+                result = e.getLocalizedMessage();
+            }
+        } finally {
+            try {
+                if (statementValidate != null) {
+                    statementValidate.close();
+                }
+                if (statementRemove != null) {
+                    statementRemove.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 

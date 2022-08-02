@@ -2,10 +2,14 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+<<<<<<< HEAD
         <group>
             <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/model/VentaADO.java</file>
             <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/operaciones/venta/FxVentaDevolucionController.java</file>
             <file>file:/C:/Users/Aleza/Documents/NetBeands/SysSoftIntegra/src/controller/operaciones/venta/FxVentaDetalleController.java</file>
         </group>
+=======
+        <group/>
+>>>>>>> ad60fc7d38f3978957d51b4ce42a7c03ba75caed
     </open-files>
 </project-private>

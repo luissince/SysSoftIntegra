@@ -138,11 +138,21 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
 
                 ventaTB.getVentaCreditoTBs().forEach(vc -> {
                     vc.getBtnPagar().setOnAction(event -> {
-                        onEventAmortizarUpdate(vc.getIdVentaCredito(),vc.getMonto());
+                        onEventAmortizarUpdate(vc.getIdVentaCredito(), vc.getMonto());
                     });
                     vc.getBtnPagar().setOnKeyPressed(event -> {
                         if (event.getCode() == KeyCode.ENTER) {
-                            onEventAmortizarUpdate(vc.getIdVentaCredito(),vc.getMonto());
+                            onEventAmortizarUpdate(vc.getIdVentaCredito(), vc.getMonto());
+                            event.consume();
+                        }
+                    });
+
+                    vc.getBtnQuitar().setOnAction(event -> {
+                        onEventRemove(vc.getIdVentaCredito());
+                    });
+                    vc.getBtnQuitar().setOnKeyPressed(event -> {
+                        if (event.getCode() == KeyCode.ENTER) {
+                            onEventRemove(vc.getIdVentaCredito());
                             event.consume();
                         }
                     });
@@ -185,7 +195,8 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             gpList.add(addElementGridPane("l4" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getEstado() == 1 ? "COBRADO" : "POR COBRAR", Pos.CENTER, null, ventaTB.getVentaCreditoTBs().get(i).getEstado() == 1 ? "#0771d3" : "#c62303"), 3, (i + 1));
             gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(ventaTB.getVentaCreditoTBs().get(i).getMonto(), 2), Pos.CENTER, null, "#020203"), 4, (i + 1));
             gpList.add(addElementGridPane("l6" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getObservacion(), Pos.CENTER, null, "#020203"), 5, (i + 1));
-            gpList.add(addElementGridPane("l7" + (i + 1), "", Pos.CENTER, ventaTB.getVentaCreditoTBs().get(i).getEstado() == 1 ? null : ventaTB.getVentaCreditoTBs().get(i).getBtnPagar(), "#020203"), 6, (i + 1));
+            gpList.add(addElementGridPane("l7" + (i + 1), "", Pos.CENTER, ventaTB.getVentaCreditoTBs().get(i).getEstado() == 1 ? new Label("-") : ventaTB.getVentaCreditoTBs().get(i).getBtnPagar(), "#020203"), 6, (i + 1));
+            gpList.add(addElementGridPane("l8" + (i + 1), "", Pos.CENTER, ventaTB.getVentaCreditoTBs().get(i).getEstado() == 0 ? new Label("-") : ventaTB.getVentaCreditoTBs().get(i).getBtnQuitar(), "#020203"), 7, (i + 1));
         }
     }
 
@@ -254,7 +265,7 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
         }
     }
 
-    private void onEventAmortizarUpdate(String idVentaCredito,double monto) {
+    private void onEventAmortizarUpdate(String idVentaCredito, double monto) {
         try {
             fxPrincipalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_VENTA_ABONO_PROCESO);
@@ -262,7 +273,7 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
             FxVentaAbonoProcesoController controller = fXMLLoader.getController();
-            controller.setInitLoadVentaAbono(ventaTB, idVentaCredito,monto);
+            controller.setInitLoadVentaAbono(ventaTB, idVentaCredito, monto);
             controller.setInitVentaAbonarController(this);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Generar Cobro", apWindow.getScene().getWindow());
@@ -293,6 +304,19 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             stage.show();
         } catch (IOException ex) {
             System.out.println("Controller banco" + ex.getLocalizedMessage());
+        }
+    }
+
+    private void onEventRemove(String idVentaCredito) {
+        short value = Tools.AlertMessageConfirmation(apWindow, "Cuentas Por Cobrar", "¿Está seguro de continuar?");
+        if (value == 1) {
+            String result = VentaADO.RemoverIngreso(ventaTB.getIdVenta(), idVentaCredito);
+            if (result.equalsIgnoreCase("removed")) {
+                Tools.AlertMessageInformation(apWindow, "Cuentas Por Cobrar", "Se completo correctamento el proceso.");
+                loadData(ventaTB.getIdVenta());
+            }else{
+                Tools.AlertMessageWarning(apWindow, "Cuentas Por Cobrar", result);
+            }
         }
     }
 

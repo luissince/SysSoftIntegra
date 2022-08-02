@@ -11,9 +11,7 @@ public class EmpresaADO {
         PreparedStatement statementValidate = null;
         PreparedStatement statementEmpresa = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() == null) {
-            return "No se pudo completar su proceso por problemas de red, intente nuevamente.";
-        }
+
         try {
             DBUtil.getConnection().setAutoCommit(false);
             statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM EmpresaTB WHERE IdEmpresa = ?");

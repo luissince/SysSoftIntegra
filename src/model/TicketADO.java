@@ -271,83 +271,83 @@ public class TicketADO {
     public static ArrayList<TicketTB> ListTicket(int tipoTicket, boolean todos) {
         ArrayList<TicketTB> list = new ArrayList<>();
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementLista = null;
-            ResultSet resultSet = null;
+
+        PreparedStatement statementLista = null;
+        ResultSet resultSet = null;
+        try {
+            statementLista = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ticket_By_Tipo_Opcion(?,?)}");
+            statementLista.setInt(1, tipoTicket);
+            statementLista.setBoolean(2, todos);
+            resultSet = statementLista.executeQuery();
+            while (resultSet.next()) {
+                TicketTB ticketTB = new TicketTB();
+                ticketTB.setId(resultSet.getInt(1));
+                ticketTB.setNombreTicket(resultSet.getString(2));
+                ticketTB.setTipo(resultSet.getInt(3));
+                ticketTB.setPredeterminado(resultSet.getBoolean(4));
+                ticketTB.setRuta(resultSet.getString(5));
+                list.add(ticketTB);
+            }
+        } catch (SQLException ex) {
+
+        } finally {
             try {
-                statementLista = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ticket_By_Tipo_Opcion(?,?)}");
-                statementLista.setInt(1, tipoTicket);
-                statementLista.setBoolean(2, todos);
-                resultSet = statementLista.executeQuery();
-                while (resultSet.next()) {
-                    TicketTB ticketTB = new TicketTB();
-                    ticketTB.setId(resultSet.getInt(1));
-                    ticketTB.setNombreTicket(resultSet.getString(2));
-                    ticketTB.setTipo(resultSet.getInt(3));
-                    ticketTB.setPredeterminado(resultSet.getBoolean(4));
-                    ticketTB.setRuta(resultSet.getString(5));
-                    list.add(ticketTB);
+                if (statementLista != null) {
+                    statementLista.close();
                 }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
 
-            } finally {
-                try {
-                    if (statementLista != null) {
-                        statementLista.close();
-                    }
-                    if (resultSet != null) {
-                        resultSet.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-
-                }
-
             }
+
         }
+
         return list;
     }
 
     public static ArrayList<TicketTB> ListTipoTicket() {
         ArrayList<TicketTB> list = new ArrayList<>();
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementLista = null;
-            ResultSet resultSet = null;
+
+        PreparedStatement statementLista = null;
+        ResultSet resultSet = null;
+        try {
+            statementLista = DBUtil.getConnection().prepareStatement("SELECT idTipoTicket,Nombre FROM TipoTicketTB");
+            resultSet = statementLista.executeQuery();
+            while (resultSet.next()) {
+                TicketTB ticketTB = new TicketTB();
+                ticketTB.setId(resultSet.getInt("idTipoTicket"));
+                ticketTB.setNombreTicket(resultSet.getString("Nombre"));
+                list.add(ticketTB);
+            }
+        } catch (SQLException ex) {
+
+        } finally {
             try {
-                statementLista = DBUtil.getConnection().prepareStatement("SELECT idTipoTicket,Nombre FROM TipoTicketTB");
-                resultSet = statementLista.executeQuery();
-                while (resultSet.next()) {
-                    TicketTB ticketTB = new TicketTB();
-                    ticketTB.setId(resultSet.getInt("idTipoTicket"));
-                    ticketTB.setNombreTicket(resultSet.getString("Nombre"));
-                    list.add(ticketTB);
+                if (statementLista != null) {
+                    statementLista.close();
                 }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
 
-            } finally {
-                try {
-                    if (statementLista != null) {
-                        statementLista.close();
-                    }
-                    if (resultSet != null) {
-                        resultSet.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-
-                }
-
             }
+
         }
+
         return list;
     }
 
     public static Object GetTicketRuta(int idTicket) {
-        DBUtil.dbConnect();
         PreparedStatement statementLista = null;
         ResultSet resultSet = null;
         try {
+            DBUtil.dbConnect();
             statementLista = DBUtil.getConnection().prepareStatement("SELECT idTicket,ruta FROM TicketTB WHERE tipo = ? and predeterminado = 1");
             statementLista.setInt(1, idTicket);
             resultSet = statementLista.executeQuery();
@@ -412,110 +412,105 @@ public class TicketADO {
     public static String ChangeDefaultState(int idTicket, int tipoTicket) {
         String result = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementSelect = null;
-            PreparedStatement statementUpdate = null;
-            PreparedStatement statementState = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementSelect = DBUtil.getConnection().prepareStatement("SELECT predeterminado FROM TicketTB WHERE tipo = ? AND predeterminado = 1");
-                statementSelect.setInt(1, tipoTicket);
-                if (statementSelect.executeQuery().next()) {
-                    statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE TicketTB SET predeterminado = 0 WHERE tipo = ?");
-                    statementUpdate.setInt(1, tipoTicket);
-                    statementUpdate.addBatch();
 
-                    statementState = DBUtil.getConnection().prepareStatement("UPDATE TicketTB SET predeterminado = 1 WHERE idTicket = ?");
-                    statementState.setInt(1, idTicket);
-                    statementState.addBatch();
+        PreparedStatement statementSelect = null;
+        PreparedStatement statementUpdate = null;
+        PreparedStatement statementState = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementSelect = DBUtil.getConnection().prepareStatement("SELECT predeterminado FROM TicketTB WHERE tipo = ? AND predeterminado = 1");
+            statementSelect.setInt(1, tipoTicket);
+            if (statementSelect.executeQuery().next()) {
+                statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE TicketTB SET predeterminado = 0 WHERE tipo = ?");
+                statementUpdate.setInt(1, tipoTicket);
+                statementUpdate.addBatch();
 
-                    statementUpdate.executeBatch();
-                    statementState.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                } else {
-                    statementState = DBUtil.getConnection().prepareStatement("UPDATE TicketTB SET predeterminado = 1 WHERE idTicket = ?");
-                    statementState.setInt(1, idTicket);
-                    statementState.addBatch();
-                    statementState.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                }
+                statementState = DBUtil.getConnection().prepareStatement("UPDATE TicketTB SET predeterminado = 1 WHERE idTicket = ?");
+                statementState.setInt(1, idTicket);
+                statementState.addBatch();
 
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                    result = ex.getLocalizedMessage();
-                } catch (SQLException e) {
-                    result = e.getLocalizedMessage();
-                }
-
-            } finally {
-                try {
-                    if (statementSelect != null) {
-                        statementSelect.close();
-                    }
-                    if (statementUpdate != null) {
-                        statementUpdate.close();
-                    }
-                    if (statementState != null) {
-                        statementState.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
-                }
+                statementUpdate.executeBatch();
+                statementState.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
+            } else {
+                statementState = DBUtil.getConnection().prepareStatement("UPDATE TicketTB SET predeterminado = 1 WHERE idTicket = ?");
+                statementState.setInt(1, idTicket);
+                statementState.addBatch();
+                statementState.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
             }
-        } else {
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
+
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+                result = ex.getLocalizedMessage();
+            } catch (SQLException e) {
+                result = e.getLocalizedMessage();
+            }
+
+        } finally {
+            try {
+                if (statementSelect != null) {
+                    statementSelect.close();
+                }
+                if (statementUpdate != null) {
+                    statementUpdate.close();
+                }
+                if (statementState != null) {
+                    statementState.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 
     public static String DeleteTicket(int idTicket) {
         String result = "";
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementValidate = null;
-            PreparedStatement statementTicket = null;
+
+        PreparedStatement statementValidate = null;
+        PreparedStatement statementTicket = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM TicketTB WHERE idTicket = ? and predeterminado = 1");
+            statementValidate.setInt(1, idTicket);
+            if (statementValidate.executeQuery().next()) {
+                DBUtil.getConnection().rollback();
+                result = "predeterminated";
+            } else {
+                statementTicket = DBUtil.getConnection().prepareStatement("delete TicketTB where idTicket = ?");
+                statementTicket.setInt(1, idTicket);
+                statementTicket.addBatch();
+                statementTicket.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "deleted";
+            }
+        } catch (SQLException ex) {
             try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM TicketTB WHERE idTicket = ? and predeterminado = 1");
-                statementValidate.setInt(1, idTicket);
-                if (statementValidate.executeQuery().next()) {
-                    DBUtil.getConnection().rollback();
-                    result = "predeterminated";
-                } else {
-                    statementTicket = DBUtil.getConnection().prepareStatement("delete TicketTB where idTicket = ?");
-                    statementTicket.setInt(1, idTicket);
-                    statementTicket.addBatch();
-                    statementTicket.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "deleted";
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
+
+            }
+            result = ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementValidate != null) {
+                    statementValidate.close();
+                }
+                if (statementTicket != null) {
+                    statementTicket.close();
                 }
             } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
 
-                }
-                result = ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementValidate != null) {
-                        statementValidate.close();
-                    }
-                    if (statementTicket != null) {
-                        statementTicket.close();
-                    }
-                } catch (SQLException ex) {
-
-                }
             }
-        } else {
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
-
         }
+
         return result;
     }
 

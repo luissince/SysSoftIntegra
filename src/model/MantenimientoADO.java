@@ -51,89 +51,82 @@ public class MantenimientoADO {
         PreparedStatement statementValidar = null;
         PreparedStatement statementMantenimiento = null;
         CallableStatement codigo_mantenimiento = null;
-        DBUtil.getConnection();
 
-        if (DBUtil.getConnection() != null) {
-            try {
+        DBUtil.dbConnect();
 
-                DBUtil.getConnection().setAutoCommit(false);
+        try {
 
-                codigo_mantenimiento = DBUtil.getConnection().prepareCall("{? = call Fc_Mantenimiento_Generar_Codigo()}");
-                codigo_mantenimiento.registerOutParameter(1, java.sql.Types.VARCHAR);
-                codigo_mantenimiento.execute();
-                String id_mantenimiento = codigo_mantenimiento.getString(1);
+            DBUtil.getConnection().setAutoCommit(false);
 
-                statementValidar = DBUtil.getConnection().prepareStatement("select IdMantenimiento from MantenimientoTB where IdMantenimiento = ?");
-                statementValidar.setString(1, mantenimientoTB.getIdMantenimiento());
+            codigo_mantenimiento = DBUtil.getConnection().prepareCall("{? = call Fc_Mantenimiento_Generar_Codigo()}");
+            codigo_mantenimiento.registerOutParameter(1, java.sql.Types.VARCHAR);
+            codigo_mantenimiento.execute();
+            String id_mantenimiento = codigo_mantenimiento.getString(1);
 
-                if (statementValidar.executeQuery().next()) {
-                    //update
-                    statementMantenimiento = DBUtil.getConnection().prepareStatement("select Nombre,IdMantenimiento from MantenimientoTB where IdMantenimiento <> ? and Nombre = ?");
-                    statementMantenimiento.setString(1, mantenimientoTB.getIdMantenimiento());
-                    statementMantenimiento.setString(2, mantenimientoTB.getNombre());
-                    if (statementMantenimiento.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicate";
-                    } else {
-                        statementMantenimiento = DBUtil.getConnection().prepareStatement("update MantenimientoTB set Nombre = UPPER(?) where IdMantenimiento = ?");
-                        statementMantenimiento.setString(1, mantenimientoTB.getNombre());
-                        statementMantenimiento.setString(2, mantenimientoTB.getIdMantenimiento());
-                        statementMantenimiento.addBatch();
+            statementValidar = DBUtil.getConnection().prepareStatement("select IdMantenimiento from MantenimientoTB where IdMantenimiento = ?");
+            statementValidar.setString(1, mantenimientoTB.getIdMantenimiento());
 
-                        statementMantenimiento.executeBatch();
-                        DBUtil.getConnection().commit();
-                        result = "updated";
-                    }
+            if (statementValidar.executeQuery().next()) {
+                //update
+                statementMantenimiento = DBUtil.getConnection().prepareStatement("select Nombre,IdMantenimiento from MantenimientoTB where IdMantenimiento <> ? and Nombre = ?");
+                statementMantenimiento.setString(1, mantenimientoTB.getIdMantenimiento());
+                statementMantenimiento.setString(2, mantenimientoTB.getNombre());
+                if (statementMantenimiento.executeQuery().next()) {
+                    DBUtil.getConnection().rollback();
+                    result = "duplicate";
                 } else {
-                    //insert
-                    statementMantenimiento = DBUtil.getConnection().prepareStatement("select Nombre,IdMantenimiento from MantenimientoTB where IdMantenimiento <> ? and Nombre = ?");
-                    statementMantenimiento.setString(1, mantenimientoTB.getIdMantenimiento());
+                    statementMantenimiento = DBUtil.getConnection().prepareStatement("update MantenimientoTB set Nombre = UPPER(?) where IdMantenimiento = ?");
+                    statementMantenimiento.setString(1, mantenimientoTB.getNombre());
+                    statementMantenimiento.setString(2, mantenimientoTB.getIdMantenimiento());
+                    statementMantenimiento.addBatch();
+
+                    statementMantenimiento.executeBatch();
+                    DBUtil.getConnection().commit();
+                    result = "updated";
+                }
+            } else {
+                //insert
+                statementMantenimiento = DBUtil.getConnection().prepareStatement("select Nombre,IdMantenimiento from MantenimientoTB where IdMantenimiento <> ? and Nombre = ?");
+                statementMantenimiento.setString(1, mantenimientoTB.getIdMantenimiento());
+                statementMantenimiento.setString(2, mantenimientoTB.getNombre());
+
+                if (statementMantenimiento.executeQuery().next()) {
+                    DBUtil.getConnection().rollback();
+                    result = "duplicate";
+                } else {
+                    statementMantenimiento = DBUtil.getConnection().prepareStatement("insert into MantenimientoTB(IdMantenimiento,Nombre,Estado,UsuarioRegistro,FechaRegistro) values(?,UPPER(?),?,?,?)");
+                    statementMantenimiento.setString(1, id_mantenimiento);
                     statementMantenimiento.setString(2, mantenimientoTB.getNombre());
+                    statementMantenimiento.setString(3, mantenimientoTB.getEstado().toString());
+                    statementMantenimiento.setString(4, mantenimientoTB.getUsuarioRegistro());
+                    statementMantenimiento.setString(5, Tools.getDate());
+                    statementMantenimiento.addBatch();
 
-                    if (statementMantenimiento.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicate";
-                    } else {
-                        statementMantenimiento = DBUtil.getConnection().prepareStatement("insert into MantenimientoTB(IdMantenimiento,Nombre,Estado,UsuarioRegistro,FechaRegistro) values(?,UPPER(?),?,?,?)");
-                        statementMantenimiento.setString(1, id_mantenimiento);
-                        statementMantenimiento.setString(2, mantenimientoTB.getNombre());
-                        statementMantenimiento.setString(3, mantenimientoTB.getEstado().toString());
-                        statementMantenimiento.setString(4, mantenimientoTB.getUsuarioRegistro());
-                        statementMantenimiento.setString(5, Tools.getDate());
-                        statementMantenimiento.addBatch();
-
-                        statementMantenimiento.executeBatch();
-                        DBUtil.getConnection().commit();
-                        result = "inserted";
-                    }
-
+                    statementMantenimiento.executeBatch();
+                    DBUtil.getConnection().commit();
+                    result = "inserted";
                 }
 
-            } catch (SQLException ex) {
-                return ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementMantenimiento != null) {
-                        statementMantenimiento.close();
-                    }
-                    if (statementValidar != null) {
-                        statementValidar.close();
-                    }
-                    if (codigo_mantenimiento != null) {
-                        codigo_mantenimiento.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    return ex.getLocalizedMessage();
-                }
             }
 
-        } else {
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementMantenimiento != null) {
+                    statementMantenimiento.close();
+                }
+                if (statementValidar != null) {
+                    statementValidar.close();
+                }
+                if (codigo_mantenimiento != null) {
+                    codigo_mantenimiento.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
         }
-
-//        String selectStmt = "{call Sp_Crud_Mantenimiento(?,?,?,?,?)}";
-//        CallableStatement callableStatement = null;
         return result;
     }
 

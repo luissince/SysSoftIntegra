@@ -374,120 +374,115 @@ public class EmpleadoADO {
     public static List<EmpleadoTB> Lista_Empleado_For_Compras() {
         List<EmpleadoTB> empleadoTBs = new ArrayList<>();
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementEmpleados = null;
+        PreparedStatement statementEmpleados = null;
+        try {
+            statementEmpleados = DBUtil.getConnection().prepareStatement("SELECT IdEmpleado,Apellidos,Nombres FROM EmpleadoTB ORDER BY Apellidos ASC");
+            ResultSet resultSet = statementEmpleados.executeQuery();
+            while (resultSet.next()) {
+                EmpleadoTB empleadoTB = new EmpleadoTB();
+                empleadoTB.setIdEmpleado(resultSet.getString("IdEmpleado"));
+                empleadoTB.setNombres(resultSet.getString("Apellidos").toUpperCase());
+                empleadoTB.setApellidos(resultSet.getString("Nombres").toUpperCase());
+                empleadoTBs.add(empleadoTB);
+            }
+        } catch (SQLException ex) {
+
+        } finally {
             try {
-                statementEmpleados = DBUtil.getConnection().prepareStatement("SELECT IdEmpleado,Apellidos,Nombres FROM EmpleadoTB ORDER BY Apellidos ASC");
-                ResultSet resultSet = statementEmpleados.executeQuery();
-                while (resultSet.next()) {
-                    EmpleadoTB empleadoTB = new EmpleadoTB();
-                    empleadoTB.setIdEmpleado(resultSet.getString("IdEmpleado"));
-                    empleadoTB.setNombres(resultSet.getString("Apellidos").toUpperCase());
-                    empleadoTB.setApellidos(resultSet.getString("Nombres").toUpperCase());
-                    empleadoTBs.add(empleadoTB);
+                if (statementEmpleados != null) {
+                    statementEmpleados.close();
                 }
+                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
 
-            } finally {
-                try {
-                    if (statementEmpleados != null) {
-                        statementEmpleados.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-
-                }
             }
         }
+
         return empleadoTBs;
     }
 
     public static String DeleteEmpleadoById(String idEmpleado) {
         String result = "";
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementValidation = null;
-            PreparedStatement statementEmpleado = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementValidation = DBUtil.getConnection().prepareStatement("SELECT * FROM EmpleadoTB WHERE IdEmpleado = ? AND Sistema = 1");
+        PreparedStatement statementValidation = null;
+        PreparedStatement statementEmpleado = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementValidation = DBUtil.getConnection().prepareStatement("SELECT * FROM EmpleadoTB WHERE IdEmpleado = ? AND Sistema = 1");
+            statementValidation.setString(1, idEmpleado);
+            if (statementValidation.executeQuery().next()) {
+                DBUtil.getConnection().rollback();
+                result = "sistema";
+            } else {
+                statementValidation = DBUtil.getConnection().prepareCall("SELECT * FROM CajaTB WHERE IdUsuario = ?");
                 statementValidation.setString(1, idEmpleado);
                 if (statementValidation.executeQuery().next()) {
                     DBUtil.getConnection().rollback();
-                    result = "sistema";
+                    result = "caja";
                 } else {
-                    statementValidation = DBUtil.getConnection().prepareCall("SELECT * FROM CajaTB WHERE IdUsuario = ?");
+                    statementValidation = DBUtil.getConnection().prepareCall("SELECT * FROM CompraTB WHERE Usuario = ?");
                     statementValidation.setString(1, idEmpleado);
                     if (statementValidation.executeQuery().next()) {
                         DBUtil.getConnection().rollback();
-                        result = "caja";
+                        result = "compra";
                     } else {
-                        statementValidation = DBUtil.getConnection().prepareCall("SELECT * FROM CompraTB WHERE Usuario = ?");
-                        statementValidation.setString(1, idEmpleado);
-                        if (statementValidation.executeQuery().next()) {
-                            DBUtil.getConnection().rollback();
-                            result = "compra";
-                        } else {
-                            statementEmpleado = DBUtil.getConnection().prepareStatement("DELETE FROM EmpleadoTB WHERE IdEmpleado = ?");
-                            statementEmpleado.setString(1, idEmpleado);
-                            statementEmpleado.addBatch();
-                            statementEmpleado.executeBatch();
-                            DBUtil.getConnection().commit();
-                            result = "deleted";
-                        }
+                        statementEmpleado = DBUtil.getConnection().prepareStatement("DELETE FROM EmpleadoTB WHERE IdEmpleado = ?");
+                        statementEmpleado.setString(1, idEmpleado);
+                        statementEmpleado.addBatch();
+                        statementEmpleado.executeBatch();
+                        DBUtil.getConnection().commit();
+                        result = "deleted";
                     }
-                }
-            } catch (SQLException ex) {
-                try {
-                    result = ex.getLocalizedMessage();
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
-                    result = e.getLocalizedMessage();
-                }
-            } finally {
-                try {
-                    if (statementValidation != null) {
-                        statementValidation.close();
-                    }
-                    if (statementEmpleado != null) {
-                        statementEmpleado.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
                 }
             }
-        } else {
-            result = "No se puedo conectar el servidor, revise su conexión.";
+        } catch (SQLException ex) {
+            try {
+                result = ex.getLocalizedMessage();
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
+                result = e.getLocalizedMessage();
+            }
+        } finally {
+            try {
+                if (statementValidation != null) {
+                    statementValidation.close();
+                }
+                if (statementEmpleado != null) {
+                    statementEmpleado.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 
     public static ArrayList<String> CountSuministros(long sleep) throws InterruptedException {
         ArrayList<String> arrayList = new ArrayList();
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementValidation = null;
+        PreparedStatement statementValidation = null;
+        try {
+            statementValidation = DBUtil.getConnection().prepareStatement("SELECT * FROM SuministroTB");
+            ResultSet resultSet = statementValidation.executeQuery();
+            Thread.sleep(sleep);
+            while (resultSet.next()) {
+                arrayList.add(resultSet.getString("IdSuministro"));
+            }
+        } catch (SQLException ex) {
+            Tools.println("Error sql: " + ex.getLocalizedMessage());
+        } finally {
             try {
-                statementValidation = DBUtil.getConnection().prepareStatement("SELECT * FROM SuministroTB");
-                ResultSet resultSet = statementValidation.executeQuery();
-                Thread.sleep(sleep);
-                while (resultSet.next()) {
-                    arrayList.add(resultSet.getString("IdSuministro"));
+                if (statementValidation != null) {
+                    statementValidation.close();
                 }
+                DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-                Tools.println("Error sql: " + ex.getLocalizedMessage());
-            } finally {
-                try {
-                    if (statementValidation != null) {
-                        statementValidation.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
 
-                }
             }
         }
+
         return arrayList;
     }
 

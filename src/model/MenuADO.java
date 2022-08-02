@@ -247,109 +247,102 @@ public class MenuADO {
 
     public static String CrudPermisosMenu(int rol, int idmenu, boolean estado) {
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementPermisosMenu = null;
+
+        PreparedStatement statementPermisosMenu = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementPermisosMenu = DBUtil.getConnection().prepareStatement("UPDATE PermisoMenusTB SET Estado = ? WHERE IdRol = ? AND IdMenus = ?");
+            statementPermisosMenu.setBoolean(1, estado);
+            statementPermisosMenu.setInt(2, rol);
+            statementPermisosMenu.setInt(3, idmenu);
+            statementPermisosMenu.addBatch();
+            statementPermisosMenu.executeBatch();
+            DBUtil.getConnection().commit();
+            return "updated";
+        } catch (SQLException ex) {
             try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementPermisosMenu = DBUtil.getConnection().prepareStatement("UPDATE PermisoMenusTB SET Estado = ? WHERE IdRol = ? AND IdMenus = ?");
-                statementPermisosMenu.setBoolean(1, estado);
-                statementPermisosMenu.setInt(2, rol);
-                statementPermisosMenu.setInt(3, idmenu);
-                statementPermisosMenu.addBatch();
-                statementPermisosMenu.executeBatch();
-                DBUtil.getConnection().commit();
-                return "updated";
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
-                    return e.getLocalizedMessage();
-                }
-                return ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementPermisosMenu != null) {
-                        statementPermisosMenu.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    return ex.getLocalizedMessage();
-                }
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
+                return e.getLocalizedMessage();
             }
-        } else {
-            return "No se pudo conectar al servidor, revise su conexión.";
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementPermisosMenu != null) {
+                    statementPermisosMenu.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
         }
+
     }
 
     public static String CrudPermisosSubMenu(int rol, int idsubmenus, boolean estado) {
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementPermisosMenu = null;
+
+        PreparedStatement statementPermisosMenu = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementPermisosMenu = DBUtil.getConnection().prepareStatement("UPDATE PermisoSubMenusTB SET Estado = ? WHERE IdRol = ? AND IdSubMenus = ?");
+            statementPermisosMenu.setBoolean(1, estado);
+            statementPermisosMenu.setInt(2, rol);
+            statementPermisosMenu.setInt(3, idsubmenus);
+            statementPermisosMenu.addBatch();
+            statementPermisosMenu.executeBatch();
+            DBUtil.getConnection().commit();
+            return "updated";
+        } catch (SQLException ex) {
             try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementPermisosMenu = DBUtil.getConnection().prepareStatement("UPDATE PermisoSubMenusTB SET Estado = ? WHERE IdRol = ? AND IdSubMenus = ?");
-                statementPermisosMenu.setBoolean(1, estado);
-                statementPermisosMenu.setInt(2, rol);
-                statementPermisosMenu.setInt(3, idsubmenus);
-                statementPermisosMenu.addBatch();
-                statementPermisosMenu.executeBatch();
-                DBUtil.getConnection().commit();
-                return "updated";
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
-                    return e.getLocalizedMessage();
-                }
-                return ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementPermisosMenu != null) {
-                        statementPermisosMenu.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    return ex.getLocalizedMessage();
-                }
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
+                return e.getLocalizedMessage();
             }
-        } else {
-            return "No se pudo conectar al servidor, revise su conexión.";
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementPermisosMenu != null) {
+                    statementPermisosMenu.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
         }
+
     }
 
     public static String CrudPermisosPrivilegios(int rol, int idprivilegios, boolean estado) {
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementPermisosMenu = null;
+
+        PreparedStatement statementPermisosMenu = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementPermisosMenu = DBUtil.getConnection().prepareStatement("UPDATE PermisoPrivilegiosTB SET Estado = ? WHERE IdRol = ? AND IdPrivilegio = ?");
+            statementPermisosMenu.setBoolean(1, estado);
+            statementPermisosMenu.setInt(2, rol);
+            statementPermisosMenu.setInt(3, idprivilegios);
+            statementPermisosMenu.addBatch();
+            statementPermisosMenu.executeBatch();
+            DBUtil.getConnection().commit();
+            return "updated";
+        } catch (SQLException ex) {
             try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementPermisosMenu = DBUtil.getConnection().prepareStatement("UPDATE PermisoPrivilegiosTB SET Estado = ? WHERE IdRol = ? AND IdPrivilegio = ?");
-                statementPermisosMenu.setBoolean(1, estado);
-                statementPermisosMenu.setInt(2, rol);
-                statementPermisosMenu.setInt(3, idprivilegios);
-                statementPermisosMenu.addBatch();
-                statementPermisosMenu.executeBatch();
-                DBUtil.getConnection().commit();
-                return "updated";
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
-                    return e.getLocalizedMessage();
-                }
-                return ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementPermisosMenu != null) {
-                        statementPermisosMenu.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    return ex.getLocalizedMessage();
-                }
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
+                return e.getLocalizedMessage();
             }
-        } else {
-            return "No se pudo conectar al servidor, revise su conexión.";
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementPermisosMenu != null) {
+                    statementPermisosMenu.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
         }
     }
 

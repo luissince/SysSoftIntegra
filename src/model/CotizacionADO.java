@@ -16,172 +16,169 @@ public class CotizacionADO {
 
     public static Object CrudCotizacion(CotizacionTB cotizacionTB) {
 
+        CallableStatement statementCodigoCotizacion = null;
+        PreparedStatement statementValidacion = null;
+        PreparedStatement statementCotizacion = null;
+        PreparedStatement statementDetalleCotizacion = null;
+        PreparedStatement statementDetalleCotizacionBorrar = null;
+
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            CallableStatement statementCodigoCotizacion = null;
-            PreparedStatement statementValidacion = null;
-            PreparedStatement statementCotizacion = null;
-            PreparedStatement statementDetalleCotizacion = null;
-            PreparedStatement statementDetalleCotizacionBorrar = null;
-            try {
-                String result[] = new String[2];
-                DBUtil.getConnection().setAutoCommit(false);
+        try {
+            String result[] = new String[2];
+            DBUtil.getConnection().setAutoCommit(false);
 
-                statementValidacion = DBUtil.getConnection().prepareStatement("SELECT * FROM CotizacionTB WHERE IdCotizacion = ?");
-                statementValidacion.setString(1, cotizacionTB.getIdCotizacion());
-                if (statementValidacion.executeQuery().next()) {
+            statementValidacion = DBUtil.getConnection().prepareStatement("SELECT * FROM CotizacionTB WHERE IdCotizacion = ?");
+            statementValidacion.setString(1, cotizacionTB.getIdCotizacion());
+            if (statementValidacion.executeQuery().next()) {
 
-                    statementCotizacion = DBUtil.getConnection().prepareStatement("UPDATE CotizacionTB SET "
-                            + "IdCliente=?"
-                            + ",IdVendedor=?"
-                            + ",IdMoneda=?"
-                            + ",FechaCotizacion=?"
-                            + ",HoraCotizacion=?"
-                            + ",FechaVencimiento=?"
-                            + ",HoraVencimiento=?"
-                            + ",Estado=?"
-                            + ",Observaciones=?"
-                            + ",IdVenta='' "
-                            + "WHERE IdCotizacion = ?");
+                statementCotizacion = DBUtil.getConnection().prepareStatement("UPDATE CotizacionTB SET "
+                        + "IdCliente=?"
+                        + ",IdVendedor=?"
+                        + ",IdMoneda=?"
+                        + ",FechaCotizacion=?"
+                        + ",HoraCotizacion=?"
+                        + ",FechaVencimiento=?"
+                        + ",HoraVencimiento=?"
+                        + ",Estado=?"
+                        + ",Observaciones=?"
+                        + ",IdVenta='' "
+                        + "WHERE IdCotizacion = ?");
 
-                    statementCotizacion.setString(1, cotizacionTB.getIdCliente());
-                    statementCotizacion.setString(2, cotizacionTB.getIdVendedor());
-                    statementCotizacion.setInt(3, cotizacionTB.getIdMoneda());
-                    statementCotizacion.setString(4, cotizacionTB.getFechaCotizacion());
-                    statementCotizacion.setString(5, cotizacionTB.getHoraCotizacion());
-                    statementCotizacion.setString(6, cotizacionTB.getFechaVencimiento());
-                    statementCotizacion.setString(7, cotizacionTB.getHoraVencimiento());
-                    statementCotizacion.setInt(8, cotizacionTB.getEstado());
-                    statementCotizacion.setString(9, cotizacionTB.getObservaciones());
-                    statementCotizacion.setString(10, cotizacionTB.getIdCotizacion());
-                    statementCotizacion.addBatch();
+                statementCotizacion.setString(1, cotizacionTB.getIdCliente());
+                statementCotizacion.setString(2, cotizacionTB.getIdVendedor());
+                statementCotizacion.setInt(3, cotizacionTB.getIdMoneda());
+                statementCotizacion.setString(4, cotizacionTB.getFechaCotizacion());
+                statementCotizacion.setString(5, cotizacionTB.getHoraCotizacion());
+                statementCotizacion.setString(6, cotizacionTB.getFechaVencimiento());
+                statementCotizacion.setString(7, cotizacionTB.getHoraVencimiento());
+                statementCotizacion.setInt(8, cotizacionTB.getEstado());
+                statementCotizacion.setString(9, cotizacionTB.getObservaciones());
+                statementCotizacion.setString(10, cotizacionTB.getIdCotizacion());
+                statementCotizacion.addBatch();
 
-                    statementDetalleCotizacionBorrar = DBUtil.getConnection().prepareStatement("DELETE FROM DetalleCotizacionTB WHERE IdCotizacion = ?");
-                    statementDetalleCotizacionBorrar.setString(1, cotizacionTB.getIdCotizacion());
-                    statementDetalleCotizacionBorrar.addBatch();
-                    statementDetalleCotizacionBorrar.executeBatch();
+                statementDetalleCotizacionBorrar = DBUtil.getConnection().prepareStatement("DELETE FROM DetalleCotizacionTB WHERE IdCotizacion = ?");
+                statementDetalleCotizacionBorrar.setString(1, cotizacionTB.getIdCotizacion());
+                statementDetalleCotizacionBorrar.addBatch();
+                statementDetalleCotizacionBorrar.executeBatch();
 
-                    statementDetalleCotizacion = DBUtil.getConnection().prepareStatement("INSERT INTO DetalleCotizacionTB"
-                            + "(IdCotizacion"
-                            + ",IdSuministro"
-                            + ",Cantidad"
-                            + ",Precio"
-                            + ",Descuento"
-                            + ",IdImpuesto"
-                            + ",IdMedida)"
-                            + "VALUES(?,?,?,?,?,?,?)");
+                statementDetalleCotizacion = DBUtil.getConnection().prepareStatement("INSERT INTO DetalleCotizacionTB"
+                        + "(IdCotizacion"
+                        + ",IdSuministro"
+                        + ",Cantidad"
+                        + ",Precio"
+                        + ",Descuento"
+                        + ",IdImpuesto"
+                        + ",IdMedida)"
+                        + "VALUES(?,?,?,?,?,?,?)");
 
-                    for (CotizacionDetalleTB detalleCotizacionTB : cotizacionTB.getCotizacionDetalleTBs()) {
-                        statementDetalleCotizacion.setString(1, cotizacionTB.getIdCotizacion());
-                        statementDetalleCotizacion.setString(2, detalleCotizacionTB.getIdSuministro());
-                        statementDetalleCotizacion.setDouble(3, detalleCotizacionTB.getCantidad());
-                        statementDetalleCotizacion.setDouble(4, detalleCotizacionTB.getPrecio());
-                        statementDetalleCotizacion.setDouble(5, detalleCotizacionTB.getDescuento());
-                        statementDetalleCotizacion.setInt(6, detalleCotizacionTB.getIdImpuesto());
-                        statementDetalleCotizacion.setInt(7, detalleCotizacionTB.getSuministroTB().getUnidadCompra());
-                        statementDetalleCotizacion.addBatch();
-                    }
-
-                    statementCotizacion.executeBatch();
-                    statementDetalleCotizacion.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result[0] = "1";
-                    result[1] = cotizacionTB.getIdCotizacion();
-                    return result;
-                } else {
-
-                    statementCodigoCotizacion = DBUtil.getConnection().prepareCall("{? = call Fc_Cotizacion_Codigo_Alfanumerico()}");
-                    statementCodigoCotizacion.registerOutParameter(1, java.sql.Types.VARCHAR);
-                    statementCodigoCotizacion.execute();
-                    String idCotizacion = statementCodigoCotizacion.getString(1);
-
-                    statementCotizacion = DBUtil.getConnection().prepareStatement("INSERT INTO CotizacionTB"
-                            + "(IdCotizacion"
-                            + ",IdCliente"
-                            + ",IdVendedor"
-                            + ",IdMoneda"
-                            + ",FechaCotizacion"
-                            + ",HoraCotizacion"
-                            + ",FechaVencimiento"
-                            + ",HoraVencimiento"
-                            + ",Estado"
-                            + ",Observaciones"
-                            + ",IdVenta)"
-                            + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
-                    statementCotizacion.setString(1, idCotizacion);
-                    statementCotizacion.setString(2, cotizacionTB.getIdCliente());
-                    statementCotizacion.setString(3, cotizacionTB.getIdVendedor());
-                    statementCotizacion.setInt(4, cotizacionTB.getIdMoneda());
-                    statementCotizacion.setString(5, cotizacionTB.getFechaCotizacion());
-                    statementCotizacion.setString(6, cotizacionTB.getHoraCotizacion());
-                    statementCotizacion.setString(7, cotizacionTB.getFechaVencimiento());
-                    statementCotizacion.setString(8, cotizacionTB.getHoraVencimiento());
-                    statementCotizacion.setInt(9, cotizacionTB.getEstado());
-                    statementCotizacion.setString(10, cotizacionTB.getObservaciones());
-                    statementCotizacion.setString(11, cotizacionTB.getIdVenta());
-                    statementCotizacion.addBatch();
-
-                    statementDetalleCotizacion = DBUtil.getConnection().prepareStatement("INSERT INTO DetalleCotizacionTB"
-                            + "(IdCotizacion"
-                            + ",IdSuministro"
-                            + ",Cantidad"
-                            + ",Precio"
-                            + ",Descuento"
-                            + ",IdImpuesto"
-                            + ",IdMedida)"
-                            + "VALUES(?,?,?,?,?,?,?)");
-
-                    for (CotizacionDetalleTB detalleCotizacionTB : cotizacionTB.getCotizacionDetalleTBs()) {
-                        statementDetalleCotizacion.setString(1, idCotizacion);
-                        statementDetalleCotizacion.setString(2, detalleCotizacionTB.getIdSuministro());
-                        statementDetalleCotizacion.setDouble(3, detalleCotizacionTB.getCantidad());
-                        statementDetalleCotizacion.setDouble(4, detalleCotizacionTB.getPrecio());
-                        statementDetalleCotizacion.setDouble(5, detalleCotizacionTB.getDescuento());
-                        statementDetalleCotizacion.setInt(6, detalleCotizacionTB.getIdImpuesto());
-                        statementDetalleCotizacion.setInt(7, detalleCotizacionTB.getSuministroTB().getUnidadCompra());
-                        statementDetalleCotizacion.addBatch();
-                    }
-
-                    statementCotizacion.executeBatch();
-                    statementDetalleCotizacion.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result[0] = "0";
-                    result[1] = idCotizacion;
-                    return result;
+                for (CotizacionDetalleTB detalleCotizacionTB : cotizacionTB.getCotizacionDetalleTBs()) {
+                    statementDetalleCotizacion.setString(1, cotizacionTB.getIdCotizacion());
+                    statementDetalleCotizacion.setString(2, detalleCotizacionTB.getIdSuministro());
+                    statementDetalleCotizacion.setDouble(3, detalleCotizacionTB.getCantidad());
+                    statementDetalleCotizacion.setDouble(4, detalleCotizacionTB.getPrecio());
+                    statementDetalleCotizacion.setDouble(5, detalleCotizacionTB.getDescuento());
+                    statementDetalleCotizacion.setInt(6, detalleCotizacionTB.getIdImpuesto());
+                    statementDetalleCotizacion.setInt(7, detalleCotizacionTB.getSuministroTB().getUnidadCompra());
+                    statementDetalleCotizacion.addBatch();
                 }
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
-                    return e.getLocalizedMessage();
+
+                statementCotizacion.executeBatch();
+                statementDetalleCotizacion.executeBatch();
+                DBUtil.getConnection().commit();
+                result[0] = "1";
+                result[1] = cotizacionTB.getIdCotizacion();
+                return result;
+            } else {
+
+                statementCodigoCotizacion = DBUtil.getConnection().prepareCall("{? = call Fc_Cotizacion_Codigo_Alfanumerico()}");
+                statementCodigoCotizacion.registerOutParameter(1, java.sql.Types.VARCHAR);
+                statementCodigoCotizacion.execute();
+                String idCotizacion = statementCodigoCotizacion.getString(1);
+
+                statementCotizacion = DBUtil.getConnection().prepareStatement("INSERT INTO CotizacionTB"
+                        + "(IdCotizacion"
+                        + ",IdCliente"
+                        + ",IdVendedor"
+                        + ",IdMoneda"
+                        + ",FechaCotizacion"
+                        + ",HoraCotizacion"
+                        + ",FechaVencimiento"
+                        + ",HoraVencimiento"
+                        + ",Estado"
+                        + ",Observaciones"
+                        + ",IdVenta)"
+                        + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+                statementCotizacion.setString(1, idCotizacion);
+                statementCotizacion.setString(2, cotizacionTB.getIdCliente());
+                statementCotizacion.setString(3, cotizacionTB.getIdVendedor());
+                statementCotizacion.setInt(4, cotizacionTB.getIdMoneda());
+                statementCotizacion.setString(5, cotizacionTB.getFechaCotizacion());
+                statementCotizacion.setString(6, cotizacionTB.getHoraCotizacion());
+                statementCotizacion.setString(7, cotizacionTB.getFechaVencimiento());
+                statementCotizacion.setString(8, cotizacionTB.getHoraVencimiento());
+                statementCotizacion.setInt(9, cotizacionTB.getEstado());
+                statementCotizacion.setString(10, cotizacionTB.getObservaciones());
+                statementCotizacion.setString(11, cotizacionTB.getIdVenta());
+                statementCotizacion.addBatch();
+
+                statementDetalleCotizacion = DBUtil.getConnection().prepareStatement("INSERT INTO DetalleCotizacionTB"
+                        + "(IdCotizacion"
+                        + ",IdSuministro"
+                        + ",Cantidad"
+                        + ",Precio"
+                        + ",Descuento"
+                        + ",IdImpuesto"
+                        + ",IdMedida)"
+                        + "VALUES(?,?,?,?,?,?,?)");
+
+                for (CotizacionDetalleTB detalleCotizacionTB : cotizacionTB.getCotizacionDetalleTBs()) {
+                    statementDetalleCotizacion.setString(1, idCotizacion);
+                    statementDetalleCotizacion.setString(2, detalleCotizacionTB.getIdSuministro());
+                    statementDetalleCotizacion.setDouble(3, detalleCotizacionTB.getCantidad());
+                    statementDetalleCotizacion.setDouble(4, detalleCotizacionTB.getPrecio());
+                    statementDetalleCotizacion.setDouble(5, detalleCotizacionTB.getDescuento());
+                    statementDetalleCotizacion.setInt(6, detalleCotizacionTB.getIdImpuesto());
+                    statementDetalleCotizacion.setInt(7, detalleCotizacionTB.getSuministroTB().getUnidadCompra());
+                    statementDetalleCotizacion.addBatch();
                 }
-                return ex.getLocalizedMessage();
-            } catch (Exception ex) {
-                return ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementCodigoCotizacion != null) {
-                        statementCodigoCotizacion.close();
-                    }
-                    if (statementValidacion != null) {
-                        statementValidacion.close();
-                    }
-                    if (statementCotizacion != null) {
-                        statementCotizacion.close();
-                    }
-                    if (statementDetalleCotizacion != null) {
-                        statementDetalleCotizacion.close();
-                    }
-                    if (statementDetalleCotizacionBorrar != null) {
-                        statementDetalleCotizacionBorrar.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    return ex.getLocalizedMessage();
-                }
+
+                statementCotizacion.executeBatch();
+                statementDetalleCotizacion.executeBatch();
+                DBUtil.getConnection().commit();
+                result[0] = "0";
+                result[1] = idCotizacion;
+                return result;
             }
-        } else {
-            return "No se pudo conectar con el servidor, intente nuevamente";
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
+                return e.getLocalizedMessage();
+            }
+            return ex.getLocalizedMessage();
+        } catch (Exception ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementCodigoCotizacion != null) {
+                    statementCodigoCotizacion.close();
+                }
+                if (statementValidacion != null) {
+                    statementValidacion.close();
+                }
+                if (statementCotizacion != null) {
+                    statementCotizacion.close();
+                }
+                if (statementDetalleCotizacion != null) {
+                    statementDetalleCotizacion.close();
+                }
+                if (statementDetalleCotizacionBorrar != null) {
+                    statementDetalleCotizacionBorrar.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
         }
     }
 
