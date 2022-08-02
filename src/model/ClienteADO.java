@@ -18,101 +18,99 @@ public class ClienteADO {
     public static String CrudCliente(ClienteTB clienteTB) {
         String result = "";
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            CallableStatement codigoCliente = null;
-            PreparedStatement preparedCliente = null;
-            PreparedStatement preparedValidation = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                preparedValidation = DBUtil.getConnection().prepareStatement("SELECT IdCliente FROM ClienteTB WHERE IdCliente = ?");
+
+        CallableStatement codigoCliente = null;
+        PreparedStatement preparedCliente = null;
+        PreparedStatement preparedValidation = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            preparedValidation = DBUtil.getConnection().prepareStatement("SELECT IdCliente FROM ClienteTB WHERE IdCliente = ?");
+            preparedValidation.setString(1, clienteTB.getIdCliente());
+            if (preparedValidation.executeQuery().next()) {
+                preparedValidation = DBUtil.getConnection().prepareStatement("SELECT NumeroDocumento FROM ClienteTB WHERE IdCliente <> ? AND NumeroDocumento = ?");
                 preparedValidation.setString(1, clienteTB.getIdCliente());
+                preparedValidation.setString(2, clienteTB.getNumeroDocumento());
                 if (preparedValidation.executeQuery().next()) {
-                    preparedValidation = DBUtil.getConnection().prepareStatement("SELECT NumeroDocumento FROM ClienteTB WHERE IdCliente <> ? AND NumeroDocumento = ?");
-                    preparedValidation.setString(1, clienteTB.getIdCliente());
-                    preparedValidation.setString(2, clienteTB.getNumeroDocumento());
-                    if (preparedValidation.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicate";
-                    } else {
-
-                        preparedCliente = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB set TipoDocumento=?,NumeroDocumento=?,Informacion=UPPER(?),Telefono=?,Celular=?,Email=?,Direccion=?,Representante=?,Estado=? WHERE IdCliente = ?");
-
-                        preparedCliente.setInt(1, clienteTB.getTipoDocumento());
-                        preparedCliente.setString(2, clienteTB.getNumeroDocumento());
-                        preparedCliente.setString(3, clienteTB.getInformacion());
-                        preparedCliente.setString(4, clienteTB.getTelefono());
-                        preparedCliente.setString(5, clienteTB.getCelular());
-                        preparedCliente.setString(6, clienteTB.getEmail());
-                        preparedCliente.setString(7, clienteTB.getDireccion());
-                        preparedCliente.setString(8, clienteTB.getRepresentante());
-                        preparedCliente.setInt(9, clienteTB.getEstado());
-                        preparedCliente.setString(10, clienteTB.getIdCliente());
-
-                        preparedCliente.addBatch();
-                        preparedCliente.executeBatch();
-
-                        DBUtil.getConnection().commit();
-                        result = "updated";
-
-                    }
-                } else {
-                    preparedValidation = DBUtil.getConnection().prepareStatement("select NumeroDocumento from ClienteTB where NumeroDocumento = ?");
-                    preparedValidation.setString(1, clienteTB.getNumeroDocumento());
-                    if (preparedValidation.executeQuery().next()) {
-                        DBUtil.getConnection().rollback();
-                        result = "duplicate";
-                    } else {
-                        codigoCliente = DBUtil.getConnection().prepareCall("{? = call Fc_Cliente_Codigo_Alfanumerico()}");
-                        codigoCliente.registerOutParameter(1, java.sql.Types.VARCHAR);
-                        codigoCliente.execute();
-                        String idSuministro = codigoCliente.getString(1);
-
-                        preparedCliente = DBUtil.getConnection().prepareStatement("INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
-                        preparedCliente.setString(1, idSuministro);
-                        preparedCliente.setInt(2, clienteTB.getTipoDocumento());
-                        preparedCliente.setString(3, clienteTB.getNumeroDocumento());
-                        preparedCliente.setString(4, clienteTB.getInformacion());
-                        preparedCliente.setString(5, clienteTB.getTelefono());
-                        preparedCliente.setString(6, clienteTB.getCelular());
-                        preparedCliente.setString(7, clienteTB.getEmail());
-                        preparedCliente.setString(8, clienteTB.getDireccion());
-                        preparedCliente.setString(9, clienteTB.getRepresentante());
-                        preparedCliente.setInt(10, clienteTB.getEstado());
-                        preparedCliente.setBoolean(11, clienteTB.isPredeterminado());
-                        preparedCliente.setBoolean(12, clienteTB.isSistema());
-
-                        preparedCliente.addBatch();
-                        preparedCliente.executeBatch();
-
-                        DBUtil.getConnection().commit();
-                        result = "registered";
-                    }
-                }
-            } catch (SQLException ex) {
-                try {
                     DBUtil.getConnection().rollback();
-                } catch (SQLException exr) {
+                    result = "duplicate";
+                } else {
+
+                    preparedCliente = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB set TipoDocumento=?,NumeroDocumento=?,Informacion=UPPER(?),Telefono=?,Celular=?,Email=?,Direccion=?,Representante=?,Estado=? WHERE IdCliente = ?");
+
+                    preparedCliente.setInt(1, clienteTB.getTipoDocumento());
+                    preparedCliente.setString(2, clienteTB.getNumeroDocumento());
+                    preparedCliente.setString(3, clienteTB.getInformacion());
+                    preparedCliente.setString(4, clienteTB.getTelefono());
+                    preparedCliente.setString(5, clienteTB.getCelular());
+                    preparedCliente.setString(6, clienteTB.getEmail());
+                    preparedCliente.setString(7, clienteTB.getDireccion());
+                    preparedCliente.setString(8, clienteTB.getRepresentante());
+                    preparedCliente.setInt(9, clienteTB.getEstado());
+                    preparedCliente.setString(10, clienteTB.getIdCliente());
+
+                    preparedCliente.addBatch();
+                    preparedCliente.executeBatch();
+
+                    DBUtil.getConnection().commit();
+                    result = "updated";
+
                 }
-                result = ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (codigoCliente != null) {
-                        codigoCliente.close();
-                    }
-                    if (preparedValidation != null) {
-                        preparedValidation.close();
-                    }
-                    if (preparedCliente != null) {
-                        preparedCliente.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
+            } else {
+                preparedValidation = DBUtil.getConnection().prepareStatement("select NumeroDocumento from ClienteTB where NumeroDocumento = ?");
+                preparedValidation.setString(1, clienteTB.getNumeroDocumento());
+                if (preparedValidation.executeQuery().next()) {
+                    DBUtil.getConnection().rollback();
+                    result = "duplicate";
+                } else {
+                    codigoCliente = DBUtil.getConnection().prepareCall("{? = call Fc_Cliente_Codigo_Alfanumerico()}");
+                    codigoCliente.registerOutParameter(1, java.sql.Types.VARCHAR);
+                    codigoCliente.execute();
+                    String idSuministro = codigoCliente.getString(1);
+
+                    preparedCliente = DBUtil.getConnection().prepareStatement("INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+                    preparedCliente.setString(1, idSuministro);
+                    preparedCliente.setInt(2, clienteTB.getTipoDocumento());
+                    preparedCliente.setString(3, clienteTB.getNumeroDocumento());
+                    preparedCliente.setString(4, clienteTB.getInformacion());
+                    preparedCliente.setString(5, clienteTB.getTelefono());
+                    preparedCliente.setString(6, clienteTB.getCelular());
+                    preparedCliente.setString(7, clienteTB.getEmail());
+                    preparedCliente.setString(8, clienteTB.getDireccion());
+                    preparedCliente.setString(9, clienteTB.getRepresentante());
+                    preparedCliente.setInt(10, clienteTB.getEstado());
+                    preparedCliente.setBoolean(11, clienteTB.isPredeterminado());
+                    preparedCliente.setBoolean(12, clienteTB.isSistema());
+
+                    preparedCliente.addBatch();
+                    preparedCliente.executeBatch();
+
+                    DBUtil.getConnection().commit();
+                    result = "registered";
                 }
             }
-        } else {
-            result = "No se puedo establecer una conexión, intente nuevamente.";
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+            } catch (SQLException exr) {
+            }
+            result = ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (codigoCliente != null) {
+                    codigoCliente.close();
+                }
+                if (preparedValidation != null) {
+                    preparedValidation.close();
+                }
+                if (preparedCliente != null) {
+                    preparedCliente.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 
@@ -376,9 +374,7 @@ public class ClienteADO {
         PreparedStatement statementValidate = null;
         PreparedStatement statementCliente = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() == null) {
-            return "No se pudo realizar tu petición por problemas de conexión, intente nuevamente";
-        }
+
         try {
             DBUtil.getConnection().setAutoCommit(false);
             statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE Cliente = ?");
@@ -427,80 +423,77 @@ public class ClienteADO {
     public static String ChangeDefaultState(boolean state, String idCliente) {
         String result = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementSelect = null;
-            PreparedStatement statementUpdate = null;
-            PreparedStatement statementState = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementSelect = DBUtil.getConnection().prepareStatement("SELECT Predeterminado FROM ClienteTB WHERE Predeterminado = 1");
-                if (statementSelect.executeQuery().next()) {
-                    statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB SET Predeterminado = 0 WHERE Predeterminado = 1");
-                    statementUpdate.addBatch();
 
-                    statementState = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB SET Predeterminado = ? WHERE IdCliente = ?");
-                    statementState.setBoolean(1, state);
-                    statementState.setString(2, idCliente);
-                    statementState.addBatch();
+        PreparedStatement statementSelect = null;
+        PreparedStatement statementUpdate = null;
+        PreparedStatement statementState = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementSelect = DBUtil.getConnection().prepareStatement("SELECT Predeterminado FROM ClienteTB WHERE Predeterminado = 1");
+            if (statementSelect.executeQuery().next()) {
+                statementUpdate = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB SET Predeterminado = 0 WHERE Predeterminado = 1");
+                statementUpdate.addBatch();
 
-                    statementUpdate.executeBatch();
-                    statementState.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                } else {
-                    statementState = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB SET Predeterminado = ? WHERE IdCliente = ?");
-                    statementState.setBoolean(1, state);
-                    statementState.setString(2, idCliente);
-                    statementState.addBatch();
-                    statementState.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                }
+                statementState = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB SET Predeterminado = ? WHERE IdCliente = ?");
+                statementState.setBoolean(1, state);
+                statementState.setString(2, idCliente);
+                statementState.addBatch();
 
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                    result = ex.getLocalizedMessage();
-                } catch (SQLException e) {
-                    result = e.getLocalizedMessage();
-                }
-
-            } finally {
-                try {
-                    if (statementSelect != null) {
-                        statementSelect.close();
-                    }
-                    if (statementUpdate != null) {
-                        statementUpdate.close();
-                    }
-                    if (statementState != null) {
-                        statementState.close();
-                    }
-                    DBUtil.dbDisconnect();
-                    ClienteTB clienteTB = ClienteADO.GetClientePredetermined();
-                    if (clienteTB != null) {
-                        Session.CLIENTE_ID = clienteTB.getIdCliente();
-                        Session.CLIENTE_TIPO_DOCUMENTO = clienteTB.getTipoDocumento();
-                        Session.CLIENTE_DATOS = clienteTB.getInformacion();
-                        Session.CLIENTE_NUMERO_DOCUMENTO = clienteTB.getNumeroDocumento();
-                        Session.CLIENTE_CELULAR = clienteTB.getCelular();
-                        Session.CLIENTE_EMAIL = clienteTB.getEmail();
-                        Session.CLIENTE_DIRECCION = clienteTB.getDireccion();
-                    } else {
-                        Session.CLIENTE_ID = "";
-                        Session.CLIENTE_TIPO_DOCUMENTO = 0;
-                        Session.CLIENTE_DATOS = "";
-                        Session.CLIENTE_NUMERO_DOCUMENTO = "";
-                        Session.CLIENTE_CELULAR = "";
-                        Session.CLIENTE_EMAIL = "";
-                        Session.CLIENTE_DIRECCION = "";
-                    }
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
-                }
+                statementUpdate.executeBatch();
+                statementState.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
+            } else {
+                statementState = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB SET Predeterminado = ? WHERE IdCliente = ?");
+                statementState.setBoolean(1, state);
+                statementState.setString(2, idCliente);
+                statementState.addBatch();
+                statementState.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
             }
-        } else {
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
+
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+                result = ex.getLocalizedMessage();
+            } catch (SQLException e) {
+                result = e.getLocalizedMessage();
+            }
+
+        } finally {
+            try {
+                if (statementSelect != null) {
+                    statementSelect.close();
+                }
+                if (statementUpdate != null) {
+                    statementUpdate.close();
+                }
+                if (statementState != null) {
+                    statementState.close();
+                }
+                DBUtil.dbDisconnect();
+                ClienteTB clienteTB = ClienteADO.GetClientePredetermined();
+                if (clienteTB != null) {
+                    Session.CLIENTE_ID = clienteTB.getIdCliente();
+                    Session.CLIENTE_TIPO_DOCUMENTO = clienteTB.getTipoDocumento();
+                    Session.CLIENTE_DATOS = clienteTB.getInformacion();
+                    Session.CLIENTE_NUMERO_DOCUMENTO = clienteTB.getNumeroDocumento();
+                    Session.CLIENTE_CELULAR = clienteTB.getCelular();
+                    Session.CLIENTE_EMAIL = clienteTB.getEmail();
+                    Session.CLIENTE_DIRECCION = clienteTB.getDireccion();
+                } else {
+                    Session.CLIENTE_ID = "";
+                    Session.CLIENTE_TIPO_DOCUMENTO = 0;
+                    Session.CLIENTE_DATOS = "";
+                    Session.CLIENTE_NUMERO_DOCUMENTO = "";
+                    Session.CLIENTE_CELULAR = "";
+                    Session.CLIENTE_EMAIL = "";
+                    Session.CLIENTE_DIRECCION = "";
+                }
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
         return result;
 

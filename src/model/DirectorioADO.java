@@ -23,8 +23,8 @@ public class DirectorioADO {
             while (rsEmps.next()) {
                 DirectorioTB directorioTB = new DirectorioTB();
                 directorioTB.setId(rsEmps.getRow());
-                directorioTB.setPersona(new PersonaTB(rsEmps.getString("Codigo"),rsEmps.getString("Tipo"),rsEmps.getString("Documento"),rsEmps.getString("Datos")));
-                empList.add(directorioTB);  
+                directorioTB.setPersona(new PersonaTB(rsEmps.getString("Codigo"), rsEmps.getString("Tipo"), rsEmps.getString("Documento"), rsEmps.getString("Datos")));
+                empList.add(directorioTB);
             }
         } catch (SQLException e) {
             System.out.println("SQL select operation has been failed: " + e);
@@ -50,54 +50,49 @@ public class DirectorioADO {
         PreparedStatement statementValidate = null;
         PreparedStatement statementDirectorio = null;
         DBUtil.dbConnect();
-        if(DBUtil.getConnection() != null){
-            try{
-                DBUtil.getConnection().setAutoCommit(false);
-                statementValidate = DBUtil.getConnection().prepareCall("select * from DirectorioTB where IdDirectorio = ?");
-                statementValidate.setLong(1, directorioTB.getIdDirectorio());
-                if(statementValidate.executeQuery().next()){
-                    statementDirectorio = DBUtil.getConnection().prepareStatement("update DirectorioTB set Atributo = ?, Valor= ? where IdDirectorio = ?");
-                    statementDirectorio.setInt(1, directorioTB.getAtributo());
-                    statementDirectorio.setString(2, directorioTB.getValor());
-                    statementDirectorio.setLong(3, directorioTB.getIdDirectorio());
-                    statementDirectorio.addBatch();
-                        
-                    statementDirectorio.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                }else{
-                    statementDirectorio = DBUtil.getConnection().prepareStatement("insert into DirectorioTB(Atributo,Valor,IdPersona) values(?,?,?)");
-                    statementDirectorio.setInt(1, directorioTB.getAtributo());
-                    statementDirectorio.setString(2, directorioTB.getValor());
-                    statementDirectorio.setString(3, directorioTB.getIdPersona());
-                    statementDirectorio.addBatch();
-                    
-                    statementDirectorio.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "registered";
-                }
-                
-            }catch(SQLException e){
-                result = e.getLocalizedMessage();
-            }finally{
-                try{
-                    if(statementValidate != null){
-                        statementValidate.close();
-                    }
-                    if (statementDirectorio != null) {
-                        statementDirectorio.close();
-                    }
-                    DBUtil.dbDisconnect();
-                }catch(SQLException ex){
-                    result = ex.getLocalizedMessage();
-                }
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementValidate = DBUtil.getConnection().prepareCall("select * from DirectorioTB where IdDirectorio = ?");
+            statementValidate.setLong(1, directorioTB.getIdDirectorio());
+            if (statementValidate.executeQuery().next()) {
+                statementDirectorio = DBUtil.getConnection().prepareStatement("update DirectorioTB set Atributo = ?, Valor= ? where IdDirectorio = ?");
+                statementDirectorio.setInt(1, directorioTB.getAtributo());
+                statementDirectorio.setString(2, directorioTB.getValor());
+                statementDirectorio.setLong(3, directorioTB.getIdDirectorio());
+                statementDirectorio.addBatch();
+
+                statementDirectorio.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
+            } else {
+                statementDirectorio = DBUtil.getConnection().prepareStatement("insert into DirectorioTB(Atributo,Valor,IdPersona) values(?,?,?)");
+                statementDirectorio.setInt(1, directorioTB.getAtributo());
+                statementDirectorio.setString(2, directorioTB.getValor());
+                statementDirectorio.setString(3, directorioTB.getIdPersona());
+                statementDirectorio.addBatch();
+
+                statementDirectorio.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "registered";
             }
-        }else{
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
+
+        } catch (SQLException e) {
+            result = e.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementValidate != null) {
+                    statementValidate.close();
+                }
+                if (statementDirectorio != null) {
+                    statementDirectorio.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
-        
         return result;
-        
+
     }
 
     public static ArrayList<DirectorioTB> GetIdDirectorio(String documento) {
@@ -136,7 +131,7 @@ public class DirectorioADO {
         }
         return arrayList;
     }
-    
+
     public static String DeleteDirectory(long idDirectorio) {
         String selectStmt = "delete from DirectorioTB where IdDirectorio = ?";
         PreparedStatement preparedStatement = null;
@@ -158,5 +153,5 @@ public class DirectorioADO {
             }
         }
     }
-    
+
 }

@@ -3402,7 +3402,15 @@ public class VentaADO {
             if (resultSet.next()) {
                 VentaTB ventaTB = new VentaTB();
                 ventaTB.setIdVenta(idVenta);
-                ventaTB.setClienteTB(new ClienteTB(resultSet.getString("NumeroDocumento"), resultSet.getString("Informacion"), resultSet.getString("Celular"), resultSet.getString("Email"), resultSet.getString("Direccion")));
+
+                ClienteTB clienteTB = new ClienteTB();
+                clienteTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
+                clienteTB.setInformacion(resultSet.getString("Informacion"));
+                clienteTB.setCelular(resultSet.getString("Celular"));
+                clienteTB.setEmail(resultSet.getString("Email"));
+                clienteTB.setDireccion(resultSet.getString("Direccion"));
+                ventaTB.setClienteTB(clienteTB);
+
                 ventaTB.setSerie(resultSet.getString("Serie"));
                 ventaTB.setNumeracion(resultSet.getString("Numeracion"));
                 ventaTB.setEstado(resultSet.getInt("Estado"));
@@ -3440,6 +3448,14 @@ public class VentaADO {
                     btnPagar.setGraphic(imageViewVisualizar);
                     btnPagar.getStyleClass().add("buttonLightSuccess");
                     ventaCreditoTB.setBtnPagar(btnPagar);
+
+                    Button btnQuitar = new Button();
+                    ImageView imageViewRemove = new ImageView(new Image("/view/image/remove-gray.png"));
+                    imageViewRemove.setFitWidth(24);
+                    imageViewRemove.setFitHeight(24);
+                    btnQuitar.setGraphic(imageViewRemove);
+                    btnQuitar.getStyleClass().add("buttonLightError");
+                    ventaCreditoTB.setBtnQuitar(btnQuitar);
 
                     ventaCreditoTBs.add(ventaCreditoTB);
                 }
@@ -3656,6 +3672,85 @@ public class VentaADO {
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
 
+            }
+        }
+    }
+
+    public static String RemoverIngreso(String idVenta, String idVentaCredito) {
+        PreparedStatement statementValidate = null;
+        PreparedStatement statementVentaCredito = null;
+        PreparedStatement statementMovientoCaja = null;
+        PreparedStatement statementIngreso = null;
+        PreparedStatement statementVenta = null;
+        ResultSet resultSet = null;
+
+        try {
+            DBUtil.dbConnect();
+            DBUtil.getConnection().setAutoCommit(false);
+            statementValidate = DBUtil.getConnection().prepareStatement("SELECT TipoCredito FROM VentaTB WHERE IdVenta = ?");
+            statementValidate.setString(1, idVenta);
+            resultSet = statementValidate.executeQuery();
+            resultSet.next();
+
+            statementIngreso = DBUtil.getConnection().prepareStatement("DELETE FROM IngresoTB WHERE IdProcedencia = ?");
+            statementIngreso.setString(1, idVentaCredito);
+            statementIngreso.addBatch();
+
+            statementMovientoCaja = DBUtil.getConnection().prepareStatement("DELETE FROM MovimientoCajaTB WHERE IdProcedencia = ? ");
+            statementMovientoCaja.setString(1, idVentaCredito);
+            statementMovientoCaja.addBatch();
+
+            if (resultSet.getInt("TipoCredito") == 0) {
+                statementVentaCredito = DBUtil.getConnection().prepareStatement("DELETE FROM VentaCreditoTB WHERE IdVentaCredito = ? AND IdVenta = ?");
+                statementVentaCredito.setString(1, idVentaCredito);
+                statementVentaCredito.setString(2, idVenta);
+                statementVentaCredito.addBatch();
+            } else {
+                statementVentaCredito = DBUtil.getConnection().prepareStatement("UPDATE VentaCreditoTB SET Estado = 0 WHERE IdVentaCredito = ? AND IdVenta = ?");
+                statementVentaCredito.setString(1, idVentaCredito);
+                statementVentaCredito.setString(2, idVenta);
+                statementVentaCredito.addBatch();
+            }
+
+            statementVenta = DBUtil.getConnection().prepareStatement("UPDATE VentaTB SET Estado = 2 WHERE IdVenta = ?");
+            statementVenta.setString(1, idVenta);
+            statementVenta.addBatch();
+
+            statementIngreso.executeBatch();
+            statementMovientoCaja.executeBatch();
+            statementVentaCredito.executeBatch();
+            statementVenta.executeBatch();
+            DBUtil.getConnection().commit();
+            return "removed";
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
+
+            }
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementValidate != null) {
+                    statementValidate.close();
+                }
+                if (statementVenta != null) {
+                    statementVenta.close();
+                }
+                if (statementVentaCredito != null) {
+                    statementVentaCredito.close();
+                }
+                if (statementMovientoCaja != null) {
+                    statementMovientoCaja.close();
+                }
+                if (statementIngreso != null) {
+                    statementIngreso.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
             }
         }
     }

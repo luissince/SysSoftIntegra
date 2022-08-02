@@ -52,8 +52,6 @@ public class FxVentaAbonoProcesoController implements Initializable {
 
     private String idVentaCredito;
 
-    private double monto;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
@@ -78,7 +76,6 @@ public class FxVentaAbonoProcesoController implements Initializable {
     public void setInitLoadVentaAbono(VentaTB ventaTB, String idVentaCredito, double monto) {
         this.ventaTB = ventaTB;
         this.idVentaCredito = idVentaCredito;
-        this.monto = monto;
         txtMonto.setText(Tools.roundingValue(monto, 2));
         txtMonto.setDisable(true);
     }

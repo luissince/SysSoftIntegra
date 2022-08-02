@@ -17,110 +17,104 @@ public class PreciosADO {
     public static String CrudPrecio(PreciosTB preciosTB) {
         String result = "";
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement preparedValidation = null;
-            PreparedStatement statementPrecio = null;
-            PreparedStatement statementBusqueda = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
+        PreparedStatement preparedValidation = null;
+        PreparedStatement statementPrecio = null;
+        PreparedStatement statementBusqueda = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
 
-                preparedValidation = DBUtil.getConnection().prepareStatement("SELECT * FROM PreciosTB WHERE IdPrecios = ?");
-                preparedValidation.setInt(1, preciosTB.getIdPrecios());
-                if (preparedValidation.executeQuery().next()) {
-                    statementPrecio = DBUtil.getConnection().prepareStatement("UPDATE PreciosTB SET Nombre=?,Valor=? WHERE IdPrecios = ?");
-                    statementPrecio.setString(1, preciosTB.getTxtNombre().getText());
-                    statementPrecio.setDouble(2, Double.parseDouble(preciosTB.getTxtValor().getText()));
-                    statementPrecio.setInt(3, preciosTB.getIdPrecios());
-                    statementPrecio.addBatch();
-                    statementPrecio.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                } else {
+            preparedValidation = DBUtil.getConnection().prepareStatement("SELECT * FROM PreciosTB WHERE IdPrecios = ?");
+            preparedValidation.setInt(1, preciosTB.getIdPrecios());
+            if (preparedValidation.executeQuery().next()) {
+                statementPrecio = DBUtil.getConnection().prepareStatement("UPDATE PreciosTB SET Nombre=?,Valor=? WHERE IdPrecios = ?");
+                statementPrecio.setString(1, preciosTB.getTxtNombre().getText());
+                statementPrecio.setDouble(2, Double.parseDouble(preciosTB.getTxtValor().getText()));
+                statementPrecio.setInt(3, preciosTB.getIdPrecios());
+                statementPrecio.addBatch();
+                statementPrecio.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
+            } else {
 
-                    statementBusqueda = DBUtil.getConnection().prepareStatement("SELECT IdArticulo FROM ArticuloTB WHERE IdSuministro = ?");
-                    statementBusqueda.setString(1, preciosTB.getIdSuministro());
-                    if (statementBusqueda.executeQuery().next()) {
-                        ResultSet resultSet = statementBusqueda.executeQuery();
-                        if (resultSet.next()) {
-                            preciosTB.setIdArticulo(resultSet.getString("IdArticulo"));
-                        } else {
-                            preciosTB.setIdArticulo("");
-                        }
+                statementBusqueda = DBUtil.getConnection().prepareStatement("SELECT IdArticulo FROM ArticuloTB WHERE IdSuministro = ?");
+                statementBusqueda.setString(1, preciosTB.getIdSuministro());
+                if (statementBusqueda.executeQuery().next()) {
+                    ResultSet resultSet = statementBusqueda.executeQuery();
+                    if (resultSet.next()) {
+                        preciosTB.setIdArticulo(resultSet.getString("IdArticulo"));
+                    } else {
+                        preciosTB.setIdArticulo("");
                     }
+                }
 
-                    statementPrecio = DBUtil.getConnection().prepareStatement("INSERT INTO PreciosTB(IdArticulo,IdSuministro,Nombre,Valor,Estado)VALUES(?,?,?,?,?)");
-                    statementPrecio.setString(1, preciosTB.getIdArticulo());
-                    statementPrecio.setString(2, preciosTB.getIdSuministro());
-                    statementPrecio.setString(3, preciosTB.getTxtNombre().getText());
-                    statementPrecio.setDouble(4, Double.parseDouble(preciosTB.getTxtValor().getText()));
-                    statementPrecio.setBoolean(5, true);
-                    statementPrecio.addBatch();
-                    statementPrecio.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "registered";
-                }
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException exr) {
-                }
-                result = ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementBusqueda != null) {
-                        statementBusqueda.close();
-                    }
-                    if (preparedValidation != null) {
-                        preparedValidation.close();
-                    }
-                    if (statementPrecio != null) {
-                        statementPrecio.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
-                }
+                statementPrecio = DBUtil.getConnection().prepareStatement("INSERT INTO PreciosTB(IdArticulo,IdSuministro,Nombre,Valor,Estado)VALUES(?,?,?,?,?)");
+                statementPrecio.setString(1, preciosTB.getIdArticulo());
+                statementPrecio.setString(2, preciosTB.getIdSuministro());
+                statementPrecio.setString(3, preciosTB.getTxtNombre().getText());
+                statementPrecio.setDouble(4, Double.parseDouble(preciosTB.getTxtValor().getText()));
+                statementPrecio.setBoolean(5, true);
+                statementPrecio.addBatch();
+                statementPrecio.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "registered";
             }
-        } else {
-            result = "No se puedo establecer una conexión con el servidor, intente nuevamente.";
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+            } catch (SQLException exr) {
+            }
+            result = ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementBusqueda != null) {
+                    statementBusqueda.close();
+                }
+                if (preparedValidation != null) {
+                    preparedValidation.close();
+                }
+                if (statementPrecio != null) {
+                    statementPrecio.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 
     public static String Removed_Precio(int idPrecio) {
         String result = "";
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement statementPrecio = null;
+        PreparedStatement statementPrecio = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+
+            statementPrecio = DBUtil.getConnection().prepareStatement("DELETE FROM PreciosTB WHERE IdPrecios = ?");
+            statementPrecio.setInt(1, idPrecio);
+            statementPrecio.addBatch();
+            statementPrecio.executeBatch();
+            DBUtil.getConnection().commit();
+            result = "removed";
+
+        } catch (SQLException ex) {
             try {
-                DBUtil.getConnection().setAutoCommit(false);
-
-                statementPrecio = DBUtil.getConnection().prepareStatement("DELETE FROM PreciosTB WHERE IdPrecios = ?");
-                statementPrecio.setInt(1, idPrecio);
-                statementPrecio.addBatch();
-                statementPrecio.executeBatch();
-                DBUtil.getConnection().commit();
-                result = "removed";
-
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException exr) {
-                }
-                result = ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (statementPrecio != null) {
-                        statementPrecio.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
-                }
+                DBUtil.getConnection().rollback();
+            } catch (SQLException exr) {
             }
-        } else {
-            result = "No se puedo establecer una conexión con el servidor, intente nuevamente.";
+            result = ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementPrecio != null) {
+                    statementPrecio.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 

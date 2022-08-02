@@ -199,7 +199,7 @@ public class FxPrincipalController implements Initializable {
                 btnContactos.setOnMouseClicked((event) -> onMouseClickedMenus(event, fxContactos, btnContactos));
                 btnReportes.setOnMouseClicked((event) -> onMouseClickedMenus(event, fxReportes, btnReportes));
                 btnConfiguracion.setOnMouseClicked((event) -> onMouseClickedMenus(event, fxConfiguracion, btnConfiguracion));
-
+                Tools.println("d");
                 return MenuADO.GetMenus(Session.USER_ROL);
             }
         };

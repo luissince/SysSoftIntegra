@@ -22,89 +22,86 @@ public class CajaADO {
         PreparedStatement statementCaja = null;
         PreparedStatement statementMovimientoCaja = null;
 
-        DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
+        try {
+            DBUtil.dbConnect();
+
+            DBUtil.getConnection().setAutoCommit(false);
+
+            statementCodigoCaja = DBUtil.getConnection().prepareCall("{? = call Fc_Caja_Codigo_Alfanumerico()}");
+            statementCodigoCaja.registerOutParameter(1, java.sql.Types.VARCHAR);
+            statementCodigoCaja.execute();
+            String idCaja = statementCodigoCaja.getString(1);
+
+            statementCaja = DBUtil.getConnection().prepareStatement("INSERT INTO CajaTB("
+                    + "IdCaja,"
+                    + "FechaApertura,"
+                    + "FechaCierre,"
+                    + "HoraApertura,"
+                    + "HoraCierre,"
+                    + "Estado,"
+                    + "Contado,"
+                    + "Calculado,"
+                    + "Diferencia,"
+                    + "IdUsuario)"
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+            statementCaja.setString(1, idCaja);
+            statementCaja.setString(2, cajaTB.getFechaApertura());
+            statementCaja.setString(3, cajaTB.getFechaApertura());
+            statementCaja.setString(4, cajaTB.getHoraApertura());
+            statementCaja.setString(5, cajaTB.getHoraApertura());
+            statementCaja.setBoolean(6, cajaTB.isEstado());
+            statementCaja.setDouble(7, cajaTB.getContado());
+            statementCaja.setDouble(8, cajaTB.getCalculado());
+            statementCaja.setDouble(9, cajaTB.getDiferencia());
+            statementCaja.setString(10, cajaTB.getIdUsuario());
+            statementCaja.addBatch();
+
+            statementMovimientoCaja = DBUtil.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB("
+                    + "IdCaja,"
+                    + "FechaMovimiento,"
+                    + "HoraMovimiento,"
+                    + "Comentario,"
+                    + "TipoMovimiento,"
+                    + "Monto)VALUES(?,?,?,?,?,?)");
+            statementMovimientoCaja.setString(1, idCaja);
+            statementMovimientoCaja.setString(2, movimientoCajaTB.getFechaMovimiento());
+            statementMovimientoCaja.setString(3, movimientoCajaTB.getHoraMovimiento());
+            statementMovimientoCaja.setString(4, movimientoCajaTB.getComentario());
+            statementMovimientoCaja.setShort(5, (short) 1);
+            statementMovimientoCaja.setDouble(6, movimientoCajaTB.getMonto());
+            statementMovimientoCaja.addBatch();
+
+            statementCaja.executeBatch();
+            statementMovimientoCaja.executeBatch();
+            DBUtil.getConnection().commit();
+            Session.CAJA_ID = idCaja;
+            result = "registrado";
+        } catch (SQLException ex) {
             try {
-
-                DBUtil.getConnection().setAutoCommit(false);
-
-                statementCodigoCaja = DBUtil.getConnection().prepareCall("{? = call Fc_Caja_Codigo_Alfanumerico()}");
-                statementCodigoCaja.registerOutParameter(1, java.sql.Types.VARCHAR);
-                statementCodigoCaja.execute();
-                String idCaja = statementCodigoCaja.getString(1);
-
-                statementCaja = DBUtil.getConnection().prepareStatement("INSERT INTO CajaTB("
-                        + "IdCaja,"
-                        + "FechaApertura,"
-                        + "FechaCierre,"
-                        + "HoraApertura,"
-                        + "HoraCierre,"
-                        + "Estado,"
-                        + "Contado,"
-                        + "Calculado,"
-                        + "Diferencia,"
-                        + "IdUsuario)"
-                        + "VALUES(?,?,?,?,?,?,?,?,?,?)");
-                statementCaja.setString(1, idCaja);
-                statementCaja.setString(2, cajaTB.getFechaApertura());
-                statementCaja.setString(3, cajaTB.getFechaApertura());
-                statementCaja.setString(4, cajaTB.getHoraApertura());
-                statementCaja.setString(5, cajaTB.getHoraApertura());
-                statementCaja.setBoolean(6, cajaTB.isEstado());
-                statementCaja.setDouble(7, cajaTB.getContado());
-                statementCaja.setDouble(8, cajaTB.getCalculado());
-                statementCaja.setDouble(9, cajaTB.getDiferencia());
-                statementCaja.setString(10, cajaTB.getIdUsuario());
-                statementCaja.addBatch();
-
-                statementMovimientoCaja = DBUtil.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB("
-                        + "IdCaja,"
-                        + "FechaMovimiento,"
-                        + "HoraMovimiento,"
-                        + "Comentario,"
-                        + "TipoMovimiento,"
-                        + "Monto)VALUES(?,?,?,?,?,?)");
-                statementMovimientoCaja.setString(1, idCaja);
-                statementMovimientoCaja.setString(2, movimientoCajaTB.getFechaMovimiento());
-                statementMovimientoCaja.setString(3, movimientoCajaTB.getHoraMovimiento());
-                statementMovimientoCaja.setString(4, movimientoCajaTB.getComentario());
-                statementMovimientoCaja.setShort(5, (short) 1);
-                statementMovimientoCaja.setDouble(6, movimientoCajaTB.getMonto());
-                statementMovimientoCaja.addBatch();
-
-                statementCaja.executeBatch();
-                statementMovimientoCaja.executeBatch();
-                DBUtil.getConnection().commit();
-                Session.CAJA_ID = idCaja;
-                result = "registrado";
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                    result = ex.getLocalizedMessage();
-                } catch (SQLException ex1) {
-                    result = ex1.getLocalizedMessage();
-                }
-            } finally {
-                try {
-                    if (statementCodigoCaja != null) {
-                        statementCodigoCaja.close();
-                    }
-                    if (statementCaja != null) {
-                        statementCaja.close();
-                    }
-
-                    if (statementMovimientoCaja != null) {
-                        statementMovimientoCaja.close();
-                    }
-
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
-                }
+                DBUtil.getConnection().rollback();
+                result = ex.getLocalizedMessage();
+            } catch (SQLException ex1) {
+                result = ex1.getLocalizedMessage();
             }
-        } else {
-            result = "No se puedo establecer una conexión con el servidor, intente nuevamente.";
+        } finally {
+            try {
+                if (statementCodigoCaja != null) {
+                    statementCodigoCaja.close();
+                }
+                if (statementCaja != null) {
+                    statementCaja.close();
+                }
+
+                if (statementMovimientoCaja != null) {
+                    statementMovimientoCaja.close();
+                }
+
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 
@@ -716,6 +713,72 @@ public class CajaADO {
         return cajaTB;
     }
 
+    public static String AjustarCaja(String idCaja) {
+        PreparedStatement statementValidar = null;
+        PreparedStatement statementAjuste = null;
+        ResultSet resultSet = null;
+        try {
+            DBUtil.dbConnect();
+            DBUtil.getConnection().setAutoCommit(false);
+
+            statementValidar = DBUtil.getConnection().prepareStatement("SELECT "
+                    + "CASE "
+                    + "WHEN TipoMovimiento = 5 THEN -Monto "
+                    + "ELSE Monto END AS Monto "
+                    + "FROM MovimientoCajaTB "
+                    + "WHERE "
+                    + "IdCaja = ? AND ( "
+                    + "TipoMovimiento = 1 "
+                    + "OR "
+                    + "TipoMovimiento = 2 "
+                    + "OR "
+                    + "TipoMovimiento = 4 "
+                    + "OR "
+                    + "TipoMovimiento = 5 "
+                    + ") ");
+            statementValidar.setString(1, idCaja);
+            resultSet = statementValidar.executeQuery();
+
+            double contado = 0;
+            while (resultSet.next()) {
+                contado += resultSet.getDouble("Monto");
+            }
+
+            statementAjuste = DBUtil.getConnection().prepareStatement("UPDATE CajaTB SET Contado=?,Calculado=?  WHERE IdCaja = ?");
+            statementAjuste.setDouble(1, contado);
+            statementAjuste.setDouble(2, contado);
+            statementAjuste.setString(3, idCaja);
+            statementAjuste.addBatch();
+
+            statementAjuste.executeBatch();
+            DBUtil.getConnection().commit();
+            return "upload";
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+                ex.getLocalizedMessage();
+            } catch (SQLException e) {
+                return e.getLocalizedMessage();
+            }
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementValidar != null) {
+                    statementValidar.close();
+                }
+                if (statementAjuste != null) {
+                    statementAjuste.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
+    }
+
     public static Object ListarCajasAperturadas(String fechaInicial, String fechaFinal) {
         PreparedStatement statementLista = null;
         ObservableList<CajaTB> empList = FXCollections.observableArrayList();
@@ -802,66 +865,61 @@ public class CajaADO {
     public static String CrudListaCaja(String idListaCaja, String nombre, boolean estado) {
         String result = "";
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            CallableStatement codigoListaCaja = null;
-            PreparedStatement statementValidar = null;
-            PreparedStatement statementCaja = null;
-            try {
-                DBUtil.getConnection().setAutoCommit(false);
-                statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM ListaCajaTB WHERE IdListaCaja = ?");
-                statementValidar.setString(1, idListaCaja);
-                if (statementValidar.executeQuery().next()) {
-                    statementCaja = DBUtil.getConnection().prepareStatement("UPDATE ListaCajaTB\n"
-                            + "   SET Nombre = ? \n"
-                            + "      ,Estado = ? \n"
-                            + " WHERE IdListaCaja = ?");
-                    statementCaja.setString(1, nombre);
-                    statementCaja.setBoolean(2, estado);
-                    statementCaja.setString(3, idListaCaja);
-                    statementCaja.addBatch();
-                    statementCaja.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "updated";
-                } else {
-                    codigoListaCaja = DBUtil.getConnection().prepareCall("{? = call [Fc_Lista_Caja_Codigo_Alfanumerico]()}");
-                    codigoListaCaja.registerOutParameter(1, java.sql.Types.VARCHAR);
-                    codigoListaCaja.execute();
-                    String idCaja = codigoListaCaja.getString(1);
+        CallableStatement codigoListaCaja = null;
+        PreparedStatement statementValidar = null;
+        PreparedStatement statementCaja = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM ListaCajaTB WHERE IdListaCaja = ?");
+            statementValidar.setString(1, idListaCaja);
+            if (statementValidar.executeQuery().next()) {
+                statementCaja = DBUtil.getConnection().prepareStatement("UPDATE ListaCajaTB\n"
+                        + "   SET Nombre = ? \n"
+                        + "      ,Estado = ? \n"
+                        + " WHERE IdListaCaja = ?");
+                statementCaja.setString(1, nombre);
+                statementCaja.setBoolean(2, estado);
+                statementCaja.setString(3, idListaCaja);
+                statementCaja.addBatch();
+                statementCaja.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "updated";
+            } else {
+                codigoListaCaja = DBUtil.getConnection().prepareCall("{? = call [Fc_Lista_Caja_Codigo_Alfanumerico]()}");
+                codigoListaCaja.registerOutParameter(1, java.sql.Types.VARCHAR);
+                codigoListaCaja.execute();
+                String idCaja = codigoListaCaja.getString(1);
 
-                    statementCaja = DBUtil.getConnection().prepareStatement("INSERT INTO ListaCajaTB(IdListaCaja,Nombre,Estado)VALUES(?,?,?)");
-                    statementCaja.setString(1, idCaja);
-                    statementCaja.setString(2, nombre);
-                    statementCaja.setBoolean(3, estado);
-                    statementCaja.addBatch();
-                    statementCaja.executeBatch();
-                    DBUtil.getConnection().commit();
-                    result = "insert";
-                }
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                } catch (SQLException e) {
-                }
-                result = ex.getLocalizedMessage();
-            } finally {
-                try {
-                    if (codigoListaCaja != null) {
-                        codigoListaCaja.close();
-                    }
-                    if (statementValidar != null) {
-                        statementValidar.close();
-                    }
-                    if (statementCaja != null) {
-                        statementCaja.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
-                }
+                statementCaja = DBUtil.getConnection().prepareStatement("INSERT INTO ListaCajaTB(IdListaCaja,Nombre,Estado)VALUES(?,?,?)");
+                statementCaja.setString(1, idCaja);
+                statementCaja.setString(2, nombre);
+                statementCaja.setBoolean(3, estado);
+                statementCaja.addBatch();
+                statementCaja.executeBatch();
+                DBUtil.getConnection().commit();
+                result = "insert";
             }
-
-        } else {
-            result = "No se puedo conectar al servidor, revise su conexión e intente nuevamente.";
+        } catch (SQLException ex) {
+            try {
+                DBUtil.getConnection().rollback();
+            } catch (SQLException e) {
+            }
+            result = ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (codigoListaCaja != null) {
+                    codigoListaCaja.close();
+                }
+                if (statementValidar != null) {
+                    statementValidar.close();
+                }
+                if (statementCaja != null) {
+                    statementCaja.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
         return result;
     }

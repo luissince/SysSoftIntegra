@@ -127,37 +127,34 @@ public class DetalleADO {
     public static String DeleteDetail(DetalleTB detalleTB) {
         String result = null;
         DBUtil.dbConnect();
-        if (DBUtil.getConnection() != null) {
-            PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            DBUtil.getConnection().setAutoCommit(false);
+            preparedStatement = DBUtil.getConnection().prepareStatement("DELETE FROM DetalleTB WHERE IdDetalle = ? AND IdMantenimiento = ?");
+            preparedStatement.setInt(1, detalleTB.getIdDetalle());
+            preparedStatement.setString(2, detalleTB.getIdMantenimiento());
+            preparedStatement.addBatch();
+            preparedStatement.executeBatch();
+            DBUtil.getConnection().commit();
+            result = "eliminado";
+        } catch (SQLException ex) {
             try {
-                DBUtil.getConnection().setAutoCommit(false);
-                preparedStatement = DBUtil.getConnection().prepareStatement("DELETE FROM DetalleTB WHERE IdDetalle = ? AND IdMantenimiento = ?");
-                preparedStatement.setInt(1, detalleTB.getIdDetalle());
-                preparedStatement.setString(2, detalleTB.getIdMantenimiento());
-                preparedStatement.addBatch();
-                preparedStatement.executeBatch();
-                DBUtil.getConnection().commit();
-                result = "eliminado";
-            } catch (SQLException ex) {
-                try {
-                    DBUtil.getConnection().rollback();
-                    result = ex.getLocalizedMessage();
-                } catch (SQLException e) {
-                    result = e.getLocalizedMessage();
-                }
-            } finally {
-                try {
-                    if (preparedStatement != null) {
-                        preparedStatement.close();
-                    }
-                    DBUtil.dbDisconnect();
-                } catch (SQLException ex) {
-                    result = ex.getLocalizedMessage();
-                }
+                DBUtil.getConnection().rollback();
+                result = ex.getLocalizedMessage();
+            } catch (SQLException e) {
+                result = e.getLocalizedMessage();
             }
-        } else {
-            result = "No se puedo establecer conexión con el servidor, revice y vuelva a intentarlo.";
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                result = ex.getLocalizedMessage();
+            }
         }
+
         return result;
     }
 

@@ -172,6 +172,8 @@ public final class FilesRouters {
 
     public static final String FX_CAJA_BUSQUEDA = "/view/operaciones/cortecaja/FxCajaBusqueda.fxml";
 
+    public static final String FX_CAJA_AJUSTE = "/view/operaciones/cortecaja/FxCajaAjuste.fxml";
+
     public static final String FX_CAJA_CERRAR_CAJA = "/view/operaciones/cortecaja/FxCajaCerrarCaja.fxml";
 
     public static final String FX_CAJA_PROCESO = "/view/operaciones/cortecaja/FxCajaProceso.fxml";
@@ -427,7 +429,7 @@ public final class FilesRouters {
     public static final String FX_INVENTARIO_REPORTE = "/view/reporte/FxInventarioReporte.fxml";
 
     public static final String FX_PRODUCCION_REPORTE = "/view/reporte/FxProduccionReporte.fxml";
-    
-     public static final String FX_INGRESOS_EGRESOS_REPORTE = "/view/reporte/FxIngresosEgresos.fxml";
+
+    public static final String FX_INGRESOS_EGRESOS_REPORTE = "/view/reporte/FxIngresosEgresos.fxml";
 
 }

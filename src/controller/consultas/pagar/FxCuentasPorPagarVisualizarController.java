@@ -141,6 +141,16 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
                             openModalImpresion(idCompra);
                         }
                     });
+
+                    vc.getBtnRemove().setOnAction(event -> {
+                        onEventRemove(vc.getIdCompraCredito());
+                    });
+                    vc.getBtnRemove().setOnKeyPressed(event -> {
+                        if (event.getCode() == KeyCode.ENTER) {
+                            onEventRemove(vc.getIdCompraCredito());
+                            event.consume();
+                        }
+                    });
                 });
 
                 fillVentasDetalleTable();
@@ -167,6 +177,19 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
         }
     }
 
+    private void onEventRemove(String IdCompraCredito) {
+        short value = Tools.AlertMessageConfirmation(apWindow, "Cuentas Por Pagar", "¿Está seguro de continuar?");
+        if (value == 1) {
+            String result = CompraADO.RemoverEgreso(compraTB.getIdCompra(), IdCompraCredito);
+            if (result.equalsIgnoreCase("removed")) {
+                Tools.AlertMessageInformation(apWindow, "Cuentas Por Pagar", "Se completo correctamento el proceso.");
+                loadTableCompraCredito(compraTB.getIdCompra());
+            } else {
+                Tools.AlertMessageWarning(apWindow, "Cuentas Por Pagar", result);
+            }
+        }
+    }
+
     private void fillVentasDetalleTable() {
         for (int i = 0; i < compraTB.getCompraCreditoTBs().size(); i++) {
             gpList.add(addElementGridPane("l1" + (i + 1), compraTB.getCompraCreditoTBs().get(i).getId() + "", Pos.CENTER, null), 0, (i + 1));
@@ -176,6 +199,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
             gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(compraTB.getCompraCreditoTBs().get(i).getMonto(), 2), Pos.CENTER, null), 4, (i + 1));
             gpList.add(addElementGridPane("l6" + (i + 1), compraTB.getCompraCreditoTBs().get(i).getObservacion(), Pos.CENTER, null), 5, (i + 1));
             gpList.add(addElementGridPane("l7" + (i + 1), "", Pos.CENTER, compraTB.getCompraCreditoTBs().get(i).getBtnImprimir()), 6, (i + 1));
+            gpList.add(addElementGridPane("l8" + (i + 1), "", Pos.CENTER, compraTB.getCompraCreditoTBs().get(i).isEstado() ? new Label("-") : compraTB.getCompraCreditoTBs().get(i).getBtnRemove()), 7, (i + 1));
         }
     }
 
@@ -251,7 +275,7 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
             //Controlller here
             FxOpcionesImprimirController controller = fXMLLoader.getController();
             controller.loadTicketCuentaPorPagar(controller.getApWindow());
-            controller.setIdCompra(idCompra);          
+            controller.setIdCompra(idCompra);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Imprimir", apWindow.getScene().getWindow());
             stage.setResizable(false);

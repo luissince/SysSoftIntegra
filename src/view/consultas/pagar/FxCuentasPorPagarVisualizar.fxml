@@ -133,7 +133,8 @@
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints minHeight="36.0" vgrow="SOMETIMES" />
@@ -146,6 +147,7 @@
                                           <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelOpenSansRegular13" text="Monto" textFill="WHITE" GridPane.columnIndex="4" />
                                           <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelRoboto13" text="Observación" textFill="WHITE" GridPane.columnIndex="5" />
                                           <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelOpenSansRegular13" text="Imprimir" textFill="WHITE" GridPane.columnIndex="6" />
+                                          <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #020203; -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em; -fx-font-weight: 100;" styleClass="labelOpenSansRegular13" text="Remover" textFill="WHITE" GridPane.columnIndex="7" />
                                        </children>
                                     </GridPane>
                                  </children>

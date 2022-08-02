@@ -45,7 +45,7 @@ public class DBUtil {
 
     }
 
-    public static void dbDisconnect() {
+    public static void dbDisconnect() {        
         try {
             if (connection != null && !connection.isClosed()) {
 //                connection.close();               
@@ -55,7 +55,7 @@ public class DBUtil {
         }
     }
 
-    public static Connection getConnection() {
+    public static Connection getConnection() throws SQLException {
         return connection;
     }
 
