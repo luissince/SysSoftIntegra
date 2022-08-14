@@ -18,6 +18,7 @@ public class TipoDocumentoTB {
     private boolean estado;
     private boolean campo;
     private int numeroCampo;
+    private int idTicket;
     private String codigoAlterno;
     private Label lblDestino;
     private ImageView ivPredeterminado;
@@ -154,6 +155,14 @@ public class TipoDocumentoTB {
 
     public void setNumeroCampo(int numeroCampo) {
         this.numeroCampo = numeroCampo;
+    }
+
+    public int getIdTicket() {
+        return idTicket;
+    }
+
+    public void setIdTicket(int idTicket) {
+        this.idTicket = idTicket;
     }
 
     public String getCodigoAlterno() {

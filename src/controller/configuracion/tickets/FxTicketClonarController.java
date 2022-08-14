@@ -2,6 +2,7 @@ package controller.configuracion.tickets;
 
 import controller.tools.Tools;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,7 +34,10 @@ public class FxTicketClonarController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
-        cbTpo.getItems().addAll(TicketADO.ListTipoTicket());
+        Object object = TicketADO.ListTipoTicket();
+        if (object instanceof ArrayList) {
+            cbTpo.getItems().addAll((ArrayList) object);
+        }
     }
 
     public void loadComponents(int idTicket) {

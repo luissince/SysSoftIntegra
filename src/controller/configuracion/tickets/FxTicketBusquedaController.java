@@ -32,7 +32,7 @@ public class FxTicketBusquedaController implements Initializable {
     }
 
     public void loadComponents(int tipo, boolean todos) {
-        lvLista.getItems().addAll(TicketADO.ListTicket(tipo, todos));
+        lvLista.getItems().addAll(TicketADO.ListTicketOpcion(tipo, todos));
     }
 
     private void selectTicket() {

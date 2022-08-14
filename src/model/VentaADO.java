@@ -1997,7 +1997,8 @@ public class VentaADO {
                 venta.setDouble(17, ventaTB.getTarjeta());
                 venta.setString(18, Integer.toString(dig5) + id_comprabante[1]);
                 venta.setDouble(19, ventaTB.getDeposito());
-                venta.setString(20, ventaTB.getNumeroOperacion());
+                venta.setInt(20, ventaTB.getTipoCredito());
+                venta.setString(21, ventaTB.getNumeroOperacion());
                 venta.addBatch();
 
                 comprobante.setInt(1, ventaTB.getIdComprobante());

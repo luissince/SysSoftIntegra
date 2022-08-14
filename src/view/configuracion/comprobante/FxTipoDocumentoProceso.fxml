@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -94,7 +95,7 @@
                <children>
                   <VBox prefWidth="260.0" style="-fx-spacing: 0.5em;" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label styleClass="labelRoboto13" text="Usa número de caracteres el comprobante" textFill="#020203" />
+                        <Label styleClass="labelRoboto13" text="Usa número de caracteres" textFill="#020203" />
                         <CheckBox fx:id="cbUsaCaracteres" mnemonicParsing="false" onAction="#onActionUsaCaracteres" styleClass="check-box-contenido" text="No" />
                      </children>
                   </VBox>
@@ -102,6 +103,16 @@
                      <children>
                         <Label styleClass="labelRoboto13" text="Caracteres a usar" textFill="#020203" />
                         <TextField fx:id="txtCaracteres" disable="true" onAction="#onActionGuardar" onKeyTyped="#onKeyTypedCaracteres" prefHeight="30.0" prefWidth="260.0" promptText="0" styleClass="text-field-normal" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <VBox style="-fx-spacing: 0.5em;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="labelRoboto13" text="Documento ha imprimir" textFill="#020203" />
+                        <ComboBox fx:id="cbImprimir" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="260.0" />
                      </children>
                   </VBox>
                </children>
@@ -133,5 +144,23 @@
             </HBox>
          </children>
       </VBox>
+      <HBox fx:id="hbLoadProcesando" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefWidth="100.0" style="-fx-text-fill: white;" styleClass="labelRobotoMedium13" text="PROCESANDO INFORMACIÓN..." textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="btnCancelarProceso" mnemonicParsing="false" styleClass="buttonLightError" text="Cancelar Proceso">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/load.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

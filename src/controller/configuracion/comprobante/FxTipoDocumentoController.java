@@ -206,18 +206,7 @@ public class FxTipoDocumentoController implements Initializable {
             //Controlller here
             FxTipoDocumentoProcesoController controller = fXMLLoader.getController();
             controller.setTipoDocumentoController(this);
-            controller.initUpdate(tvList.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
-                    tvList.getSelectionModel().getSelectedItem().getNombre(),
-                    tvList.getSelectionModel().getSelectedItem().getSerie(),
-                    tvList.getSelectionModel().getSelectedItem().getNumeracion(),
-                    tvList.getSelectionModel().getSelectedItem().getCodigoAlterno(),
-                    tvList.getSelectionModel().getSelectedItem().isGuia(),
-                    tvList.getSelectionModel().getSelectedItem().isFactura(),
-                    tvList.getSelectionModel().getSelectedItem().isNotaCredito(),
-                    tvList.getSelectionModel().getSelectedItem().isEstado(),
-                    tvList.getSelectionModel().getSelectedItem().isCampo(),
-                    tvList.getSelectionModel().getSelectedItem().getNumeroCampo()
-            );
+            controller.initUpdate(tvList.getSelectionModel().getSelectedItem().getIdTipoDocumento());
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Actualizar el comprobante", window.getScene().getWindow());
             stage.setResizable(false);
