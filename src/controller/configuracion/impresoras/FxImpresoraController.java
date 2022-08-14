@@ -119,7 +119,11 @@ public class FxImpresoraController implements Initializable {
         Task<List<Object>> task = new Task<List<Object>>() {
             @Override
             public List<Object> call() throws InterruptedException {
-                ArrayList<TicketTB> ticketTBs = TicketADO.ListTipoTicket();
+                Object object = TicketADO.ListTipoTicket();
+                ArrayList<TicketTB> ticketTBs = new ArrayList<>();
+                if (object instanceof ArrayList) {
+                    ticketTBs.addAll((ArrayList)object);
+                }                
                 List<String> printerList = printerService.getPrinters();
                 List<Object> objects = new ArrayList<>();
                 objects.add(ticketTBs);

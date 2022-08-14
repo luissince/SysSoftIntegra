@@ -104,6 +104,68 @@ public class TipoDocumentoADO {
         return result;
     }
 
+    public static Object ObtenerTipoDocumentoById(int idTipoDocumento) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            DBUtil.dbConnect();
+
+            preparedStatement = DBUtil.getConnection().prepareStatement("SELECT "
+                    + "IdTipoDocumento, "
+                    + "Nombre, "
+                    + "Serie, "
+                    + "Numeracion, "
+                    + "CodigoAlterno, "
+                    + "Facturacion, "
+                    + "Predeterminado, "
+                    + "Sistema, "
+                    + "Guia, "
+                    + "NotaCredito, "
+                    + "Estado, "
+                    + "Campo, "
+                    + "NumeroCampo, "
+                    + "idTicket"
+                    + "FROM TipoDocumentoTB "
+                    + "WHERE IdTipoDocumento = ?");
+            preparedStatement.setInt(1, idTipoDocumento);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                TipoDocumentoTB tipoDocumentoTB = new TipoDocumentoTB();
+                tipoDocumentoTB.setIdTipoDocumento(resultSet.getInt("IdTipoDocumento"));
+                tipoDocumentoTB.setNombre(resultSet.getString("Nombre"));
+                tipoDocumentoTB.setSerie(resultSet.getString("Serie"));
+                tipoDocumentoTB.setNumeracion(resultSet.getInt("Numeracion"));
+                tipoDocumentoTB.setCodigoAlterno(resultSet.getString("CodigoAlterno"));
+                tipoDocumentoTB.setFactura(resultSet.getBoolean("Facturacion"));
+                tipoDocumentoTB.setPredeterminado(resultSet.getBoolean("Predeterminado"));
+                tipoDocumentoTB.setSistema(resultSet.getBoolean("Sistema"));
+                tipoDocumentoTB.setGuia(resultSet.getBoolean("Guia"));
+                tipoDocumentoTB.setNotaCredito(resultSet.getBoolean("NotaCredito"));
+                tipoDocumentoTB.setEstado(resultSet.getBoolean("Estado"));
+                tipoDocumentoTB.setCampo(resultSet.getBoolean("Campo"));
+                tipoDocumentoTB.setNumeroCampo(resultSet.getInt("NumeroCampo"));
+                tipoDocumentoTB.setIdTicket(resultSet.getInt("idTicket"));
+                return tipoDocumentoTB;
+            } else {
+                throw new Exception("Se produjo un error interno, intente nuevamente.");
+            }
+        } catch (Exception ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
+    }
+
     public static Object ListTipoDocumento(int opcion, String buscar, int posicionPagina, int filasPorPagina) {
         PreparedStatement statement = null;
         ResultSet resultSet = null;

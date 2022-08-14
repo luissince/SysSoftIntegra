@@ -268,13 +268,14 @@ public class TicketADO {
         }
     }
 
-    public static ArrayList<TicketTB> ListTicket(int tipoTicket, boolean todos) {
+    public static ArrayList<TicketTB> ListTicketOpcion(int tipoTicket, boolean todos) {
         ArrayList<TicketTB> list = new ArrayList<>();
-        DBUtil.dbConnect();
 
         PreparedStatement statementLista = null;
         ResultSet resultSet = null;
         try {
+            DBUtil.dbConnect();
+
             statementLista = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ticket_By_Tipo_Opcion(?,?)}");
             statementLista.setInt(1, tipoTicket);
             statementLista.setBoolean(2, todos);
@@ -308,23 +309,26 @@ public class TicketADO {
         return list;
     }
 
-    public static ArrayList<TicketTB> ListTipoTicket() {
-        ArrayList<TicketTB> list = new ArrayList<>();
-        DBUtil.dbConnect();
+    public static Object ListTicket() {
 
         PreparedStatement statementLista = null;
         ResultSet resultSet = null;
         try {
-            statementLista = DBUtil.getConnection().prepareStatement("SELECT idTipoTicket,Nombre FROM TipoTicketTB");
+            DBUtil.dbConnect();
+
+            ArrayList<TicketTB> list = new ArrayList<>();
+            statementLista = DBUtil.getConnection().prepareStatement("SELECT idTicket,nombre FROM TicketTB");
             resultSet = statementLista.executeQuery();
             while (resultSet.next()) {
                 TicketTB ticketTB = new TicketTB();
-                ticketTB.setId(resultSet.getInt("idTipoTicket"));
-                ticketTB.setNombreTicket(resultSet.getString("Nombre"));
+                ticketTB.setId(resultSet.getInt(1));
+                ticketTB.setNombreTicket(resultSet.getString(2));
                 list.add(ticketTB);
             }
+            
+            return list;
         } catch (SQLException ex) {
-
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (statementLista != null) {
@@ -335,12 +339,44 @@ public class TicketADO {
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
+    }
 
+    public static Object ListTipoTicket() {
+        PreparedStatement statementLista = null;
+        ResultSet resultSet = null;
+        try {
+            DBUtil.dbConnect();
+
+            ArrayList<TicketTB> list = new ArrayList<>();
+
+            statementLista = DBUtil.getConnection().prepareStatement("SELECT idTipoTicket,Nombre FROM TipoTicketTB");
+            resultSet = statementLista.executeQuery();
+            while (resultSet.next()) {
+                TicketTB ticketTB = new TicketTB();
+                ticketTB.setId(resultSet.getInt("idTipoTicket"));
+                ticketTB.setNombreTicket(resultSet.getString("Nombre"));
+                list.add(ticketTB);
             }
 
+            return list;
+        } catch (SQLException ex) {
+            return ex.getLocalizedMessage();
+        } finally {
+            try {
+                if (statementLista != null) {
+                    statementLista.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                DBUtil.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
         }
-
-        return list;
     }
 
     public static Object GetTicketRuta(int idTicket) {
