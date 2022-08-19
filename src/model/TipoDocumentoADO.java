@@ -44,7 +44,7 @@ public class TipoDocumentoADO {
                     statementUpdate.setBoolean(8, documentoTB.isEstado());
                     statementUpdate.setBoolean(9, documentoTB.isCampo());
                     statementUpdate.setInt(10, documentoTB.getNumeroCampo());
-                    statementUpdate.setInt(11, 0);
+                    statementUpdate.setInt(11, documentoTB.getIdTicket());
                     statementUpdate.setInt(12, documentoTB.getIdTipoDocumento());
                     statementUpdate.addBatch();
 
@@ -72,7 +72,7 @@ public class TipoDocumentoADO {
                     statementUpdate.setBoolean(10, documentoTB.isEstado());
                     statementUpdate.setBoolean(11, documentoTB.isCampo());
                     statementUpdate.setInt(12, documentoTB.getNumeroCampo());
-                    statementUpdate.setInt(13, 0);
+                    statementUpdate.setInt(13, documentoTB.getIdTicket());
                     statementUpdate.addBatch();
 
                     statementUpdate.executeBatch();
@@ -110,23 +110,22 @@ public class TipoDocumentoADO {
 
         try {
             DBUtil.dbConnect();
-
-            preparedStatement = DBUtil.getConnection().prepareStatement("SELECT "
-                    + "IdTipoDocumento, "
-                    + "Nombre, "
-                    + "Serie, "
-                    + "Numeracion, "
-                    + "CodigoAlterno, "
-                    + "Facturacion, "
-                    + "Predeterminado, "
-                    + "Sistema, "
-                    + "Guia, "
-                    + "NotaCredito, "
-                    + "Estado, "
-                    + "Campo, "
-                    + "NumeroCampo, "
-                    + "idTicket"
-                    + "FROM TipoDocumentoTB "
+            preparedStatement = DBUtil.getConnection().prepareStatement("SELECT\n"
+                    + "IdTipoDocumento,\n"
+                    + "Nombre,\n"
+                    + "Serie,\n"
+                    + "Numeracion,\n"
+                    + "CodigoAlterno,\n"
+                    + "Facturacion,\n"
+                    + "Predeterminado,\n"
+                    + "Sistema,\n"
+                    + "Guia,\n"
+                    + "NotaCredito,\n"
+                    + "Estado,\n"
+                    + "Campo,\n"
+                    + "NumeroCampo,\n"
+                    + "idTicket\n"
+                    + "FROM TipoDocumentoTB \n"
                     + "WHERE IdTipoDocumento = ?");
             preparedStatement.setInt(1, idTipoDocumento);
             resultSet = preparedStatement.executeQuery();

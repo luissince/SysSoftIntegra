@@ -81,7 +81,8 @@ public class FxTipoDocumentoController implements Initializable {
         tcSerie.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getSerie()));
         tcNumeracion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getNumeracion()));
         tcDestino.setCellValueFactory(new PropertyValueFactory<>("lblDestino"));
-        tcEstado.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().isEstado() ? "Activo" : "Inactivo"));
+        tcEstado.setCellValueFactory(
+                cellData -> Bindings.concat(cellData.getValue().isEstado() ? "Activo" : "Inactivo"));
         tcCodigoAlterno.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getCodigoAlterno()));
         tcCaracteres.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().isCampo() ? "Si" : "No"));
         tcPredeterminado.setCellValueFactory(new PropertyValueFactory<>("ivPredeterminado"));
@@ -95,7 +96,8 @@ public class FxTipoDocumentoController implements Initializable {
         tcCodigoAlterno.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
         tcCaracteres.prefWidthProperty().bind(tvList.widthProperty().multiply(0.09));
         tcPredeterminado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
-        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+        tvList.setPlaceholder(
+                Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
         initLoad();
     }
 
@@ -141,7 +143,8 @@ public class FxTipoDocumentoController implements Initializable {
                     }
 
                 } else {
-                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                    tvList.setPlaceholder(
+                            Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
                     lblPaginaActual.setText("0");
                     lblPaginaSiguiente.setText("0");
                     lblPredeterminado.setText("Ninguno");
@@ -161,7 +164,8 @@ public class FxTipoDocumentoController implements Initializable {
         task.setOnScheduled(w -> {
             lblLoad.setVisible(true);
             tvList.getItems().clear();
-            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            tvList.setPlaceholder(
+                    Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
             totalPaginacion = 0;
             lblPredeterminado.setText("Ninguno");
         });
@@ -177,7 +181,6 @@ public class FxTipoDocumentoController implements Initializable {
             case 0:
                 fillTabletTipoDocumento(0, "");
                 break;
-
         }
     }
 
@@ -186,14 +189,16 @@ public class FxTipoDocumentoController implements Initializable {
         URL url = getClass().getResource(FilesRouters.FX_TIPO_DOCUMENTO_PROCESO);
         FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
         Parent parent = fXMLLoader.load(url.openStream());
-        //Controlller here
+        // Controlller here
         FxTipoDocumentoProcesoController controller = fXMLLoader.getController();
         controller.setTipoDocumentoController(this);
+
         //
         Stage stage = WindowStage.StageLoaderModal(parent, "Nuevo comprobante", window.getScene().getWindow());
         stage.setResizable(false);
         stage.sizeToScene();
         stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.setOnShown(w -> controller.initCreate());
         stage.show();
     }
 
@@ -203,15 +208,18 @@ public class FxTipoDocumentoController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_TIPO_DOCUMENTO_PROCESO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxTipoDocumentoProcesoController controller = fXMLLoader.getController();
             controller.setTipoDocumentoController(this);
-            controller.initUpdate(tvList.getSelectionModel().getSelectedItem().getIdTipoDocumento());
+
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Actualizar el comprobante", window.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Actualizar el comprobante",
+                    window.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(
+                    w -> controller.initUpdate(tvList.getSelectionModel().getSelectedItem().getIdTipoDocumento()));
             stage.show();
         } else {
             Tools.AlertMessageWarning(window, "Tipo de comprobante", "Seleccione un elemento de la lista.");
@@ -220,7 +228,8 @@ public class FxTipoDocumentoController implements Initializable {
 
     private void onEventPredeterminado() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            String result = TipoDocumentoADO.ChangeDefaultState(true, tvList.getSelectionModel().getSelectedItem().getIdTipoDocumento());
+            String result = TipoDocumentoADO.ChangeDefaultState(true,
+                    tvList.getSelectionModel().getSelectedItem().getIdTipoDocumento());
             if (result.equalsIgnoreCase("updated")) {
                 Tools.AlertMessageInformation(window, "Tipo de comprobante", "Se cambio el estado correctamente.");
                 initLoad();
@@ -234,18 +243,24 @@ public class FxTipoDocumentoController implements Initializable {
 
     private void onEventRemove() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            short value = Tools.AlertMessageConfirmation(window, "Tipo de comprobante", "¿Esta seguro de eliminar el tipo de comprobante?");
+            short value = Tools.AlertMessageConfirmation(window, "Tipo de comprobante",
+                    "¿Esta seguro de eliminar el tipo de comprobante?");
             if (value == 1) {
-                String result = TipoDocumentoADO.EliminarTipoDocumento(tvList.getSelectionModel().getSelectedItem().getIdTipoDocumento());
+                String result = TipoDocumentoADO
+                        .EliminarTipoDocumento(tvList.getSelectionModel().getSelectedItem().getIdTipoDocumento());
                 if (result.equalsIgnoreCase("removed")) {
-                    Tools.AlertMessageInformation(window, "Tipo de comprobante", "Se elimino correctamente el tipo de documento.");
+                    Tools.AlertMessageInformation(window, "Tipo de comprobante",
+                            "Se elimino correctamente el tipo de documento.");
                     initLoad();
                 } else if (result.equalsIgnoreCase("venta")) {
-                    Tools.AlertMessageWarning(window, "Tipo de comprobante", "El tipo de documento esta ligado a una venta.");
+                    Tools.AlertMessageWarning(window, "Tipo de comprobante",
+                            "El tipo de documento esta ligado a una venta.");
                 } else if (result.equalsIgnoreCase("notacredito")) {
-                    Tools.AlertMessageWarning(window, "Tipo de comprobante", "El tipo de documento esta ligado a una nota de crédito.");
+                    Tools.AlertMessageWarning(window, "Tipo de comprobante",
+                            "El tipo de documento esta ligado a una nota de crédito.");
                 } else if (result.equalsIgnoreCase("sistema")) {
-                    Tools.AlertMessageWarning(window, "Tipo de comprobante", "El tipo de documento no se puede eliminar porque es del sistema.");
+                    Tools.AlertMessageWarning(window, "Tipo de comprobante",
+                            "El tipo de documento no se puede eliminar porque es del sistema.");
                 } else {
                     Tools.AlertMessageError(window, "Tipo de comprobante", result);
                 }

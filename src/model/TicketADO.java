@@ -310,7 +310,6 @@ public class TicketADO {
     }
 
     public static Object ListTicket() {
-
         PreparedStatement statementLista = null;
         ResultSet resultSet = null;
         try {
@@ -321,8 +320,8 @@ public class TicketADO {
             resultSet = statementLista.executeQuery();
             while (resultSet.next()) {
                 TicketTB ticketTB = new TicketTB();
-                ticketTB.setId(resultSet.getInt(1));
-                ticketTB.setNombreTicket(resultSet.getString(2));
+                ticketTB.setIdTicket(resultSet.getInt("idTicket"));
+                ticketTB.setNombreTicket(resultSet.getString("nombre"));
                 list.add(ticketTB);
             }
             
