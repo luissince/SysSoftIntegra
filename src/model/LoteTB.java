@@ -75,7 +75,7 @@ public class LoteTB {
     }
 
     public void setFechaCaducidad(LocalDate fechaCaducidad) {
-        this.fechaCaducidad = new SimpleObjectProperty(fechaCaducidad);
+        this.fechaCaducidad = new SimpleObjectProperty<LocalDate>(fechaCaducidad);
     }
 
     public double getExistenciaInicial() {

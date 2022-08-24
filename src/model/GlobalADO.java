@@ -614,7 +614,7 @@ public class GlobalADO {
             statementImpuesto.setBoolean(10, impuestoTB.isSistema());
             statementImpuesto.addBatch();
 
-            statementTipoDocumento = DBUtil.getConnection().prepareStatement("INSERT INTO TipoDocumentoTB(Nombre,Serie,Numeracion,CodigoAlterno,Facturacion,Predeterminado,Sistema,Guia,NotaCredito,Estado,Campo,NumeroCampo)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+            statementTipoDocumento = DBUtil.getConnection().prepareStatement("INSERT INTO TipoDocumentoTB(Nombre,Serie,Numeracion,CodigoAlterno,Facturacion,Predeterminado,Sistema,Guia,NotaCredito,Estado,Campo,NumeroCampo,idTicket)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
             statementTipoDocumento.setString(1, tipoDocumentoTicket.getNombre());
             statementTipoDocumento.setString(2, tipoDocumentoTicket.getSerie());
             statementTipoDocumento.setInt(3, tipoDocumentoTicket.getNumeracion());
@@ -627,6 +627,7 @@ public class GlobalADO {
             statementTipoDocumento.setBoolean(10, tipoDocumentoTicket.isEstado());
             statementTipoDocumento.setBoolean(11, tipoDocumentoTicket.isCampo());
             statementTipoDocumento.setInt(12, tipoDocumentoTicket.getNumeroCampo());
+            statementTipoDocumento.setInt(13, tipoDocumentoTicket.getIdTicket());
             statementTipoDocumento.addBatch();
 
             codigoCliente = DBUtil.getConnection().prepareCall("{? = call Fc_Cliente_Codigo_Alfanumerico()}");

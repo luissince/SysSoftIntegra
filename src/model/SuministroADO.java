@@ -40,6 +40,7 @@ public class SuministroADO {
             preparedValidation = DBUtil.getConnection().prepareStatement("select IdSuministro from SuministroTB where IdSuministro = ?");
             preparedValidation.setString(1, suministroTB.getIdSuministro());
             if (preparedValidation.executeQuery().next()) {
+                preparedValidation.close();
                 preparedValidation = DBUtil.getConnection().prepareStatement("select Clave from SuministroTB where IdSuministro <> ? and Clave = ?");
                 preparedValidation.setString(1, suministroTB.getIdSuministro());
                 preparedValidation.setString(2, suministroTB.getClave());
@@ -93,6 +94,7 @@ public class SuministroADO {
                         preparedPrecios.addBatch();
                         preparedPrecios.executeBatch();
 
+                        preparedPrecios.close();
                         preparedPrecios = DBUtil.getConnection().prepareStatement("INSERT INTO PreciosTB(IdArticulo, IdSuministro, Nombre, Valor, Factor,Estado) VALUES(?,?,?,?,?,?)");
                         for (int i = 0; i < tvPrecios.size(); i++) {
                             preparedPrecios.setString(1, "");
@@ -110,6 +112,7 @@ public class SuministroADO {
                     }
                 }
             } else {
+                preparedValidation.close();
                 preparedValidation = DBUtil.getConnection().prepareStatement("select Clave from SuministroTB where Clave = ?");
                 preparedValidation.setString(1, suministroTB.getClave());
                 if (preparedValidation.executeQuery().next()) {
@@ -287,6 +290,7 @@ public class SuministroADO {
                 suministroTB.setMensaje("Ya existe un producto con el mismo código.");
                 return suministroTB;
             } else {
+                preparedValidation.close();
                 preparedValidation = DBUtil.getConnection().prepareStatement("select NombreMarca from SuministroTB where NombreMarca = ?");
                 preparedValidation.setString(1, suministroTB.getNombreMarca());
                 if (preparedValidation.executeQuery().next()) {
@@ -457,7 +461,7 @@ public class SuministroADO {
                 DBUtil.getConnection().rollback();
                 return "venta";
             } else {
-
+                preparedValidar.close();
                 preparedValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM CompraTB");
                 if (preparedValidar.executeQuery().next()) {
                     DBUtil.getConnection().rollback();
@@ -636,9 +640,11 @@ public class SuministroADO {
                 empList.add(suministroTB);
             }
 
+            preparedStatement.close();
             preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Suministros_Lista_View_Count(?,?)}");
             preparedStatement.setShort(1, tipo);
             preparedStatement.setString(2, value);
+            rsEmps.close();
             rsEmps = preparedStatement.executeQuery();
             Integer integer = 0;
             if (rsEmps.next()) {
@@ -720,6 +726,7 @@ public class SuministroADO {
             preparedTotales.setString(3, nombreMarca);
             preparedTotales.setInt(4, categoria);
             preparedTotales.setInt(5, marca);
+            rsEmps.close();
             rsEmps = preparedTotales.executeQuery();
             Integer integer = 0;
             if (rsEmps.next()) {
@@ -865,6 +872,7 @@ public class SuministroADO {
                 DBUtil.getConnection().rollback();
                 result = "compra";
             } else {
+                preparedValidate.close();
                 preparedValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM KardexSuministroTB WHERE IdSuministro = ?");
                 preparedValidate.setString(1, idSuministro);
                 if (preparedValidate.executeQuery().next()) {
@@ -882,6 +890,7 @@ public class SuministroADO {
                         preparedSuministro.addBatch();
                         preparedSuministro.executeBatch();
 
+                        preparedSuministro.close();
                         preparedSuministro = DBUtil.getConnection().prepareStatement("DELETE FROM PreciosTB WHERE IdSuministro = ?");
                         preparedSuministro.setString(1, idSuministro);
                         preparedSuministro.addBatch();
@@ -1205,7 +1214,7 @@ public class SuministroADO {
         try {
             DBUtil.dbConnect();
 
-            ArrayList<SuministroTB> empList = new ArrayList();
+            ArrayList<SuministroTB> empList = new ArrayList<SuministroTB>();
             preparedStatementSuministros = DBUtil.getConnection().prepareStatement("{call Sp_Reporte_General_Inventario(?,?,?,?,?,?)}");
             preparedStatementSuministros.setInt(1, idInventario);
             preparedStatementSuministros.setInt(2, idUnidad);
@@ -1332,6 +1341,7 @@ public class SuministroADO {
             preparedStatementTotales.setInt(5, categoria);
             preparedStatementTotales.setInt(6, marca);
             preparedStatementTotales.setInt(7, idAlmacen);
+            rsEmps.close();
             rsEmps = preparedStatementTotales.executeQuery();
             Integer integer = 0;
             if (rsEmps.next()) {

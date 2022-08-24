@@ -48,7 +48,7 @@ public class FxLoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        
     }
 
     private void eventEntrar() {
@@ -59,7 +59,6 @@ public class FxLoginController implements Initializable {
             Tools.AlertMessageWarning(apLogin, "Iniciar Sesión", "Ingrese su contraseña");
             txtClave.requestFocus();
         } else {
-
             ExecutorService executor = Executors.newCachedThreadPool((runnable) -> {
                 Thread t = new Thread(runnable);
                 t.setDaemon(true);

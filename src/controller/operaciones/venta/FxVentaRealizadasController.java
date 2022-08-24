@@ -144,7 +144,7 @@ public class FxVentaRealizadasController implements Initializable {
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
     }
 
-    public void loadPrivilegios(ObservableList<PrivilegioTB> privilegioTBs) {
+    public void loadPrivilegios(ObservableList<PrivilegioTB> privilegioTBs) {       
         if (privilegioTBs.get(0).getIdPrivilegio() != 0 && !privilegioTBs.get(0).isEstado()) {
             btnMostrar.setDisable(true);
         }

@@ -26,6 +26,7 @@ public class TipoDocumentoADO {
             statementState.setInt(1, documentoTB.getIdTipoDocumento());
             if (statementState.executeQuery().next()) {
 
+                statementState.close();
                 statementState = DBUtil.getConnection().prepareStatement("SELECT * FROM TipoDocumentoTB WHERE IdTipoDocumento <> ? AND Nombre = ? ");
                 statementState.setInt(1, documentoTB.getIdTipoDocumento());
                 statementState.setString(2, documentoTB.getNombre());
@@ -53,6 +54,7 @@ public class TipoDocumentoADO {
                     result = "updated";
                 }
             } else {
+                statementState.close();
                 statementState = DBUtil.getConnection().prepareStatement("SELECT * FROM TipoDocumentoTB WHERE  Nombre = ? ");
                 statementState.setString(1, documentoTB.getNombre());
                 if (statementState.executeQuery().next()) {
@@ -166,18 +168,18 @@ public class TipoDocumentoADO {
     }
 
     public static Object ListTipoDocumento(int opcion, String buscar, int posicionPagina, int filasPorPagina) {
-        PreparedStatement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             DBUtil.dbConnect();
             Object[] objects = new Object[2];
             ObservableList<TipoDocumentoTB> observableList = FXCollections.observableArrayList();
-            statement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_TipoDocumento(?,?,?,?)}");
-            statement.setInt(1, opcion);
-            statement.setString(2, buscar);
-            statement.setInt(3, posicionPagina);
-            statement.setInt(4, filasPorPagina);
-            resultSet = statement.executeQuery();
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_TipoDocumento(?,?,?,?)}");
+            preparedStatement.setInt(1, opcion);
+            preparedStatement.setString(2, buscar);
+            preparedStatement.setInt(3, posicionPagina);
+            preparedStatement.setInt(4, filasPorPagina);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 TipoDocumentoTB tipoDocumentoTB = new TipoDocumentoTB();
                 tipoDocumentoTB.setId(resultSet.getRow() + posicionPagina);
@@ -211,11 +213,12 @@ public class TipoDocumentoADO {
 
                 observableList.add(tipoDocumentoTB);
             }
-
-            statement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_TipoDocumento_Count(?,?)}");
-            statement.setInt(1, opcion);
-            statement.setString(2, buscar);
-            resultSet = statement.executeQuery();
+            preparedStatement.close();
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_TipoDocumento_Count(?,?)}");
+            preparedStatement.setInt(1, opcion);
+            preparedStatement.setString(2, buscar);
+            resultSet.close();
+            resultSet = preparedStatement.executeQuery();
             Integer cantidadTotal = 0;
             if (resultSet.next()) {
                 cantidadTotal = resultSet.getInt("Total");
@@ -229,8 +232,8 @@ public class TipoDocumentoADO {
             return ex.getLocalizedMessage();
         } finally {
             try {
-                if (statement != null) {
-                    statement.close();
+                if (preparedStatement != null) {
+                    preparedStatement.close();
                 }
                 if (resultSet != null) {
                     resultSet.close();
@@ -388,6 +391,7 @@ public class TipoDocumentoADO {
                 DBUtil.getConnection().rollback();
                 result = "sistema";
             } else {
+                statementValidate.close();
                 statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE Comprobante = ?");
                 statementValidate.setInt(1, idTipoDocumento);
                 if (statementValidate.executeQuery().next()) {
@@ -446,8 +450,10 @@ public class TipoDocumentoADO {
 
                 statementTicket = DBUtil.getConnection().prepareStatement("SELECT idTicket FROM TipoDocumentoTB WHERE IdTipoDocumento = ?");
                 statementTicket.setInt(1, resultSet.getInt("Comprobante"));
+                resultSet.close();
                 resultSet = statementTicket.executeQuery();
                 if (resultSet.next()) {
+                    statementTicket.close();
                     statementTicket = DBUtil.getConnection().prepareStatement("SELECT idTicket,ruta FROM TicketTB WHERE idTicket = ?");
                     statementTicket.setInt(1, resultSet.getInt("idTicket"));
                     resultSet = statementTicket.executeQuery();
