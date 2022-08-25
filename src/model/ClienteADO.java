@@ -35,7 +35,22 @@ public class ClienteADO {
                     result = "duplicate";
                 } else {
 
-                    preparedCliente = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB set TipoDocumento=?,NumeroDocumento=?,Informacion=UPPER(?),Telefono=?,Celular=?,Email=?,Direccion=?,Representante=?,Estado=? WHERE IdCliente = ?");
+                    preparedCliente = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB\n"
+                            + "set TipoDocumento=?,\n"
+                            + "NumeroDocumento=?,\n"
+                            + "Informacion=UPPER(?),\n"
+                            + "Telefono=?,\n"
+                            + "Celular=?,\n"
+                            + "Email=?,\n"
+                            + "Direccion=?,\n"
+                            + "Representante=?,\n"
+                            + "Estado=?,\n"
+                            + "NumDocumentoConducto=?,\n"
+                            + "NombreConductor=?,\n"
+                            + "CelularConductor=?,\n"
+                            + "PlacaVehiculo=?,\n"
+                            + "MarcaVehiculo=?\n"
+                            + "WHERE IdCliente = ?");
 
                     preparedCliente.setInt(1, clienteTB.getTipoDocumento());
                     preparedCliente.setString(2, clienteTB.getNumeroDocumento());
@@ -46,7 +61,12 @@ public class ClienteADO {
                     preparedCliente.setString(7, clienteTB.getDireccion());
                     preparedCliente.setString(8, clienteTB.getRepresentante());
                     preparedCliente.setInt(9, clienteTB.getEstado());
-                    preparedCliente.setString(10, clienteTB.getIdCliente());
+                    preparedCliente.setString(12, clienteTB.getNumeroDocumentoConductor());
+                    preparedCliente.setString(13, clienteTB.getNombreConductor());
+                    preparedCliente.setString(14, clienteTB.getCelularConductor());
+                    preparedCliente.setString(15, clienteTB.getPlacaVehiculo());
+                    preparedCliente.setString(16, clienteTB.getMarcaVehiculo());
+                    preparedCliente.setString(17, clienteTB.getIdCliente());
 
                     preparedCliente.addBatch();
                     preparedCliente.executeBatch();
@@ -56,7 +76,7 @@ public class ClienteADO {
 
                 }
             } else {
-                preparedValidation = DBUtil.getConnection().prepareStatement("select NumeroDocumento from ClienteTB where NumeroDocumento = ?");
+                preparedValidation = DBUtil.getConnection().prepareStatement("select NumeroDocumento from \nClienteTB where NumeroDocumento = ?");
                 preparedValidation.setString(1, clienteTB.getNumeroDocumento());
                 if (preparedValidation.executeQuery().next()) {
                     DBUtil.getConnection().rollback();
@@ -65,10 +85,28 @@ public class ClienteADO {
                     codigoCliente = DBUtil.getConnection().prepareCall("{? = call Fc_Cliente_Codigo_Alfanumerico()}");
                     codigoCliente.registerOutParameter(1, java.sql.Types.VARCHAR);
                     codigoCliente.execute();
-                    String idSuministro = codigoCliente.getString(1);
+                    String idCliente = codigoCliente.getString(1);
 
-                    preparedCliente = DBUtil.getConnection().prepareStatement("INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
-                    preparedCliente.setString(1, idSuministro);
+                    preparedCliente = DBUtil.getConnection().prepareStatement("INSERT INTO ClienteTB(\n"
+                            + "IdCliente,\n"
+                            + "TipoDocumento,\n"
+                            + "NumeroDocumento,\n"
+                            + "Informacion,\n"
+                            + "Telefono,\n"
+                            + "Celular,\n"
+                            + "Email,\n"
+                            + "Direccion,\n"
+                            + "Representante,\n"
+                            + "Estado,\n"
+                            + "Predeterminado,\n"
+                            + "Sistema,\n"
+                            + "NumDocumentoConducto,\n"
+                            + "NombreConductor,\n"
+                            + "CelularConductor,\n"
+                            + "PlacaVehiculo,\n"
+                            + "MarcaVehiculo)\n"
+                            + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    preparedCliente.setString(1, idCliente);
                     preparedCliente.setInt(2, clienteTB.getTipoDocumento());
                     preparedCliente.setString(3, clienteTB.getNumeroDocumento());
                     preparedCliente.setString(4, clienteTB.getInformacion());
@@ -80,6 +118,11 @@ public class ClienteADO {
                     preparedCliente.setInt(10, clienteTB.getEstado());
                     preparedCliente.setBoolean(11, clienteTB.isPredeterminado());
                     preparedCliente.setBoolean(12, clienteTB.isSistema());
+                    preparedCliente.setString(13, clienteTB.getNumeroDocumentoConductor());
+                    preparedCliente.setString(14, clienteTB.getNombreConductor());
+                    preparedCliente.setString(15, clienteTB.getCelularConductor());
+                    preparedCliente.setString(16, clienteTB.getPlacaVehiculo());
+                    preparedCliente.setString(17, clienteTB.getMarcaVehiculo());
 
                     preparedCliente.addBatch();
                     preparedCliente.executeBatch();
@@ -219,11 +262,10 @@ public class ClienteADO {
         return empList;
     }
 
-    public static ClienteTB GetByIdCliente(String idCliente) {
+    public static Object GetByIdCliente(String idCliente) {
         String selectStmt = "{call Sp_Get_Cliente_By_Id(?)}";
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
-        ClienteTB clienteTB = null;
         try {
             DBUtil.dbConnect();
             preparedStatement = DBUtil.getConnection().prepareStatement(selectStmt);
@@ -231,7 +273,7 @@ public class ClienteADO {
             rsEmps = preparedStatement.executeQuery();
 
             if (rsEmps.next()) {
-                clienteTB = new ClienteTB();
+                ClienteTB clienteTB = new ClienteTB();
                 clienteTB.setIdCliente(rsEmps.getString("IdCliente"));
                 clienteTB.setTipoDocumento(rsEmps.getInt("TipoDocumento"));
                 clienteTB.setNumeroDocumento(rsEmps.getString("NumeroDocumento"));
@@ -241,9 +283,12 @@ public class ClienteADO {
                 clienteTB.setEmail(rsEmps.getString("Email"));
                 clienteTB.setDireccion(rsEmps.getString("Direccion"));
                 clienteTB.setEstado(rsEmps.getInt("Estado"));
+                return clienteTB;
+            } else {
+                throw new Exception("Datos no encontrados.");
             }
-        } catch (SQLException e) {
-            System.out.println("La operación de selección de SQL ha fallado: " + e);
+        } catch (Exception ex) {
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (preparedStatement != null) {
@@ -254,10 +299,9 @@ public class ClienteADO {
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
-
+                return ex.getLocalizedMessage();
             }
         }
-        return clienteTB;
     }
 
     public static List<ClienteTB> GetSearchComboBoxCliente(int opcion, String search) {
@@ -506,7 +550,7 @@ public class ClienteADO {
         try {
             DBUtil.dbConnect();
             statementLista = DBUtil.getConnection().prepareStatement("SELECT NumeroDocumento,Informacion FROM ClienteTB");
-            try (ResultSet resultSet = statementLista.executeQuery()) {
+            try ( ResultSet resultSet = statementLista.executeQuery()) {
                 while (resultSet.next()) {
                     ClienteTB clienteTB = new ClienteTB();
                     clienteTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
@@ -535,7 +579,7 @@ public class ClienteADO {
         try {
             DBUtil.dbConnect();
             statementLista = DBUtil.getConnection().prepareStatement("SELECT NumeroDocumento FROM ClienteTB");
-            try (ResultSet resultSet = statementLista.executeQuery()) {
+            try ( ResultSet resultSet = statementLista.executeQuery()) {
                 while (resultSet.next()) {
                     arrayList.add(resultSet.getString("NumeroDocumento"));
                 }

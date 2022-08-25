@@ -21,6 +21,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import model.ClienteADO;
 import model.ClienteTB;
 import model.DetalleADO;
@@ -57,6 +58,23 @@ public class FxClienteProcesoController implements Initializable {
     private Button btnBuscarSunat;
     @FXML
     private Button btnBuscarReniec;
+    @FXML
+    private ComboBox<DetalleTB> cmbxTipoDcoumentDriver;
+    @FXML
+    private TextField txtFieldNdocumentoDriver;
+    @FXML
+    private TextField txtFieldNombreDriver;
+    @FXML
+    private TextField TxtFeldCelularDriver;
+    @FXML
+    private TextField TxtFieldNPlacaCar;
+    @FXML
+    private TextField TxtFieldMarcaCar;
+
+    @FXML
+    private HBox hbLoadProcesando;
+    @FXML
+    private Button btnCancelarProceso;
 
     private String idCliente;
 
@@ -74,36 +92,63 @@ public class FxClienteProcesoController implements Initializable {
     public void setValueAdd() {
         cbDocumentType.requestFocus();
     }
+    public void loadAddCliente(){
+         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+         
+//          exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+    
+    public void loadEditCliente(){
+         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+         
+//          exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
 
     public void setValueUpdate(String idCliente) {
-        btnRegister.setText("Actualizar");
-        btnRegister.getStyleClass().add("buttonLightWarning");
-        cbDocumentType.requestFocus();
-        ClienteTB clienteTB = ClienteADO.GetByIdCliente(idCliente);
-        if (clienteTB != null) {
-            this.idCliente = clienteTB.getIdCliente();
-            ObservableList<DetalleTB> lstype = cbDocumentType.getItems();
-            for (int i = 0; i < lstype.size(); i++) {
-                if (clienteTB.getTipoDocumento() == lstype.get(i).getIdDetalle()) {
-                    cbDocumentType.getSelectionModel().select(i);
-                    break;
-                }
-            }
-
-            txtDocumentNumber.setText(clienteTB.getNumeroDocumento());
-            txtInformacion.setText(clienteTB.getInformacion());
-
-            if (clienteTB.getEstado() == 1) {
-                rbActivo.setSelected(true);
-            } else {
-                rbInactivo.setSelected(true);
-            }
-
-            txtTelefono.setText(clienteTB.getTelefono());
-            txtCelular.setText(clienteTB.getCelular());
-            txtEmail.setText(clienteTB.getEmail());
-            txtDireccion.setText(clienteTB.getDireccion());
-        }
+//        btnRegister.setText("Actualizar");
+//        btnRegister.getStyleClass().add("buttonLightWarning");
+//        cbDocumentType.requestFocus();
+//        ClienteTB clienteTB = ClienteADO.GetByIdCliente(idCliente);
+//        if (clienteTB != null) {
+//            this.idCliente = clienteTB.getIdCliente();
+//            ObservableList<DetalleTB> lstype = cbDocumentType.getItems();
+//            for (int i = 0; i < lstype.size(); i++) {
+//                if (clienteTB.getTipoDocumento() == lstype.get(i).getIdDetalle()) {
+//                    cbDocumentType.getSelectionModel().select(i);
+//                    break;
+//                }
+//            }
+//
+//            txtDocumentNumber.setText(clienteTB.getNumeroDocumento());
+//            txtInformacion.setText(clienteTB.getInformacion());
+//
+//            if (clienteTB.getEstado() == 1) {
+//                rbActivo.setSelected(true);
+//            } else {
+//                rbInactivo.setSelected(true);
+//            }
+//
+//            txtTelefono.setText(clienteTB.getTelefono());
+//            txtCelular.setText(clienteTB.getCelular());
+//            txtEmail.setText(clienteTB.getEmail());
+//            txtDireccion.setText(clienteTB.getDireccion());
+//        }
 
     }
 
@@ -111,55 +156,66 @@ public class FxClienteProcesoController implements Initializable {
         if (cbDocumentType.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(window, "Cliente", "Seleccione el tipo de documento por favor.");
             cbDocumentType.requestFocus();
-        } else if (txtDocumentNumber.getText().trim().equalsIgnoreCase("")) {
+            return;
+        }
+
+        if (txtDocumentNumber.getText().trim().equalsIgnoreCase("")) {
             Tools.AlertMessageWarning(window, "Cliente", "Ingrese el documento de identificación por favor.");
             txtDocumentNumber.requestFocus();
-        } else if (txtInformacion.getText().trim().equalsIgnoreCase("")) {
+            return;
+        }
+
+        if (txtInformacion.getText().trim().equalsIgnoreCase("")) {
             Tools.AlertMessageWarning(window, "Cliente", "Ingrese la información del cliente por favor.");
             txtInformacion.requestFocus();
-        } else {
+            return;
+        }
 
-            short confirmation = Tools.AlertMessageConfirmation(window, "Cliente", "¿Esta seguro de continuar?");
-            if (confirmation == 1) {
+        short confirmation = Tools.AlertMessageConfirmation(window, "Cliente", "¿Esta seguro de continuar?");
+        if (confirmation == 1) {
 
-                ClienteTB clienteTB = new ClienteTB();
-                clienteTB.setIdCliente(idCliente);
-                clienteTB.setTipoDocumento(cbDocumentType.getSelectionModel().getSelectedItem().getIdDetalle());
-                clienteTB.setInformacion(txtInformacion.getText().trim().toUpperCase());
-                clienteTB.setNumeroDocumento(txtDocumentNumber.getText().trim().toUpperCase());
+            ClienteTB clienteTB = new ClienteTB();
+            clienteTB.setIdCliente(idCliente);
+            clienteTB.setTipoDocumento(cbDocumentType.getSelectionModel().getSelectedItem().getIdDetalle());
+            clienteTB.setInformacion(txtInformacion.getText().trim().toUpperCase());
+            clienteTB.setNumeroDocumento(txtDocumentNumber.getText().trim().toUpperCase());
 //              clienteTB.setFechaNacimiento(new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse(Tools.getDatePicker(dpBirthdate)).getTime()));
-                clienteTB.setTelefono(txtTelefono.getText().trim());
-                clienteTB.setCelular(txtCelular.getText().trim());
-                clienteTB.setEmail(txtEmail.getText().trim());
-                clienteTB.setDireccion(txtDireccion.getText().trim().toUpperCase());
-                clienteTB.setRepresentante(txtRepresentante.getText().trim().toUpperCase());
-                clienteTB.setEstado(rbActivo.isSelected() ? 1 : 0);
-                clienteTB.setPredeterminado(false);
-                clienteTB.setSistema(false);
+            clienteTB.setTelefono(txtTelefono.getText().trim());
+            clienteTB.setCelular(txtCelular.getText().trim());
+            clienteTB.setEmail(txtEmail.getText().trim());
+            clienteTB.setDireccion(txtDireccion.getText().trim().toUpperCase());
+            clienteTB.setRepresentante(txtRepresentante.getText().trim().toUpperCase());
+            clienteTB.setEstado(rbActivo.isSelected() ? 1 : 0);
+            clienteTB.setPredeterminado(false);
+            clienteTB.setSistema(false);
+            //    clienteTB.setIdTipoDocumentoConducto(cmbxTipoDcoumentDriver.getSelectionModel().getSelectedItem().getIdDetalle());
+            clienteTB.setNumeroDocumentoConductor(txtFieldNdocumentoDriver.getText().trim().toUpperCase());
+            clienteTB.setNombreConductor(txtFieldNombreDriver.getText().trim());
+            clienteTB.setCelularConductor(TxtFeldCelularDriver.getText().trim());
+            clienteTB.setPlacaVehiculo(TxtFieldNPlacaCar.getText().trim().toUpperCase());
+            clienteTB.setMarcaVehiculo(TxtFieldMarcaCar.getText().trim());
 
-                String result = ClienteADO.CrudCliente(clienteTB);
-                switch (result) {
-                    case "registered":
-                        Tools.AlertMessageInformation(window, "Cliente", "Registrado correctamente.");
-                        Tools.Dispose(window);
-                        break;
-                    case "updated":
-                        Tools.AlertMessageInformation(window, "Cliente", "Actualizado correctamente.");
-                        Tools.Dispose(window);
-                        break;
-                    case "duplicate":
-                        Tools.AlertMessageWarning(window, "Cliente", "No se puede haber 2 personas con el mismo documento de identidad.");
-                        txtDocumentNumber.requestFocus();
-                        break;
-                    case "duplicatename":
-                        Tools.AlertMessageWarning(window, "Cliente", "No se puede haber 2 personas con la misma información.");
-                        txtInformacion.requestFocus();
-                        break;
-                    default:
-                        Tools.AlertMessageError(window, "Cliente", result);
-                        break;
-                }
-
+            String result = ClienteADO.CrudCliente(clienteTB);
+            switch (result) {
+                case "registered":
+                    Tools.AlertMessageInformation(window, "Cliente", "Registrado correctamente.");
+                    Tools.Dispose(window);
+                    break;
+                case "updated":
+                    Tools.AlertMessageInformation(window, "Cliente", "Actualizado correctamente.");
+                    Tools.Dispose(window);
+                    break;
+                case "duplicate":
+                    Tools.AlertMessageWarning(window, "Cliente", "No se puede haber 2 personas con el mismo documento de identidad.");
+                    txtDocumentNumber.requestFocus();
+                    break;
+                case "duplicatename":
+                    Tools.AlertMessageWarning(window, "Cliente", "No se puede haber 2 personas con la misma información.");
+                    txtInformacion.requestFocus();
+                    break;
+                default:
+                    Tools.AlertMessageError(window, "Cliente", result);
+                    break;
             }
         }
     }
@@ -320,6 +376,14 @@ public class FxClienteProcesoController implements Initializable {
         exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();
+        }
+    }
+
+    @FXML
+    private void onKeyTypedNumeroDocumentoConductor(KeyEvent event) {
+        char c = event.getCharacter().charAt(0);
+        if ((c < '0' || c > '9') && (c != '\b')) {
+            event.consume();
         }
     }
 

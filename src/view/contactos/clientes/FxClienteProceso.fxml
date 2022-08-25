@@ -249,6 +249,92 @@
                               </AnchorPane>
                            </content>
                         </Tab>
+                        <Tab text="Datos de Transportista">
+                           <content>
+                              <AnchorPane minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #e7e6e6;">
+                                 <children>
+                                    <VBox style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: #CCCCCC; -fx-padding: 1.6666666666666667em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="paddinContainer105">
+                                             <children>
+                                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Tipo de documento de Conductor" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <ComboBox fx:id="cmbxTipoDcoumentDriver" prefWidth="240.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="paddinContainer105">
+                                             <children>
+                                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="N° documento del conductor" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtFieldNdocumentoDriver" onAction="#onActionToRegister" onKeyTyped="#onKeyTypedNumeroDocumentoConductor" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Nombre de Conductor" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtFieldNombreDriver" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="240.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Celular o Telefono" />
+                                                      <TextField fx:id="TxtFeldCelularDriver" prefHeight="25.0" prefWidth="444.0" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="N° Placa de Vehiculo" />
+                                                      <TextField fx:id="TxtFieldNPlacaCar" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Marca del Vehiculo" />
+                                                      <TextField fx:id="TxtFieldMarcaCar" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
                     </tabs>
                   </TabPane>
                </children>
@@ -286,5 +372,23 @@
             </VBox>
          </children>
       </VBox>
+      <HBox fx:id="hbLoadProcesando" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefWidth="100.0" style="-fx-text-fill: white;" styleClass="labelRobotoMedium13" text="PROCESANDO INFORMACIÓN..." textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="btnCancelarProceso" mnemonicParsing="false" styleClass="buttonLightError" text="Cancelar Proceso">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/load.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

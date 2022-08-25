@@ -24,7 +24,13 @@ public class ClienteTB {
     private ImageView imagePredeterminado;
     private String idAuxiliar;
     private boolean tipoSelect;
-
+    
+    private int idTipoDocumentoConducto;
+    private String numeroDocumentoConductor;
+    private String nombreConductor;
+    private String celularConductor;
+    private String placaVehiculo;
+    private String  marcaVehiculo;
     public ClienteTB() {
 
     }
@@ -220,6 +226,54 @@ public class ClienteTB {
         this.tipoSelect = tipoSelect;
     }
 
+    public int getIdTipoDocumentoConducto() {
+        return idTipoDocumentoConducto;
+    }
+
+    public void setIdTipoDocumentoConducto(int idTipoDocumentoConducto) {
+        this.idTipoDocumentoConducto = idTipoDocumentoConducto;
+    }
+
+    public String getNumeroDocumentoConductor() {
+        return numeroDocumentoConductor;
+    }
+
+    public void setNumeroDocumentoConductor(String numeroDocumentoConductor) {
+        this.numeroDocumentoConductor = numeroDocumentoConductor;
+    }
+    
+    public String getNombreConductor() {
+        return nombreConductor;
+    }
+
+    public void setNombreConductor(String nombreConductor) {
+        this.nombreConductor = nombreConductor;
+    }
+    
+    public String getCelularConductor() {
+        return celularConductor;
+    }
+
+    public void setCelularConductor(String celularConductor) {
+        this.celularConductor = celularConductor;
+    }   
+    
+    
+    public String getPlacaVehiculo() {
+        return placaVehiculo;
+    }
+
+    public void setPlacaVehiculo(String placaVehiculo) {
+        this.placaVehiculo = placaVehiculo;
+    }   
+
+    public String getMarcaVehiculo() {
+        return marcaVehiculo;
+    }
+
+    public void setMarcaVehiculo(String marcaVehiculo) {
+        this.marcaVehiculo = marcaVehiculo;
+    }   
     @Override
     public String toString() {
         if (tipoSelect) {
