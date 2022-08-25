@@ -1,6 +1,7 @@
 package controller.operaciones.venta;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
+import controller.tools.Session;
 import controller.tools.Tools;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -55,6 +56,8 @@ public class FxVentaMostrarController implements Initializable {
     @FXML
     private Label lblPaginaSiguiente;
 
+    private String idEmpleado;
+
     private FxVentaEstructuraController ventaEstructuraController;
 
     private FxOpcionesImprimirController fxOpcionesImprimirController;
@@ -65,30 +68,40 @@ public class FxVentaMostrarController implements Initializable {
 
     private short opcion;
 
+    private boolean mostrarUltimasVentas;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
-        tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
+        tcCliente
+                .setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento()
+                        + "\n" + cellData.getValue().getClienteTB().getInformacion()));
         tcFechaHora.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getFechaVenta() + "\n"
-                + cellData.getValue().getHoraVenta()
-        ));
+                        + cellData.getValue().getHoraVenta()));
         tcDocumento.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion() + "\n" + (cellData.getValue().getNotaCreditoTB() != null ? " Modificado(" + cellData.getValue().getNotaCreditoTB().getSerie() + "-" + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")" : "")
-        ));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
+                cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion() + "\n"
+                        + (cellData.getValue().getNotaCreditoTB() != null
+                                ? " Modificado(" + cellData.getValue().getNotaCreditoTB().getSerie() + "-"
+                                        + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")"
+                                : "")));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " "
+                + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
         tcImprimir.setCellValueFactory(new PropertyValueFactory<>("btnImprimir"));
         tcAgregarVenta.setCellValueFactory(new PropertyValueFactory<>("btnAgregar"));
         tcSumarVenta.setCellValueFactory(new PropertyValueFactory<>("btnSumar"));
-        tvList.setPlaceholder(Tools.placeHolderTableView("Ingrese la información a buscar.", "-fx-text-fill:#020203;", false));
+        tvList.setPlaceholder(
+                Tools.placeHolderTableView("Ingrese la información a buscar.", "-fx-text-fill:#020203;", false));
 
         fxOpcionesImprimirController = new FxOpcionesImprimirController();
         fxOpcionesImprimirController.loadComponents();
 
         paginacion = 1;
         opcion = 0;
+
+        idEmpleado = Session.USER_ID;
     }
 
     private void fillVentasTable(int opcion, String value) {
@@ -100,20 +113,22 @@ public class FxVentaMostrarController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return VentaADO.ListVentasMostrarLibres(opcion, value, (paginacion - 1) * 10, 10);
+                return VentaADO.ListVentasMostrarLibres(mostrarUltimasVentas, opcion, value, idEmpleado,(paginacion - 1) * 10, 10);
             }
         };
 
         task.setOnScheduled(e -> {
             lblLoad.setVisible(true);
             tvList.getItems().clear();
-            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            tvList.setPlaceholder(
+                    Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
             totalPaginacion = 0;
         });
 
         task.setOnFailed(e -> {
             lblLoad.setVisible(false);
-            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
+            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(),
+                    "-fx-text-fill:#a70820;", false));
         });
 
         task.setOnSucceeded(e -> {
@@ -156,7 +171,8 @@ public class FxVentaMostrarController implements Initializable {
                     lblPaginaActual.setText(paginacion + "");
                     lblPaginaSiguiente.setText(totalPaginacion + "");
                 } else {
-                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                    tvList.setPlaceholder(
+                            Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
                     lblPaginaActual.setText("0");
                     lblPaginaSiguiente.setText("0");
                 }
@@ -225,6 +241,9 @@ public class FxVentaMostrarController implements Initializable {
 
     @FXML
     private void onKeyReleasedSearch(KeyEvent event) {
+        if (!mostrarUltimasVentas)
+            return;
+
         if (event.getCode() != KeyCode.ESCAPE
                 && event.getCode() != KeyCode.F1
                 && event.getCode() != KeyCode.F2
@@ -319,6 +338,10 @@ public class FxVentaMostrarController implements Initializable {
 
     public void setInitControllerVentaEstructura(FxVentaEstructuraController ventaEstructuraController) {
         this.ventaEstructuraController = ventaEstructuraController;
+    }
+
+    public void setMostrarUltimasVentas(boolean mostrarUltimasVentas) {
+        this.mostrarUltimasVentas = mostrarUltimasVentas;
     }
 
 }

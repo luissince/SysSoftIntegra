@@ -23,6 +23,7 @@ public class TicketADO {
             statementValidar = DBUtil.getConnection().prepareStatement("SELECT idTicket FROM TicketTB WHERE idTicket = ?");
             statementValidar.setInt(1, ticketTB.getId());
             if (statementValidar.executeQuery().next()) {
+                statementValidar.close();
                 statementValidar = DBUtil.getConnection().prepareStatement("SELECT nombre FROM TicketTB WHERE idTicket <> ? and nombre = ?");
                 statementValidar.setInt(1, ticketTB.getId());
                 statementValidar.setString(2, ticketTB.getNombreTicket());
@@ -91,6 +92,7 @@ public class TicketADO {
                 }
 
             } else {
+                statementValidar.close();
                 statementValidar = DBUtil.getConnection().prepareStatement("SELECT nombre FROM TicketTB WHERE nombre = ?");
                 statementValidar.setString(1, ticketTB.getNombreTicket());
                 if (statementValidar.executeQuery().next()) {
@@ -217,8 +219,10 @@ public class TicketADO {
                 statementTicket.setString(5, resultSet.getString("ruta"));
                 statementTicket.addBatch();
 
+                statementValue.close();
                 statementValue = DBUtil.getConnection().prepareStatement("SELECT Imagen,IdSubRelacion FROM ImagenTB WHERE IdRelacionado = ?");
                 statementValue.setInt(1, ticketTB.getIdTicket());
+                resultSet.close();
                 resultSet = statementValue.executeQuery();
 
                 statementImagen = DBUtil.getConnection().prepareStatement("INSERT INTO ImagenTB(Imagen,IdRelacionado,IdSubRelacion)VALUES(?,?,?)");
@@ -310,7 +314,6 @@ public class TicketADO {
     }
 
     public static Object ListTicket() {
-
         PreparedStatement statementLista = null;
         ResultSet resultSet = null;
         try {
@@ -321,8 +324,8 @@ public class TicketADO {
             resultSet = statementLista.executeQuery();
             while (resultSet.next()) {
                 TicketTB ticketTB = new TicketTB();
-                ticketTB.setId(resultSet.getInt(1));
-                ticketTB.setNombreTicket(resultSet.getString(2));
+                ticketTB.setIdTicket(resultSet.getInt("idTicket"));
+                ticketTB.setNombreTicket(resultSet.getString("nombre"));
                 list.add(ticketTB);
             }
             

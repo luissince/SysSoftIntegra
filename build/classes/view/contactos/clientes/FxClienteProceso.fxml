@@ -264,7 +264,7 @@
                                                             <Font name="Roboto" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <ComboBox fx:id="cmbxTipoDcoumentDriver" prefWidth="240.0" />
+                                                      <ComboBox fx:id="cbTipoDcoumentDriver" prefWidth="240.0" />
                                                    </children>
                                                 </VBox>
                                              </children>
@@ -372,5 +372,23 @@
             </VBox>
          </children>
       </VBox>
+      <HBox fx:id="hbLoadProcesando" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="lblTextoProceso" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefWidth="100.0" style="-fx-text-fill: white;" styleClass="labelRobotoMedium13" text="PROCESANDO INFORMACIÓN..." textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="btnCancelarProceso" mnemonicParsing="false" styleClass="buttonLightError" text="Cancelar Proceso">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/load.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

@@ -204,6 +204,7 @@ public class RolADO {
                 DBUtil.getConnection().rollback();
                 result = "sistema";
             } else {
+                statementValidar.close();
                 statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM EmpleadoTB WHERE Rol = ?");
                 statementValidar.setInt(1, idRol);
                 if (statementValidar.executeQuery().next()) {

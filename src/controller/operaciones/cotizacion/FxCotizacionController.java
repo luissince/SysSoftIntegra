@@ -248,8 +248,8 @@ public class FxCotizacionController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w->controller.loadAddCliente());
             stage.show();
-            controller.setValueAdd();
         } catch (IOException ex) {
             System.out.println("Cliente controller en openWindowAddCliente()" + ex.getLocalizedMessage());
         }

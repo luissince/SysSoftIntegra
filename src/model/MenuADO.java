@@ -102,9 +102,12 @@ public class MenuADO {
     }
 
     public static ObservableList<PrivilegioTB> GetPrivilegios(int rol, int submenu) {
-        String selectStmt = "select pp.IdPrivilegio,p.Nombre,pp.Estado \n"
-                + "from PermisoPrivilegiosTB as pp inner join PrivilegiosTB as p on pp.IdPrivilegio = p.IdPrivilegio\n"
-                + "where pp.IdRol = ? and p.IdSubmenu = ?";
+        String selectStmt = "SELECT\n" 
+                + "pp.IdPrivilegio,\n"
+                + "p.Nombre,\n"
+                + "pp.Estado\n"
+                + "FROM PermisoPrivilegiosTB AS pp INNER JOIN PrivilegiosTB AS p ON pp.IdPrivilegio = p.IdPrivilegio\n"
+                + "WHERE pp.IdRol = ? AND p.IdSubmenu = ?";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ObservableList<PrivilegioTB> empList = FXCollections.observableArrayList();

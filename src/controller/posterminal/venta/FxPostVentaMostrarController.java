@@ -1,6 +1,7 @@
 package controller.posterminal.venta;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
+import controller.tools.Session;
 import controller.tools.Tools;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -55,6 +56,8 @@ public class FxPostVentaMostrarController implements Initializable {
     @FXML
     private Label lblPaginaSiguiente;
 
+    private String idEmpleado;
+
     private FxPostVentaEstructuraController ventaEstructuraController;
 
     private FxOpcionesImprimirController fxOpcionesImprimirController;
@@ -64,6 +67,8 @@ public class FxPostVentaMostrarController implements Initializable {
     private int totalPaginacion;
 
     private short opcion;
+
+    private boolean mostrarUltimasVentas;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -88,6 +93,8 @@ public class FxPostVentaMostrarController implements Initializable {
 
         paginacion = 1;
         opcion = 0;
+
+        idEmpleado = Session.USER_ID;
     }
 
     private void fillVentasTable(int opcion, String value) {
@@ -99,7 +106,7 @@ public class FxPostVentaMostrarController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return VentaADO.Listar_Ventas_Mostrar_Pos(opcion, value, (paginacion - 1) * 10, 10);
+                return VentaADO.Listar_Ventas_Mostrar_Pos(mostrarUltimasVentas,opcion, value, idEmpleado,(paginacion - 1) * 10, 10);
             }
         };
 
@@ -316,6 +323,10 @@ public class FxPostVentaMostrarController implements Initializable {
 
     public void setInitControllerVentaEstructura(FxPostVentaEstructuraController ventaEstructuraController) {
         this.ventaEstructuraController = ventaEstructuraController;
+    }
+
+    public void setMostrarUltimasVentas(boolean mostrarUltimasVentas) {
+        this.mostrarUltimasVentas = mostrarUltimasVentas;
     }
 
 }

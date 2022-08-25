@@ -35,8 +35,8 @@ public class ClienteADO {
                     result = "duplicate";
                 } else {
 
-                    preparedCliente = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB\n"
-                            + "set TipoDocumento=?,\n"
+                    preparedCliente = DBUtil.getConnection().prepareStatement("UPDATE ClienteTB SET\n"
+                            + "TipoDocumento=?,\n"
                             + "NumeroDocumento=?,\n"
                             + "Informacion=UPPER(?),\n"
                             + "Telefono=?,\n"
@@ -61,12 +61,12 @@ public class ClienteADO {
                     preparedCliente.setString(7, clienteTB.getDireccion());
                     preparedCliente.setString(8, clienteTB.getRepresentante());
                     preparedCliente.setInt(9, clienteTB.getEstado());
-                    preparedCliente.setString(12, clienteTB.getNumeroDocumentoConductor());
-                    preparedCliente.setString(13, clienteTB.getNombreConductor());
-                    preparedCliente.setString(14, clienteTB.getCelularConductor());
-                    preparedCliente.setString(15, clienteTB.getPlacaVehiculo());
-                    preparedCliente.setString(16, clienteTB.getMarcaVehiculo());
-                    preparedCliente.setString(17, clienteTB.getIdCliente());
+                    preparedCliente.setString(10, clienteTB.getNumeroDocumentoConductor());
+                    preparedCliente.setString(11, clienteTB.getNombreConductor());
+                    preparedCliente.setString(12, clienteTB.getCelularConductor());
+                    preparedCliente.setString(13, clienteTB.getPlacaVehiculo());
+                    preparedCliente.setString(14, clienteTB.getMarcaVehiculo());
+                    preparedCliente.setString(15, clienteTB.getIdCliente());
 
                     preparedCliente.addBatch();
                     preparedCliente.executeBatch();

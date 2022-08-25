@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -55,6 +56,8 @@ public class FxTipoDocumentoProcesoController implements Initializable {
     @FXML
     private HBox hbLoadProcesando;
     @FXML
+    private Label lblTextoProceso;
+    @FXML
     private Button btnCancelarProceso;
 
     private FxTipoDocumentoController tipoDocumentoController;
@@ -66,31 +69,16 @@ public class FxTipoDocumentoProcesoController implements Initializable {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
     }
 
-    public void initUpdate(int codigo) {
-        idTipoDocumento = codigo;
-//        txtNombre.setText(nombre);
-//        txtSerie.setText(serie);
-//        txtNumeracion.setText("" + numeracion);
-//        txtCodigoAlterno.setText(codigoAlterno);
-//        btnGuardar.setText("Actualizar");
-//        btnGuardar.getStyleClass().add("buttonLightWarning");
-//        cbGuia.setSelected(guia);
-//        cbGuia.setText(guia ? "Si" : "No");
-//        cbFacturado.setSelected(factura);
-//        cbFacturado.setText(factura ? "Si" : "No");
-//        cbNotaCredito.setSelected(notaCredito);
-//        cbNotaCredito.setText(notaCredito ? "Si" : "No");
-//        cbEstado.setSelected(estado);
-//        cbEstado.setText(estado ? "Activo" : "Inactivo");
-//        cbUsaCaracteres.setSelected(usaCaracteres);
-//        cbUsaCaracteres.setText(usaCaracteres ? "Si" : "No");
-//        txtCaracteres.setDisable(!usaCaracteres);
-//        txtCaracteres.setText(numCaracteres + "");
-
-        loadComponents();
+    public void initCreate(){
+        loadCreateComponents();
     }
 
-    private void loadComponents() {
+    public void initUpdate(int codigo) {
+        idTipoDocumento = codigo;
+        loadUpdateComponents();
+    }
+
+    private void loadCreateComponents() {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -99,17 +87,20 @@ public class FxTipoDocumentoProcesoController implements Initializable {
 
         Task<Object> task = new Task<Object>() {
             @Override
-            public Object call() {
-                
-                
-                
-                return TicketADO.ListTicket();
+            public Object call() throws Exception {
+                Object listTicket = TicketADO.ListTicket();
+                if ( listTicket instanceof ArrayList) {
+                    return (ArrayList<TicketTB>) listTicket;
+                } else {
+                    throw new Exception("Se produjo un error, intente nuevamente.");
+                }
             }
         };
 
         task.setOnScheduled(e -> {
             hbLoadProcesando.setVisible(true);
-
+            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
+            btnCancelarProceso.setText("Cancelar Proceso");
             if (btnCancelarProceso.getOnAction() != null) {
                 btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
             }
@@ -124,16 +115,104 @@ public class FxTipoDocumentoProcesoController implements Initializable {
         task.setOnCancelled(e -> {
 
         });
-        
-        task.setOnFailed(e->{
-            Tools.println(task.getMessage());
-            Tools.println(task.getException().getMessage());
+
+        task.setOnFailed(e -> {
+            lblTextoProceso.setText(task.getException().getMessage());
+            btnCancelarProceso.setText("Cerrar Vista");
         });
 
         task.setOnSucceeded(e -> {
-            Object object = task.getValue();
-            if (object instanceof ArrayList) {
-                cbImprimir.getItems().addAll((ArrayList) object);
+            ArrayList<TicketTB> ticketTBs = (ArrayList<TicketTB>) task.getValue();
+            cbImprimir.getItems().addAll((ArrayList) ticketTBs);
+            hbLoadProcesando.setVisible(false);
+        });
+
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+
+
+    private void loadUpdateComponents() {
+        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<Object> task = new Task<Object>() {
+            @Override
+            public Object call() throws Exception {
+                Object tipoDocumento = TipoDocumentoADO.ObtenerTipoDocumentoById(idTipoDocumento);
+                Object listTicket = TicketADO.ListTicket();
+                if (tipoDocumento instanceof TipoDocumentoTB && listTicket instanceof ArrayList) {
+                    Object[] result = { tipoDocumento, listTicket };
+                    return result;
+                } else {
+                    throw new Exception("Se produjo un error, intente nuevamente.");
+                }
+            }
+        };
+
+        task.setOnScheduled(e -> {
+            hbLoadProcesando.setVisible(true);
+            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
+            btnCancelarProceso.setText("Cancelar Proceso");
+            if (btnCancelarProceso.getOnAction() != null) {
+                btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
+            }
+            btnCancelarProceso.setOnAction(event -> {
+                if (task.isRunning()) {
+                    task.cancel();
+                }
+                Tools.Dispose(window);
+            });
+        });
+
+        task.setOnCancelled(e -> {
+
+        });
+
+        task.setOnFailed(e -> {
+            lblTextoProceso.setText(task.getException().getMessage());
+            btnCancelarProceso.setText("Cerrar Vista");
+        });
+
+        task.setOnSucceeded(e -> {
+            Object[] result = (Object[]) task.getValue();
+            TipoDocumentoTB tipoDocumento = (TipoDocumentoTB) result[0];
+            ArrayList<TicketTB> ticketTBs = (ArrayList<TicketTB>) result[1];
+            cbImprimir.getItems().addAll((ArrayList) ticketTBs);
+
+            txtNombre.setText(tipoDocumento.getNombre());
+            txtCodigoAlterno.setText(tipoDocumento.getCodigoAlterno());
+            txtSerie.setText(tipoDocumento.getSerie());
+            txtNumeracion.setText("" + tipoDocumento.getNumeracion());
+
+            cbGuia.setSelected(tipoDocumento.isGuia());
+            cbGuia.setText(tipoDocumento.isGuia() ? "Si" : "No");
+
+            cbFacturado.setSelected(tipoDocumento.isFactura());
+            cbFacturado.setText(tipoDocumento.isFactura() ? "Si" : "No");
+
+            cbNotaCredito.setSelected(tipoDocumento.isNotaCredito());
+            cbNotaCredito.setText(tipoDocumento.isNotaCredito() ? "Si" : "No");
+
+            cbEstado.setSelected(tipoDocumento.isEstado());
+            cbEstado.setText(tipoDocumento.isEstado() ? "Si" : "No");
+
+            cbUsaCaracteres.setSelected(tipoDocumento.getNumeroCampo() == 0 ? false : true);
+            cbUsaCaracteres.setText(tipoDocumento.getNumeroCampo() == 0 ? "No" : "Si");
+
+            txtCaracteres.setDisable(tipoDocumento.getNumeroCampo() == 0 ? true : false);
+            txtCaracteres.setText("" + tipoDocumento.getNumeroCampo());
+
+            for (int i = 0; i < cbImprimir.getItems().size(); i++) {
+                if (cbImprimir.getItems().get(i).getIdTicket() == tipoDocumento.getIdTicket()) {
+                    cbImprimir.getSelectionModel().select(i);
+                    break;
+                }
             }
 
             hbLoadProcesando.setVisible(false);
@@ -173,25 +252,33 @@ public class FxTipoDocumentoProcesoController implements Initializable {
             documentoTB.setFactura(cbFacturado.isSelected());
             documentoTB.setNotaCredito(cbNotaCredito.isSelected());
             documentoTB.setCampo(cbUsaCaracteres.isSelected());
-            documentoTB.setNumeroCampo(!Tools.isNumericInteger(txtCaracteres.getText()) ? 0 : Integer.parseInt(txtCaracteres.getText()));
+            documentoTB.setNumeroCampo(
+                    !Tools.isNumericInteger(txtCaracteres.getText()) ? 0 : Integer.parseInt(txtCaracteres.getText()));
             documentoTB.setEstado(cbEstado.isSelected());
+            documentoTB.setIdTicket(cbImprimir.getSelectionModel().getSelectedIndex() >= 0
+                    ? cbImprimir.getSelectionModel().getSelectedItem().getIdTicket()
+                    : 0);
 
             short value = Tools.AlertMessageConfirmation(window, "Comprobante", "¿Está seguro de continuar?");
             if (value == 1) {
                 String result = TipoDocumentoADO.CrudTipoDocumento(documentoTB);
                 if (result.equalsIgnoreCase("updated")) {
-                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.INFORMATION, "Tipo de documento", "Se actualizado correctamente", false);
+                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.INFORMATION, "Tipo de documento",
+                            "Se actualizado correctamente", false);
                     Tools.Dispose(window);
                     tipoDocumentoController.initLoad();
                 } else if (result.equalsIgnoreCase("duplicate")) {
-                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.WARNING, "Tipo de documento", "Ya existe comprobante con el mismo nombre", false);
+                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.WARNING, "Tipo de documento",
+                            "Ya existe comprobante con el mismo nombre", false);
                     txtNombre.requestFocus();
                 } else if (result.equalsIgnoreCase("inserted")) {
-                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.INFORMATION, "Tipo de documento", "Se ha insertado correctamente", false);
+                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.INFORMATION, "Tipo de documento",
+                            "Se ha insertado correctamente", false);
                     Tools.Dispose(window);
                     tipoDocumentoController.initLoad();
                 } else {
-                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.ERROR, "Tipo de documento", result, false);
+                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.ERROR, "Tipo de documento",
+                            result, false);
                 }
             }
         }

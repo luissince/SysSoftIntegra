@@ -47,7 +47,7 @@ public class VentaADO {
             int dig5 = rd.nextInt(90000) + 10000;
 
             int countValidate = 0;
-            ArrayList<String> arrayResult = new ArrayList();
+            ArrayList<String> arrayResult = new ArrayList<String>();
             ventaVerificar = DBUtil.getConnection().prepareStatement("SELECT Cantidad FROM SuministroTB WHERE IdSuministro = ?");
             for (int i = 0; i < ventaTB.getSuministroTBs().size(); i++) {
                 ventaVerificar.setString(1, ventaTB.getSuministroTBs().get(i).getIdSuministro());
@@ -179,8 +179,9 @@ public class VentaADO {
                         + "Cantidad,"
                         + "Costo, "
                         + "Total,"
-                        + "IdAlmacen) "
-                        + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                        + "IdAlmacen,"
+                        + "IdEmpleado)"
+                        + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 
                 venta.setString(1, id_venta);
                 venta.setString(2, ventaTB.getIdCliente());
@@ -277,6 +278,7 @@ public class VentaADO {
                     suministro_kardex.setDouble(8, sm.getCostoCompra());
                     suministro_kardex.setDouble(9, cantidadKardex * sm.getCostoCompra());
                     suministro_kardex.setInt(10, 0);
+                    suministro_kardex.setString(11, Session.USER_ID);
                     suministro_kardex.addBatch();
                 }
 
@@ -415,7 +417,7 @@ public class VentaADO {
             int dig5 = rd.nextInt(90000) + 10000;
 
             int countValidate = 0;
-            ArrayList<String> arrayResult = new ArrayList();
+            ArrayList<String> arrayResult = new ArrayList<String>();
             ventaVerificar = DBUtil.getConnection().prepareStatement("SELECT Cantidad FROM SuministroTB WHERE IdSuministro = ?");
             for (int i = 0; i < ventaTB.getSuministroTBs().size(); i++) {
                 ventaVerificar.setString(1, ventaTB.getSuministroTBs().get(i).getIdSuministro());
@@ -552,8 +554,9 @@ public class VentaADO {
                         + "Cantidad,"
                         + "Costo, "
                         + "Total,"
-                        + "IdAlmacen) "
-                        + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                        + "IdAlmacen,"
+                        + "IdEmpleado) "
+                        + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 
                 venta.setString(1, id_venta);
                 venta.setString(2, ventaTB.getIdCliente());
@@ -596,7 +599,7 @@ public class VentaADO {
                 if (ventaTB.getVentaCreditoTBs() != null) {
                     venta_credito_codigo = DBUtil.getConnection().prepareStatement("SELECT IdVentaCredito FROM VentaCreditoTB ");
                     ResultSet resultSet = venta_credito_codigo.executeQuery();
-                    ArrayList<Integer> listCodigos = new ArrayList();
+                    ArrayList<Integer> listCodigos = new ArrayList<Integer>();
                     while (resultSet.next()) {
                         listCodigos.add(Integer.parseInt(resultSet.getString("IdVentaCredito").replace("VC", "")));
                     }
@@ -710,6 +713,7 @@ public class VentaADO {
                     suministro_kardex.setDouble(8, sm.getCostoCompra());
                     suministro_kardex.setDouble(9, cantidadKardex * sm.getCostoCompra());
                     suministro_kardex.setInt(10, 0);
+                    suministro_kardex.setString(11,Session.USER_ID);
                     suministro_kardex.addBatch();
                 }
 
@@ -1090,7 +1094,7 @@ public class VentaADO {
             int dig5 = rd.nextInt(90000) + 10000;
 
             int countValidate = 0;
-            ArrayList<String> arrayResult = new ArrayList();
+            ArrayList<String> arrayResult = new ArrayList<String>();
             ventaVerificar = DBUtil.getConnection().prepareStatement("SELECT Cantidad FROM SuministroTB WHERE IdSuministro = ?");
             for (int i = 0; i < ventaTB.getSuministroTBs().size(); i++) {
                 ventaVerificar.setString(1, ventaTB.getSuministroTBs().get(i).getIdSuministro());
@@ -1232,8 +1236,9 @@ public class VentaADO {
                             + "Cantidad,"
                             + "Costo, "
                             + "Total,"
-                            + "IdAlmacen) "
-                            + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                            + "IdAlmacen,"
+                            + "IdEmpleado) "
+                            + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 
                     venta.setString(1, id_venta);
                     venta.setString(2, ventaTB.getIdCliente());
@@ -1327,6 +1332,7 @@ public class VentaADO {
                         suministro_kardex.setDouble(8, sm.getCostoCompra());
                         suministro_kardex.setDouble(9, cantidadKardex * sm.getCostoCompra());
                         suministro_kardex.setInt(10, 0);
+                        suministro_kardex.setString(11, Session.USER_ID);
                         suministro_kardex.addBatch();
                     }
 
@@ -1466,7 +1472,7 @@ public class VentaADO {
             int dig5 = rd.nextInt(90000) + 10000;
 
             int countValidate = 0;
-            ArrayList<String> arrayResult = new ArrayList();
+            ArrayList<String> arrayResult = new ArrayList<String>();
             ventaVerificar = DBUtil.getConnection().prepareStatement("SELECT Cantidad FROM SuministroTB WHERE IdSuministro = ?");
             for (int i = 0; i < ventaTB.getSuministroTBs().size(); i++) {
                 ventaVerificar.setString(1, ventaTB.getSuministroTBs().get(i).getIdSuministro());
@@ -1609,8 +1615,9 @@ public class VentaADO {
                             + "Cantidad,"
                             + "Costo, "
                             + "Total,"
-                            + "IdAlmacen) "
-                            + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                            + "IdAlmacen,"
+                            + "IdEmpleado)"
+                            + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 
                     venta.setString(1, id_venta);
                     venta.setString(2, ventaTB.getIdCliente());
@@ -1653,7 +1660,7 @@ public class VentaADO {
                     if (ventaTB.getVentaCreditoTBs() != null) {
                         venta_credito_codigo = DBUtil.getConnection().prepareStatement("SELECT IdVentaCredito FROM VentaCreditoTB ");
                         ResultSet resultSet = venta_credito_codigo.executeQuery();
-                        ArrayList<Integer> listCodigos = new ArrayList();
+                        ArrayList<Integer> listCodigos = new ArrayList<Integer>();
                         while (resultSet.next()) {
                             listCodigos.add(Integer.parseInt(resultSet.getString("IdVentaCredito").replace("VC", "")));
                         }
@@ -1765,6 +1772,7 @@ public class VentaADO {
                         suministro_kardex.setDouble(8, sm.getCostoCompra());
                         suministro_kardex.setDouble(9, cantidadKardex * sm.getCostoCompra());
                         suministro_kardex.setInt(10, 0);
+                        suministro_kardex.setString(11, Session.USER_ID);
                         suministro_kardex.addBatch();
                     }
 
@@ -2207,6 +2215,7 @@ public class VentaADO {
                 empList.add(ventaTB);
             }
 
+            preparedStatement.close();
             preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ventas_All_Count(?,?,?,?,?,?)}");
             preparedStatement.setInt(1, opcion);
             preparedStatement.setString(2, value);
@@ -2214,6 +2223,7 @@ public class VentaADO {
             preparedStatement.setString(4, fechaFinal);
             preparedStatement.setInt(5, 0);
             preparedStatement.setInt(6, estado);
+            rsEmps.close();
             rsEmps = preparedStatement.executeQuery();
             Integer cantidadTotal = 0;
             if (rsEmps.next()) {
@@ -2323,6 +2333,7 @@ public class VentaADO {
                 empList.add(ventaTB);
             }
 
+            preparedStatement.close();
             preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ventas_Count(?,?,?,?,?,?,?)}");
             preparedStatement.setInt(1, opcion);
             preparedStatement.setString(2, value);
@@ -2331,12 +2342,14 @@ public class VentaADO {
             preparedStatement.setInt(5, comprobante);
             preparedStatement.setInt(6, estado);
             preparedStatement.setString(7, usuario);
+            rsEmps.close();
             rsEmps = preparedStatement.executeQuery();
             Integer cantidadTotal = 0;
             if (rsEmps.next()) {
                 cantidadTotal = rsEmps.getInt("Total");
             }
 
+            preparedStatement.close();
             preparedStatement = DBUtil.getConnection().prepareStatement("SELECT "
                     + "ISNULL(sum(dv.Cantidad*(dv.PrecioVenta-dv.Descuento)),0) AS Monto "
                     + "FROM VentaTB as v "
@@ -2461,6 +2474,7 @@ public class VentaADO {
                 empList.add(ventaTB);
             }
 
+            preparedStatement.close();
             preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Pos_Ventas_Count(?,?,?,?,?,?,?)}");
             preparedStatement.setShort(1, opcion);
             preparedStatement.setString(2, value);
@@ -2469,12 +2483,14 @@ public class VentaADO {
             preparedStatement.setInt(5, comprobante);
             preparedStatement.setInt(6, estado);
             preparedStatement.setString(7, usuario);
+            rsEmps.close();
             rsEmps = preparedStatement.executeQuery();
             Integer cantidadTotal = 0;
             if (rsEmps.next()) {
                 cantidadTotal = rsEmps.getInt("Total");
             }
 
+            preparedStatement.close();
             preparedStatement = DBUtil.getConnection().prepareStatement("SELECT \n"
                     + "ISNULL(sum(dv.Cantidad*(dv.PrecioVenta-dv.Descuento)),0) AS Monto\n"
                     + "FROM VentaTB as v \n"
@@ -2516,7 +2532,7 @@ public class VentaADO {
         }
     }
 
-    public static Object ListVentasMostrarLibres(int opcion, String search, int posicionPagina, int filasPorPagina) {
+    public static Object ListVentasMostrarLibres(boolean tipo,int opcion, String search, String idEmpleado,int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
         try {
@@ -2524,11 +2540,13 @@ public class VentaADO {
             Object[] object = new Object[2];
 
             ObservableList<VentaTB> empList = FXCollections.observableArrayList();
-            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ventas_Mostrar(?,?,?,?)}");
-            preparedStatement.setInt(1, opcion);
-            preparedStatement.setString(2, search);
-            preparedStatement.setInt(3, posicionPagina);
-            preparedStatement.setInt(4, filasPorPagina);
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ventas_Mostrar(?,?,?,?,?,?)}");
+            preparedStatement.setBoolean(1, tipo);
+            preparedStatement.setInt(2, opcion);
+            preparedStatement.setString(3, search);
+            preparedStatement.setString(4, idEmpleado);
+            preparedStatement.setInt(5, posicionPagina);
+            preparedStatement.setInt(6, filasPorPagina);
             rsEmps = preparedStatement.executeQuery();
             while (rsEmps.next()) {
                 VentaTB ventaTB = new VentaTB();
@@ -2582,9 +2600,13 @@ public class VentaADO {
                 empList.add(ventaTB);
             }
 
-            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ventas_Mostrar_Count(?,?)}");
-            preparedStatement.setInt(1, opcion);
-            preparedStatement.setString(2, search);
+            preparedStatement.close();
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ventas_Mostrar_Count(?,?,?,?)}");
+            preparedStatement.setBoolean(1,tipo);
+            preparedStatement.setInt(2, opcion);
+            preparedStatement.setString(3, search);
+            preparedStatement.setString(4, idEmpleado);
+            rsEmps.close();
             rsEmps = preparedStatement.executeQuery();
             Integer cantidadTotal = 0;
             if (rsEmps.next()) {
@@ -2614,7 +2636,7 @@ public class VentaADO {
         }
     }
 
-    public static Object Listar_Ventas_Mostrar_Pos(int opcion, String search, int posicionPagina, int filasPorPagina) {
+    public static Object Listar_Ventas_Mostrar_Pos(boolean tipo,int opcion, String search, String idEmpleado,int posicionPagina, int filasPorPagina) {
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
         try {
@@ -2622,11 +2644,13 @@ public class VentaADO {
             Object[] object = new Object[2];
 
             ObservableList<VentaTB> empList = FXCollections.observableArrayList();
-            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Pos_Venta_Mostrar(?,?,?,?)}");
-            preparedStatement.setInt(1, opcion);
-            preparedStatement.setString(2, search);
-            preparedStatement.setInt(3, posicionPagina);
-            preparedStatement.setInt(4, filasPorPagina);
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Pos_Venta_Mostrar(?,?,?,?,?,?)}");
+            preparedStatement.setBoolean(1, tipo);
+            preparedStatement.setInt(2, opcion);
+            preparedStatement.setString(3, search);
+            preparedStatement.setString(4, idEmpleado);
+            preparedStatement.setInt(5, posicionPagina);
+            preparedStatement.setInt(6, filasPorPagina);
             rsEmps = preparedStatement.executeQuery();
             while (rsEmps.next()) {
                 VentaTB ventaTB = new VentaTB();
@@ -2683,9 +2707,13 @@ public class VentaADO {
                 empList.add(ventaTB);
             }
 
-            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Pos_Ventas_Mostrar_Count(?,?)}");
-            preparedStatement.setInt(1, opcion);
-            preparedStatement.setString(2, search);
+            preparedStatement.close();
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Pos_Ventas_Mostrar_Count(?,?,?,?)}");
+            preparedStatement.setBoolean(1, tipo);
+            preparedStatement.setInt(2,opcion);
+            preparedStatement.setString(3, search);
+            preparedStatement.setString(4, idEmpleado);
+            rsEmps.close();
             rsEmps = preparedStatement.executeQuery();
             Integer cantidadTotal = 0;
             if (rsEmps.next()) {
@@ -2805,7 +2833,7 @@ public class VentaADO {
                 statementVentaDetalle = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ventas_Detalle_By_Id(?)}");
                 statementVentaDetalle.setString(1, idVenta);
                 ResultSet resultSetLista = statementVentaDetalle.executeQuery();
-                ArrayList<SuministroTB> empList = new ArrayList();
+                ArrayList<SuministroTB> empList = new ArrayList<SuministroTB>();
                 while (resultSetLista.next()) {
                     SuministroTB suministroTB = new SuministroTB();
                     suministroTB.setId(resultSetLista.getRow());
@@ -2910,6 +2938,7 @@ public class VentaADO {
                 return "scrambled";
             }
 
+            statementValidar.close();
             statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaCreditoTB WHERE IdVenta = ?");
             statementValidar.setString(1, idVenta);
             if (statementValidar.executeQuery().next()) {
@@ -2917,6 +2946,7 @@ public class VentaADO {
                 return "ventacredito";
             }
 
+            statementValidar.close();
             statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ?");
             statementValidar.setString(1, idVenta);
             ResultSet resultSet = statementValidar.executeQuery();
@@ -3044,6 +3074,7 @@ public class VentaADO {
                 return "scrambled";
             }
 
+            statementValidar.close();
             statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaCreditoTB WHERE IdVenta = ?");
             statementValidar.setString(1, idVenta);
             if (statementValidar.executeQuery().next()) {
@@ -3051,6 +3082,7 @@ public class VentaADO {
                 return "ventacredito";
             }
 
+            statementValidar.close();
             statementValidar = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ?");
             statementValidar.setString(1, idVenta);
             ResultSet resultSet = statementValidar.executeQuery();
@@ -3359,12 +3391,14 @@ public class VentaADO {
 
             objects[0] = arrayList;
 
+            preparedStatement.close();
             preparedStatement = DBUtil.getConnection().prepareCall("{call Sp_Listar_Ventas_Credito_Count(?,?,?,?,?)}");
             preparedStatement.setInt(1, opcion);
             preparedStatement.setString(2, buscar);
             preparedStatement.setBoolean(3, mostrar);
             preparedStatement.setString(4, fechaInicial);
             preparedStatement.setString(5, fechaFinal);
+            resultSet.close();
             resultSet = preparedStatement.executeQuery();
             Integer integer = 0;
             if (resultSet.next()) {
@@ -3427,8 +3461,10 @@ public class VentaADO {
                 monedaTB.setSimbolo(resultSet.getString("Simbolo"));
                 ventaTB.setMonedaTB(monedaTB);
 
+                preparedStatement.close();
                 preparedStatement = DBUtil.getConnection().prepareCall("{call Sp_Listar_Detalle_Venta_Credito(?)}");
                 preparedStatement.setString(1, idVenta);
+                resultSet.close();
                 resultSet = preparedStatement.executeQuery();
                 ArrayList<VentaCreditoTB> ventaCreditoTBs = new ArrayList<>();
                 while (resultSet.next()) {
@@ -3465,7 +3501,7 @@ public class VentaADO {
                 statementVentaDetalle = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ventas_Detalle_By_Id(?)}");
                 statementVentaDetalle.setString(1, idVenta);
                 ResultSet resultSetLista = statementVentaDetalle.executeQuery();
-                ArrayList<SuministroTB> empList = new ArrayList();
+                ArrayList<SuministroTB> empList = new ArrayList<SuministroTB>();
                 while (resultSetLista.next()) {
                     SuministroTB suministroTB = new SuministroTB();
                     suministroTB.setId(resultSetLista.getRow());
@@ -3556,6 +3592,7 @@ public class VentaADO {
                 return result;
             } else {
 
+                statementValidate.close();
                 statementValidate = DBUtil.getConnection().prepareStatement("SELECT "
                         + "sum(dv.Cantidad*(dv.PrecioVenta - dv.Descuento)) as Total from VentaTB as v "
                         + "inner join DetalleVentaTB as dv on dv.IdVenta = v.IdVenta "
@@ -3824,6 +3861,7 @@ public class VentaADO {
                     statementMovimientoCaja.addBatch();
                 }
 
+                statementValidate.close();
                 statementValidate = DBUtil.getConnection().prepareStatement("SELECT Monto FROM VentaCreditoTB WHERE IdVenta = ? AND Estado = 1");
                 statementValidate.setString(1, ventaCreditoTB.getIdVenta());
                 resultSet = statementValidate.executeQuery();
@@ -3915,7 +3953,7 @@ public class VentaADO {
                         DBUtil.getConnection().rollback();
                         return "historial";
                     } else {
-
+                        statementSuministro.close();
                         statementSuministro = DBUtil.getConnection().prepareStatement("UPDATE DetalleVentaTB SET PorLlevar = Cantidad+Bonificacion, Estado = 'C' WHERE IdVenta = ? AND IdArticulo = ?");
                         statementSuministro.setString(1, idVenta);
                         statementSuministro.setString(2, idSuministro);
@@ -3951,6 +3989,7 @@ public class VentaADO {
                         statementKardex.setInt(10, 0);
                         statementKardex.addBatch();
 
+                        statementHistorial.close();
                         statementHistorial = DBUtil.getConnection().prepareStatement("INSERT INTO HistorialSuministroLlevar(IdVenta,IdSuministro, Fecha, Hora, Cantidad, Observacion)VALUES(?,?,?,?,?,?)");
                         statementHistorial.setString(1, idVenta);
                         statementHistorial.setString(2, idSuministro);
@@ -3991,6 +4030,7 @@ public class VentaADO {
                     statementHistorial = DBUtil.getConnection().prepareStatement("SELECT Cantidad FROM HistorialSuministroLlevar WHERE IdVenta = ? AND IdSuministro = ?");
                     statementHistorial.setString(1, idVenta);
                     statementHistorial.setString(2, idSuministro);
+                    resultSet.close();
                     resultSet = statementHistorial.executeQuery();
                     double cantidadActual = 0;
                     while (resultSet.next()) {
@@ -4001,6 +4041,7 @@ public class VentaADO {
                     statementValidar = DBUtil.getConnection().prepareStatement("SELECT Estado FROM DetalleVentaTB WHERE IdVenta = ? AND IdArticulo <> ?");
 
                     if ((cantidad + cantidadActual) >= cantidadTotal) {
+                        statementSuministro.close();
                         statementSuministro = DBUtil.getConnection().prepareStatement("UPDATE DetalleVentaTB SET PorLlevar = PorLlevar + ?, Estado = 'C' WHERE IdVenta = ? AND IdArticulo = ?");
                         statementSuministro.setDouble(1, cantidad);
                         statementSuministro.setString(2, idVenta);
@@ -4023,6 +4064,7 @@ public class VentaADO {
                             statementVenta.addBatch();
                         }
                     } else {
+                        statementSuministro.close();
                         statementSuministro = DBUtil.getConnection().prepareStatement("UPDATE DetalleVentaTB SET PorLlevar = PorLlevar + ? WHERE IdVenta = ? AND IdArticulo = ?");
                         statementSuministro.setDouble(1, cantidad);
                         statementSuministro.setString(2, idVenta);
@@ -4060,6 +4102,7 @@ public class VentaADO {
                     statementKardex.setInt(10, 0);
                     statementKardex.addBatch();
 
+                    statementHistorial.close();
                     statementHistorial = DBUtil.getConnection().prepareStatement("INSERT INTO HistorialSuministroLlevar(IdVenta,IdSuministro, Fecha, Hora, Cantidad, Observacion)VALUES(?,?,?,?,?,?)");
                     statementHistorial.setString(1, idVenta);
                     statementHistorial.setString(2, idSuministro);
@@ -4155,9 +4198,11 @@ public class VentaADO {
                 clienteTB.setDireccion(resultSet.getString("Direccion"));
                 ventaTB.setClienteTB(clienteTB);
 
+                statementVenta.close();
                 statementVenta = DBUtil.getConnection().prepareStatement("SELECT s.Clave,s.NombreMarca,d.Cantidad,d.Bonificacion FROM DetalleVentaTB AS d INNER JOIN SuministroTB AS s ON s.IdSuministro = d.IdArticulo WHERE d.IdVenta = ? AND d.IdArticulo = ?");
                 statementVenta.setString(1, idVenta);
                 statementVenta.setString(2, idSuministro);
+                resultSet.close();
                 resultSet = statementVenta.executeQuery();
                 resultSet.next();
 
@@ -4177,7 +4222,7 @@ public class VentaADO {
                         + "WHERE IdVenta = ? AND IdSuministro = ? ");
                 statementVenta.setString(1, idVenta);
                 statementVenta.setString(2, idSuministro);
-                ArrayList<HistorialSuministroSalidaTB> suministroSalidas = new ArrayList();
+                ArrayList<HistorialSuministroSalidaTB> suministroSalidas = new ArrayList<HistorialSuministroSalidaTB>();
                 resultSet = statementVenta.executeQuery();
                 while (resultSet.next()) {
                     HistorialSuministroSalidaTB suministroSalida = new HistorialSuministroSalidaTB();
@@ -4247,6 +4292,7 @@ public class VentaADO {
                 array.add(jsono);
             }
 
+            statementFactura.close();
             statementFactura = DBUtil.getConnection().prepareStatement("SELECT \n"
                     + "nc.Serie,\n"
                     + "td.Nombre,\n"

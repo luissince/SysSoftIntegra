@@ -62,7 +62,7 @@
                                     <HBox>
                                        <children>
                                           <TextField fx:id="txtSearch" onKeyReleased="#onKeyReleasedSearch" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese los datos del comprobante para buscar..." styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
-                                          <Button mnemonicParsing="false" onAction="#onAction10PrimerasVentas" onKeyPressed="#onKeyPressed10PrimerasVentas" styleClass="buttonLight" text="Lista Ultimas Ventas">
+                                          <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAction10PrimerasVentas" onKeyPressed="#onKeyPressed10PrimerasVentas" styleClass="buttonLight" text="Lista Ultimas Ventas">
                                              <graphic>
                                                 <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>

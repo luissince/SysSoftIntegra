@@ -184,8 +184,8 @@ public class FxClienteController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w->controller.loadAddCliente());
             stage.show();
-            controller.setValueAdd();
         } catch (IOException ex) {
             System.out.println("Cliente controller en openWindowAddCliente()" + ex.getLocalizedMessage());
         }
@@ -194,7 +194,7 @@ public class FxClienteController implements Initializable {
     private void openWindowEditCliente() {
         try {
             fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_CLIENTE_PROCESO);
+            URL url = getClass().getResource(FilesRouters.FX_CLIENTE_PROCESO); 
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
@@ -204,8 +204,8 @@ public class FxClienteController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w->controller.loadEditCliente(tvList.getSelectionModel().getSelectedItem().getIdCliente()));
             stage.show();
-            controller.setValueUpdate(tvList.getSelectionModel().getSelectedItem().getIdCliente());
         } catch (IOException ex) {
             System.out.println("Cliente controller en openWindowEditCliente()" + ex.getLocalizedMessage());
         }

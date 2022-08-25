@@ -19,7 +19,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.ClienteADO;
 import model.ClienteTB;
-import model.DBUtil;
 import model.EmpresaADO;
 import model.EmpresaTB;
 import model.MonedaADO;

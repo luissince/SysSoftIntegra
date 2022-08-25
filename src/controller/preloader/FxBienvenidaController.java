@@ -478,6 +478,7 @@ public class FxBienvenidaController implements Initializable {
             tipoDocumentoTicket.setEstado(true);
             tipoDocumentoTicket.setCampo(false);
             tipoDocumentoTicket.setNumeroCampo(0);
+            tipoDocumentoTicket.setIdTicket(0);
 
             ClienteTB clienteTB = new ClienteTB();
             clienteTB.setTipoDocumento(1351);
