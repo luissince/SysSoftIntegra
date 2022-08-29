@@ -25,12 +25,19 @@ public class ClienteTB {
     private String idAuxiliar;
     private boolean tipoSelect;
     
-    private int idTipoDocumentoConducto;
+    private int idTipoDocumentoConductor;
     private String numeroDocumentoConductor;
     private String nombreConductor;
     private String celularConductor;
     private String placaVehiculo;
-    private String  marcaVehiculo;
+    private String marcaVehiculo;
+    private int idModalidadTraslado;
+    private int idMotivoTraslado;
+    private int IdUbigeo;
+
+    private UbigeoTB ubigeoTB;
+    private ConductorTB conductorTB;
+   
     public ClienteTB() {
 
     }
@@ -226,12 +233,12 @@ public class ClienteTB {
         this.tipoSelect = tipoSelect;
     }
 
-    public int getIdTipoDocumentoConducto() {
-        return idTipoDocumentoConducto;
+    public int getIdTipoDocumentoConductor() {
+        return idTipoDocumentoConductor;
     }
 
-    public void setIdTipoDocumentoConducto(int idTipoDocumentoConducto) {
-        this.idTipoDocumentoConducto = idTipoDocumentoConducto;
+    public void setIdTipoDocumentoConductor(int idTipoDocumentoConductor) {
+        this.idTipoDocumentoConductor = idTipoDocumentoConductor;
     }
 
     public String getNumeroDocumentoConductor() {
@@ -273,7 +280,48 @@ public class ClienteTB {
 
     public void setMarcaVehiculo(String marcaVehiculo) {
         this.marcaVehiculo = marcaVehiculo;
-    }   
+    }  
+    
+   
+      public int getIdModalidadTraslado() {
+        return idModalidadTraslado;
+    }
+
+    public void setIdModalidadTraslado(int idModalidadTraslado) {
+        this.idModalidadTraslado = idModalidadTraslado;
+    }  
+
+    public int getIdMotivoTraslado() {
+        return idMotivoTraslado;
+    }
+
+    public void setIdMotivoTraslado(int idMotivoTraslado) {
+        this.idMotivoTraslado = idMotivoTraslado;
+    }
+     public int getIdUbigeo() {
+        return IdUbigeo;
+    }
+
+    public void setIdUbigeo(int IdUbigeo) {
+        this.IdUbigeo = IdUbigeo;
+    }
+
+    public UbigeoTB getUbigeoTB() {
+        return ubigeoTB;
+    }
+
+    public void setUbigeoTB(UbigeoTB ubigeoTB) {
+        this.ubigeoTB = ubigeoTB;
+    }
+
+    public ConductorTB getConductorTB() {
+        return conductorTB;
+    }
+
+    public void setConductorTB(ConductorTB conductorTB) {
+        this.conductorTB = conductorTB;
+    }
+    
     @Override
     public String toString() {
         if (tipoSelect) {

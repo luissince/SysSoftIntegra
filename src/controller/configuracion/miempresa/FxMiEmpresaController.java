@@ -317,8 +317,7 @@ public class FxMiEmpresaController implements Initializable {
                                         : Tools.getImageBytes(selectFile)
                 );
                 empresaTB.setIdUbigeo(cbUbigeo.getSelectionModel().getSelectedIndex() >= 0
-                        ? cbUbigeo.getSelectionModel().getSelectedItem().getIdUbigeo()
-                        : 0);
+                        ? cbUbigeo.getSelectionModel().getSelectedItem().getIdUbigeo() : 0);
 
                 String result = EmpresaADO.CrudEntity(empresaTB);
                 switch (result) {

@@ -89,7 +89,7 @@ public class FxClienteController implements Initializable {
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
         tcDocumento.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
-        tcPersona.prefWidthProperty().bind(tvList.widthProperty().multiply(0.26));
+        tcPersona.prefWidthProperty().bind(tvList.widthProperty().multiply(0.24));
         tcContacto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
         tcDirección.prefWidthProperty().bind(tvList.widthProperty().multiply(0.16));
         tcRepresentante.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));

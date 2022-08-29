@@ -22,6 +22,9 @@ public class ClienteADO {
         CallableStatement codigoCliente = null;
         PreparedStatement preparedCliente = null;
         PreparedStatement preparedValidation = null;
+
+        CallableStatement codigoConductor = null;
+        PreparedStatement preparedConductor = null;
         try {
             DBUtil.getConnection().setAutoCommit(false);
             preparedValidation = DBUtil.getConnection().prepareStatement("SELECT IdCliente FROM ClienteTB WHERE IdCliente = ?");
@@ -45,11 +48,9 @@ public class ClienteADO {
                             + "Direccion=?,\n"
                             + "Representante=?,\n"
                             + "Estado=?,\n"
-                            + "NumDocumentoConducto=?,\n"
-                            + "NombreConductor=?,\n"
-                            + "CelularConductor=?,\n"
-                            + "PlacaVehiculo=?,\n"
-                            + "MarcaVehiculo=?\n"
+                            + "IdMotivoTraslado=?,\n"
+                            + "IdModalidadTraslado=?,\n"
+                            + "IdUbigeo=?\n"
                             + "WHERE IdCliente = ?");
 
                     preparedCliente.setInt(1, clienteTB.getTipoDocumento());
@@ -61,22 +62,77 @@ public class ClienteADO {
                     preparedCliente.setString(7, clienteTB.getDireccion());
                     preparedCliente.setString(8, clienteTB.getRepresentante());
                     preparedCliente.setInt(9, clienteTB.getEstado());
-                    preparedCliente.setString(10, clienteTB.getNumeroDocumentoConductor());
-                    preparedCliente.setString(11, clienteTB.getNombreConductor());
-                    preparedCliente.setString(12, clienteTB.getCelularConductor());
-                    preparedCliente.setString(13, clienteTB.getPlacaVehiculo());
-                    preparedCliente.setString(14, clienteTB.getMarcaVehiculo());
-                    preparedCliente.setString(15, clienteTB.getIdCliente());
-
+                    preparedCliente.setInt(10, clienteTB.getIdMotivoTraslado());
+                    preparedCliente.setInt(11, clienteTB.getIdModalidadTraslado());
+                    preparedCliente.setInt(12, clienteTB.getIdUbigeo());
+                    preparedCliente.setString(13, clienteTB.getIdCliente());
                     preparedCliente.addBatch();
-                    preparedCliente.executeBatch();
 
+                    preparedValidation = DBUtil.getConnection().prepareStatement("SELECT * FROM Conductor WHERE IdCliente = ?");
+                    preparedValidation.setString(1, clienteTB.getIdCliente());
+                    if (preparedValidation.executeQuery().next()) {
+                        ConductorTB conductorTB = clienteTB.getConductorTB();
+
+                        preparedConductor = DBUtil.getConnection().prepareStatement("UPDATE Conductor SET\n"
+                                + "IdTipoDocumento = ?,\n"
+                                + "NumeroDocumento = ?,\n"
+                                + "Informacion = ?,\n"
+                                + "Celular = ?,\n"
+                                + "PlacaVehiculo = ?,\n"
+                                + "MarcaVehiculo = ?\n"
+                                + "WHERE IdConductor = ?");
+                        preparedConductor.setInt(1, conductorTB.getIdTipoDocumento());
+                        preparedConductor.setString(2, conductorTB.getNumeroDocumento());
+                        preparedConductor.setString(3, conductorTB.getInformacion());
+                        preparedConductor.setString(4, conductorTB.getCelular());
+                        preparedConductor.setString(5, conductorTB.getPlacaVehiculo());
+                        preparedConductor.setString(6, conductorTB.getMarcaVehiculo());
+                        preparedConductor.setString(7, conductorTB.getIdConductor());
+                        preparedConductor.addBatch();
+                    } else {
+                        codigoConductor = DBUtil.getConnection().prepareCall("{? = call Fc_Conductor_Codigo_Alfanumerico()}");
+                        codigoConductor.registerOutParameter(1, java.sql.Types.VARCHAR);
+                        codigoConductor.execute();
+                        String idConductor = codigoConductor.getString(1);
+
+                        ConductorTB conductorTB = clienteTB.getConductorTB();
+
+                        preparedConductor = DBUtil.getConnection().prepareStatement("INSERT INTO Conductor("
+                                + "IdConductor,\n"
+                                + "IdCliente,\n"
+                                + "IdTipoDocumento,\n"
+                                + "NumeroDocumento,\n"
+                                + "Informacion,\n"
+                                + "Celular,\n"
+                                + "PlacaVehiculo,\n"
+                                + "MarcaVehiculo,\n"
+                                + "Fecha,\n"
+                                + "Hora,\n"
+                                + "IdUsuario)\n"
+                                + "VALUES(?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?)");
+                        if (!"".equals(conductorTB.getNumeroDocumento())
+                                && !"".equals(conductorTB.getInformacion())) {
+                            preparedConductor.setString(1, idConductor);
+                            preparedConductor.setString(2, clienteTB.getIdCliente());
+                            preparedConductor.setInt(3, conductorTB.getIdTipoDocumento());
+                            preparedConductor.setString(4, conductorTB.getNumeroDocumento());
+                            preparedConductor.setString(5, conductorTB.getInformacion());
+                            preparedConductor.setString(6, conductorTB.getCelular());
+                            preparedConductor.setString(7, conductorTB.getPlacaVehiculo());
+                            preparedConductor.setString(8, conductorTB.getMarcaVehiculo());
+                            preparedConductor.setString(9, conductorTB.getIdUsuario());
+                            preparedConductor.addBatch();
+                        }
+
+                    }
+
+                    preparedCliente.executeBatch();
+                    preparedConductor.executeBatch();
                     DBUtil.getConnection().commit();
                     result = "updated";
-
                 }
             } else {
-                preparedValidation = DBUtil.getConnection().prepareStatement("select NumeroDocumento from \nClienteTB where NumeroDocumento = ?");
+                preparedValidation = DBUtil.getConnection().prepareStatement("select NumeroDocumento from ClienteTB where NumeroDocumento = ?");
                 preparedValidation.setString(1, clienteTB.getNumeroDocumento());
                 if (preparedValidation.executeQuery().next()) {
                     DBUtil.getConnection().rollback();
@@ -100,12 +156,10 @@ public class ClienteADO {
                             + "Estado,\n"
                             + "Predeterminado,\n"
                             + "Sistema,\n"
-                            + "NumDocumentoConducto,\n"
-                            + "NombreConductor,\n"
-                            + "CelularConductor,\n"
-                            + "PlacaVehiculo,\n"
-                            + "MarcaVehiculo)\n"
-                            + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                            + "IdMotivoTraslado,\n"
+                            + "IdModalidadTraslado,\n"
+                            + "IdUbigeo)"
+                            + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                     preparedCliente.setString(1, idCliente);
                     preparedCliente.setInt(2, clienteTB.getTipoDocumento());
                     preparedCliente.setString(3, clienteTB.getNumeroDocumento());
@@ -118,15 +172,47 @@ public class ClienteADO {
                     preparedCliente.setInt(10, clienteTB.getEstado());
                     preparedCliente.setBoolean(11, clienteTB.isPredeterminado());
                     preparedCliente.setBoolean(12, clienteTB.isSistema());
-                    preparedCliente.setString(13, clienteTB.getNumeroDocumentoConductor());
-                    preparedCliente.setString(14, clienteTB.getNombreConductor());
-                    preparedCliente.setString(15, clienteTB.getCelularConductor());
-                    preparedCliente.setString(16, clienteTB.getPlacaVehiculo());
-                    preparedCliente.setString(17, clienteTB.getMarcaVehiculo());
-
+                    preparedCliente.setInt(13, clienteTB.getIdMotivoTraslado());
+                    preparedCliente.setInt(14, clienteTB.getIdModalidadTraslado());
+                    preparedCliente.setInt(15, clienteTB.getIdUbigeo());
                     preparedCliente.addBatch();
-                    preparedCliente.executeBatch();
 
+                    codigoConductor = DBUtil.getConnection().prepareCall("{? = call Fc_Conductor_Codigo_Alfanumerico()}");
+                    codigoConductor.registerOutParameter(1, java.sql.Types.VARCHAR);
+                    codigoConductor.execute();
+                    String idConductor = codigoConductor.getString(1);
+
+                    preparedConductor = DBUtil.getConnection().prepareStatement("INSERT INTO Conductor("
+                            + "IdConductor,\n"
+                            + "IdCliente,\n"
+                            + "IdTipoDocumento,\n"
+                            + "NumeroDocumento,\n"
+                            + "Informacion,\n"
+                            + "Celular,\n"
+                            + "PlacaVehiculo,\n"
+                            + "MarcaVehiculo,\n"
+                            + "Fecha,\n"
+                            + "Hora,\n"
+                            + "IdUsuario )"
+                            + "  VALUES( ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  GETDATE(),  GETDATE(), ?)");
+
+                    ConductorTB conductorTB = clienteTB.getConductorTB();
+                    if (!"".equals(conductorTB.getNumeroDocumento())
+                            && !"".equals(conductorTB.getInformacion())) {
+                        preparedConductor.setString(1, idConductor);
+                        preparedConductor.setString(2, idCliente);
+                        preparedConductor.setInt(3, conductorTB.getIdTipoDocumento());
+                        preparedConductor.setString(4, conductorTB.getNumeroDocumento());
+                        preparedConductor.setString(5, conductorTB.getInformacion());
+                        preparedConductor.setString(6, conductorTB.getCelular());
+                        preparedConductor.setString(7, conductorTB.getPlacaVehiculo());
+                        preparedConductor.setString(8, conductorTB.getMarcaVehiculo());
+                        preparedConductor.setString(9, conductorTB.getIdUsuario());
+                        preparedConductor.addBatch();
+                    }
+
+                    preparedCliente.executeBatch();
+                    preparedConductor.executeBatch();
                     DBUtil.getConnection().commit();
                     result = "registered";
                 }
@@ -148,6 +234,12 @@ public class ClienteADO {
                 if (preparedCliente != null) {
                     preparedCliente.close();
                 }
+                if (codigoConductor != null) {
+                    codigoConductor.close();
+                }
+                if (preparedConductor != null) {
+                    preparedConductor.close();
+                }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {
                 result = ex.getLocalizedMessage();
@@ -157,6 +249,47 @@ public class ClienteADO {
         return result;
     }
 
+//    public static String CrudConductor(ConductorTB conductorTB) {
+//    
+//        preparedValidation = DBUtil.getConnection().prepareStatement("select NumeroDocumento from \nConductorTB where NumeroDocumento = ?");
+//                preparedValidation.setString(1, conductorTB.getNumeroDocumento());
+//        
+//                    codigoConductor = DBUtil.getConnection().prepareCall("{? = call Fc_Conductor_Codigo_Alfanumerico()}");
+//                    codigoConductor.registerOutParameter(1, java.sql.Types.VARCHAR);
+//                    codigoConductor.execute();
+//                    String idConductor = codigoConductor.getString(1);
+//
+//                    preparedConductor = DBUtil.getConnection().prepareStatement("INSERT INTO Conductor("
+//                            + "IdConductor,\n"
+//                            + "IdCliente,\n"
+//                            + "IdTipoDocumento,\n"
+//                            + "NumDocumentoConducto,\n"
+//                            + "Informacion,\n"
+//                            + "Celular,\n"
+//                            + "PlacaVehiculo,\n"
+//                            + "MarcaVehiculo,\n"
+//                            + "Fecha,\n"
+//                            + "Hora,\n"
+//                            + "IdUsuario )"
+//                    + "  VALUES( ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?, ?");
+//
+//                    preparedConductor.setString(1, idConductor);
+//                    preparedConductor.setString(2,idCliente);
+//                    preparedConductor.setInt(3, conductorTB.getIdTipoDocumento());
+//                    preparedConductor.setString(4, conductorTB.getNumDocumentoConducto());
+//                    preparedConductor.setString(5, conductorTB.getInformacion());
+//                    preparedConductor.setString(6, conductorTB.getCelular());
+//                    preparedConductor.setString(7, conductorTB.getPlacaVehiculo());
+//                    preparedConductor.setString(8, conductorTB.getMarcaVehiculo());
+//                    preparedConductor.setString(9, conductorTB.getFecha());
+//                    preparedConductor.setInt(10, conductorTB.getHora());
+//                    preparedConductor.setBoolean(11, conductorTB.getIdUsuario());
+//                    
+//                    preparedConductor.addBatch();
+//
+//                  
+//    
+//    }
     public static Object ListCliente(String buscar, int posicionPagina, int filasPorPagina) {
 
         PreparedStatement preparedStatement = null;
@@ -283,11 +416,37 @@ public class ClienteADO {
                 clienteTB.setEmail(rsEmps.getString("Email"));
                 clienteTB.setDireccion(rsEmps.getString("Direccion"));
                 clienteTB.setEstado(rsEmps.getInt("Estado"));
+                clienteTB.setIdMotivoTraslado(rsEmps.getInt("IdMotivoTraslado"));
+                clienteTB.setIdModalidadTraslado(rsEmps.getInt("IdModalidadTraslado"));
+                clienteTB.setIdUbigeo(rsEmps.getInt("IdUbigeo"));
+
+                UbigeoTB ubigeoTB = new UbigeoTB();
+                ubigeoTB.setIdUbigeo(rsEmps.getInt("IdUbigeo"));
+                ubigeoTB.setUbigeo(rsEmps.getString("CodigoUbigeo"));
+                ubigeoTB.setDepartamento(rsEmps.getString("Departamento"));
+                ubigeoTB.setProvincia(rsEmps.getString("Provincia"));
+                ubigeoTB.setDistrito(rsEmps.getString("Distrito"));
+                clienteTB.setUbigeoTB(ubigeoTB);
+
+                if (rsEmps.getString("IdConductor") != null) {
+                    ConductorTB conductorTB = new ConductorTB();
+                    conductorTB.setIdConductor(rsEmps.getString("IdConductor"));
+                    conductorTB.setIdCliente(rsEmps.getString("IdCliente"));
+                    conductorTB.setIdTipoDocumento(rsEmps.getInt("IdTipoDocumentoCon"));
+                    conductorTB.setNumeroDocumento(rsEmps.getString("NumeroDocumentoCon"));
+                    conductorTB.setInformacion(rsEmps.getString("InformacionCon"));
+                    conductorTB.setCelular(rsEmps.getString("CelularCon"));
+                    conductorTB.setPlacaVehiculo(rsEmps.getString("PlacaVehiculo"));
+                    conductorTB.setMarcaVehiculo(rsEmps.getString("MarcaVehiculo"));
+                    clienteTB.setConductorTB(conductorTB);
+                }
+
                 return clienteTB;
             } else {
                 throw new Exception("Datos no encontrados.");
             }
         } catch (Exception ex) {
+            Tools.println(ex.getLocalizedMessage());
             return ex.getLocalizedMessage();
         } finally {
             try {
@@ -323,6 +482,7 @@ public class ClienteADO {
                 clienteTB.setInformacion(rsEmps.getString("Informacion"));
                 clienteTB.setDireccion(rsEmps.getString("Direccion"));
                 clienteTB.setCelular(rsEmps.getString("Celular"));
+
                 clienteTBs.add(clienteTB);
             }
         } catch (SQLException e) {
@@ -417,9 +577,11 @@ public class ClienteADO {
     public static String RemoveCliente(String idCliente) {
         PreparedStatement statementValidate = null;
         PreparedStatement statementCliente = null;
-        DBUtil.dbConnect();
+        PreparedStatement statementConductor = null;
 
         try {
+            DBUtil.dbConnect();
+
             DBUtil.getConnection().setAutoCommit(false);
             statementValidate = DBUtil.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE Cliente = ?");
             statementValidate.setString(1, idCliente);
@@ -437,7 +599,12 @@ public class ClienteADO {
                     statementCliente.setString(1, idCliente);
                     statementCliente.addBatch();
 
+                    statementConductor = DBUtil.getConnection().prepareStatement("DELETE FROM Conductor WHERE IdCliente = ?");
+                    statementConductor.setString(1, idCliente);
+                    statementConductor.addBatch();
+
                     statementCliente.executeBatch();
+                    statementConductor.executeBatch();
                     DBUtil.getConnection().commit();
                     return "deleted";
                 }
@@ -456,6 +623,9 @@ public class ClienteADO {
                 }
                 if (statementCliente != null) {
                     statementCliente.close();
+                }
+                if (statementConductor != null) {
+                    statementConductor.close();
                 }
                 DBUtil.dbDisconnect();
             } catch (SQLException ex) {

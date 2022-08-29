@@ -222,6 +222,20 @@
                                              <children>
                                                 <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
                                                    <children>
+                                                      <Label styleClass="labelRoboto13" text="Ubigeo" textFill="#020203">
+                                                         <font>
+                                                            <Font name="Roboto" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <ComboBox fx:id="cbUbigeo" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="260.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="paddinContainer105">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.4166666666666667em;" HBox.hgrow="ALWAYS">
+                                                   <children>
                                                       <Label styleClass="labelRoboto13" text="Estado" textFill="#020203">
                                                          <font>
                                                             <Font name="Roboto" size="14.0" />
@@ -334,6 +348,34 @@
                                  </padding>
                               </AnchorPane>
                            </content>
+                        </Tab>
+                        <Tab text="Guia Tranportista">
+                          <content>
+                            <AnchorPane minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #e7e6e6;">
+                                 <children>
+                                    <VBox layoutX="10.0" layoutY="10.0" prefHeight="344.0" prefWidth="655.0" style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: #CCCCCC; -fx-padding: 1.6666666666666667em; -fx-spacing: 0.8333333333333334em;">
+                                       <children>
+                                          <HBox spacing="10.0">
+                                             <children>
+                                                <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label lineSpacing="5.0" styleClass="labelRoboto13" text="Motivo de traslado" />
+                                                      <ComboBox fx:id="cbMotivoTraslado" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="240.0" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="labelRoboto13" text="Modalidad de Traslado" />
+                                                      <ComboBox fx:id="cbModalidadTraslado" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="240.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                          </content>
                         </Tab>
                     </tabs>
                   </TabPane>

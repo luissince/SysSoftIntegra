@@ -2,6 +2,8 @@ package controller.contactos.clientes;
 
 import controller.tools.ApiPeru;
 import controller.tools.Json;
+import controller.tools.SearchComboBox;
+import controller.tools.Session;
 import controller.tools.Tools;
 import java.net.URL;
 import java.text.ParseException;
@@ -25,8 +27,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import model.ClienteADO;
 import model.ClienteTB;
+import model.ConductorTB;
 import model.DetalleADO;
 import model.DetalleTB;
+import model.UbigeoADO;
+import model.UbigeoTB;
 import org.json.simple.JSONObject;
 
 public class FxClienteProcesoController implements Initializable {
@@ -52,6 +57,8 @@ public class FxClienteProcesoController implements Initializable {
     @FXML
     private TextField txtRepresentante;
     @FXML
+    private ComboBox<UbigeoTB> cbUbigeo;
+    @FXML
     private RadioButton rbActivo;
     @FXML
     private RadioButton rbInactivo;
@@ -72,6 +79,10 @@ public class FxClienteProcesoController implements Initializable {
     @FXML
     private TextField TxtFieldMarcaCar;
     @FXML
+    private ComboBox<DetalleTB> cbMotivoTraslado;
+    @FXML
+    private ComboBox<DetalleTB> cbModalidadTraslado;
+    @FXML
     private Label lblTextoProceso;
     @FXML
     private HBox hbLoadProcesando;
@@ -80,13 +91,16 @@ public class FxClienteProcesoController implements Initializable {
 
     private String idCliente;
 
+    private String idConducto;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
-        idCliente = "";
+        idCliente = idConducto = "";
         ToggleGroup group = new ToggleGroup();
         rbActivo.setToggleGroup(group);
         rbInactivo.setToggleGroup(group);
+        loadUbigeo();
 
     }
 
@@ -100,67 +114,15 @@ public class FxClienteProcesoController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() throws Exception {
-                Object listTicket = DetalleADO.GetDetailId("0003");
-                if (listTicket instanceof ObservableList) {
-                    return (ObservableList<DetalleTB>) listTicket;
-                } else {
-                    throw new Exception("Se produjo un error, intente nuevamente.");
-                }
-            }
-        };
-
-        task.setOnScheduled(e -> {
-            hbLoadProcesando.setVisible(true);
-            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
-            btnCancelarProceso.setText("Cancelar Proceso");
-            if (btnCancelarProceso.getOnAction() != null) {
-                btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
-            }
-            btnCancelarProceso.setOnAction(event -> {
-                if (task.isRunning()) {
-                    task.cancel();
-                }
-                Tools.Dispose(window);
-            });
-        });
-
-        task.setOnCancelled(e -> {
-
-        });
-
-        task.setOnFailed(e -> {
-            lblTextoProceso.setText(task.getException().getMessage());
-            btnCancelarProceso.setText("Cerrar Vista");
-        });
-
-        task.setOnSucceeded(e -> {
-            ObservableList<DetalleTB> ticketTBs = (ObservableList<DetalleTB>) task.getValue();
-            cbDocumentType.getItems().addAll(ticketTBs);
-            hbLoadProcesando.setVisible(false);
-            cbDocumentType.requestFocus();
-        });
-
-        exec.execute(task);
-        if (!exec.isShutdown()) {
-            exec.shutdown();
-        }
-    }
-
-    public void loadEditCliente(String idCliente) {
-        this.idCliente = idCliente;
-        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
-            Thread t = new Thread(runnable);
-            t.setDaemon(true);
-            return t;
-        });
-
-        Task<Object> task = new Task<Object>() {
-            @Override
-            public Object call() throws Exception {
                 Object listTipoDocumento = DetalleADO.GetDetailId("0003");
-                Object cliente = ClienteADO.GetByIdCliente(idCliente);
-                if (listTipoDocumento instanceof ObservableList && cliente instanceof ClienteTB) {
-                    return new Object[]{listTipoDocumento, cliente};
+                Object listMotivoTraslado = DetalleADO.GetDetailId("0017");
+                Object listModalidadTraslado = DetalleADO.GetDetailId("0018");// 0018 establece las cadenas para combobox
+
+                if (listTipoDocumento instanceof ObservableList
+                        && listMotivoTraslado instanceof ObservableList
+                        && listModalidadTraslado instanceof ObservableList) {
+//                         && listUbigeo instanceof ObservableList) {
+                    return new Object[]{listTipoDocumento, listMotivoTraslado, listModalidadTraslado};//return (ObservableList<DetalleTB>) listTicket;
                 } else {
                     throw new Exception("Se produjo un error, intente nuevamente.");
                 }
@@ -197,7 +159,135 @@ public class FxClienteProcesoController implements Initializable {
             cbDocumentType.getItems().addAll(ticketTBs);
             cbTipoDcoumentDriver.getItems().addAll(ticketTBs);
 
-            ClienteTB clienteTB = (ClienteTB) result[1];
+            ObservableList<DetalleTB> motivoTraslado = (ObservableList<DetalleTB>) result[1];
+            cbMotivoTraslado.getItems().addAll(motivoTraslado);
+
+            ObservableList<DetalleTB> modalidadTraslado = (ObservableList<DetalleTB>) result[2];
+            cbModalidadTraslado.getItems().addAll(modalidadTraslado);
+
+            hbLoadProcesando.setVisible(false);
+            cbDocumentType.requestFocus();
+        });
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+
+    private void loadUbigeo() {
+        SearchComboBox<UbigeoTB> searchComboBoxUbigeoLlegada = new SearchComboBox<>(cbUbigeo, false);
+        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
+            if (t.getCode() == KeyCode.ENTER) {
+                if (!searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
+                    searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().getSelectionModel().select(0);
+                    searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().requestFocus();
+                }
+            } else if (t.getCode() == KeyCode.ESCAPE) {
+                searchComboBoxUbigeoLlegada.getComboBox().hide();
+            }
+        });
+        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
+            searchComboBoxUbigeoLlegada.getComboBox().getItems().clear();
+            searchComboBoxUbigeoLlegada.getComboBox().getItems().addAll(UbigeoADO.GetSearchComboBoxUbigeo(searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().getText().trim()));
+        });
+        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
+            if (null == t.getCode()) {
+                searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().selectAll();
+            } else {
+                switch (t.getCode()) {
+                    case ENTER:
+                    case SPACE:
+                    case ESCAPE:
+                        searchComboBoxUbigeoLlegada.getComboBox().hide();
+                        break;
+                    case UP:
+                    case DOWN:
+                    case LEFT:
+                    case RIGHT:
+                        break;
+                    default:
+                        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().selectAll();
+                        break;
+                }
+            }
+        });
+        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty().addListener((p, o, item) -> {
+            if (item != null) {
+                searchComboBoxUbigeoLlegada.getComboBox().getSelectionModel().select(item);
+                if (searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().isClickSelection()) {
+                    searchComboBoxUbigeoLlegada.getComboBox().hide();
+                }
+            }
+        });
+    }
+
+    public void loadEditCliente(String idCliente) {
+        this.idCliente = idCliente;
+        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<Object> task = new Task<Object>() {
+            @Override
+            public Object call() throws Exception {
+                Object listTipoDocumento = DetalleADO.GetDetailId("0003");//se establece las diferente opciones
+                Object listMotivoTraslado = DetalleADO.GetDetailId("0017");
+                Object listModalidadTraslado = DetalleADO.GetDetailId("0018");
+                Object cliente = ClienteADO.GetByIdCliente(idCliente);
+                if (listTipoDocumento instanceof ObservableList
+                        && listMotivoTraslado instanceof ObservableList
+                        && listModalidadTraslado instanceof ObservableList
+                        && cliente instanceof ClienteTB) {
+                    return new Object[]{listTipoDocumento, listMotivoTraslado, listModalidadTraslado, cliente};
+                } else {
+                    throw new Exception("Se produjo un error, intente nuevamente.");
+                }
+            }
+        };
+
+        task.setOnScheduled(e -> {
+            hbLoadProcesando.setVisible(true);
+            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
+            btnCancelarProceso.setText("Cancelar Proceso");
+            if (btnCancelarProceso.getOnAction() != null) {
+                btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
+            }
+            btnCancelarProceso.setOnAction(event -> {
+                if (task.isRunning()) {
+                    task.cancel();
+                }
+                Tools.Dispose(window);
+            });
+        });
+
+        task.setOnCancelled(e -> {
+
+        });
+
+        task.setOnFailed(e -> {
+            lblTextoProceso.setText(task.getException().getMessage());
+            btnCancelarProceso.setText("Cerrar Vista");
+        });
+
+        task.setOnSucceeded(e -> {
+            Object[] result = (Object[]) task.getValue();
+
+            ObservableList<DetalleTB> tipoDocumento = (ObservableList<DetalleTB>) result[0];//muestre las opciones de el combo box 
+            cbDocumentType.getItems().addAll(tipoDocumento);//cbDocumentType.getItems().addAll(tipoDocumento);
+            cbTipoDcoumentDriver.getItems().addAll(tipoDocumento);
+
+            ObservableList<DetalleTB> motivoTraslado = (ObservableList<DetalleTB>) result[1];
+            cbMotivoTraslado.getItems().addAll(motivoTraslado);
+
+            ObservableList<DetalleTB> modalidadTraslado = (ObservableList<DetalleTB>) result[2];
+            cbModalidadTraslado.getItems().addAll(modalidadTraslado);
+
+            ClienteTB clienteTB = (ClienteTB) result[3];
+
             ObservableList<DetalleTB> lstype = cbDocumentType.getItems();
             for (int i = 0; i < lstype.size(); i++) {
                 if (clienteTB.getTipoDocumento() == lstype.get(i).getIdDetalle()) {
@@ -205,17 +295,56 @@ public class FxClienteProcesoController implements Initializable {
                     break;
                 }
             }
+
+            ObservableList<DetalleTB> listMotivoTraslado = cbMotivoTraslado.getItems();
+            for (int i = 0; i < listMotivoTraslado.size(); i++) {
+                if (clienteTB.getIdMotivoTraslado() == listMotivoTraslado.get(i).getIdDetalle()) {
+                    cbMotivoTraslado.getSelectionModel().select(i);
+                    break;
+                }
+            }
+
+            ObservableList<DetalleTB> listModalidadTraslado = cbModalidadTraslado.getItems();
+            for (int y = 0; y < listModalidadTraslado.size(); y++) {
+                if (clienteTB.getIdModalidadTraslado() == listModalidadTraslado.get(y).getIdDetalle()) {
+                    cbModalidadTraslado.getSelectionModel().select(y);
+                    break;
+                }
+            }
+
+            cbUbigeo.getItems().clear();
+            if (clienteTB.getUbigeoTB().getIdUbigeo() > 0) {
+                cbUbigeo.getItems().add(clienteTB.getUbigeoTB());
+                if (!cbUbigeo.getItems().isEmpty()) {
+                    cbUbigeo.getSelectionModel().select(0);
+                }
+            }
+
             txtDocumentNumber.setText(clienteTB.getNumeroDocumento());
             txtInformacion.setText(clienteTB.getInformacion());
-            txtTelefono.setText(clienteTB.getTelefono()); 
+            txtTelefono.setText(clienteTB.getTelefono());
             txtEmail.setText(clienteTB.getEmail());
             txtDireccion.setText(clienteTB.getDireccion());
             txtRepresentante.setText(clienteTB.getRepresentante());
-            txtFieldNdocumentoDriver.setText(clienteTB.getNumeroDocumentoConductor());
-            txtFieldNombreDriver.setText(clienteTB.getNombreConductor());
-            TxtFeldCelularDriver.setText(clienteTB.getCelularConductor());
-            TxtFieldNPlacaCar.setText(clienteTB.getPlacaVehiculo());
-            TxtFieldMarcaCar.setText(clienteTB.getMarcaVehiculo());
+
+            if (clienteTB.getConductorTB() != null) {
+                idConducto = clienteTB.getConductorTB().getIdConductor();
+
+                ObservableList<DetalleTB> detalleTBs = cbTipoDcoumentDriver.getItems();
+                for (int i = 0; i < detalleTBs.size(); i++) {
+                    if (clienteTB.getConductorTB().getIdTipoDocumento() == detalleTBs.get(i).getIdDetalle()) {
+                        cbTipoDcoumentDriver.getSelectionModel().select(i);
+                        break;
+                    }
+                }
+
+                txtFieldNdocumentoDriver.setText(clienteTB.getConductorTB().getNumeroDocumento());
+                txtFieldNombreDriver.setText(clienteTB.getConductorTB().getInformacion());
+                TxtFeldCelularDriver.setText(clienteTB.getConductorTB().getCelular());
+                TxtFieldNPlacaCar.setText(clienteTB.getConductorTB().getPlacaVehiculo());
+                TxtFieldMarcaCar.setText(clienteTB.getConductorTB().getMarcaVehiculo());
+            }
+
             btnRegister.setText("Actualizar");
             btnRegister.getStyleClass().add("buttonLightWarning");
             hbLoadProcesando.setVisible(false);
@@ -255,22 +384,37 @@ public class FxClienteProcesoController implements Initializable {
             clienteTB.setTipoDocumento(cbDocumentType.getSelectionModel().getSelectedItem().getIdDetalle());
             clienteTB.setInformacion(txtInformacion.getText().trim().toUpperCase());
             clienteTB.setNumeroDocumento(txtDocumentNumber.getText().trim().toUpperCase());
-//              clienteTB.setFechaNacimiento(new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse(Tools.getDatePicker(dpBirthdate)).getTime()));
+//          clienteTB.setFechaNacimiento(new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse(Tools.getDatePicker(dpBirthdate)).getTime()));
             clienteTB.setTelefono(txtTelefono.getText());
             clienteTB.setCelular(txtCelular.getText());
             clienteTB.setEmail(txtEmail.getText());
             clienteTB.setDireccion(txtDireccion.getText());
-            clienteTB.setRepresentante(txtRepresentante.getText());
+            clienteTB.setRepresentante(Tools.text(txtRepresentante.getText()));
             clienteTB.setEstado(rbActivo.isSelected() ? 1 : 0);
             clienteTB.setPredeterminado(false);
             clienteTB.setSistema(false);
-            clienteTB.setIdTipoDocumentoConducto(cbTipoDcoumentDriver.getSelectionModel().getSelectedIndex() >= 0
+            clienteTB.setIdMotivoTraslado(cbMotivoTraslado.getSelectionModel().getSelectedIndex() >= 0// adquiere los indices de los strings
+                    ? cbMotivoTraslado.getSelectionModel().getSelectedItem().getIdDetalle() : 0);
+            clienteTB.setIdModalidadTraslado(cbModalidadTraslado.getSelectionModel().getSelectedIndex() >= 0
+                    ? cbModalidadTraslado.getSelectionModel().getSelectedItem().getIdDetalle() : 0);
+
+            clienteTB.setIdUbigeo(cbUbigeo.getSelectionModel().getSelectedIndex() >= 0// adquiere los indices de los strings
+                    ? cbUbigeo.getSelectionModel().getSelectedItem().getIdUbigeo() : 0);
+
+            ConductorTB conductorTB = new ConductorTB();
+            conductorTB.setIdConductor(idConducto);
+            conductorTB.setIdCliente(idCliente);
+            conductorTB.setIdTipoDocumento(cbTipoDcoumentDriver.getSelectionModel().getSelectedIndex() >= 0
                     ? cbTipoDcoumentDriver.getSelectionModel().getSelectedItem().getIdDetalle() : 0);
-            clienteTB.setNumeroDocumentoConductor(txtFieldNdocumentoDriver.getText());
-            clienteTB.setNombreConductor(txtFieldNombreDriver.getText());
-            clienteTB.setCelularConductor(TxtFeldCelularDriver.getText());
-            clienteTB.setPlacaVehiculo(TxtFieldNPlacaCar.getText());
-            clienteTB.setMarcaVehiculo(TxtFieldMarcaCar.getText());
+            conductorTB.setNumeroDocumento(txtFieldNdocumentoDriver.getText());
+            conductorTB.setInformacion(txtFieldNombreDriver.getText());
+            conductorTB.setCelular(TxtFeldCelularDriver.getText());
+            conductorTB.setPlacaVehiculo(TxtFieldNPlacaCar.getText());
+            conductorTB.setMarcaVehiculo(TxtFieldMarcaCar.getText());
+//            conductorTB.setFecha(Tools.getDate());
+//            conductorTB.setHora(Tools.getTime());
+            conductorTB.setIdUsuario(Session.USER_ID);
+            clienteTB.setConductorTB(conductorTB);
 
             String result = ClienteADO.CrudCliente(clienteTB);
             switch (result) {

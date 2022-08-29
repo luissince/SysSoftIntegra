@@ -42,6 +42,8 @@ import model.ClienteADO;
 import model.ClienteTB;
 import model.DetalleADO;
 import model.DetalleTB;
+import model.EmpresaADO;
+import model.EmpresaTB;
 import model.GuiaRemisionADO;
 import model.GuiaRemisionDetalleTB;
 import model.GuiaRemisionTB;
@@ -186,6 +188,7 @@ public class FxGuiaRemisionController implements Initializable {
 
         Tools.actualDate(Tools.getDate(), dtFechaTraslado);
         txtDireccionPartida.setText(Session.COMPANY_DOMICILIO);
+
         loadUbigeoPartida();
         loadUbigeoLlegada();
         loadComponents();
@@ -302,16 +305,24 @@ public class FxGuiaRemisionController implements Initializable {
             return t;
         });
 
-        Task<ArrayList<Object>> task = new Task<ArrayList<Object>>() {
+        Task<Object> task = new Task<Object>() {
             @Override
-            protected ArrayList<Object> call() {
-                ArrayList<Object> objects = new ArrayList();
-                objects.add(DetalleADO.GetDetailId("0017"));
-                objects.add(DetalleADO.GetDetailId("0018"));
-                objects.add(DetalleADO.GetDetailId("0003"));
-                objects.add(TipoDocumentoADO.GetDocumentoCombBoxVentas());
-                objects.add(TipoDocumentoADO.GetTipoDocumentoGuiaRemision());
-                return objects;
+            protected Object call() {
+//                ArrayList<Object> objects = new ArrayList();
+//                objects.add(DetalleADO.GetDetailId("0017"));
+//                objects.add(DetalleADO.GetDetailId("0018"));
+//                objects.add(DetalleADO.GetDetailId("0003"));
+//                objects.add(TipoDocumentoADO.GetDocumentoCombBoxVentas());
+//                objects.add(TipoDocumentoADO.GetTipoDocumentoGuiaRemision());
+//                EmpresaADO.GetEmpresa();
+
+                return new Object[]{
+                    DetalleADO.GetDetailId("0017"),
+                    DetalleADO.GetDetailId("0018"),
+                    DetalleADO.GetDetailId("0003"),
+                    TipoDocumentoADO.GetDocumentoCombBoxVentas(),
+                    TipoDocumentoADO.GetTipoDocumentoGuiaRemision(),
+                    EmpresaADO.GetEmpresa()};
             }
         };
 
@@ -324,46 +335,34 @@ public class FxGuiaRemisionController implements Initializable {
         });
 
         task.setOnSucceeded(e -> {
-            ArrayList<Object> objects = task.getValue();
-            if (!objects.isEmpty()) {
-                if (objects.get(0) != null) {
-                    cbMotivoTraslado.getItems().clear();
-                    ObservableList<DetalleTB> motivoTraslado = (ObservableList<DetalleTB>) objects.get(0);
-                    motivoTraslado.forEach(d -> {
-                        cbMotivoTraslado.getItems().add(new DetalleTB(d.getIdDetalle(), d.getNombre()));
-                    });
-                }
+            Object[] result = (Object[]) task.getValue();
 
-                if (objects.get(1) != null) {
-                    cbModalidadTraslado.getItems().clear();
-                    ObservableList<DetalleTB> motivoTransporte = (ObservableList<DetalleTB>) objects.get(1);
-                    motivoTransporte.forEach(d -> {
-                        cbModalidadTraslado.getItems().add(new DetalleTB(d.getIdDetalle(), d.getNombre()));
-                    });
+            cbMotivoTraslado.getItems().clear();
+            cbMotivoTraslado.getItems().addAll((ObservableList<DetalleTB>) result[0]);
+
+            cbModalidadTraslado.getItems().clear();
+            cbModalidadTraslado.getItems().addAll((ObservableList<DetalleTB>) result[1]);
+
+            cbTipoDocumento.getItems().clear();
+            cbTipoDocumento.getItems().addAll((ObservableList<DetalleTB>) result[2]);
+
+            cbTipoComprobante.getItems().clear();
+            cbTipoComprobante.getItems().addAll((List<TipoDocumentoTB>) result[3]);
+
+            cbDocumentoGuia.getItems().clear();
+            cbDocumentoGuia.getItems().addAll((ArrayList<TipoDocumentoTB>) result[4]);
+
+            EmpresaTB empresaTB = (EmpresaTB) result[5];
+
+            cbUbigeoPartida.getItems().clear();
+            if (empresaTB.getUbigeoTB().getIdUbigeo() > 0) {
+                cbUbigeoPartida.getItems().add(empresaTB.getUbigeoTB());
+                if (!cbUbigeoPartida.getItems().isEmpty()) {
+                    cbUbigeoPartida.getSelectionModel().select(0);
                 }
-                if (objects.get(2) != null) {
-                    cbTipoDocumento.getItems().clear();
-                    ObservableList<DetalleTB> tipoDocumento = (ObservableList<DetalleTB>) objects.get(2);
-                    tipoDocumento.forEach(d -> {
-                        cbTipoDocumento.getItems().add(new DetalleTB(d.getIdDetalle(), d.getNombre()));
-                    });
-                }
-                if (objects.get(3) != null) {
-                    cbTipoComprobante.getItems().clear();
-                    List<TipoDocumentoTB> tipoComprobante = (List<TipoDocumentoTB>) objects.get(3);
-                    tipoComprobante.forEach(cbTipoComprobante.getItems()::add);
-                }
-                if (objects.get(4) != null) {
-                    ArrayList<TipoDocumentoTB> documentoTBs = (ArrayList<TipoDocumentoTB>) objects.get(4);
-                    documentoTBs.forEach(cbDocumentoGuia.getItems()::add);
-                    if (cbDocumentoGuia.getItems().size() == 1) {
-                        cbDocumentoGuia.getSelectionModel().select(0);
-                    }
-                }
-                lblLoad.setVisible(false);
-            } else {
-                lblLoad.setVisible(false);
             }
+
+            lblLoad.setVisible(false);
         });
         executor.execute(task);
         if (!executor.isShutdown()) {
@@ -459,7 +458,7 @@ public class FxGuiaRemisionController implements Initializable {
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.setOnShown(w->controller.loadAddCliente());
+            stage.setOnShown(w -> controller.loadAddCliente());
             stage.show();
         } catch (IOException ex) {
             System.out.println("Cliente controller en openWindowAddCliente()" + ex.getLocalizedMessage());
@@ -670,6 +669,7 @@ public class FxGuiaRemisionController implements Initializable {
             if (object instanceof VentaTB) {
                 VentaTB ventaTB = (VentaTB) object;
                 ArrayList<SuministroTB> empList = ventaTB.getSuministroTBs();
+                ClienteTB clienteTB = ventaTB.getClienteTB();
 
                 for (int i = 0; i < cbTipoComprobante.getItems().size(); i++) {
                     if (cbTipoComprobante.getItems().get(i).getIdTipoDocumento() == ventaTB.getIdComprobante()) {
@@ -680,9 +680,43 @@ public class FxGuiaRemisionController implements Initializable {
                 txtSerieFactura.setText(ventaTB.getSerie());
                 txtNumeracionFactura.setText(ventaTB.getNumeracion());
                 cbCliente.getItems().clear();
-                cbCliente.getItems().add(ventaTB.getClienteTB());
+                cbCliente.getItems().add(clienteTB);
                 if (!cbCliente.getItems().isEmpty()) {
                     cbCliente.getSelectionModel().select(0);
+                }
+
+                for (int i = 0; i < cbMotivoTraslado.getItems().size(); i++) {
+                    if (cbMotivoTraslado.getItems().get(i).getIdDetalle() == clienteTB.getIdMotivoTraslado()) {
+                        cbMotivoTraslado.getSelectionModel().select(i);
+                        break;
+                    }
+                }
+                for (int i = 0; i < cbModalidadTraslado.getItems().size(); i++) {
+                    if (cbModalidadTraslado.getItems().get(i).getIdDetalle() == clienteTB.getIdModalidadTraslado()) {
+                        cbModalidadTraslado.getSelectionModel().select(i);
+                        break;
+                    }
+                }
+                for (int i = 0; i < cbTipoDocumento.getItems().size(); i++) {
+                    if (cbTipoDocumento.getItems().get(i).getIdDetalle() == clienteTB.getIdTipoDocumentoConductor()) {
+                        cbTipoDocumento.getSelectionModel().select(i);
+                        break;
+                    }
+                }
+
+                txtNumeroDocumento.setText(clienteTB.getNumeroDocumentoConductor());//Muestra los datos de una venta en la GUUIA
+                txtNombreConducto.setText(clienteTB.getNombreConductor());
+                txtTelefonoCelular.setText(clienteTB.getTelefono());
+                txtNumeroPlacaVehiculo.setText(clienteTB.getPlacaVehiculo());
+                txtMarcaVehiculo.setText(clienteTB.getMarcaVehiculo());
+                txtDireccionLlegada.setText(clienteTB.getDireccion());
+
+                cbUbigeoLlegada.getItems().clear();
+                if (clienteTB.getUbigeoTB().getIdUbigeo() > 0) {
+                    cbUbigeoLlegada.getItems().add(clienteTB.getUbigeoTB());
+                    if (!cbUbigeoLlegada.getItems().isEmpty()) {
+                        cbUbigeoLlegada.getSelectionModel().select(0);
+                    }
                 }
 
                 tvList.getItems().clear();

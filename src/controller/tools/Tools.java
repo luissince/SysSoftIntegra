@@ -481,6 +481,10 @@ public class Tools {
     public static String textShow(String title, String text) {
         return text.isEmpty() ? "" : (title.toUpperCase() + "" + text.toUpperCase());
     }
+    
+    public static String text(String value){
+        return value == null ? "" : value.trim().toUpperCase();
+    }
 
     public static String newLineString(String value) {
         String format = "";

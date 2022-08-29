@@ -2770,6 +2770,24 @@ public class VentaADO {
                 clienteTB.setCelular(resultSetVenta.getString("Celular"));
                 clienteTB.setEmail(resultSetVenta.getString("Email"));
                 clienteTB.setDireccion(resultSetVenta.getString("Direccion"));
+                clienteTB.setIdMotivoTraslado(resultSetVenta.getInt("IdMotivoTraslado"));
+                clienteTB.setIdModalidadTraslado(resultSetVenta.getInt("IdModalidadTraslado"));
+                clienteTB.setIdTipoDocumentoConductor(resultSetVenta.getInt("IdTipoDocumentoConductor"));                
+                clienteTB.setNumeroDocumentoConductor(resultSetVenta.getString("NumDocumentoConducto"));
+                clienteTB.setNombreConductor(resultSetVenta.getString("NombreConductor"));
+                clienteTB.setTelefono(resultSetVenta.getString("Telefono"));
+                clienteTB.setPlacaVehiculo(resultSetVenta.getString("PlacaVehiculo"));
+                clienteTB.setMarcaVehiculo(resultSetVenta.getString("MarcaVehiculo"));
+            //   clienteTB.setTextPesoBruto(resultSetVenta.getString("PesoBruto"));
+            
+                UbigeoTB ubigeoTB = new UbigeoTB();
+                ubigeoTB.setIdUbigeo(resultSetVenta.getInt("IdUbigeo"));
+                ubigeoTB.setUbigeo(resultSetVenta.getString("CodigoUbigeo"));
+                ubigeoTB.setDepartamento(resultSetVenta.getString("Departamento"));
+                ubigeoTB.setProvincia(resultSetVenta.getString("Provincia"));
+                ubigeoTB.setDistrito(resultSetVenta.getString("Distrito"));
+                clienteTB.setUbigeoTB(ubigeoTB);
+                
                 ventaTB.setClienteTB(clienteTB);
                 //Cliente end
                 ventaTB.setIdMoneda(resultSetVenta.getInt("IdMoneda"));
