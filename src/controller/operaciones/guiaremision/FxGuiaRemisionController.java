@@ -40,6 +40,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import model.ClienteADO;
 import model.ClienteTB;
+import model.ConductorTB;
 import model.DetalleADO;
 import model.DetalleTB;
 import model.EmpresaADO;
@@ -151,7 +152,8 @@ public class FxGuiaRemisionController implements Initializable {
         });
         searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             searchComboBoxCliente.getComboBox().getItems().clear();
-            List<ClienteTB> clienteTBs = ClienteADO.GetSearchComboBoxCliente(4, searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().getText().trim());
+            List<ClienteTB> clienteTBs = ClienteADO.GetSearchComboBoxCliente(4,
+                    searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().getText().trim());
             clienteTBs.forEach(e -> searchComboBoxCliente.getComboBox().getItems().add(e));
         });
         searchComboBoxCliente.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
@@ -177,14 +179,15 @@ public class FxGuiaRemisionController implements Initializable {
                 }
             }
         });
-        searchComboBoxCliente.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty().addListener((p, o, item) -> {
-            if (item != null) {
-                searchComboBoxCliente.getComboBox().getSelectionModel().select(item);
-                if (searchComboBoxCliente.getSearchComboBoxSkin().isClickSelection()) {
-                    searchComboBoxCliente.getComboBox().hide();
-                }
-            }
-        });
+        searchComboBoxCliente.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty()
+                .addListener((p, o, item) -> {
+                    if (item != null) {
+                        searchComboBoxCliente.getComboBox().getSelectionModel().select(item);
+                        if (searchComboBoxCliente.getSearchComboBoxSkin().isClickSelection()) {
+                            searchComboBoxCliente.getComboBox().hide();
+                        }
+                    }
+                });
 
         Tools.actualDate(Tools.getDate(), dtFechaTraslado);
         txtDireccionPartida.setText(Session.COMPANY_DOMICILIO);
@@ -208,7 +211,8 @@ public class FxGuiaRemisionController implements Initializable {
         });
         searchComboBoxUbigeoPartida.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             searchComboBoxUbigeoPartida.getComboBox().getItems().clear();
-            List<UbigeoTB> ubigeoTBs = UbigeoADO.GetSearchComboBoxUbigeo(searchComboBoxUbigeoPartida.getSearchComboBoxSkin().getSearchBox().getText().trim());
+            List<UbigeoTB> ubigeoTBs = UbigeoADO.GetSearchComboBoxUbigeo(
+                    searchComboBoxUbigeoPartida.getSearchComboBoxSkin().getSearchBox().getText().trim());
             ubigeoTBs.forEach(e -> {
                 searchComboBoxUbigeoPartida.getComboBox().getItems().add(e);
             });
@@ -236,14 +240,15 @@ public class FxGuiaRemisionController implements Initializable {
                 }
             }
         });
-        searchComboBoxUbigeoPartida.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty().addListener((p, o, item) -> {
-            if (item != null) {
-                searchComboBoxUbigeoPartida.getComboBox().getSelectionModel().select(item);
-                if (searchComboBoxUbigeoPartida.getSearchComboBoxSkin().isClickSelection()) {
-                    searchComboBoxUbigeoPartida.getComboBox().hide();
-                }
-            }
-        });
+        searchComboBoxUbigeoPartida.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty()
+                .addListener((p, o, item) -> {
+                    if (item != null) {
+                        searchComboBoxUbigeoPartida.getComboBox().getSelectionModel().select(item);
+                        if (searchComboBoxUbigeoPartida.getSearchComboBoxSkin().isClickSelection()) {
+                            searchComboBoxUbigeoPartida.getComboBox().hide();
+                        }
+                    }
+                });
     }
 
     private void loadUbigeoLlegada() {
@@ -260,7 +265,8 @@ public class FxGuiaRemisionController implements Initializable {
         });
         searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             searchComboBoxUbigeoLlegada.getComboBox().getItems().clear();
-            List<UbigeoTB> ubigeoTBs = UbigeoADO.GetSearchComboBoxUbigeo(searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().getText().trim());
+            List<UbigeoTB> ubigeoTBs = UbigeoADO.GetSearchComboBoxUbigeo(
+                    searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().getText().trim());
             ubigeoTBs.forEach(e -> {
                 searchComboBoxUbigeoLlegada.getComboBox().getItems().add(e);
             });
@@ -288,14 +294,15 @@ public class FxGuiaRemisionController implements Initializable {
                 }
             }
         });
-        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty().addListener((p, o, item) -> {
-            if (item != null) {
-                searchComboBoxUbigeoLlegada.getComboBox().getSelectionModel().select(item);
-                if (searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().isClickSelection()) {
-                    searchComboBoxUbigeoLlegada.getComboBox().hide();
-                }
-            }
-        });
+        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty()
+                .addListener((p, o, item) -> {
+                    if (item != null) {
+                        searchComboBoxUbigeoLlegada.getComboBox().getSelectionModel().select(item);
+                        if (searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().isClickSelection()) {
+                            searchComboBoxUbigeoLlegada.getComboBox().hide();
+                        }
+                    }
+                });
     }
 
     private void loadComponents() {
@@ -308,21 +315,14 @@ public class FxGuiaRemisionController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-//                ArrayList<Object> objects = new ArrayList();
-//                objects.add(DetalleADO.GetDetailId("0017"));
-//                objects.add(DetalleADO.GetDetailId("0018"));
-//                objects.add(DetalleADO.GetDetailId("0003"));
-//                objects.add(TipoDocumentoADO.GetDocumentoCombBoxVentas());
-//                objects.add(TipoDocumentoADO.GetTipoDocumentoGuiaRemision());
-//                EmpresaADO.GetEmpresa();
-
-                return new Object[]{
-                    DetalleADO.GetDetailId("0017"),
-                    DetalleADO.GetDetailId("0018"),
-                    DetalleADO.GetDetailId("0003"),
-                    TipoDocumentoADO.GetDocumentoCombBoxVentas(),
-                    TipoDocumentoADO.GetTipoDocumentoGuiaRemision(),
-                    EmpresaADO.GetEmpresa()};
+                return new Object[] {
+                        TipoDocumentoADO.GetTipoDocumentoGuiaRemision(),
+                        DetalleADO.GetDetailId("0017"),
+                        DetalleADO.GetDetailId("0018"),
+                        DetalleADO.GetDetailId("0003"),
+                        TipoDocumentoADO.GetDocumentoCombBoxVentas(),
+                        EmpresaADO.GetEmpresa()
+                };
             }
         };
 
@@ -337,20 +337,33 @@ public class FxGuiaRemisionController implements Initializable {
         task.setOnSucceeded(e -> {
             Object[] result = (Object[]) task.getValue();
 
+            cbDocumentoGuia.getItems().clear();
+            cbDocumentoGuia.getItems().addAll((ArrayList<TipoDocumentoTB>) result[0]);
+
             cbMotivoTraslado.getItems().clear();
-            cbMotivoTraslado.getItems().addAll((ObservableList<DetalleTB>) result[0]);
+            cbMotivoTraslado.getItems().addAll((ObservableList<DetalleTB>) result[1]);
 
             cbModalidadTraslado.getItems().clear();
-            cbModalidadTraslado.getItems().addAll((ObservableList<DetalleTB>) result[1]);
+            cbModalidadTraslado.getItems().addAll((ObservableList<DetalleTB>) result[2]);
+
+            Tools.actualDate(Tools.getDate(), dtFechaTraslado);
+            txtPesoBruto.setText("0");
+            txtNumeroBultos.setText("");
 
             cbTipoDocumento.getItems().clear();
-            cbTipoDocumento.getItems().addAll((ObservableList<DetalleTB>) result[2]);
-
+            cbTipoDocumento.getItems().addAll((ObservableList<DetalleTB>) result[3]);
+            txtNumeroDocumento.setText("");
+            txtNombreConducto.setText("");
+            txtTelefonoCelular.setText("");
+            txtNumeroPlacaVehiculo.setText("");
+            txtMarcaVehiculo.setText("");
+            txtDireccionPartida.setText("");
+            txtDireccionLlegada.setText("");
+            
             cbTipoComprobante.getItems().clear();
-            cbTipoComprobante.getItems().addAll((List<TipoDocumentoTB>) result[3]);
-
-            cbDocumentoGuia.getItems().clear();
-            cbDocumentoGuia.getItems().addAll((ArrayList<TipoDocumentoTB>) result[4]);
+            cbTipoComprobante.getItems().addAll((List<TipoDocumentoTB>) result[4]);
+            txtSerieFactura.setText("");
+            txtNumeracionFactura.setText("");            
 
             EmpresaTB empresaTB = (EmpresaTB) result[5];
 
@@ -361,6 +374,10 @@ public class FxGuiaRemisionController implements Initializable {
                     cbUbigeoPartida.getSelectionModel().select(0);
                 }
             }
+
+            cbUbigeoLlegada.getItems().clear();
+
+            tvList.getItems().clear();
 
             lblLoad.setVisible(false);
         });
@@ -451,7 +468,7 @@ public class FxGuiaRemisionController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_CLIENTE_PROCESO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxClienteProcesoController controller = fXMLLoader.getController();
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Cliente", spWindow.getScene().getWindow());
@@ -471,11 +488,12 @@ public class FxGuiaRemisionController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxSuministrosListaController controller = fXMLLoader.getController();
             controller.setInitGuiaRemisionController(this);
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto", spWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto",
+                    spWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
@@ -492,7 +510,7 @@ public class FxGuiaRemisionController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_VENTA_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxVentaListaController controller = fXMLLoader.getController();
             controller.setInitGuiaRemisionController(this);
             //
@@ -570,14 +588,18 @@ public class FxGuiaRemisionController implements Initializable {
                 guiaRemisionTB.setIdVenta(idVenta);
                 guiaRemisionTB.setIdCliente(cbCliente.getSelectionModel().getSelectedItem().getIdCliente());
                 guiaRemisionTB.setIdVendedor(Session.USER_ID);
-                guiaRemisionTB.setIdComprobante(cbDocumentoGuia.getSelectionModel().getSelectedItem().getIdTipoDocumento());
+                guiaRemisionTB
+                        .setIdComprobante(cbDocumentoGuia.getSelectionModel().getSelectedItem().getIdTipoDocumento());
                 guiaRemisionTB.setEmail(txtEmail.getText().trim());
-                guiaRemisionTB.setIdMotivoTraslado(cbMotivoTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
-                guiaRemisionTB.setIdModalidadTraslado(cbModalidadTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
+                guiaRemisionTB
+                        .setIdMotivoTraslado(cbMotivoTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
+                guiaRemisionTB.setIdModalidadTraslado(
+                        cbModalidadTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
                 guiaRemisionTB.setFechaTraslado(Tools.getDatePicker(dtFechaTraslado));
                 guiaRemisionTB.setPesoBruto(Double.parseDouble(txtPesoBruto.getText()));
                 guiaRemisionTB.setNumeroBultos(Integer.parseInt(txtNumeroBultos.getText()));
-                guiaRemisionTB.setTipoDocumentoConducto(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
+                guiaRemisionTB
+                        .setTipoDocumentoConducto(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
                 guiaRemisionTB.setNumeroConductor(txtNumeroDocumento.getText().trim());
                 guiaRemisionTB.setNombreConductor(txtNombreConducto.getText().trim());
                 guiaRemisionTB.setTelefonoCelularConducto(txtTelefonoCelular.getText());
@@ -587,7 +609,9 @@ public class FxGuiaRemisionController implements Initializable {
                 guiaRemisionTB.setIdUbigeoPartida(cbUbigeoPartida.getSelectionModel().getSelectedItem().getIdUbigeo());
                 guiaRemisionTB.setDireccionLlegada(txtDireccionLlegada.getText().trim());
                 guiaRemisionTB.setIdUbigeoLlegada(cbUbigeoLlegada.getSelectionModel().getSelectedItem().getIdUbigeo());
-                guiaRemisionTB.setIdTipoComprobanteFactura(cbTipoComprobante.getSelectionModel().getSelectedIndex() >= 0 ? cbTipoComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento() : 0);
+                guiaRemisionTB.setIdTipoComprobanteFactura(cbTipoComprobante.getSelectionModel().getSelectedIndex() >= 0
+                        ? cbTipoComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento()
+                        : 0);
                 guiaRemisionTB.setSerieFactura(txtSerieFactura.getText().trim());
                 guiaRemisionTB.setNumeracionFactura(txtNumeracionFactura.getText().trim());
                 guiaRemisionTB.setListGuiaRemisionDetalle(tvList.getItems());
@@ -610,7 +634,7 @@ public class FxGuiaRemisionController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_OPCIONES_IMPRIMIR);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxOpcionesImprimirController controller = fXMLLoader.getController();
             controller.loadTicketGuiaRemision(controller.getApWindow());
             controller.setIdGuiaRemision(idGuiaRemision);
@@ -691,26 +715,31 @@ public class FxGuiaRemisionController implements Initializable {
                         break;
                     }
                 }
+
                 for (int i = 0; i < cbModalidadTraslado.getItems().size(); i++) {
                     if (cbModalidadTraslado.getItems().get(i).getIdDetalle() == clienteTB.getIdModalidadTraslado()) {
                         cbModalidadTraslado.getSelectionModel().select(i);
                         break;
                     }
                 }
-                for (int i = 0; i < cbTipoDocumento.getItems().size(); i++) {
-                    if (cbTipoDocumento.getItems().get(i).getIdDetalle() == clienteTB.getIdTipoDocumentoConductor()) {
-                        cbTipoDocumento.getSelectionModel().select(i);
-                        break;
+
+                ConductorTB conductorTB = clienteTB.getConductorTB();
+                if (conductorTB != null) {
+                    for (int i = 0; i < cbTipoDocumento.getItems().size(); i++) {
+                        if (cbTipoDocumento.getItems().get(i).getIdDetalle() == conductorTB.getIdTipoDocumento()) {
+                            cbTipoDocumento.getSelectionModel().select(i);
+                            break;
+                        }
                     }
+
+                    txtNumeroDocumento.setText(conductorTB.getNumeroDocumento());
+                    txtNombreConducto.setText(conductorTB.getInformacion());
+                    txtTelefonoCelular.setText(conductorTB.getCelular());
+                    txtNumeroPlacaVehiculo.setText(conductorTB.getPlacaVehiculo());
+                    txtMarcaVehiculo.setText(conductorTB.getMarcaVehiculo());
                 }
 
-                txtNumeroDocumento.setText(clienteTB.getNumeroDocumentoConductor());//Muestra los datos de una venta en la GUUIA
-                txtNombreConducto.setText(clienteTB.getNombreConductor());
-                txtTelefonoCelular.setText(clienteTB.getTelefono());
-                txtNumeroPlacaVehiculo.setText(clienteTB.getPlacaVehiculo());
-                txtMarcaVehiculo.setText(clienteTB.getMarcaVehiculo());
                 txtDireccionLlegada.setText(clienteTB.getDireccion());
-
                 cbUbigeoLlegada.getItems().clear();
                 if (clienteTB.getUbigeoTB().getIdUbigeo() > 0) {
                     cbUbigeoLlegada.getItems().add(clienteTB.getUbigeoTB());

@@ -190,7 +190,7 @@
                                     </HBox>
                                  </children>
                               </VBox>
-                              <VBox maxWidth="-Infinity" minWidth="-Infinity" style="-fx-border-color: #cccccc;" HBox.hgrow="SOMETIMES">
+                              <VBox maxWidth="-Infinity" minWidth="-Infinity" prefWidth="320.0" style="-fx-border-color: #cccccc;" HBox.hgrow="SOMETIMES">
                                  <children>
                                     <HBox alignment="CENTER_LEFT" style="-fx-border-color: #cccccc; -fx-border-width: 0px 0px 1px 0px; -fx-padding: 0.8333333333333334em;">
                                        <children>
@@ -216,7 +216,7 @@
                                     <HBox alignment="CENTER_LEFT" minWidth="-Infinity" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" styleClass="labelRobotoMedium14">
                                        <children>
                                           <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="CANT. ACTUAL" />
-                                          <Label fx:id="lblQuantity" ellipsisString="" maxWidth="-Infinity" minWidth="-Infinity" styleClass="labelRobotoBold15" text="-" textFill="#117c02" wrapText="true" />
+                                          <Label fx:id="lblQuantity" ellipsisString="" maxWidth="1.7976931348623157E308" prefWidth="100.0" styleClass="labelRobotoBold15" text="-" textFill="#117c02" wrapText="true" HBox.hgrow="ALWAYS" />
                                        </children>
                                     </HBox>
                                  </children>

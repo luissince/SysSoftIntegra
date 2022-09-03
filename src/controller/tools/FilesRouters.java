@@ -422,8 +422,6 @@ public final class FilesRouters {
 
     public static final String FX_TRASLADO_INVENTARIO = "/view/inventario/traslados/FxTrasladoInventario.fxml";
 
-    public static final String FX_TRASLADO_GUIA = "/view/inventario/traslados/FxTrasladoGuia.fxml";
-
     public static final String FX_TRASLADO_DETALLE = "/view/inventario/traslados/FxTrasladoDetalle.fxml";
 
     public static final String FX_INVENTARIO_REPORTE = "/view/reporte/FxInventarioReporte.fxml";
