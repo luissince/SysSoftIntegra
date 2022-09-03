@@ -165,7 +165,14 @@ public class EmpresaADO {
                 empresaTB.setTerminos(rsEmps.getString("Terminos"));
                 empresaTB.setCondiciones(rsEmps.getString("Condiciones"));
                 empresaTB.setImage(rsEmps.getBytes("Image"));
-                empresaTB.setUbigeoTB(new UbigeoTB(rsEmps.getInt("IdUbigeo"), rsEmps.getString("CodigoUbigeo"), rsEmps.getString("Departamento"), rsEmps.getString("Provincia"), rsEmps.getString("Distrito")));
+
+                UbigeoTB ubigeoTB = new UbigeoTB();
+                ubigeoTB.setIdUbigeo(rsEmps.getInt("IdUbigeo"));
+                ubigeoTB.setUbigeo(rsEmps.getString("CodigoUbigeo"));
+                ubigeoTB.setDepartamento(rsEmps.getString("Departamento"));
+                ubigeoTB.setProvincia(rsEmps.getString("Provincia"));
+                ubigeoTB.setDistrito(rsEmps.getString("Distrito"));
+                empresaTB.setUbigeoTB(ubigeoTB);
             }
         } catch (SQLException e) {
             System.out.println("La operación de selección de SQL ha fallado: " + e);

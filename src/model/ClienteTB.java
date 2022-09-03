@@ -1,6 +1,5 @@
 package model;
 
-import controller.tools.Tools;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.ImageView;
 
@@ -24,7 +23,13 @@ public class ClienteTB {
     private ImageView imagePredeterminado;
     private String idAuxiliar;
     private boolean tipoSelect;
+    private int idModalidadTraslado;
+    private int idMotivoTraslado;
+    private int IdUbigeo;
 
+    private UbigeoTB ubigeoTB;
+    private ConductorTB conductorTB;
+   
     public ClienteTB() {
 
     }
@@ -220,6 +225,46 @@ public class ClienteTB {
         this.tipoSelect = tipoSelect;
     }
 
+     public int getIdModalidadTraslado() {
+        return idModalidadTraslado;
+    }
+
+    public void setIdModalidadTraslado(int idModalidadTraslado) {
+        this.idModalidadTraslado = idModalidadTraslado;
+    }
+
+    public int getIdMotivoTraslado() {
+        return idMotivoTraslado;
+    }
+
+    public void setIdMotivoTraslado(int idMotivoTraslado) {
+        this.idMotivoTraslado = idMotivoTraslado;
+    }
+
+    public int getIdUbigeo() {
+        return IdUbigeo;
+    }
+
+    public void setIdUbigeo(int IdUbigeo) {
+        this.IdUbigeo = IdUbigeo;
+    }
+
+    public UbigeoTB getUbigeoTB() {
+        return ubigeoTB;
+    }
+
+    public void setUbigeoTB(UbigeoTB ubigeoTB) {
+        this.ubigeoTB = ubigeoTB;
+    }
+
+    public ConductorTB getConductorTB() {
+        return conductorTB;
+    }
+
+    public void setConductorTB(ConductorTB conductorTB) {
+        this.conductorTB = conductorTB;
+    }
+    
     @Override
     public String toString() {
         if (tipoSelect) {

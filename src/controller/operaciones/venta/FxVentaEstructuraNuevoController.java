@@ -150,7 +150,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
 
     private double importeNetoTotal;
     
-    
+    private boolean mostrarUltimasVentas = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -250,6 +250,10 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         }
         
         vender_con_cantidades_negativas = privilegioTBs.get(34).getIdPrivilegio() != 0 && !privilegioTBs.get(34).isEstado();
+    
+        if(privilegioTBs.get(36).getIdPrivilegio() != 0 && privilegioTBs.get(36).isEstado()){
+            mostrarUltimasVentas=true;
+        }
     }
 
     public void onEventPaginacion() {
@@ -1149,7 +1153,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
-            //  FxVentaMostrarController controller = fXMLLoader.getController();
+             FxVentaMostrarController controller = fXMLLoader.getController();
+             controller.setMostrarUltimasVentas(mostrarUltimasVentas);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Mostrar ventas", vbWindow.getScene().getWindow());
             stage.setResizable(false);

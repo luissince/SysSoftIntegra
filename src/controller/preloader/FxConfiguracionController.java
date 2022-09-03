@@ -1,6 +1,5 @@
 package controller.preloader;
 
-import controller.tools.ObjectGlobal;
 import controller.tools.Tools;
 import java.io.File;
 import java.io.IOException;

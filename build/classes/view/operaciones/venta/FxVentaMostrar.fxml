@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.posterminal.venta.FxPostVentaMostrarController">
+<AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.venta.FxVentaMostrarController">
    <children>
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -62,7 +62,7 @@
                                     <HBox>
                                        <children>
                                           <TextField fx:id="txtSearch" onKeyReleased="#onKeyReleasedSearch" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese los datos del comprobante para buscar..." styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
-                                          <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAction10PrimerasVentas" onKeyPressed="#onKeyPressed10PrimerasVentas" styleClass="buttonLight" text="Lista Ultimas Ventas">
+                                          <Button mnemonicParsing="false" onAction="#onAction10PrimerasVentas" onKeyPressed="#onKeyPressed10PrimerasVentas" styleClass="buttonLight" text="Lista Ultimas Ventas">
                                              <graphic>
                                                 <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
@@ -79,15 +79,15 @@
                         </HBox>
                         <HBox VBox.vgrow="ALWAYS">
                            <children>
-                              <TableView fx:id="tvList" prefHeight="320.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
+                              <TableView fx:id="tvList" prefHeight="320.0" prefWidth="900.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
                                 <columns>
                                   <TableColumn fx:id="tcNumero" prefWidth="50.0" style="-fx-alignment: CENTER;" text="N°" />
                                   <TableColumn fx:id="tcCliente" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Cliente" />
                                     <TableColumn fx:id="tcDocumento" prefWidth="140.0" style="-fx-alignment: CENTER-LEFT;" text="Comprobante" />
-                                    <TableColumn fx:id="tcFechaHora" prefWidth="140.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha y Hora" />
-                                    <TableColumn fx:id="tcTotal" prefWidth="120.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
-                                    <TableColumn fx:id="tcImprimir" style="-fx-alignment: CENTER;" text="Imprimir" />
-                                    <TableColumn fx:id="tcAgregarVenta" style="-fx-alignment: CENTER;" text="Agregar V." />
+                                    <TableColumn fx:id="tcFechaHora" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha y Hora" />
+                                    <TableColumn fx:id="tcTotal" prefWidth="110.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
+                                    <TableColumn fx:id="tcImprimir" prefWidth="90.0" style="-fx-alignment: CENTER;" text="Imprimir" />
+                                    <TableColumn fx:id="tcAgregarVenta" prefWidth="90.0" style="-fx-alignment: CENTER;" text="Agregar V." />
                                     <TableColumn fx:id="tcSumarVenta" prefWidth="90.0" style="-fx-alignment: CENTER;" text="Sumar V." />
                                 </columns>
                               </TableView>

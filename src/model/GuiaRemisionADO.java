@@ -229,13 +229,22 @@ public class GuiaRemisionADO {
                 guiaRemisionTB.setNumeroPlaca(result.getString("NumeroPlaca").toUpperCase());
                 guiaRemisionTB.setMarcaVehiculo(result.getString("MarcaVehiculo").toUpperCase());
 
-                guiaRemisionTB.setDireccionPartida(result.getString("DireccionPartida").toUpperCase());
-                guiaRemisionTB.setUbigeoPartidaDescripcion(result.getString("UbigeoPartida").toUpperCase());
+                guiaRemisionTB.setIdUbigeoPartida(result.getInt("DireccionPartida"));
+                guiaRemisionTB.setIdUbigeoLlegada(result.getInt("IdUbigeoLlegada"));
                 guiaRemisionTB.setDireccionLlegada(result.getString("DireccionLlegada").toUpperCase());
-                guiaRemisionTB.setUbigeoLlegadaDescripcion(result.getString("UbigeoLlegada").toUpperCase());
-                guiaRemisionTB.setComprobanteAsociado(result.getString("ComprobanteAsociado"));
                 guiaRemisionTB.setSerieFactura(result.getString("SerieFactura").toUpperCase());
                 guiaRemisionTB.setNumeracionFactura(result.getString("NumeracionFactura").toUpperCase());
+                
+//                guiaRemisionTB.setUbigeoTB(new UbigeoTB(result.getInt("IdUbigeoPartida"), result.getString("CodigoUbigeo"),
+//                result.getString("Departamento"), result.getString("Provincia"), result.getString("Distrito")));
+
+
+                UbigeoTB ubigeoTB = new UbigeoTB();
+                ubigeoTB.setIdUbigeo(result.getInt("IdUbigeo"));
+                ubigeoTB.setUbigeo(result.getString("CodigoUbigeo"));
+                ubigeoTB.setDepartamento(result.getString("Departamento"));
+                ubigeoTB.setProvincia(result.getString("Provincia"));
+                ubigeoTB.setDistrito(result.getString("Distrito"));
 
                 statementGuiaRemisionDetalle = DBUtil.getConnection().prepareStatement("SELECT * FROM GuiaRemisionDetalleTB WHERE IdGuiaRemision = ?");
                 statementGuiaRemisionDetalle.setString(1, idGuiaRemision);

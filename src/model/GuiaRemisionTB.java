@@ -42,6 +42,7 @@ public class GuiaRemisionTB {
     private ObservableList<GuiaRemisionDetalleTB> listGuiaRemisionDetalle;
     private ClienteTB clienteTB;
     private EmpleadoTB empleadoTB;
+     private UbigeoTB ubigeoTB;
     
     public GuiaRemisionTB() {
     }
@@ -324,6 +325,14 @@ public class GuiaRemisionTB {
 
     public void setClienteTB(ClienteTB clienteTB) {
         this.clienteTB = clienteTB;
+    }
+
+    public UbigeoTB getUbigeoTB() {
+        return ubigeoTB;
+    }
+
+    public void setUbigeoTB(UbigeoTB ubigeoTB) {
+        this.ubigeoTB = ubigeoTB;
     }
 
     public EmpleadoTB getEmpleadoTB() {

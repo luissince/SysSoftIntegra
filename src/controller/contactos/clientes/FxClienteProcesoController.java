@@ -2,6 +2,8 @@ package controller.contactos.clientes;
 
 import controller.tools.ApiPeru;
 import controller.tools.Json;
+import controller.tools.SearchComboBox;
+import controller.tools.Session;
 import controller.tools.Tools;
 import java.net.URL;
 import java.text.ParseException;
@@ -15,16 +17,21 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import model.ClienteADO;
 import model.ClienteTB;
+import model.ConductorTB;
 import model.DetalleADO;
 import model.DetalleTB;
+import model.UbigeoADO;
+import model.UbigeoTB;
 import org.json.simple.JSONObject;
 
 public class FxClienteProcesoController implements Initializable {
@@ -50,6 +57,8 @@ public class FxClienteProcesoController implements Initializable {
     @FXML
     private TextField txtRepresentante;
     @FXML
+    private ComboBox<UbigeoTB> cbUbigeo;
+    @FXML
     private RadioButton rbActivo;
     @FXML
     private RadioButton rbInactivo;
@@ -57,31 +66,228 @@ public class FxClienteProcesoController implements Initializable {
     private Button btnBuscarSunat;
     @FXML
     private Button btnBuscarReniec;
+    @FXML
+    private ComboBox<DetalleTB> cbTipoDcoumentDriver;
+    @FXML
+    private TextField txtFieldNdocumentoDriver;
+    @FXML
+    private TextField txtFieldNombreDriver;
+    @FXML
+    private TextField TxtFeldCelularDriver;
+    @FXML
+    private TextField TxtFieldNPlacaCar;
+    @FXML
+    private TextField TxtFieldMarcaCar;
+    @FXML
+    private ComboBox<DetalleTB> cbMotivoTraslado;
+    @FXML
+    private ComboBox<DetalleTB> cbModalidadTraslado;
+    @FXML
+    private Label lblTextoProceso;
+    @FXML
+    private HBox hbLoadProcesando;
+    @FXML
+    private Button btnCancelarProceso;
 
     private String idCliente;
+
+    private String idConducto;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
-        idCliente = "";
-        cbDocumentType.getItems().addAll(DetalleADO.GetDetailId("0003"));
+        idCliente = idConducto = "";
         ToggleGroup group = new ToggleGroup();
         rbActivo.setToggleGroup(group);
         rbInactivo.setToggleGroup(group);
+        loadUbigeo();
 
     }
 
-    public void setValueAdd() {
-        cbDocumentType.requestFocus();
+    public void loadAddCliente() {
+        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<Object> task = new Task<Object>() {
+            @Override
+            public Object call() throws Exception {
+                Object listTipoDocumento = DetalleADO.GetDetailId("0003");
+                Object listMotivoTraslado = DetalleADO.GetDetailId("0017");
+                Object listModalidadTraslado = DetalleADO.GetDetailId("0018");// 0018 establece las cadenas para combobox
+
+                if (listTipoDocumento instanceof ObservableList
+                        && listMotivoTraslado instanceof ObservableList
+                        && listModalidadTraslado instanceof ObservableList) {
+//                         && listUbigeo instanceof ObservableList) {
+                    return new Object[]{listTipoDocumento, listMotivoTraslado, listModalidadTraslado};//return (ObservableList<DetalleTB>) listTicket;
+                } else {
+                    throw new Exception("Se produjo un error, intente nuevamente.");
+                }
+            }
+        };
+
+        task.setOnScheduled(e -> {
+            hbLoadProcesando.setVisible(true);
+            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
+            btnCancelarProceso.setText("Cancelar Proceso");
+            if (btnCancelarProceso.getOnAction() != null) {
+                btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
+            }
+            btnCancelarProceso.setOnAction(event -> {
+                if (task.isRunning()) {
+                    task.cancel();
+                }
+                Tools.Dispose(window);
+            });
+        });
+
+        task.setOnCancelled(e -> {
+
+        });
+
+        task.setOnFailed(e -> {
+            lblTextoProceso.setText(task.getException().getMessage());
+            btnCancelarProceso.setText("Cerrar Vista");
+        });
+
+        task.setOnSucceeded(e -> {
+            Object[] result = (Object[]) task.getValue();
+            ObservableList<DetalleTB> ticketTBs = (ObservableList<DetalleTB>) result[0];
+            cbDocumentType.getItems().addAll(ticketTBs);
+            cbTipoDcoumentDriver.getItems().addAll(ticketTBs);
+
+            ObservableList<DetalleTB> motivoTraslado = (ObservableList<DetalleTB>) result[1];
+            cbMotivoTraslado.getItems().addAll(motivoTraslado);
+
+            ObservableList<DetalleTB> modalidadTraslado = (ObservableList<DetalleTB>) result[2];
+            cbModalidadTraslado.getItems().addAll(modalidadTraslado);
+
+            hbLoadProcesando.setVisible(false);
+            cbDocumentType.requestFocus();
+        });
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
     }
 
-    public void setValueUpdate(String idCliente) {
-        btnRegister.setText("Actualizar");
-        btnRegister.getStyleClass().add("buttonLightWarning");
-        cbDocumentType.requestFocus();
-        ClienteTB clienteTB = ClienteADO.GetByIdCliente(idCliente);
-        if (clienteTB != null) {
-            this.idCliente = clienteTB.getIdCliente();
+    private void loadUbigeo() {
+        SearchComboBox<UbigeoTB> searchComboBoxUbigeoLlegada = new SearchComboBox<>(cbUbigeo, false);
+        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
+            if (t.getCode() == KeyCode.ENTER) {
+                if (!searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
+                    searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().getSelectionModel().select(0);
+                    searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().requestFocus();
+                }
+            } else if (t.getCode() == KeyCode.ESCAPE) {
+                searchComboBoxUbigeoLlegada.getComboBox().hide();
+            }
+        });
+        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
+            searchComboBoxUbigeoLlegada.getComboBox().getItems().clear();
+            searchComboBoxUbigeoLlegada.getComboBox().getItems().addAll(UbigeoADO.GetSearchComboBoxUbigeo(searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().getText().trim()));
+        });
+        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
+            if (null == t.getCode()) {
+                searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().selectAll();
+            } else {
+                switch (t.getCode()) {
+                    case ENTER:
+                    case SPACE:
+                    case ESCAPE:
+                        searchComboBoxUbigeoLlegada.getComboBox().hide();
+                        break;
+                    case UP:
+                    case DOWN:
+                    case LEFT:
+                    case RIGHT:
+                        break;
+                    default:
+                        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().selectAll();
+                        break;
+                }
+            }
+        });
+        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty().addListener((p, o, item) -> {
+            if (item != null) {
+                searchComboBoxUbigeoLlegada.getComboBox().getSelectionModel().select(item);
+                if (searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().isClickSelection()) {
+                    searchComboBoxUbigeoLlegada.getComboBox().hide();
+                }
+            }
+        });
+    }
+
+    public void loadEditCliente(String idCliente) {
+        this.idCliente = idCliente;
+        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<Object> task = new Task<Object>() {
+            @Override
+            public Object call() throws Exception {
+                Object listTipoDocumento = DetalleADO.GetDetailId("0003");//se establece las diferente opciones
+                Object listMotivoTraslado = DetalleADO.GetDetailId("0017");
+                Object listModalidadTraslado = DetalleADO.GetDetailId("0018");
+                Object cliente = ClienteADO.GetByIdCliente(idCliente);
+                if (listTipoDocumento instanceof ObservableList
+                        && listMotivoTraslado instanceof ObservableList
+                        && listModalidadTraslado instanceof ObservableList
+                        && cliente instanceof ClienteTB) {
+                    return new Object[]{listTipoDocumento, listMotivoTraslado, listModalidadTraslado, cliente};
+                } else {
+                    throw new Exception("Se produjo un error, intente nuevamente.");
+                }
+            }
+        };
+
+        task.setOnScheduled(e -> {
+            hbLoadProcesando.setVisible(true);
+            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
+            btnCancelarProceso.setText("Cancelar Proceso");
+            if (btnCancelarProceso.getOnAction() != null) {
+                btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
+            }
+            btnCancelarProceso.setOnAction(event -> {
+                if (task.isRunning()) {
+                    task.cancel();
+                }
+                Tools.Dispose(window);
+            });
+        });
+
+        task.setOnCancelled(e -> {
+
+        });
+
+        task.setOnFailed(e -> {
+            lblTextoProceso.setText(task.getException().getMessage());
+            btnCancelarProceso.setText("Cerrar Vista");
+        });
+
+        task.setOnSucceeded(e -> {
+            Object[] result = (Object[]) task.getValue();
+
+            ObservableList<DetalleTB> tipoDocumento = (ObservableList<DetalleTB>) result[0];//muestre las opciones de el combo box 
+            cbDocumentType.getItems().addAll(tipoDocumento);//cbDocumentType.getItems().addAll(tipoDocumento);
+            cbTipoDcoumentDriver.getItems().addAll(tipoDocumento);
+
+            ObservableList<DetalleTB> motivoTraslado = (ObservableList<DetalleTB>) result[1];
+            cbMotivoTraslado.getItems().addAll(motivoTraslado);
+
+            ObservableList<DetalleTB> modalidadTraslado = (ObservableList<DetalleTB>) result[2];
+            cbModalidadTraslado.getItems().addAll(modalidadTraslado);
+
+            ClienteTB clienteTB = (ClienteTB) result[3];
+
             ObservableList<DetalleTB> lstype = cbDocumentType.getItems();
             for (int i = 0; i < lstype.size(); i++) {
                 if (clienteTB.getTipoDocumento() == lstype.get(i).getIdDetalle()) {
@@ -90,76 +296,147 @@ public class FxClienteProcesoController implements Initializable {
                 }
             }
 
-            txtDocumentNumber.setText(clienteTB.getNumeroDocumento());
-            txtInformacion.setText(clienteTB.getInformacion());
-
-            if (clienteTB.getEstado() == 1) {
-                rbActivo.setSelected(true);
-            } else {
-                rbInactivo.setSelected(true);
+            ObservableList<DetalleTB> listMotivoTraslado = cbMotivoTraslado.getItems();
+            for (int i = 0; i < listMotivoTraslado.size(); i++) {
+                if (clienteTB.getIdMotivoTraslado() == listMotivoTraslado.get(i).getIdDetalle()) {
+                    cbMotivoTraslado.getSelectionModel().select(i);
+                    break;
+                }
             }
 
+            ObservableList<DetalleTB> listModalidadTraslado = cbModalidadTraslado.getItems();
+            for (int y = 0; y < listModalidadTraslado.size(); y++) {
+                if (clienteTB.getIdModalidadTraslado() == listModalidadTraslado.get(y).getIdDetalle()) {
+                    cbModalidadTraslado.getSelectionModel().select(y);
+                    break;
+                }
+            }
+
+            cbUbigeo.getItems().clear();
+            if (clienteTB.getUbigeoTB().getIdUbigeo() > 0) {
+                cbUbigeo.getItems().add(clienteTB.getUbigeoTB());
+                if (!cbUbigeo.getItems().isEmpty()) {
+                    cbUbigeo.getSelectionModel().select(0);
+                }
+            }
+
+            txtDocumentNumber.setText(clienteTB.getNumeroDocumento());
+            txtInformacion.setText(clienteTB.getInformacion());
             txtTelefono.setText(clienteTB.getTelefono());
-            txtCelular.setText(clienteTB.getCelular());
             txtEmail.setText(clienteTB.getEmail());
             txtDireccion.setText(clienteTB.getDireccion());
-        }
+            txtRepresentante.setText(clienteTB.getRepresentante());
 
+            if (clienteTB.getConductorTB() != null) {
+                idConducto = clienteTB.getConductorTB().getIdConductor();
+
+                ObservableList<DetalleTB> detalleTBs = cbTipoDcoumentDriver.getItems();
+                for (int i = 0; i < detalleTBs.size(); i++) {
+                    if (clienteTB.getConductorTB().getIdTipoDocumento() == detalleTBs.get(i).getIdDetalle()) {
+                        cbTipoDcoumentDriver.getSelectionModel().select(i);
+                        break;
+                    }
+                }
+
+                txtFieldNdocumentoDriver.setText(clienteTB.getConductorTB().getNumeroDocumento());
+                txtFieldNombreDriver.setText(clienteTB.getConductorTB().getInformacion());
+                TxtFeldCelularDriver.setText(clienteTB.getConductorTB().getCelular());
+                TxtFieldNPlacaCar.setText(clienteTB.getConductorTB().getPlacaVehiculo());
+                TxtFieldMarcaCar.setText(clienteTB.getConductorTB().getMarcaVehiculo());
+            }
+
+            btnRegister.setText("Actualizar");
+            btnRegister.getStyleClass().add("buttonLightWarning");
+            hbLoadProcesando.setVisible(false);
+            cbDocumentType.requestFocus();
+        });
+
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
     }
 
     public void aValidityProcess() throws ParseException {
         if (cbDocumentType.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(window, "Cliente", "Seleccione el tipo de documento por favor.");
             cbDocumentType.requestFocus();
-        } else if (txtDocumentNumber.getText().trim().equalsIgnoreCase("")) {
+            return;
+        }
+
+        if (txtDocumentNumber.getText().trim().equalsIgnoreCase("")) {
             Tools.AlertMessageWarning(window, "Cliente", "Ingrese el documento de identificación por favor.");
             txtDocumentNumber.requestFocus();
-        } else if (txtInformacion.getText().trim().equalsIgnoreCase("")) {
+            return;
+        }
+
+        if (txtInformacion.getText().trim().equalsIgnoreCase("")) {
             Tools.AlertMessageWarning(window, "Cliente", "Ingrese la información del cliente por favor.");
             txtInformacion.requestFocus();
-        } else {
+            return;
+        }
 
-            short confirmation = Tools.AlertMessageConfirmation(window, "Cliente", "¿Esta seguro de continuar?");
-            if (confirmation == 1) {
+        short confirmation = Tools.AlertMessageConfirmation(window, "Cliente", "¿Esta seguro de continuar?");
+        if (confirmation == 1) {
 
-                ClienteTB clienteTB = new ClienteTB();
-                clienteTB.setIdCliente(idCliente);
-                clienteTB.setTipoDocumento(cbDocumentType.getSelectionModel().getSelectedItem().getIdDetalle());
-                clienteTB.setInformacion(txtInformacion.getText().trim().toUpperCase());
-                clienteTB.setNumeroDocumento(txtDocumentNumber.getText().trim().toUpperCase());
-//              clienteTB.setFechaNacimiento(new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse(Tools.getDatePicker(dpBirthdate)).getTime()));
-                clienteTB.setTelefono(txtTelefono.getText().trim());
-                clienteTB.setCelular(txtCelular.getText().trim());
-                clienteTB.setEmail(txtEmail.getText().trim());
-                clienteTB.setDireccion(txtDireccion.getText().trim().toUpperCase());
-                clienteTB.setRepresentante(txtRepresentante.getText().trim().toUpperCase());
-                clienteTB.setEstado(rbActivo.isSelected() ? 1 : 0);
-                clienteTB.setPredeterminado(false);
-                clienteTB.setSistema(false);
+            ClienteTB clienteTB = new ClienteTB();
+            clienteTB.setIdCliente(idCliente);
+            clienteTB.setTipoDocumento(cbDocumentType.getSelectionModel().getSelectedItem().getIdDetalle());
+            clienteTB.setInformacion(txtInformacion.getText().trim().toUpperCase());
+            clienteTB.setNumeroDocumento(txtDocumentNumber.getText().trim().toUpperCase());
+//          clienteTB.setFechaNacimiento(new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse(Tools.getDatePicker(dpBirthdate)).getTime()));
+            clienteTB.setTelefono(txtTelefono.getText());
+            clienteTB.setCelular(txtCelular.getText());
+            clienteTB.setEmail(txtEmail.getText());
+            clienteTB.setDireccion(txtDireccion.getText());
+            clienteTB.setRepresentante(Tools.text(txtRepresentante.getText()));
+            clienteTB.setEstado(rbActivo.isSelected() ? 1 : 0);
+            clienteTB.setPredeterminado(false);
+            clienteTB.setSistema(false);
+            clienteTB.setIdMotivoTraslado(cbMotivoTraslado.getSelectionModel().getSelectedIndex() >= 0// adquiere los indices de los strings
+                    ? cbMotivoTraslado.getSelectionModel().getSelectedItem().getIdDetalle() : 0);
+            clienteTB.setIdModalidadTraslado(cbModalidadTraslado.getSelectionModel().getSelectedIndex() >= 0
+                    ? cbModalidadTraslado.getSelectionModel().getSelectedItem().getIdDetalle() : 0);
 
-                String result = ClienteADO.CrudCliente(clienteTB);
-                switch (result) {
-                    case "registered":
-                        Tools.AlertMessageInformation(window, "Cliente", "Registrado correctamente.");
-                        Tools.Dispose(window);
-                        break;
-                    case "updated":
-                        Tools.AlertMessageInformation(window, "Cliente", "Actualizado correctamente.");
-                        Tools.Dispose(window);
-                        break;
-                    case "duplicate":
-                        Tools.AlertMessageWarning(window, "Cliente", "No se puede haber 2 personas con el mismo documento de identidad.");
-                        txtDocumentNumber.requestFocus();
-                        break;
-                    case "duplicatename":
-                        Tools.AlertMessageWarning(window, "Cliente", "No se puede haber 2 personas con la misma información.");
-                        txtInformacion.requestFocus();
-                        break;
-                    default:
-                        Tools.AlertMessageError(window, "Cliente", result);
-                        break;
-                }
+            clienteTB.setIdUbigeo(cbUbigeo.getSelectionModel().getSelectedIndex() >= 0// adquiere los indices de los strings
+                    ? cbUbigeo.getSelectionModel().getSelectedItem().getIdUbigeo() : 0);
 
+            ConductorTB conductorTB = new ConductorTB();
+            conductorTB.setIdConductor(idConducto);
+            conductorTB.setIdCliente(idCliente);
+            conductorTB.setIdTipoDocumento(cbTipoDcoumentDriver.getSelectionModel().getSelectedIndex() >= 0
+                    ? cbTipoDcoumentDriver.getSelectionModel().getSelectedItem().getIdDetalle() : 0);
+            conductorTB.setNumeroDocumento(txtFieldNdocumentoDriver.getText());
+            conductorTB.setInformacion(txtFieldNombreDriver.getText());
+            conductorTB.setCelular(TxtFeldCelularDriver.getText());
+            conductorTB.setPlacaVehiculo(TxtFieldNPlacaCar.getText());
+            conductorTB.setMarcaVehiculo(TxtFieldMarcaCar.getText());
+//            conductorTB.setFecha(Tools.getDate());
+//            conductorTB.setHora(Tools.getTime());
+            conductorTB.setIdUsuario(Session.USER_ID);
+            clienteTB.setConductorTB(conductorTB);
+
+            String result = ClienteADO.CrudCliente(clienteTB);
+            switch (result) {
+                case "registered":
+                    Tools.AlertMessageInformation(window, "Cliente", "Registrado correctamente.");
+                    Tools.Dispose(window);
+                    break;
+                case "updated":
+                    Tools.AlertMessageInformation(window, "Cliente", "Actualizado correctamente.");
+                    Tools.Dispose(window);
+                    break;
+                case "duplicate":
+                    Tools.AlertMessageWarning(window, "Cliente", "No se puede haber 2 personas con el mismo documento de identidad.");
+                    txtDocumentNumber.requestFocus();
+                    break;
+                case "duplicatename":
+                    Tools.AlertMessageWarning(window, "Cliente", "No se puede haber 2 personas con la misma información.");
+                    txtInformacion.requestFocus();
+                    break;
+                default:
+                    Tools.AlertMessageError(window, "Cliente", result);
+                    break;
             }
         }
     }
@@ -320,6 +597,14 @@ public class FxClienteProcesoController implements Initializable {
         exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();
+        }
+    }
+
+    @FXML
+    private void onKeyTypedNumeroDocumentoConductor(KeyEvent event) {
+        char c = event.getCharacter().charAt(0);
+        if ((c < '0' || c > '9') && (c != '\b')) {
+            event.consume();
         }
     }
 

@@ -212,6 +212,8 @@ public class FxPostVentaEstructuraController implements Initializable {
 
     private double importeNetoTotal;
 
+    private boolean mostrarUltimasVentas = false;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         monedaSimbolo = "M";
@@ -423,6 +425,12 @@ public class FxPostVentaEstructuraController implements Initializable {
 
         vender_con_cantidades_negativas = privilegioTBs.get(34).getIdPrivilegio() != 0 && !privilegioTBs.get(34).isEstado();
 
+        cerar_modal_agregar_item_lista = privilegioTBs.get(35).getIdPrivilegio() != 0 && !privilegioTBs.get(35).isEstado();
+        
+        if(privilegioTBs.get(36).getIdPrivilegio() != 0 && privilegioTBs.get(36).isEstado()){
+            mostrarUltimasVentas=true;
+        }
+
         tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcArticulo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));
         tcCantidad.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
@@ -431,8 +439,6 @@ public class FxPostVentaEstructuraController implements Initializable {
         tcImpuesto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcImporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
-
-        cerar_modal_agregar_item_lista = privilegioTBs.get(35).getIdPrivilegio() != 0 && !privilegioTBs.get(35).isEstado();
     }
 
     private void filterSuministro(String search) {
@@ -690,6 +696,7 @@ public class FxPostVentaEstructuraController implements Initializable {
             //Controlller here
             FxPostVentaMostrarController controller = fXMLLoader.getController();
             controller.setInitControllerVentaEstructura(this);
+            controller.setMostrarUltimasVentas(mostrarUltimasVentas);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Mostrar ventas", window.getScene().getWindow());
             stage.setResizable(false);

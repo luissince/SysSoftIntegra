@@ -129,8 +129,8 @@ public class FxClienteListaController implements Initializable {
             Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Cliente", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
+            stage.setOnShown(w->controller.loadAddCliente()); 
             stage.show();
-            controller.setValueAdd();
         } catch (IOException ex) {
             System.out.println("openWindowAddCliente()" + ex.getLocalizedMessage());
         }

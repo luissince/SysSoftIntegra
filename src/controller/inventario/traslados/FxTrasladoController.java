@@ -74,12 +74,6 @@ public class FxTrasladoController implements Initializable {
 
     private FxTrasladoInventarioController controllerTrasladoInventario;
 
-    private FXMLLoader fXMLLoaderTraslaGuia;
-
-    private AnchorPane nodeTrasladoGuia;
-
-    private FxTrasladoGuiaController controllerTrasladoGuia;
-
     private FxOpcionesImprimirController fxOpcionesImprimirController;
 
     private int paginacion;
@@ -127,11 +121,7 @@ public class FxTrasladoController implements Initializable {
         try {
             fXMLLoaderTrasladInventario = WindowStage.LoaderWindow(getClass().getResource(FilesRouters.FX_TRASLADO_INVENTARIO));
             nodeTrasladoInventario = fXMLLoaderTrasladInventario.load();
-            controllerTrasladoInventario = fXMLLoaderTrasladInventario.getController();
-
-            fXMLLoaderTraslaGuia = WindowStage.LoaderWindow(getClass().getResource(FilesRouters.FX_TRASLADO_GUIA));
-            nodeTrasladoGuia = fXMLLoaderTraslaGuia.load();
-            controllerTrasladoGuia = fXMLLoaderTraslaGuia.getController();
+            controllerTrasladoInventario = fXMLLoaderTrasladInventario.getController();;
         } catch (IOException ex) {
             System.out.println(ex.getLocalizedMessage());
         }
@@ -266,16 +256,6 @@ public class FxTrasladoController implements Initializable {
         fxPrincipalController.getVbContent().getChildren().add(nodeTrasladoInventario);
     }
 
-    private void openWindowTrasladoGuia() {
-        controllerTrasladoGuia.setContent(this, fxPrincipalController);
-        fxPrincipalController.getVbContent().getChildren().clear();
-        AnchorPane.setLeftAnchor(nodeTrasladoGuia, 0d);
-        AnchorPane.setTopAnchor(nodeTrasladoGuia, 0d);
-        AnchorPane.setRightAnchor(nodeTrasladoGuia, 0d);
-        AnchorPane.setBottomAnchor(nodeTrasladoGuia, 0d);
-        fxPrincipalController.getVbContent().getChildren().add(nodeTrasladoGuia);
-    }
-
     @FXML
     private void onKeyPressedTrasladoInventario(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
@@ -286,18 +266,6 @@ public class FxTrasladoController implements Initializable {
     @FXML
     private void onActionTrasladoInventario(ActionEvent event) {
         openWindowTrasladoInventario();
-    }
-
-    @FXML
-    private void onKeyPressedTrasladoGuia(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            openWindowTrasladoGuia();
-        }
-    }
-
-    @FXML
-    private void onActionTrasladoGuia(ActionEvent event) {
-        openWindowTrasladoGuia();
     }
 
     @FXML
