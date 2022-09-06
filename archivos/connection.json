@@ -1,9 +1,1 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-{"body":{"password":"Qz0966lb","dbname":"SysSoftIntegra","port":"1433","addres":"localhost","user":"sa"}}
-=======
-{"body":{"password":"123456","dbname":"DeMiel","port":"1433","addres":"localhost","user":"sa"}}
->>>>>>> ad60fc7d38f3978957d51b4ce42a7c03ba75caed
-=======
 {"body":{"password":"123456","dbname":"SysSoftIntegra","port":"1433","addres":"localhost","user":"sa"}}
->>>>>>> 28aee012aa977d0ca94c76c6dedd446054acfd4e
