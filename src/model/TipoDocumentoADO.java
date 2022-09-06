@@ -217,7 +217,7 @@ public class TipoDocumentoADO {
             preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_TipoDocumento_Count(?,?)}");
             preparedStatement.setInt(1, opcion);
             preparedStatement.setString(2, buscar);
-            resultSet.close();
+           
             resultSet = preparedStatement.executeQuery();
             Integer cantidadTotal = 0;
             if (resultSet.next()) {
@@ -450,10 +450,8 @@ public class TipoDocumentoADO {
 
                 statementTicket = DBUtil.getConnection().prepareStatement("SELECT idTicket FROM TipoDocumentoTB WHERE IdTipoDocumento = ?");
                 statementTicket.setInt(1, resultSet.getInt("Comprobante"));
-                resultSet.close();
                 resultSet = statementTicket.executeQuery();
                 if (resultSet.next()) {
-                    statementTicket.close();
                     statementTicket = DBUtil.getConnection().prepareStatement("SELECT idTicket,ruta FROM TicketTB WHERE idTicket = ?");
                     statementTicket.setInt(1, resultSet.getInt("idTicket"));
                     resultSet = statementTicket.executeQuery();

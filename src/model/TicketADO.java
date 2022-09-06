@@ -222,7 +222,7 @@ public class TicketADO {
                 statementValue.close();
                 statementValue = DBUtil.getConnection().prepareStatement("SELECT Imagen,IdSubRelacion FROM ImagenTB WHERE IdRelacionado = ?");
                 statementValue.setInt(1, ticketTB.getIdTicket());
-                resultSet.close();
+                
                 resultSet = statementValue.executeQuery();
 
                 statementImagen = DBUtil.getConnection().prepareStatement("INSERT INTO ImagenTB(Imagen,IdRelacionado,IdSubRelacion)VALUES(?,?,?)");

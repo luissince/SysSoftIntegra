@@ -3582,7 +3582,7 @@ public class VentaADO {
             preparedStatement.setBoolean(3, mostrar);
             preparedStatement.setString(4, fechaInicial);
             preparedStatement.setString(5, fechaFinal);
-            resultSet.close();
+         
             resultSet = preparedStatement.executeQuery();
             Integer integer = 0;
             if (resultSet.next()) {
@@ -3648,7 +3648,7 @@ public class VentaADO {
                 preparedStatement.close();
                 preparedStatement = DBUtil.getConnection().prepareCall("{call Sp_Listar_Detalle_Venta_Credito(?)}");
                 preparedStatement.setString(1, idVenta);
-                resultSet.close();
+             
                 resultSet = preparedStatement.executeQuery();
                 ArrayList<VentaCreditoTB> ventaCreditoTBs = new ArrayList<>();
                 while (resultSet.next()) {
@@ -4244,7 +4244,7 @@ public class VentaADO {
                             "SELECT Cantidad FROM HistorialSuministroLlevar WHERE IdVenta = ? AND IdSuministro = ?");
                     statementHistorial.setString(1, idVenta);
                     statementHistorial.setString(2, idSuministro);
-                    resultSet.close();
+                 
                     resultSet = statementHistorial.executeQuery();
                     double cantidadActual = 0;
                     while (resultSet.next()) {
@@ -4425,7 +4425,7 @@ public class VentaADO {
                         "SELECT s.Clave,s.NombreMarca,d.Cantidad,d.Bonificacion FROM DetalleVentaTB AS d INNER JOIN SuministroTB AS s ON s.IdSuministro = d.IdArticulo WHERE d.IdVenta = ? AND d.IdArticulo = ?");
                 statementVenta.setString(1, idVenta);
                 statementVenta.setString(2, idSuministro);
-                resultSet.close();
+             
                 resultSet = statementVenta.executeQuery();
                 resultSet.next();
 
