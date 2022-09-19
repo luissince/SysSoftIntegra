@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.cortecaja.FxCajaBusquedaController">
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.cortecaja.FxCajaBusquedaController">
    <children>
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -82,7 +82,7 @@
                            <children>
                               <Button mnemonicParsing="false" onAction="#onActionReload" onKeyPressed="#onKeyPresedReload" styleClass="buttonLight" text="Recargar">
                                  <graphic>
-                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../image/reload.png" />
                                        </image>
@@ -101,11 +101,11 @@
                      <children>
                         <TableView fx:id="tvLista" onMouseClicked="#onMouseClickedLista" prefHeight="300.0" styleClass="table-view-principal" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn fx:id="tcFechaApertura" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha Apertura" />
-                              <TableColumn fx:id="tcFechaCierre" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha Cierre" />
+                              <TableColumn fx:id="tcFechaApertura" prefWidth="130.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha Apertura" />
+                              <TableColumn fx:id="tcFechaCierre" prefWidth="130.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha Cierre" />
                               <TableColumn fx:id="tcEstado" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Estado" />
-                              <TableColumn fx:id="tcContado" prefWidth="110.0" style="-fx-alignment: CENTER-RIGHT;" text="Contado" />
-                              <TableColumn fx:id="tcCalculado" prefWidth="110.0" style="-fx-alignment: CENTER-RIGHT;" text="Calculado" />
+                              <TableColumn fx:id="tcContado" prefWidth="110.0" style="-fx-alignment: CENTER-RIGHT;" text="Vendedor" />
+                              <TableColumn fx:id="tcCalculado" prefWidth="110.0" style="-fx-alignment: CENTER-RIGHT;" text="Sistema" />
                               <TableColumn fx:id="tcDiferencia" prefWidth="110.0" style="-fx-alignment: CENTER-RIGHT;" text="Diferencia" />
                               <TableColumn fx:id="tcUsuario" prefWidth="160.0" style="-fx-alignment: CENTER-LEFT;" text="Usuario" />
                            </columns>
