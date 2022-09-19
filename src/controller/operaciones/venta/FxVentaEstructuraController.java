@@ -430,7 +430,7 @@ public class FxVentaEstructuraController implements Initializable {
 
         cerar_modal_agregar_item_lista = privilegioTBs.get(35).getIdPrivilegio() != 0 && !privilegioTBs.get(35).isEstado();
    
-        if(privilegioTBs.get(36).getIdPrivilegio() != 0 && privilegioTBs.get(36).isEstado()){
+        if(privilegioTBs.get(36).getIdPrivilegio() != 0 && !privilegioTBs.get(36).isEstado()){
             mostrarUltimasVentas=true;
         }
 

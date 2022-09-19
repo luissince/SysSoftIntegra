@@ -56,7 +56,7 @@ public class VentaADO {
                 if (resultValidate.next()) {
                     double ca = ventaTB.getSuministroTBs().get(i).getValorInventario() == 1
                             ? ventaTB.getSuministroTBs().get(i).getCantidad()
-                                    + ventaTB.getSuministroTBs().get(i).getBonificacion()
+                            + ventaTB.getSuministroTBs().get(i).getBonificacion()
                             : ventaTB.getSuministroTBs().get(i).getCantidad();
                     double cb = resultValidate.getDouble("Cantidad");
                     if (ca > cb) {
@@ -278,9 +278,9 @@ public class VentaADO {
                     double cantidadKardex = sm.getValorInventario() == 1
                             ? sm.getCantidad() + sm.getBonificacion()
                             : sm.getValorInventario() == 2
-                                    // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
-                                    ? sm.getCantidad()
-                                    : sm.getCantidad();
+                            // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            ? sm.getCantidad()
+                            : sm.getCantidad();
 
                     suministro_kardex.setString(1, sm.getIdSuministro());
                     suministro_kardex.setString(2, ventaTB.getFechaVenta());
@@ -446,7 +446,7 @@ public class VentaADO {
                 if (resultValidate.next()) {
                     double ca = ventaTB.getSuministroTBs().get(i).getValorInventario() == 1
                             ? ventaTB.getSuministroTBs().get(i).getCantidad()
-                                    + ventaTB.getSuministroTBs().get(i).getBonificacion()
+                            + ventaTB.getSuministroTBs().get(i).getBonificacion()
                             : ventaTB.getSuministroTBs().get(i).getCantidad();
                     double cb = resultValidate.getDouble("Cantidad");
                     if (ca > cb) {
@@ -674,7 +674,7 @@ public class VentaADO {
                         venta_credito.setString(7, ventaTB.getVendedor());
                         venta_credito.setString(8,
                                 creditoTB.getCbMontoInicial().isSelected() ? "PAGO ADELANTADO DE LA VENTA AL CRÉDITO"
-                                        : "");
+                                : "");
                         venta_credito.addBatch();
 
                         if (creditoTB.getCbMontoInicial().isSelected()) {
@@ -686,8 +686,8 @@ public class VentaADO {
                             ingreso.setString(6, Tools.getTime());
                             ingreso.setInt(7,
                                     creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 0 ? 1
-                                            : creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 1 ? 2
-                                                    : 3);
+                                    : creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 1 ? 2
+                                    : 3);
                             ingreso.setDouble(8, Double.parseDouble(creditoTB.getTfMonto().getText()));
                             ingreso.addBatch();
                         }
@@ -738,9 +738,9 @@ public class VentaADO {
                     double cantidadKardex = sm.getValorInventario() == 1
                             ? sm.getCantidad() + sm.getBonificacion()
                             : sm.getValorInventario() == 2
-                                    // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
-                                    ? sm.getCantidad()
-                                    : sm.getCantidad();
+                            // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            ? sm.getCantidad()
+                            : sm.getCantidad();
 
                     suministro_kardex.setString(1, sm.getIdSuministro());
                     suministro_kardex.setString(2, ventaTB.getFechaVenta());
@@ -1154,7 +1154,7 @@ public class VentaADO {
                 if (resultValidate.next()) {
                     double ca = ventaTB.getSuministroTBs().get(i).getValorInventario() == 1
                             ? ventaTB.getSuministroTBs().get(i).getCantidad()
-                                    + ventaTB.getSuministroTBs().get(i).getBonificacion()
+                            + ventaTB.getSuministroTBs().get(i).getBonificacion()
                             : ventaTB.getSuministroTBs().get(i).getCantidad();
                     double cb = resultValidate.getDouble("Cantidad");
                     if (ca > cb) {
@@ -1386,9 +1386,9 @@ public class VentaADO {
                         double cantidadKardex = sm.getValorInventario() == 1
                                 ? sm.getCantidad() + sm.getBonificacion()
                                 : sm.getValorInventario() == 2
-                                        // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
-                                        ? sm.getCantidad()
-                                        : sm.getCantidad();
+                                // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                                ? sm.getCantidad()
+                                : sm.getCantidad();
 
                         suministro_kardex.setString(1, sm.getIdSuministro());
                         suministro_kardex.setString(2, ventaTB.getFechaVenta());
@@ -1556,7 +1556,7 @@ public class VentaADO {
                 if (resultValidate.next()) {
                     double ca = ventaTB.getSuministroTBs().get(i).getValorInventario() == 1
                             ? ventaTB.getSuministroTBs().get(i).getCantidad()
-                                    + ventaTB.getSuministroTBs().get(i).getBonificacion()
+                            + ventaTB.getSuministroTBs().get(i).getBonificacion()
                             : ventaTB.getSuministroTBs().get(i).getCantidad();
                     double cb = resultValidate.getDouble("Cantidad");
                     if (ca > cb) {
@@ -1794,8 +1794,8 @@ public class VentaADO {
                             venta_credito.setString(7, ventaTB.getVendedor());
                             venta_credito.setString(8,
                                     creditoTB.getCbMontoInicial().isSelected()
-                                            ? "PAGO ADELANTADO DE LA VENTA AL CRÉDITO"
-                                            : "");
+                                    ? "PAGO ADELANTADO DE LA VENTA AL CRÉDITO"
+                                    : "");
                             venta_credito.addBatch();
 
                             if (creditoTB.getCbMontoInicial().isSelected()) {
@@ -1806,8 +1806,8 @@ public class VentaADO {
                                         + id_comprabante[0] + "-" + id_comprabante[1]);
                                 movimiento_caja.setInt(5,
                                         creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 0 ? 2
-                                                : creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 1 ? 3
-                                                        : 6);
+                                        : creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 1 ? 3
+                                        : 6);
                                 movimiento_caja.setDouble(6, Double.parseDouble(creditoTB.getTfMonto().getText()));
                                 movimiento_caja.setString(7, idCodigoCredito);
                                 movimiento_caja.addBatch();
@@ -1857,9 +1857,9 @@ public class VentaADO {
                         double cantidadKardex = sm.getValorInventario() == 1
                                 ? sm.getCantidad() + sm.getBonificacion()
                                 : sm.getValorInventario() == 2
-                                        // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
-                                        ? sm.getCantidad()
-                                        : sm.getCantidad();
+                                // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                                ? sm.getCantidad()
+                                : sm.getCantidad();
 
                         suministro_kardex.setString(1, sm.getIdSuministro());
                         suministro_kardex.setString(2, ventaTB.getFechaVenta());
@@ -2454,7 +2454,6 @@ public class VentaADO {
                 empList.add(ventaTB);
             }
 
-            preparedStatement.close();
             preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Listar_Ventas_Count(?,?,?,?,?,?,?)}");
             preparedStatement.setInt(1, opcion);
             preparedStatement.setString(2, value);
@@ -2470,20 +2469,11 @@ public class VentaADO {
                 cantidadTotal = rsEmps.getInt("Total");
             }
 
-            preparedStatement.close();
-            preparedStatement = DBUtil.getConnection().prepareStatement("SELECT "
-                    + "ISNULL(sum(dv.Cantidad*(dv.PrecioVenta-dv.Descuento)),0) AS Monto "
-                    + "FROM VentaTB as v "
-                    + "INNER JOIN DetalleVentaTB as dv on dv.IdVenta = v.IdVenta "
-                    + "LEFT JOIN NotaCreditoTB as nc on nc.IdVenta = v.IdVenta "
-                    + "WHERE "
-                    + "CAST(v.FechaVenta AS DATE) BETWEEN ? AND ? AND v.Tipo = 1 AND v.Estado = 1 AND nc.IdNotaCredito IS NULL and v.Procedencia = 1 "
-                    + "OR "
-                    + "CAST(v.FechaVenta AS DATE) BETWEEN ? AND ? AND v.Tipo = 1 AND v.Estado = 4 AND nc.IdNotaCredito IS NULL and v.Procedencia = 1");
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Sumar_Ventas_Realizadas(?,?,?,?)}");
             preparedStatement.setString(1, fechaInicial);
             preparedStatement.setString(2, fechaFinal);
-            preparedStatement.setString(3, fechaInicial);
-            preparedStatement.setString(4, fechaFinal);
+            preparedStatement.setString(3, usuario);
+            preparedStatement.setInt(4, 1);
             rsEmps = preparedStatement.executeQuery();
             double montoTotal = 0;
             if (rsEmps.next()) {
@@ -2599,7 +2589,6 @@ public class VentaADO {
                 empList.add(ventaTB);
             }
 
-            preparedStatement.close();
             preparedStatement = DBUtil.getConnection()
                     .prepareStatement("{call Sp_Listar_Pos_Ventas_Count(?,?,?,?,?,?,?)}");
             preparedStatement.setShort(1, opcion);
@@ -2616,18 +2605,11 @@ public class VentaADO {
                 cantidadTotal = rsEmps.getInt("Total");
             }
 
-            preparedStatement.close();
-            preparedStatement = DBUtil.getConnection().prepareStatement("SELECT \n"
-                    + "ISNULL(sum(dv.Cantidad*(dv.PrecioVenta-dv.Descuento)),0) AS Monto\n"
-                    + "FROM VentaTB as v \n"
-                    + "INNER JOIN DetalleVentaTB as dv on dv.IdVenta = v.IdVenta\n"
-                    + "LEFT JOIN NotaCreditoTB as nc on nc.IdVenta = v.IdVenta\n"
-                    + "WHERE CAST(v.FechaVenta AS DATE) BETWEEN ? AND ? AND v.Tipo = 1 AND v.Estado = 1 and nc.IdNotaCredito is null and v.Procedencia = 2\n"
-                    + "OR CAST(v.FechaVenta AS DATE) BETWEEN ? AND ? AND v.Tipo = 1 AND v.Estado = 4 and nc.IdNotaCredito is null and v.Procedencia = 2");
+            preparedStatement = DBUtil.getConnection().prepareStatement("{call Sp_Sumar_Ventas_Realizadas(?,?,?,?)}");
             preparedStatement.setString(1, fechaInicial);
             preparedStatement.setString(2, fechaFinal);
-            preparedStatement.setString(3, fechaInicial);
-            preparedStatement.setString(4, fechaFinal);
+            preparedStatement.setString(3, usuario);
+            preparedStatement.setInt(4, 2);
             rsEmps = preparedStatement.executeQuery();
             double montoTotal = 0;
             if (rsEmps.next()) {
@@ -3080,7 +3062,7 @@ public class VentaADO {
         }
 
     }
-    
+
     public static String Anular_Venta_ById(String idVenta, ArrayList<SuministroTB> arrList, String motivo) {
         PreparedStatement statementValidar = null;
         PreparedStatement statementVenta = null;
@@ -3160,8 +3142,8 @@ public class VentaADO {
                     double cantidadTotal = stb.getValorInventario() == 1
                             ? stb.getCantidad() + stb.getBonificacion()
                             : stb.getValorInventario() == 2
-                                    ? stb.getCantidad()
-                                    : stb.getCantidad();
+                            ? stb.getCantidad()
+                            : stb.getCantidad();
 
                     statementKardex.setString(1, stb.getIdSuministro());
                     statementKardex.setString(2, Tools.getDate());
@@ -3303,8 +3285,8 @@ public class VentaADO {
                     double cantidadTotal = stb.getValorInventario() == 1
                             ? stb.getCantidad() + stb.getBonificacion()
                             : stb.getValorInventario() == 2
-                                    ? stb.getCantidad()
-                                    : stb.getCantidad();
+                            ? stb.getCantidad()
+                            : stb.getCantidad();
 
                     statementKardex.setString(1, stb.getIdSuministro());
                     statementKardex.setString(2, Tools.getDate());
@@ -3582,7 +3564,7 @@ public class VentaADO {
             preparedStatement.setBoolean(3, mostrar);
             preparedStatement.setString(4, fechaInicial);
             preparedStatement.setString(5, fechaFinal);
-         
+
             resultSet = preparedStatement.executeQuery();
             Integer integer = 0;
             if (resultSet.next()) {
@@ -3648,7 +3630,7 @@ public class VentaADO {
                 preparedStatement.close();
                 preparedStatement = DBUtil.getConnection().prepareCall("{call Sp_Listar_Detalle_Venta_Credito(?)}");
                 preparedStatement.setString(1, idVenta);
-             
+
                 resultSet = preparedStatement.executeQuery();
                 ArrayList<VentaCreditoTB> ventaCreditoTBs = new ArrayList<>();
                 while (resultSet.next()) {
@@ -3995,7 +3977,7 @@ public class VentaADO {
     }
 
     public static ModeloObject RegistrarAbonoUpdateById(VentaCreditoTB ventaCreditoTB, IngresoTB ingresoTB,
-        MovimientoCajaTB movimientoCajaTB) {
+            MovimientoCajaTB movimientoCajaTB) {
         ModeloObject result = new ModeloObject();
         PreparedStatement statementValidate = null;
         PreparedStatement statementVenta = null;
@@ -4244,7 +4226,7 @@ public class VentaADO {
                             "SELECT Cantidad FROM HistorialSuministroLlevar WHERE IdVenta = ? AND IdSuministro = ?");
                     statementHistorial.setString(1, idVenta);
                     statementHistorial.setString(2, idSuministro);
-                 
+
                     resultSet = statementHistorial.executeQuery();
                     double cantidadActual = 0;
                     while (resultSet.next()) {
@@ -4425,7 +4407,7 @@ public class VentaADO {
                         "SELECT s.Clave,s.NombreMarca,d.Cantidad,d.Bonificacion FROM DetalleVentaTB AS d INNER JOIN SuministroTB AS s ON s.IdSuministro = d.IdArticulo WHERE d.IdVenta = ? AND d.IdArticulo = ?");
                 statementVenta.setString(1, idVenta);
                 statementVenta.setString(2, idSuministro);
-             
+
                 resultSet = statementVenta.executeQuery();
                 resultSet.next();
 

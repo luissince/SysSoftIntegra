@@ -254,7 +254,7 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
         
         vender_con_cantidades_negativas = privilegioTBs.get(34).getIdPrivilegio() != 0 && !privilegioTBs.get(34).isEstado();
     
-        if(privilegioTBs.get(36).getIdPrivilegio() != 0 && privilegioTBs.get(36).isEstado()){
+        if(privilegioTBs.get(36).getIdPrivilegio() != 0 && !privilegioTBs.get(36).isEstado()){
             mostrarUltimasVentas=true;
         }
     }

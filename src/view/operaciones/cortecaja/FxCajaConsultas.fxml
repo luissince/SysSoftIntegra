@@ -115,7 +115,7 @@
                                        <children>
                                           <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
                                              <children>
-                                                <Label styleClass="labelRobotoBold15" text="Contado" textFill="#020203" />
+                                                <Label styleClass="labelRobotoBold15" text="Vendedor" textFill="#020203" />
                                                 <Label fx:id="lblContado" alignment="TOP_RIGHT" contentDisplay="BOTTOM" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" />
                                              </children>
                                           </VBox>
@@ -127,7 +127,7 @@
                                           </VBox>
                                           <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em;">
                                              <children>
-                                                <Label styleClass="labelRobotoBold16" text="Calculado" textFill="#020203" />
+                                                <Label styleClass="labelRobotoBold16" text="Sistema" textFill="#020203" />
                                                 <Label fx:id="lblCanculado" alignment="TOP_RIGHT" contentDisplay="BOTTOM" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" />
                                              </children>
                                           </VBox>
