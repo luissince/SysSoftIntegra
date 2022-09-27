@@ -67,7 +67,7 @@ public class FxVentaDetalleProductoController implements Initializable {
 
                     double precio = factor <= 0 ? valor : valor / factor;
                     double descuento = Double.parseDouble(txtDescuento.getText());
-                    double cantidad = factor <= 0 ? Double.parseDouble(txtCantidad.getText()) : factor;
+                    double cantidad = factor <= 0 ? Double.parseDouble(txtCantidad.getText()) : factor == 1 ? Double.parseDouble(txtCantidad.getText()) : factor;
 
                     txtCantidad.setText(Tools.roundingValue(cantidad, 2));
                     bbItemProducto.getSuministroTB().setCantidad(cantidad);
