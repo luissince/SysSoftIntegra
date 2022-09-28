@@ -2976,7 +2976,7 @@ public class VentaADO {
                         .prepareStatement("{call Sp_Listar_Ventas_Detalle_By_Id(?)}");
                 statementVentaDetalle.setString(1, idVenta);
                 ResultSet resultSetLista = statementVentaDetalle.executeQuery();
-                ArrayList<SuministroTB> empList = new ArrayList<SuministroTB>();
+                ArrayList<SuministroTB> empList = new ArrayList<>();
                 while (resultSetLista.next()) {
                     SuministroTB suministroTB = new SuministroTB();
                     suministroTB.setId(resultSetLista.getRow());

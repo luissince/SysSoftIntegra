@@ -308,7 +308,7 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("codbarrasarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getClave()));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("nombretarticulo")) {
-                    String nombreMarcaReplace = arrList.get(m).getNombreMarca().replaceAll("\"", "");
+                    String nombreMarcaReplace = arrList.get(m).getNombreMarca().replaceAll("\"", "") + " " + (arrList.get(m).getBonificacionTexto().length() == 0 ? "" : "(" + arrList.get(m).getBonificacionTexto().replaceAll("\"", "") + ")");
                     fieldTicket.setText(Tools.AddText2Guines(nombreMarcaReplace));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("cantarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad(), 2)));
