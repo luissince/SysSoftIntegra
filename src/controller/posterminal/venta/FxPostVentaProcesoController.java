@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -391,7 +392,7 @@ public class FxPostVentaProcesoController implements Initializable {
                                 }
                                 break;
                             case "nocantidades":
-                                Tools.AlertMessageWarning(window, "Venta", "No se puede completar la venta por que hay productos con stock inferior.");
+                                Tools.AlertDialogMessage(window, Alert.AlertType.WARNING, "Venta", "No se puede completar la venta por que hay productos con stock inferior.", result.toStringArrayResult());
                                 break;
                             case "error":
                                 Tools.AlertMessageWarning(window, "Venta", result.getResult());
@@ -539,7 +540,7 @@ public class FxPostVentaProcesoController implements Initializable {
                                 }
                                 break;
                             case "nocantidades":
-                                Tools.AlertMessageWarning(window, "Venta", "No se puede completar la venta por que hay productos con stock inferior.");
+                                Tools.AlertDialogMessage(window, Alert.AlertType.WARNING, "Venta", "No se puede completar la venta por que hay productos con stock inferior.", result.toStringArrayResult());
                                 break;
                             case "error":
                                 Tools.AlertMessageWarning(window, "Venta", result.getResult());
@@ -630,8 +631,8 @@ public class FxPostVentaProcesoController implements Initializable {
                                     Tools.Dispose(window);
                                 }
                                 break;
-                            case "nocantidades":
-                                Tools.AlertMessageWarning(window, "Venta", "No se puede completar la venta por que hay productos con stock inferior.");
+                         case "nocantidades":
+                                Tools.AlertDialogMessage(window, Alert.AlertType.WARNING, "Venta", "No se puede completar la venta por que hay productos con stock inferior.", result.toStringArrayResult());
                                 break;
                             case "error":
                                 Tools.AlertMessageWarning(window, "Venta", result.getResult());
