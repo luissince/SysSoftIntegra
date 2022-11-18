@@ -100,7 +100,6 @@ public class FxConfiguracionController implements Initializable {
             Tools.AlertMessageWarning(apWindow, "Conexión", "Ingrese el nombre de la base de datos");
             txtBaseDatos.requestFocus();
         } else {
-//cineplanet
             if (DBUtil.validateConnect(txtDireccion.getText().trim(), txtPuerto.getText().trim(), txtBaseDatos.getText().trim(), txtUsuario.getText().trim(), txtClave.getText().trim()).equals("ok")) {
                 Tools.AlertMessageInformation(apWindow, "Conexión", "Se completo la conexión correctamente.");
             } else {

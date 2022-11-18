@@ -321,7 +321,7 @@ public class FxComprasController implements Initializable {
         Tools.actualDate(Tools.getDate(), tpFechaCompra);
         tvList.getItems().clear();
         loteTBs.clear();
-        cbActualizarInventario.setSelected(false);
+        cbActualizarInventario.setSelected(true);
 
         searchComboBoxAlmacen.getComboBox().getItems().clear();
         searchComboBoxAlmacen.getComboBox().getItems().addAll(AlmacenADO.GetSearchComboBoxAlmacen());
