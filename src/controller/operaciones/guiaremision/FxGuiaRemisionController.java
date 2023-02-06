@@ -374,7 +374,7 @@ public class FxGuiaRemisionController implements Initializable {
                     cbUbigeoPartida.getSelectionModel().select(0);
                 }
             }
-
+            txtDireccionPartida.setText(empresaTB.getDomicilio());
             cbUbigeoLlegada.getItems().clear();
 
             tvList.getItems().clear();
@@ -525,7 +525,7 @@ public class FxGuiaRemisionController implements Initializable {
         }
     }
 
-    private void onExecuteGuardar() {
+    private void onEventGuardar() {
         if (cbDocumentoGuia.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el documento guía usar.");
             cbDocumentoGuia.requestFocus();
@@ -809,13 +809,13 @@ public class FxGuiaRemisionController implements Initializable {
     @FXML
     private void onKeyPressedToRegister(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            onExecuteGuardar();
+            onEventGuardar();
         }
     }
 
     @FXML
     private void onActionToRegister(ActionEvent event) {
-        onExecuteGuardar();
+        onEventGuardar();
     }
 
     @FXML

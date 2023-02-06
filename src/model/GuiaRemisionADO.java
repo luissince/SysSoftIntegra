@@ -18,12 +18,11 @@ public class GuiaRemisionADO {
         CallableStatement statementIdGuiaRemision = null;
         PreparedStatement statementGuiaRemision = null;
         PreparedStatement statementGuiaRemisionDetalle = null;
-        PreparedStatement comprobante = null;
 
         try {
             DBUtil.getConnection().setAutoCommit(false);
 
-            serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero(?)}");
+            serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero_GuiaRemision(?)}");
             serie_numeracion.registerOutParameter(1, java.sql.Types.VARCHAR);
             serie_numeracion.setInt(2, guiaRemisionTB.getIdComprobante());
             serie_numeracion.execute();
@@ -113,17 +112,8 @@ public class GuiaRemisionADO {
                 statementGuiaRemisionDetalle.addBatch();
             }
 
-            comprobante = DBUtil.getConnection().prepareStatement("INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
-
-            comprobante.setInt(1, guiaRemisionTB.getIdComprobante());
-            comprobante.setString(2, id_comprabante[0]);
-            comprobante.setString(3, id_comprabante[1]);
-            comprobante.setTimestamp(4, Tools.getDateHour());
-            comprobante.addBatch();
-
             statementGuiaRemision.executeBatch();
             statementGuiaRemisionDetalle.executeBatch();
-            comprobante.executeBatch();
             DBUtil.getConnection().commit();
             return "register/" + idGuiaRemision;
         } catch (SQLException ex) {
@@ -143,9 +133,6 @@ public class GuiaRemisionADO {
                 }
                 if (statementGuiaRemisionDetalle != null) {
                     statementGuiaRemisionDetalle.close();
-                }
-                if (comprobante != null) {
-                    comprobante.close();
                 }
             } catch (SQLException ex) {
 

@@ -117,7 +117,7 @@ public class VentaADO {
                     ventaTB.setIdCliente(idCliente);
                 }
 
-                serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero(?)}");
+                serie_numeracion = DBUtil.getConnection().prepareCall("{? = call (?)}");
                 serie_numeracion.registerOutParameter(1, java.sql.Types.VARCHAR);
                 serie_numeracion.setInt(2, ventaTB.getIdComprobante());
                 serie_numeracion.execute();
@@ -419,7 +419,6 @@ public class VentaADO {
         PreparedStatement ventaVerificar = null;
         PreparedStatement clienteVerificar = null;
         PreparedStatement cliente = null;
-        PreparedStatement comprobante = null;
         PreparedStatement detalle_venta = null;
         PreparedStatement venta_credito_codigo = null;
         PreparedStatement venta_credito = null;
@@ -507,7 +506,7 @@ public class VentaADO {
                     ventaTB.setIdCliente(idCliente);
                 }
 
-                serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero(?)}");
+                serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero_Venta(?)}");
                 serie_numeracion.registerOutParameter(1, java.sql.Types.VARCHAR);
                 serie_numeracion.setInt(2, ventaTB.getIdComprobante());
                 serie_numeracion.execute();
@@ -544,9 +543,6 @@ public class VentaADO {
                         + ",Procedencia)\n"
                         + "VALUES\n"
                         + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)");
-
-                comprobante = DBUtil.getConnection().prepareStatement(
-                        "INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
                 cotizacion = DBUtil.getConnection()
                         .prepareStatement("UPDATE CotizacionTB SET Estado = 2,IdVenta=?  WHERE IdCotizacion = ?");
@@ -611,12 +607,6 @@ public class VentaADO {
                 venta.setInt(20, ventaTB.getTipoCredito());
                 venta.setString(21, ventaTB.getNumeroOperacion());
                 venta.addBatch();
-
-                comprobante.setInt(1, ventaTB.getIdComprobante());
-                comprobante.setString(2, id_comprabante[0]);
-                comprobante.setString(3, id_comprabante[1]);
-                comprobante.setString(4, ventaTB.getFechaVenta());
-                comprobante.addBatch();
 
                 if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
                     cotizacion.setString(1, id_venta);
@@ -760,7 +750,6 @@ public class VentaADO {
 
                 cliente.executeBatch();
                 venta.executeBatch();
-                comprobante.executeBatch();
                 detalle_venta.executeBatch();
                 suministro_update.executeBatch();
                 suministro_kardex.executeBatch();
@@ -813,9 +802,6 @@ public class VentaADO {
                 if (cliente != null) {
                     cliente.close();
                 }
-                if (comprobante != null) {
-                    comprobante.close();
-                }
                 if (detalle_venta != null) {
                     detalle_venta.close();
                 }
@@ -842,7 +828,6 @@ public class VentaADO {
         PreparedStatement venta = null;
         PreparedStatement clienteVerificar = null;
         PreparedStatement cliente = null;
-        PreparedStatement comprobante = null;
         PreparedStatement detalle_venta = null;
         PreparedStatement ingreso = null;
         PreparedStatement cotizacion = null;
@@ -899,7 +884,7 @@ public class VentaADO {
                 ventaTB.setIdCliente(idCliente);
             }
 
-            serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero(?)}");
+            serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero_Venta(?)}");
             serie_numeracion.registerOutParameter(1, java.sql.Types.VARCHAR);
             serie_numeracion.setInt(2, ventaTB.getIdComprobante());
             serie_numeracion.execute();
@@ -936,9 +921,6 @@ public class VentaADO {
                     + ",Procedencia)\n"
                     + "VALUES\n"
                     + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)");
-
-            comprobante = DBUtil.getConnection().prepareStatement(
-                    "INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
             cotizacion = DBUtil.getConnection()
                     .prepareStatement("UPDATE CotizacionTB SET Estado = 2,IdVenta=?  WHERE IdCotizacion = ?");
@@ -983,12 +965,6 @@ public class VentaADO {
             venta.setInt(20, ventaTB.getTipoCredito());
             venta.setString(21, ventaTB.getNumeroOperacion());
             venta.addBatch();
-
-            comprobante.setInt(1, ventaTB.getIdComprobante());
-            comprobante.setString(2, id_comprabante[0]);
-            comprobante.setString(3, id_comprabante[1]);
-            comprobante.setString(4, ventaTB.getFechaVenta());
-            comprobante.addBatch();
 
             if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
                 cotizacion.setString(1, id_venta);
@@ -1066,7 +1042,6 @@ public class VentaADO {
             cliente.executeBatch();
             venta.executeBatch();
             ingreso.executeBatch();
-            comprobante.executeBatch();
             detalle_venta.executeBatch();
             cotizacion.executeBatch();
 
@@ -1102,9 +1077,6 @@ public class VentaADO {
                 if (cliente != null) {
                     cliente.close();
                 }
-                if (comprobante != null) {
-                    comprobante.close();
-                }
                 if (detalle_venta != null) {
                     detalle_venta.close();
                 }
@@ -1129,7 +1101,6 @@ public class VentaADO {
         PreparedStatement ventaVerificar = null;
         PreparedStatement clienteVerificar = null;
         PreparedStatement cliente = null;
-        PreparedStatement comprobante = null;
         PreparedStatement detalle_venta = null;
         PreparedStatement suministro_update = null;
         PreparedStatement suministro_kardex = null;
@@ -1227,7 +1198,7 @@ public class VentaADO {
                         ventaTB.setIdCliente(idCliente);
                     }
 
-                    serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero(?)}");
+                    serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero_Venta(?)}");
                     serie_numeracion.registerOutParameter(1, java.sql.Types.VARCHAR);
                     serie_numeracion.setInt(2, ventaTB.getIdComprobante());
                     serie_numeracion.execute();
@@ -1264,9 +1235,6 @@ public class VentaADO {
                             + ",Procedencia)\n"
                             + "VALUES\n"
                             + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)");
-
-                    comprobante = DBUtil.getConnection().prepareStatement(
-                            "INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
                     cotizacion = DBUtil.getConnection()
                             .prepareStatement("UPDATE CotizacionTB SET Estado = 2,IdVenta=?  WHERE IdCotizacion = ?");
@@ -1326,12 +1294,6 @@ public class VentaADO {
                     venta.setInt(20, ventaTB.getTipoCredito());
                     venta.setString(21, ventaTB.getNumeroOperacion());
                     venta.addBatch();
-
-                    comprobante.setInt(1, ventaTB.getIdComprobante());
-                    comprobante.setString(2, id_comprabante[0]);
-                    comprobante.setString(3, id_comprabante[1]);
-                    comprobante.setString(4, ventaTB.getFechaVenta());
-                    comprobante.addBatch();
 
                     if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
                         cotizacion.setString(1, id_venta);
@@ -1452,7 +1414,6 @@ public class VentaADO {
                     cliente.executeBatch();
                     venta.executeBatch();
                     movimiento_caja.executeBatch();
-                    comprobante.executeBatch();
                     suministro_update.executeBatch();
                     detalle_venta.executeBatch();
                     suministro_kardex.executeBatch();
@@ -1496,9 +1457,6 @@ public class VentaADO {
                 if (cliente != null) {
                     cliente.close();
                 }
-                if (comprobante != null) {
-                    comprobante.close();
-                }
                 if (suministro_update != null) {
                     suministro_update.close();
                 }
@@ -1529,7 +1487,6 @@ public class VentaADO {
         PreparedStatement ventaVerificar = null;
         PreparedStatement clienteVerificar = null;
         PreparedStatement cliente = null;
-        PreparedStatement comprobante = null;
         PreparedStatement detalle_venta = null;
         PreparedStatement venta_credito_codigo = null;
         PreparedStatement venta_credito = null;
@@ -1628,7 +1585,7 @@ public class VentaADO {
                         ventaTB.setIdCliente(idCliente);
                     }
 
-                    serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero(?)}");
+                    serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero_Venta(?)}");
                     serie_numeracion.registerOutParameter(1, java.sql.Types.VARCHAR);
                     serie_numeracion.setInt(2, ventaTB.getIdComprobante());
                     serie_numeracion.execute();
@@ -1665,9 +1622,6 @@ public class VentaADO {
                             + ",Procedencia)\n"
                             + "VALUES\n"
                             + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)");
-
-                    comprobante = DBUtil.getConnection().prepareStatement(
-                            "INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
                     cotizacion = DBUtil.getConnection()
                             .prepareStatement("UPDATE CotizacionTB SET Estado = 2,IdVenta=?  WHERE IdCotizacion = ?");
@@ -1730,12 +1684,6 @@ public class VentaADO {
                     venta.setInt(20, ventaTB.getTipoCredito());
                     venta.setString(21, ventaTB.getNumeroOperacion());
                     venta.addBatch();
-
-                    comprobante.setInt(1, ventaTB.getIdComprobante());
-                    comprobante.setString(2, id_comprabante[0]);
-                    comprobante.setString(3, id_comprabante[1]);
-                    comprobante.setString(4, ventaTB.getFechaVenta());
-                    comprobante.addBatch();
 
                     if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
                         cotizacion.setString(1, id_venta);
@@ -1879,7 +1827,6 @@ public class VentaADO {
 
                     cliente.executeBatch();
                     venta.executeBatch();
-                    comprobante.executeBatch();
                     detalle_venta.executeBatch();
                     suministro_update.executeBatch();
                     suministro_kardex.executeBatch();
@@ -1933,9 +1880,6 @@ public class VentaADO {
                 if (cliente != null) {
                     cliente.close();
                 }
-                if (comprobante != null) {
-                    comprobante.close();
-                }
                 if (detalle_venta != null) {
                     detalle_venta.close();
                 }
@@ -1964,7 +1908,6 @@ public class VentaADO {
         PreparedStatement ventaVerificar = null;
         PreparedStatement clienteVerificar = null;
         PreparedStatement cliente = null;
-        PreparedStatement comprobante = null;
         PreparedStatement detalle_venta = null;
         PreparedStatement movimiento_caja = null;
         PreparedStatement cotizacion = null;
@@ -2031,7 +1974,7 @@ public class VentaADO {
                     ventaTB.setIdCliente(idCliente);
                 }
 
-                serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero(?)}");
+                serie_numeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero_Venta(?)}");
                 serie_numeracion.registerOutParameter(1, java.sql.Types.VARCHAR);
                 serie_numeracion.setInt(2, ventaTB.getIdComprobante());
                 serie_numeracion.execute();
@@ -2068,9 +2011,6 @@ public class VentaADO {
                         + ",Procedencia)\n"
                         + "VALUES\n"
                         + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)");
-
-                comprobante = DBUtil.getConnection().prepareStatement(
-                        "INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
 
                 cotizacion = DBUtil.getConnection()
                         .prepareStatement("UPDATE CotizacionTB SET Estado = 2,IdVenta=?  WHERE IdCotizacion = ?");
@@ -2115,12 +2055,6 @@ public class VentaADO {
                 venta.setInt(20, ventaTB.getTipoCredito());
                 venta.setString(21, ventaTB.getNumeroOperacion());
                 venta.addBatch();
-
-                comprobante.setInt(1, ventaTB.getIdComprobante());
-                comprobante.setString(2, id_comprabante[0]);
-                comprobante.setString(3, id_comprabante[1]);
-                comprobante.setString(4, ventaTB.getFechaVenta());
-                comprobante.addBatch();
 
                 if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
                     cotizacion.setString(1, id_venta);
@@ -2193,7 +2127,6 @@ public class VentaADO {
                 cliente.executeBatch();
                 venta.executeBatch();
                 movimiento_caja.executeBatch();
-                comprobante.executeBatch();
                 detalle_venta.executeBatch();
                 cotizacion.executeBatch();
 
@@ -2232,9 +2165,6 @@ public class VentaADO {
                 }
                 if (cliente != null) {
                     cliente.close();
-                }
-                if (comprobante != null) {
-                    comprobante.close();
                 }
                 if (detalle_venta != null) {
                     detalle_venta.close();

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d22fcf3c-2f87-4a42-80c5-61ab84d1ed78">
 	<property name="ireport.zoom" value="1.366026910730141"/>
-	<property name="ireport.x" value="104"/>
-	<property name="ireport.y" value="198"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="397"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
 	<parameter name="ICON" class="java.io.InputStream"/>
 	<parameter name="EMPRESA" class="java.lang.String"/>
@@ -443,7 +443,7 @@
 				<text><![CDATA[Gracias por hacer negocios.]]></text>
 			</staticText>
 			<frame>
-				<reportElement mode="Opaque" x="232" y="129" width="30" height="19" backcolor="#576767" uuid="63479483-5305-48a3-a4c7-feeff319728a"/>
+				<reportElement mode="Opaque" x="233" y="129" width="30" height="19" backcolor="#576767" uuid="63479483-5305-48a3-a4c7-feeff319728a"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#576767"/>
 					<topPen lineWidth="1.0" lineColor="#576767"/>
@@ -453,7 +453,7 @@
 				</box>
 			</frame>
 			<frame>
-				<reportElement mode="Opaque" x="232" y="112" width="30" height="17" backcolor="#B5B5B5" uuid="486b40c1-443f-47c9-8666-40036d3172ab"/>
+				<reportElement mode="Opaque" x="233" y="112" width="30" height="17" backcolor="#B5B5B5" uuid="486b40c1-443f-47c9-8666-40036d3172ab"/>
 				<box>
 					<pen lineWidth="1.0" lineColor="#B5B5B5"/>
 					<topPen lineWidth="1.0" lineColor="#B5B5B5"/>
@@ -465,7 +465,7 @@
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="128" width="232" height="20" forecolor="#F0F3FC" backcolor="#020203" uuid="b9d2da0f-6487-46af-b155-895fad1770c3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="9" isBold="false" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Generado por SysSoft Integra]]></text>
 			</staticText>
@@ -525,7 +525,7 @@
 					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="true"/>
+					<font fontName="Consola" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[IMPORTE BRUTO:]]></text>
@@ -539,7 +539,7 @@
 					<rightPen lineWidth="0.25" lineColor="#373B46"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="true"/>
+					<font fontName="Consola" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[DESCUENTO TOTAL:]]></text>

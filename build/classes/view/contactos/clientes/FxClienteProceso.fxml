@@ -353,7 +353,7 @@
                           <content>
                             <AnchorPane minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #e7e6e6;">
                                  <children>
-                                    <VBox layoutX="10.0" layoutY="10.0" prefHeight="344.0" prefWidth="655.0" style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: #CCCCCC; -fx-padding: 1.6666666666666667em; -fx-spacing: 0.8333333333333334em;">
+                                    <VBox layoutX="10.0" layoutY="10.0" prefHeight="344.0" prefWidth="655.0" style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: #CCCCCC; -fx-padding: 1.6666666666666667em; -fx-spacing: 0.8333333333333334em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
                                           <HBox spacing="10.0">
                                              <children>
@@ -374,6 +374,9 @@
                                        </children>
                                     </VBox>
                                  </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
                               </AnchorPane>
                           </content>
                         </Tab>

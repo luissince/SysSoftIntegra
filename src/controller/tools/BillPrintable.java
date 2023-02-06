@@ -308,20 +308,29 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("codbarrasarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getClave()));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("nombretarticulo")) {
-                    String nombreMarcaReplace = arrList.get(m).getNombreMarca().replaceAll("\"", "") + " " + (arrList.get(m).getBonificacionTexto().length() == 0 ? "" : "(" + arrList.get(m).getBonificacionTexto().replaceAll("\"", "") + ")");
+                    String nombreMarcaReplace = arrList.get(m).getNombreMarca().replaceAll("\"", "") + " "
+                            + (arrList.get(m).getBonificacionTexto().length() == 0 ? ""
+                                    : "(" + arrList.get(m).getBonificacionTexto().replaceAll("\"", "") + ")");
                     fieldTicket.setText(Tools.AddText2Guines(nombreMarcaReplace));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("cantarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad(), 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("precarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getPrecioVentaGeneral(), 2)));
+                    fieldTicket.setText(
+                            Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getPrecioVentaGeneral(), 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines("-" + Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
+                    fieldTicket
+                            .setText(Tools.AddText2Guines("-" + Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getPrecioVentaGeneral() * arrList.get(m).getCantidad(), 2)));
+                    fieldTicket.setText(Tools.AddText2Guines(Tools
+                            .roundingValue(arrList.get(m).getPrecioVentaGeneral() * arrList.get(m).getCantidad(), 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("unimearticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getUnidadVentaName()));
                 }
-                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                hBox.getChildren()
+                        .add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(),
+                                fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(),
+                                fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(),
+                                fieldTicket.getFontSize()));
                 lines = fieldTicket.getLines();
             }
         }
@@ -347,13 +356,20 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("precarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getPrecio(), 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines("-" + Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
+                    fieldTicket
+                            .setText(Tools.AddText2Guines("-" + Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad() * (arrList.get(m).getPrecio() - arrList.get(m).getDescuento()), 2)));
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(
+                            arrList.get(m).getCantidad() * (arrList.get(m).getPrecio() - arrList.get(m).getDescuento()),
+                            2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("unimearticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getSuministroTB().getUnidadCompraName()));
                 }
-                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                hBox.getChildren()
+                        .add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(),
+                                fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(),
+                                fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(),
+                                fieldTicket.getFontSize()));
                 lines = fieldTicket.getLines();
             }
         }
@@ -379,13 +395,20 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("precarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getPrecio(), 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines("-" + Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
+                    fieldTicket
+                            .setText(Tools.AddText2Guines("-" + Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad() * (arrList.get(m).getPrecio() - arrList.get(m).getDescuento()), 2)));
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(
+                            arrList.get(m).getCantidad() * (arrList.get(m).getPrecio() - arrList.get(m).getDescuento()),
+                            2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("unimearticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getSuministroTB().getUnidadCompraName()));
                 }
-                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                hBox.getChildren()
+                        .add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(),
+                                fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(),
+                                fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(),
+                                fieldTicket.getFontSize()));
                 lines = fieldTicket.getLines();
             }
         }
@@ -419,7 +442,11 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("unimearticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getUnidadVentaName()));
                 }
-                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                hBox.getChildren()
+                        .add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(),
+                                fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(),
+                                fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(),
+                                fieldTicket.getFontSize()));
                 lines = fieldTicket.getLines();
             }
         }
@@ -456,7 +483,11 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("montooperacion")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getMonto(), 2)));
                 }
-                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                hBox.getChildren()
+                        .add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(),
+                                fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(),
+                                fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(),
+                                fieldTicket.getFontSize()));
                 lines = fieldTicket.getLines();
             }
         }
@@ -493,14 +524,19 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("montooperacion")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getMonto(), 2)));
                 }
-                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                hBox.getChildren()
+                        .add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(),
+                                fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(),
+                                fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(),
+                                fieldTicket.getFontSize()));
                 lines = fieldTicket.getLines();
             }
         }
         return lines;
     }
 
-    public int hbDetalleHistorialSumistroSalida(HBox hBox, HBox box, ArrayList<HistorialSuministroSalidaTB> arrList, int m) {
+    public int hbDetalleHistorialSumistroSalida(HBox hBox, HBox box, ArrayList<HistorialSuministroSalidaTB> arrList,
+            int m) {
         int lines = 0;
         for (int j = 0; j < box.getChildren().size(); j++) {
             if (box.getChildren().get(j) instanceof TextFieldTicket) {
@@ -530,7 +566,11 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("montooperacion")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad(), 2)));
                 }
-                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                hBox.getChildren()
+                        .add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(),
+                                fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(),
+                                fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(),
+                                fieldTicket.getFontSize()));
                 lines = fieldTicket.getLines();
             }
         }
@@ -569,7 +609,11 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("montooperacion")) {
                     fieldTicket.setText(Tools.AddText2Guines(""));
                 }
-                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                hBox.getChildren()
+                        .add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(),
+                                fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(),
+                                fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(),
+                                fieldTicket.getFontSize()));
                 lines = fieldTicket.getLines();
             }
         }
@@ -597,11 +641,17 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad() * (arrList.get(m).getCosto() - arrList.get(m).getDescuento()), 2)));
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(
+                            arrList.get(m).getCantidad() * (arrList.get(m).getCosto() - arrList.get(m).getDescuento()),
+                            2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("unimearticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getSuministroTB().getUnidadCompraName()));
                 }
-                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                hBox.getChildren()
+                        .add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(),
+                                fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(),
+                                fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(),
+                                fieldTicket.getFontSize()));
                 lines = fieldTicket.getLines();
             }
         }
@@ -629,11 +679,16 @@ public class BillPrintable implements Printable {
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("descarticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getDescuento(), 0)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("impoarticulo")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad() * (arrList.get(m).getPrecioCompra() - arrList.get(m).getDescuento()), 2)));
+                    fieldTicket.setText(Tools.AddText2Guines(Tools.roundingValue(arrList.get(m).getCantidad()
+                            * (arrList.get(m).getPrecioCompra() - arrList.get(m).getDescuento()), 2)));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("unimearticulo")) {
                     fieldTicket.setText(Tools.AddText2Guines(arrList.get(m).getSuministroTB().getUnidadCompraName()));
                 }
-                hBox.getChildren().add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(), fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(), fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(), fieldTicket.getFontSize()));
+                hBox.getChildren()
+                        .add(addElementTextField("iu", fieldTicket.getText(), fieldTicket.isMultilineas(),
+                                fieldTicket.getLines(), fieldTicket.getColumnWidth(), fieldTicket.getAlignment(),
+                                fieldTicket.isEditable(), fieldTicket.getVariable(), fieldTicket.getFontName(),
+                                fieldTicket.getFontSize()));
                 lines = fieldTicket.getLines();
             }
         }
@@ -742,28 +797,33 @@ public class BillPrintable implements Printable {
                         if (null != field.getAlignment()) {
                             switch (field.getAlignment()) {
                                 case CENTER_LEFT:
-                                    p.printTextWrap(linescount + linesafter, field.getLines(), columnI, columnF, field.getText());
+                                    p.printTextWrap(linescount + linesafter, field.getLines(), columnI, columnF,
+                                            field.getText());
                                     linesbefore = (short) field.getLines();
                                     linescurrent = (short) (linesbefore == 1 ? linesbefore : linescurrent);
                                     countColumns++;
                                     linesafter = hBox.getChildren().size() == countColumns ? linescurrent : 0;
                                     break;
                                 case CENTER:
-                                    p.printTextWrap(linescount + linesafter, field.getLines(), ((columnI + columnF) - field.getText().length()) / 2, columnF, field.getText());
+                                    p.printTextWrap(linescount + linesafter, field.getLines(),
+                                            ((columnI + columnF) - field.getText().length()) / 2, columnF,
+                                            field.getText());
                                     linesbefore = (short) field.getLines();
                                     linescurrent = (short) (linesbefore == 1 ? linesbefore : linescurrent);
                                     countColumns++;
                                     linesafter = hBox.getChildren().size() == countColumns ? linescurrent : 0;
                                     break;
                                 case CENTER_RIGHT:
-                                    p.printTextWrap(linescount + linesafter, field.getLines(), columnF - field.getText().length(), columnF, field.getText());
+                                    p.printTextWrap(linescount + linesafter, field.getLines(),
+                                            columnF - field.getText().length(), columnF, field.getText());
                                     linesbefore = (short) field.getLines();
                                     linescurrent = (short) (linesbefore == 1 ? linesbefore : linescurrent);
                                     countColumns++;
                                     linesafter = hBox.getChildren().size() == countColumns ? linescurrent : 0;
                                     break;
                                 default:
-                                    p.printTextWrap(linescount + linesafter, field.getLines(), columnI, columnF, field.getText());
+                                    p.printTextWrap(linescount + linesafter, field.getLines(), columnI, columnF,
+                                            field.getText());
                                     linesbefore = (short) field.getLines();
                                     linescurrent = (short) (linesbefore == 1 ? linesbefore : linescurrent);
                                     countColumns++;
@@ -778,19 +838,25 @@ public class BillPrintable implements Printable {
                     if (null != field.getAlignment()) {
                         switch (field.getAlignment()) {
                             case CENTER_LEFT:
-                                p.printTextWrap(linescount + linesafter, field.getLines(), 0, field.getColumnWidth(), field.getText());
+                                p.printTextWrap(linescount + linesafter, field.getLines(), 0, field.getColumnWidth(),
+                                        field.getText());
                                 linesafter = (short) field.getLines();
                                 break;
                             case CENTER:
-                                p.printTextWrap(linescount + linesafter, field.getLines(), (field.getColumnWidth() - field.getText().length()) / 2, field.getColumnWidth(), field.getText());
+                                p.printTextWrap(linescount + linesafter, field.getLines(),
+                                        (field.getColumnWidth() - field.getText().length()) / 2, field.getColumnWidth(),
+                                        field.getText());
                                 linesafter = (short) field.getLines();
                                 break;
                             case CENTER_RIGHT:
-                                p.printTextWrap(linescount + linesafter, field.getLines(), field.getColumnWidth() - field.getText().length(), field.getColumnWidth(), field.getText());
+                                p.printTextWrap(linescount + linesafter, field.getLines(),
+                                        field.getColumnWidth() - field.getText().length(), field.getColumnWidth(),
+                                        field.getText());
                                 linesafter = (short) field.getLines();
                                 break;
                             default:
-                                p.printTextWrap(linescount + linesafter, field.getLines(), 0, field.getColumnWidth(), field.getText());
+                                p.printTextWrap(linescount + linesafter, field.getLines(), 0, field.getColumnWidth(),
+                                        field.getText());
                                 linesafter = (short) field.getLines();
                                 break;
                         }
@@ -835,11 +901,12 @@ public class BillPrintable implements Printable {
         if (pageIndex == 0) {
 
             int y = 0;
-            //Consola
-            //RobotoRegular"
-            //"RobotoBold
+            // Consola
+            // RobotoRegular"
+            // "RobotoBold
 
-            BufferedImage image = new BufferedImage((int) pageFormat.getImageableWidth(), (int) pageFormat.getImageableHeight(), BufferedImage.TYPE_INT_ARGB);
+            BufferedImage image = new BufferedImage((int) pageFormat.getImageableWidth(),
+                    (int) pageFormat.getImageableHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D gimage = image.createGraphics();
             Graphics2D g2d = (Graphics2D) graphics;
             double width = pageFormat.getImageableWidth();
@@ -885,23 +952,35 @@ public class BillPrintable implements Printable {
                 for (int j = 0; j < box.getChildren().size(); j++) {
                     TextFieldTicket field = (TextFieldTicket) box.getChildren().get(j);
 
-                    Font font = new Font(field.getFontName().equalsIgnoreCase("Consola")
-                            ? FontsPersonalize.FONT_CONSOLAS
-                            : field.getFontName().equalsIgnoreCase("Roboto Regular")
-                            ? FontsPersonalize.FONT_ROBOTO
-                            : FontsPersonalize.FONT_ROBOTO,
+                    Font font = new Font(
                             field.getFontName().equalsIgnoreCase("Consola")
-                            ? Font.PLAIN
-                            : field.getFontName().equalsIgnoreCase("Roboto Regular")
-                            ? Font.PLAIN
-                            : Font.BOLD,
+                                    ? FontsPersonalize.FONT_CONSOLAS
+                                    : field.getFontName().equalsIgnoreCase("Roboto Regular")
+                                            ? FontsPersonalize.FONT_ROBOTO
+                                            : field.getFontName().equalsIgnoreCase("Qwitcher Grypen")
+                                                    ? FontsPersonalize.FONT_QWITCHER_GRYPEN
+                                                    : field.getFontName().equalsIgnoreCase("Qwitcher Grypen")
+                                                            ? "Qwitcher Grypen"
+                                                            : field.getFontName().equalsIgnoreCase("Dancing Scrip")
+                                                                    ? "Dancing Scrip"
+                                                                    : FontsPersonalize.FONT_ROBOTO,
+                            field.getFontName().equalsIgnoreCase("Consola")
+                                    ? Font.PLAIN
+                                    : field.getFontName().equalsIgnoreCase("Roboto Regular")
+                                            ? Font.PLAIN
+                                            : field.getFontName().equalsIgnoreCase("Qwitcher Grypen")
+                                                    ? Font.PLAIN
+                                                    : field.getFontName().equalsIgnoreCase("Dancing Scrip")
+                                                            ? Font.PLAIN
+                                                            : Font.BOLD,
                             (int) (field.getFontSize() - 3.5f));
 
                     AttributedString attributedString = new AttributedString(field.getText());
                     attributedString.addAttribute(TextAttribute.FONT, font);
 
                     AttributedCharacterIterator charIterator = attributedString.getIterator();
-                    LineBreakMeasurer lineBreakMeasurer = new LineBreakMeasurer(charIterator, g2d.getFontRenderContext());
+                    LineBreakMeasurer lineBreakMeasurer = new LineBreakMeasurer(charIterator,
+                            g2d.getFontRenderContext());
                     lineBreakMeasurer.setPosition(charIterator.getBeginIndex());
                     float xmove = (float) (field.getColumnWidth() * pointWidthSizePaper);
                     while (lineBreakMeasurer.getPosition() < charIterator.getEndIndex()) {
@@ -910,8 +989,9 @@ public class BillPrintable implements Printable {
                         int x = field.getAlignment() == Pos.CENTER_LEFT
                                 ? 0
                                 : field.getAlignment() == Pos.CENTER
-                                ? (int) ((field.getColumnWidth() * pointWidthSizePaper) - layout.getAdvance()) / 2
-                                : (int) ((field.getColumnWidth() * pointWidthSizePaper) - layout.getAdvance());
+                                        ? (int) ((field.getColumnWidth() * pointWidthSizePaper) - layout.getAdvance())
+                                                / 2
+                                        : (int) ((field.getColumnWidth() * pointWidthSizePaper) - layout.getAdvance());
 
                         layout.draw(g2d, xPos + x, yPos + yAux);
                         layout.draw(gimage, xPos + x, yPos + yAux);
@@ -928,22 +1008,34 @@ public class BillPrintable implements Printable {
             } else {
                 if (box.getChildren().get(0) instanceof TextFieldTicket) {
                     TextFieldTicket field = (TextFieldTicket) box.getChildren().get(0);
-                    Font font = new Font(field.getFontName().equalsIgnoreCase("Consola")
-                            ? FontsPersonalize.FONT_CONSOLAS
-                            : field.getFontName().equalsIgnoreCase("Roboto Regular")
-                            ? FontsPersonalize.FONT_ROBOTO
-                            : FontsPersonalize.FONT_ROBOTO,
+
+                    Font font = new Font(
                             field.getFontName().equalsIgnoreCase("Consola")
-                            ? Font.PLAIN
-                            : field.getFontName().equalsIgnoreCase("Roboto Regular")
-                            ? Font.PLAIN
-                            : Font.BOLD,
+                                    ? FontsPersonalize.FONT_CONSOLAS
+                                    : field.getFontName().equalsIgnoreCase("Roboto Regular")
+                                            ? FontsPersonalize.FONT_ROBOTO
+                                            : field.getFontName().equalsIgnoreCase("Qwitcher Grypen")
+                                                    ? FontsPersonalize.FONT_QWITCHER_GRYPEN
+                                                    : field.getFontName().equalsIgnoreCase("Dancing Scrip")
+                                                            ? FontsPersonalize.FONT_DANCING_SCRIPT
+                                                            : FontsPersonalize.FONT_ROBOTO,
+                            field.getFontName().equalsIgnoreCase("Consola")
+                                    ? Font.PLAIN
+                                    : field.getFontName().equalsIgnoreCase("Roboto Regular")
+                                            ? Font.PLAIN
+                                            : field.getFontName().equalsIgnoreCase("Qwitcher Grypen")
+                                                    ? Font.PLAIN
+                                                    : field.getFontName().equalsIgnoreCase("Dancing Scrip")
+                                                            ? Font.PLAIN
+                                                            : Font.BOLD,
                             (int) (field.getFontSize() - 3.5f));
+
                     AttributedString attributedString = new AttributedString(field.getText());
                     attributedString.addAttribute(TextAttribute.FONT, font);
 
                     AttributedCharacterIterator charIterator = attributedString.getIterator();
-                    LineBreakMeasurer lineBreakMeasurer = new LineBreakMeasurer(charIterator, g2d.getFontRenderContext());
+                    LineBreakMeasurer lineBreakMeasurer = new LineBreakMeasurer(charIterator,
+                            g2d.getFontRenderContext());
                     lineBreakMeasurer.setPosition(charIterator.getBeginIndex());
                     while (lineBreakMeasurer.getPosition() < charIterator.getEndIndex()) {
                         TextLayout layout = lineBreakMeasurer.nextLayout((float) width);
@@ -951,8 +1043,8 @@ public class BillPrintable implements Printable {
                         int x = field.getAlignment() == Pos.CENTER_LEFT
                                 ? 0
                                 : field.getAlignment() == Pos.CENTER
-                                ? (int) (width - layout.getAdvance()) / 2
-                                : (int) (width - layout.getAdvance());
+                                        ? (int) (width - layout.getAdvance()) / 2
+                                        : (int) (width - layout.getAdvance());
                         layout.draw(g2d, x, y);
                         layout.draw(gimage, x, y);
                         y += layout.getDescent() + layout.getLeading();
@@ -961,16 +1053,23 @@ public class BillPrintable implements Printable {
                     ImageViewTicket imageView = (ImageViewTicket) box.getChildren().get(0);
                     if (imageView.getType().equalsIgnoreCase("qr")) {
                         try {
-                            BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(new QRCodeWriter().encode(ObjectGlobal.QR_PERU_DATA, BarcodeFormat.QR_CODE, 300, 300));
+                            BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(new QRCodeWriter()
+                                    .encode(ObjectGlobal.QR_PERU_DATA, BarcodeFormat.QR_CODE, 300, 300));
                             g2d.drawImage(qrImage, box.getAlignment() == Pos.CENTER_LEFT ? 0
                                     : box.getAlignment() == Pos.CENTER
-                                    ? (int) (width - imageView.getFitWidth()) / 2
-                                    : box.getAlignment() == Pos.CENTER_RIGHT ? (int) (width - imageView.getFitWidth()) : 0, y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
+                                            ? (int) (width - imageView.getFitWidth()) / 2
+                                            : box.getAlignment() == Pos.CENTER_RIGHT
+                                                    ? (int) (width - imageView.getFitWidth())
+                                                    : 0,
+                                    y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
 
                             gimage.drawImage(qrImage, box.getAlignment() == Pos.CENTER_LEFT ? 0
                                     : box.getAlignment() == Pos.CENTER
-                                    ? (int) (width - imageView.getFitWidth()) / 2
-                                    : box.getAlignment() == Pos.CENTER_RIGHT ? (int) (width - imageView.getFitWidth()) : 0, y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
+                                            ? (int) (width - imageView.getFitWidth()) / 2
+                                            : box.getAlignment() == Pos.CENTER_RIGHT
+                                                    ? (int) (width - imageView.getFitWidth())
+                                                    : 0,
+                                    y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
 
                             y += imageView.getFitHeight() + 3;
                         } catch (WriterException ex) {
@@ -978,20 +1077,27 @@ public class BillPrintable implements Printable {
                         }
                     } else {
                         try {
-                            BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/view/image/no-image.png"));
+                            BufferedImage image = ImageIO
+                                    .read(getClass().getResourceAsStream("/view/image/no-image.png"));
                             if (imageView.getUrl() != null) {
                                 ByteArrayInputStream bais = new ByteArrayInputStream(imageView.getUrl());
                                 image = ImageIO.read(bais);
                             }
                             g2d.drawImage(image, box.getAlignment() == Pos.CENTER_LEFT ? 0
                                     : box.getAlignment() == Pos.CENTER
-                                    ? (int) (width - imageView.getFitWidth()) / 2
-                                    : box.getAlignment() == Pos.CENTER_RIGHT ? (int) (width - imageView.getFitWidth()) : 0, y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
+                                            ? (int) (width - imageView.getFitWidth()) / 2
+                                            : box.getAlignment() == Pos.CENTER_RIGHT
+                                                    ? (int) (width - imageView.getFitWidth())
+                                                    : 0,
+                                    y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
 
                             gimage.drawImage(image, box.getAlignment() == Pos.CENTER_LEFT ? 0
                                     : box.getAlignment() == Pos.CENTER
-                                    ? (int) (width - imageView.getFitWidth()) / 2
-                                    : box.getAlignment() == Pos.CENTER_RIGHT ? (int) (width - imageView.getFitWidth()) : 0, y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
+                                            ? (int) (width - imageView.getFitWidth()) / 2
+                                            : box.getAlignment() == Pos.CENTER_RIGHT
+                                                    ? (int) (width - imageView.getFitWidth())
+                                                    : 0,
+                                    y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
 
                             y += imageView.getFitHeight() + 3;
                         } catch (IOException ex) {
@@ -1004,347 +1110,353 @@ public class BillPrintable implements Printable {
         return y;
     }
 
-//    private JasperDesign getJasperDesign(int width, int height, AnchorPane apEncabezado, AnchorPane apDetalle, AnchorPane pPie) throws JRException {
-//        /*
-//        width=595
-//        height=842
-//        top=right=bottom=left=20
-//        columnwidth=555
-//        columnspace=0
-//        columns=1
-//        */
-//        JasperDesign jasperDesign = new JasperDesign();
-//        jasperDesign.setName("Formato de ticket");
-//        jasperDesign.setPageWidth(width);
-//        jasperDesign.setPageHeight(height);
-//        jasperDesign.setColumnWidth(width);
-//        jasperDesign.setColumnSpacing(0);
-//        jasperDesign.setLeftMargin(0);
-//        jasperDesign.setRightMargin(0);
-//        jasperDesign.setTopMargin(0);
-//        jasperDesign.setBottomMargin(0);
-//
-//        JRDesignBand band = new JRDesignBand();
-//        band.setSplitType(SplitTypeEnum.STRETCH);
-//        band.setHeight(height);
-//
-//        //font size 9f x 15 height
-//        int rows = 0;
-//        rows += createRow(apEncabezado, jasperDesign, band, width, rows);
-//        rows = createRow(apDetalle, jasperDesign, band, width, rows);
-//        createRow(pPie, jasperDesign, band, width, rows);
-//
-////        jasperDesign.setTitle(band);
-//        ((JRDesignSection) jasperDesign.getDetailSection()).addBand(band);
-//        return jasperDesign;
-//    }
-//
-//    @Deprecated
-//    private int createRow(AnchorPane anchorPane, JasperDesign jasperDesign, JRDesignBand band, int width, int rows) {
-//        for (int i = 0; i < anchorPane.getChildren().size(); i++) {
-//
-//            HBox box = ((HBox) anchorPane.getChildren().get(i));
-//            StringBuilder result = new StringBuilder();
-//
-//            if (box.getChildren().size() > 1) {
-//
-//                int columnI;
-//                int columnF;
-//                int columnA = 0;
-//                float fontSize = 0;
-//                for (int j = 0; j < box.getChildren().size(); j++) {
-//                    TextFieldTicket field = (TextFieldTicket) box.getChildren().get(j);
-//                    fontSize = field.getFontSize();
-//                    columnI = columnA;
-//                    columnF = columnI + field.getColumnWidth();
-//                    columnA = columnF;
-//
-//                    int totalWidth;
-//                    int length;
-//
-//                    if (null != field.getAlignment()) {
-//                        switch (field.getAlignment()) {
-//                            case CENTER_LEFT:
-//                                totalWidth = columnF - columnI;
-//                                length = field.getText().length();
-//                                int posl = 0;
-//                                for (int ca = 0; ca < totalWidth; ca++) {
-//                                    if (ca >= 0 && ca <= (length - 1)) {
-//                                        char c = field.getText().charAt(posl);
-//                                        result.append(c);
-//                                        posl++;
-//
-//                                    } else {
-//                                        result.append(" ");
-//                                    }
-//                                }
-//                                break;
-//                            case CENTER:
-//                                totalWidth = columnF - columnI;
-//                                length = field.getText().length();
-//                                int centro = (totalWidth - length) / 2;
-//                                int posc = 0;
-//                                for (int ca = 0; ca < totalWidth; ca++) {
-//                                    if (ca >= centro && ca <= (centro + (length - 1))) {
-//                                        char c = field.getText().charAt(posc);
-//                                        result.append(c);
-//                                        posc++;
-//
-//                                    } else {
-//                                        result.append(" ");
-//                                    }
-//                                }
-//
-//                                break;
-//                            case CENTER_RIGHT:
-//                                totalWidth = columnF - columnI;
-//                                length = field.getText().length();
-//                                int right = totalWidth - length;
-//                                int posr = 0;
-//                                for (int ca = 0; ca < totalWidth; ca++) {
-//                                    if (ca >= right && ca <= (right + (length - 1))) {
-//                                        char c = field.getText().charAt(posr);
-//                                        result.append(c);
-//                                        posr++;
-//
-//                                    } else {
-//                                        result.append(" ");
-//                                    }
-//                                }
-//                                break;
-//                            default:
-//                                totalWidth = columnF - columnI;
-//                                length = field.getText().length();
-//                                int posd = 0;
-//                                for (int ca = 0; ca < totalWidth; ca++) {
-//                                    if (ca >= 0 && ca <= (length - 1)) {
-//                                        char c = field.getText().charAt(posd);
-//                                        result.append(c);
-//                                        posd++;
-//
-//                                    } else {
-//                                        result.append(" ");
-//                                    }
-//                                }
-//                                break;
-//                        }
-//                    }
-//                }
-//
-//                JRDesignTextField staticText = new JRDesignTextField();
-//                staticText.setStretchWithOverflow(true);
-//                staticText.setBlankWhenNull(true);
-//
-//                staticText.setX(0);
-//                staticText.setY(rows);
-//                staticText.setWidth(width);
-//                staticText.setHeight((int) (fontSize + 2.5f));//15-9 17-11 19-13 21-15 23-17 25-19 27-21
-//                staticText.setFontSize(fontSize - 3.5f);
-//                staticText.setFontName("Consola");
-//
-//                staticText.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
-//                staticText.setStretchType(StretchTypeEnum.NO_STRETCH);
-//                staticText.setPositionType(PositionTypeEnum.FLOAT);
-//                staticText.setMode(ModeEnum.OPAQUE);
-//
-//                //TextField expression
-//                JRDesignExpression expression = new JRDesignExpression();
-//                expression.setValueClass(String.class);
-//                expression.setText("\"" + result.toString() + "\"");
-//                staticText.setExpression(expression);
-//                band.addElement(staticText);
-//                rows += staticText.getHeight();
-//
-////                JRDesignStaticText staticText = new JRDesignStaticText();
-////                staticText.setX(0);
-////                staticText.setY(rows);
-////                staticText.setWidth(width);
-////                staticText.setHeight(15);
-////                staticText.setFontSize(9f);
-////                //staticText.setFontName(field.getFontName());
-////                staticText.setFontName("Consola");
-////                staticText.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
-////                staticText.setText(result.toString());
-////                band.addElement(staticText);
-////                rows += 15;
-//            } else {
-//
-//                if (box.getChildren().get(0) instanceof TextFieldTicket) {
-//
-////                    TextFieldTicket field = (TextFieldTicket) box.getChildren().get(0);
-////                    int columnI;
-////                    int columnF;
-////
-////                    columnI = 0;
-////                    columnF = columnI + field.getColumnWidth();
-////
-////                    int totalWidth;
-////                    int length;
-////
-////                    if (null != field.getAlignment()) {
-////                        switch (field.getAlignment()) {
-////                            case CENTER_LEFT:
-////                                totalWidth = columnF - columnI;
-////                                length = field.getText().length();
-////                                int posl = 0;
-////                                for (int ca = 0; ca < totalWidth; ca++) {
-////                                    if (ca >= 0 && ca <= (length - 1)) {
-////                                        char c = field.getText().charAt(posl);
-////                                        result.append(c);
-////                                        posl++;
-////                                    } else {
-////                                        result.append(" ");
-////                                    }
-////                                }
-////                                break;
-////                            case CENTER:
-////                                totalWidth = columnF - columnI;
-////                                length = field.getText().length();
-////                                int centro = (totalWidth - length) / 2;
-////                                int posc = 0;
-////                                for (int ca = 0; ca < totalWidth; ca++) {
-////                                    if (ca >= centro && ca <= (centro + (length - 1))) {
-////                                        char c = field.getText().charAt(posc);
-////                                        result.append(c);
-////                                        posc++;
-////                                    } else {
-////                                        result.append(" ");
-////                                    }
-////                                }
-////
-////                                break;
-////                            case CENTER_RIGHT:
-////                                totalWidth = columnF - columnI;
-////                                length = field.getText().length();
-////                                int right = totalWidth - length;
-////                                int posr = 0;
-////                                for (int ca = 0; ca < totalWidth; ca++) {
-////                                    if (ca >= right && ca <= (right + (length - 1))) {
-////                                        char c = field.getText().charAt(posr);
-////                                        result.append(c);
-////                                        posr++;
-////                                    } else {
-////                                        result.append(" ");
-////                                    }
-////                                }
-////                                break;
-////                            default:
-////                                totalWidth = columnF - columnI;
-////                                length = field.getText().length();
-////                                int posd = 0;
-////                                for (int ca = 0; ca < totalWidth; ca++) {
-////                                    if (ca >= 0 && ca <= (length - 1)) {
-////                                        char c = field.getText().charAt(posd);
-////                                        result.append(c);
-////                                        posd++;
-////                                    } else {
-////                                        result.append(" ");
-////                                    }
-////                                }
-////                                break;
-////                        }
-////                    }
-//                    TextFieldTicket field = (TextFieldTicket) box.getChildren().get(0);
-//                    JRDesignTextField staticText = new JRDesignTextField();
-//                    staticText.setStretchWithOverflow(true);
-//                    staticText.setBlankWhenNull(true);
-//
-//                    staticText.setX(0);
-//                    staticText.setY(rows);
-//                    staticText.setWidth(width);
-//                    staticText.setHeight((int) (field.getFontSize() + 2.5f));//15-9 17-11 19-13 21-15 23-17 25-19 27-21
-//                    staticText.setFontSize(field.getFontSize() - 3.5f);
-//                    staticText.setFontName(
-//                            field.getFontName().equalsIgnoreCase("Consola")
-//                            ? "Consola"
-//                            : field.getFontName().equalsIgnoreCase("Roboto Regular")
-//                            ? "RobotoRegular"
-//                            : "RobotoBold");
-//                    staticText.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
-//                    staticText.setHorizontalTextAlign(
-//                            field.getAlignment() == Pos.CENTER_LEFT
-//                            ? HorizontalTextAlignEnum.LEFT
-//                            : field.getAlignment() == Pos.CENTER
-//                            ? HorizontalTextAlignEnum.CENTER
-//                            : HorizontalTextAlignEnum.RIGHT);
-//
-//                    staticText.setStretchType(StretchTypeEnum.NO_STRETCH);
-//                    staticText.setPositionType(PositionTypeEnum.FLOAT);
-//                    staticText.setMode(ModeEnum.OPAQUE);
-//
-//                    JRDesignExpression expression = new JRDesignExpression();
-//                    expression.setValueClass(String.class);
-//                    expression.setText("\"" + field.getText() + "\"");
-//                    staticText.setExpression(expression);
-//                    band.addElement(staticText);
-//                    rows += staticText.getHeight();
-//
-////                    JRDesignStaticText staticText = new JRDesignStaticText();
-////                    staticText.setX(0);
-////                    staticText.setY(rows);
-////                    staticText.setWidth(width);
-////                    staticText.setHeight((int) (field.getFontSize()+2.5f));//15-9 17-11 19-13 21-15 23-17 25-19 27-21
-////                    staticText.setFontSize(field.getFontSize()-3.5f);
-////                    staticText.setFontName(
-////                            field.getFontName().equalsIgnoreCase("Consola")
-////                            ? "Consola"
-////                            : field.getFontName().equalsIgnoreCase("Roboto Regular")
-////                            ? "RobotoRegular"
-////                            : "RobotoBold");
-////                    staticText.setHorizontalTextAlign(
-////                            field.getAlignment() == Pos.CENTER_LEFT
-////                            ? HorizontalTextAlignEnum.LEFT
-////                            : field.getAlignment() == Pos.CENTER
-////                            ? HorizontalTextAlignEnum.CENTER
-////                            : HorizontalTextAlignEnum.RIGHT);
-////                    staticText.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
-////                    staticText.setText(field.getText());
-//////                    staticText.setText(result.toString());
-////                    band.addElement(staticText);
-////                    rows += staticText.getHeight();
-//                } else if (box.getChildren().get(0) instanceof ImageViewTicket) {
-//                    ImageViewTicket imageView = (ImageViewTicket) box.getChildren().get(0);
-//                    String idImage = "./archivos/no-image.png";
-//                    try {
-//                        ByteArrayInputStream bais = new ByteArrayInputStream(imageView.getUrl());
-//                        BufferedImage bufferedImage = ImageIO.read(bais);
-//                        String idGenerated = getIdGenerateImage();
-//                        boolean validateImage = true;
-//                        while (validateImage) {
-//                            File file = new File("./archivos/" + idGenerated + ".png");
-//                            if (file.exists()) {
-//                                idGenerated = getIdGenerateImage();
-//                            } else {
-//                                validateImage = false;
-//                                idGenerated = "./archivos/" + idGenerated + ".png";
-//                                idImage = idGenerated;
-//                            }
-//                        }
-//                        ImageIO.write(bufferedImage, "png", new File(idGenerated));
-//                    } catch (IOException ex1) {
-//                    }
-//                    JRDesignImage image = new JRDesignImage(jasperDesign);
-//                    image.setX(
-//                            box.getAlignment() == Pos.CENTER_LEFT ? 0
-//                            : box.getAlignment() == Pos.CENTER
-//                            ? (int) (width - imageView.getFitWidth()) / 2
-//                            : box.getAlignment() == Pos.CENTER_RIGHT ? (int) (width - imageView.getFitWidth()) : 0
-//                    );
-//                    image.setY(rows);
-//                    image.setWidth((int) imageView.getFitWidth());
-//                    image.setHeight((int) imageView.getFitHeight());
-//                    image.setScaleImage(ScaleImageEnum.FILL_FRAME);
-//                    JRDesignExpression expr = new JRDesignExpression();
-//                    expr.setText("\"" + idImage + "\"");
-//                    image.setExpression(expr);
-//                    band.addElement(image);
-//                    rows += imageView.getFitHeight();
-//                    fileImages.add(idImage);
-//                }
-//            }
-//        }
-//        return rows;
-//    }
+    // private JasperDesign getJasperDesign(int width, int height, AnchorPane
+    // apEncabezado, AnchorPane apDetalle, AnchorPane pPie) throws JRException {
+    // /*
+    // width=595
+    // height=842
+    // top=right=bottom=left=20
+    // columnwidth=555
+    // columnspace=0
+    // columns=1
+    // */
+    // JasperDesign jasperDesign = new JasperDesign();
+    // jasperDesign.setName("Formato de ticket");
+    // jasperDesign.setPageWidth(width);
+    // jasperDesign.setPageHeight(height);
+    // jasperDesign.setColumnWidth(width);
+    // jasperDesign.setColumnSpacing(0);
+    // jasperDesign.setLeftMargin(0);
+    // jasperDesign.setRightMargin(0);
+    // jasperDesign.setTopMargin(0);
+    // jasperDesign.setBottomMargin(0);
+    //
+    // JRDesignBand band = new JRDesignBand();
+    // band.setSplitType(SplitTypeEnum.STRETCH);
+    // band.setHeight(height);
+    //
+    // //font size 9f x 15 height
+    // int rows = 0;
+    // rows += createRow(apEncabezado, jasperDesign, band, width, rows);
+    // rows = createRow(apDetalle, jasperDesign, band, width, rows);
+    // createRow(pPie, jasperDesign, band, width, rows);
+    //
+    //// jasperDesign.setTitle(band);
+    // ((JRDesignSection) jasperDesign.getDetailSection()).addBand(band);
+    // return jasperDesign;
+    // }
+    //
+    // @Deprecated
+    // private int createRow(AnchorPane anchorPane, JasperDesign jasperDesign,
+    // JRDesignBand band, int width, int rows) {
+    // for (int i = 0; i < anchorPane.getChildren().size(); i++) {
+    //
+    // HBox box = ((HBox) anchorPane.getChildren().get(i));
+    // StringBuilder result = new StringBuilder();
+    //
+    // if (box.getChildren().size() > 1) {
+    //
+    // int columnI;
+    // int columnF;
+    // int columnA = 0;
+    // float fontSize = 0;
+    // for (int j = 0; j < box.getChildren().size(); j++) {
+    // TextFieldTicket field = (TextFieldTicket) box.getChildren().get(j);
+    // fontSize = field.getFontSize();
+    // columnI = columnA;
+    // columnF = columnI + field.getColumnWidth();
+    // columnA = columnF;
+    //
+    // int totalWidth;
+    // int length;
+    //
+    // if (null != field.getAlignment()) {
+    // switch (field.getAlignment()) {
+    // case CENTER_LEFT:
+    // totalWidth = columnF - columnI;
+    // length = field.getText().length();
+    // int posl = 0;
+    // for (int ca = 0; ca < totalWidth; ca++) {
+    // if (ca >= 0 && ca <= (length - 1)) {
+    // char c = field.getText().charAt(posl);
+    // result.append(c);
+    // posl++;
+    //
+    // } else {
+    // result.append(" ");
+    // }
+    // }
+    // break;
+    // case CENTER:
+    // totalWidth = columnF - columnI;
+    // length = field.getText().length();
+    // int centro = (totalWidth - length) / 2;
+    // int posc = 0;
+    // for (int ca = 0; ca < totalWidth; ca++) {
+    // if (ca >= centro && ca <= (centro + (length - 1))) {
+    // char c = field.getText().charAt(posc);
+    // result.append(c);
+    // posc++;
+    //
+    // } else {
+    // result.append(" ");
+    // }
+    // }
+    //
+    // break;
+    // case CENTER_RIGHT:
+    // totalWidth = columnF - columnI;
+    // length = field.getText().length();
+    // int right = totalWidth - length;
+    // int posr = 0;
+    // for (int ca = 0; ca < totalWidth; ca++) {
+    // if (ca >= right && ca <= (right + (length - 1))) {
+    // char c = field.getText().charAt(posr);
+    // result.append(c);
+    // posr++;
+    //
+    // } else {
+    // result.append(" ");
+    // }
+    // }
+    // break;
+    // default:
+    // totalWidth = columnF - columnI;
+    // length = field.getText().length();
+    // int posd = 0;
+    // for (int ca = 0; ca < totalWidth; ca++) {
+    // if (ca >= 0 && ca <= (length - 1)) {
+    // char c = field.getText().charAt(posd);
+    // result.append(c);
+    // posd++;
+    //
+    // } else {
+    // result.append(" ");
+    // }
+    // }
+    // break;
+    // }
+    // }
+    // }
+    //
+    // JRDesignTextField staticText = new JRDesignTextField();
+    // staticText.setStretchWithOverflow(true);
+    // staticText.setBlankWhenNull(true);
+    //
+    // staticText.setX(0);
+    // staticText.setY(rows);
+    // staticText.setWidth(width);
+    // staticText.setHeight((int) (fontSize + 2.5f));//15-9 17-11 19-13 21-15 23-17
+    // 25-19 27-21
+    // staticText.setFontSize(fontSize - 3.5f);
+    // staticText.setFontName("Consola");
+    //
+    // staticText.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
+    // staticText.setStretchType(StretchTypeEnum.NO_STRETCH);
+    // staticText.setPositionType(PositionTypeEnum.FLOAT);
+    // staticText.setMode(ModeEnum.OPAQUE);
+    //
+    // //TextField expression
+    // JRDesignExpression expression = new JRDesignExpression();
+    // expression.setValueClass(String.class);
+    // expression.setText("\"" + result.toString() + "\"");
+    // staticText.setExpression(expression);
+    // band.addElement(staticText);
+    // rows += staticText.getHeight();
+    //
+    //// JRDesignStaticText staticText = new JRDesignStaticText();
+    //// staticText.setX(0);
+    //// staticText.setY(rows);
+    //// staticText.setWidth(width);
+    //// staticText.setHeight(15);
+    //// staticText.setFontSize(9f);
+    //// //staticText.setFontName(field.getFontName());
+    //// staticText.setFontName("Consola");
+    //// staticText.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
+    //// staticText.setText(result.toString());
+    //// band.addElement(staticText);
+    //// rows += 15;
+    // } else {
+    //
+    // if (box.getChildren().get(0) instanceof TextFieldTicket) {
+    //
+    //// TextFieldTicket field = (TextFieldTicket) box.getChildren().get(0);
+    //// int columnI;
+    //// int columnF;
+    ////
+    //// columnI = 0;
+    //// columnF = columnI + field.getColumnWidth();
+    ////
+    //// int totalWidth;
+    //// int length;
+    ////
+    //// if (null != field.getAlignment()) {
+    //// switch (field.getAlignment()) {
+    //// case CENTER_LEFT:
+    //// totalWidth = columnF - columnI;
+    //// length = field.getText().length();
+    //// int posl = 0;
+    //// for (int ca = 0; ca < totalWidth; ca++) {
+    //// if (ca >= 0 && ca <= (length - 1)) {
+    //// char c = field.getText().charAt(posl);
+    //// result.append(c);
+    //// posl++;
+    //// } else {
+    //// result.append(" ");
+    //// }
+    //// }
+    //// break;
+    //// case CENTER:
+    //// totalWidth = columnF - columnI;
+    //// length = field.getText().length();
+    //// int centro = (totalWidth - length) / 2;
+    //// int posc = 0;
+    //// for (int ca = 0; ca < totalWidth; ca++) {
+    //// if (ca >= centro && ca <= (centro + (length - 1))) {
+    //// char c = field.getText().charAt(posc);
+    //// result.append(c);
+    //// posc++;
+    //// } else {
+    //// result.append(" ");
+    //// }
+    //// }
+    ////
+    //// break;
+    //// case CENTER_RIGHT:
+    //// totalWidth = columnF - columnI;
+    //// length = field.getText().length();
+    //// int right = totalWidth - length;
+    //// int posr = 0;
+    //// for (int ca = 0; ca < totalWidth; ca++) {
+    //// if (ca >= right && ca <= (right + (length - 1))) {
+    //// char c = field.getText().charAt(posr);
+    //// result.append(c);
+    //// posr++;
+    //// } else {
+    //// result.append(" ");
+    //// }
+    //// }
+    //// break;
+    //// default:
+    //// totalWidth = columnF - columnI;
+    //// length = field.getText().length();
+    //// int posd = 0;
+    //// for (int ca = 0; ca < totalWidth; ca++) {
+    //// if (ca >= 0 && ca <= (length - 1)) {
+    //// char c = field.getText().charAt(posd);
+    //// result.append(c);
+    //// posd++;
+    //// } else {
+    //// result.append(" ");
+    //// }
+    //// }
+    //// break;
+    //// }
+    //// }
+    // TextFieldTicket field = (TextFieldTicket) box.getChildren().get(0);
+    // JRDesignTextField staticText = new JRDesignTextField();
+    // staticText.setStretchWithOverflow(true);
+    // staticText.setBlankWhenNull(true);
+    //
+    // staticText.setX(0);
+    // staticText.setY(rows);
+    // staticText.setWidth(width);
+    // staticText.setHeight((int) (field.getFontSize() + 2.5f));//15-9 17-11 19-13
+    // 21-15 23-17 25-19 27-21
+    // staticText.setFontSize(field.getFontSize() - 3.5f);
+    // staticText.setFontName(
+    // field.getFontName().equalsIgnoreCase("Consola")
+    // ? "Consola"
+    // : field.getFontName().equalsIgnoreCase("Roboto Regular")
+    // ? "RobotoRegular"
+    // : "RobotoBold");
+    // staticText.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
+    // staticText.setHorizontalTextAlign(
+    // field.getAlignment() == Pos.CENTER_LEFT
+    // ? HorizontalTextAlignEnum.LEFT
+    // : field.getAlignment() == Pos.CENTER
+    // ? HorizontalTextAlignEnum.CENTER
+    // : HorizontalTextAlignEnum.RIGHT);
+    //
+    // staticText.setStretchType(StretchTypeEnum.NO_STRETCH);
+    // staticText.setPositionType(PositionTypeEnum.FLOAT);
+    // staticText.setMode(ModeEnum.OPAQUE);
+    //
+    // JRDesignExpression expression = new JRDesignExpression();
+    // expression.setValueClass(String.class);
+    // expression.setText("\"" + field.getText() + "\"");
+    // staticText.setExpression(expression);
+    // band.addElement(staticText);
+    // rows += staticText.getHeight();
+    //
+    //// JRDesignStaticText staticText = new JRDesignStaticText();
+    //// staticText.setX(0);
+    //// staticText.setY(rows);
+    //// staticText.setWidth(width);
+    //// staticText.setHeight((int) (field.getFontSize()+2.5f));//15-9 17-11 19-13
+    // 21-15 23-17 25-19 27-21
+    //// staticText.setFontSize(field.getFontSize()-3.5f);
+    //// staticText.setFontName(
+    //// field.getFontName().equalsIgnoreCase("Consola")
+    //// ? "Consola"
+    //// : field.getFontName().equalsIgnoreCase("Roboto Regular")
+    //// ? "RobotoRegular"
+    //// : "RobotoBold");
+    //// staticText.setHorizontalTextAlign(
+    //// field.getAlignment() == Pos.CENTER_LEFT
+    //// ? HorizontalTextAlignEnum.LEFT
+    //// : field.getAlignment() == Pos.CENTER
+    //// ? HorizontalTextAlignEnum.CENTER
+    //// : HorizontalTextAlignEnum.RIGHT);
+    //// staticText.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
+    //// staticText.setText(field.getText());
+    ////// staticText.setText(result.toString());
+    //// band.addElement(staticText);
+    //// rows += staticText.getHeight();
+    // } else if (box.getChildren().get(0) instanceof ImageViewTicket) {
+    // ImageViewTicket imageView = (ImageViewTicket) box.getChildren().get(0);
+    // String idImage = "./archivos/no-image.png";
+    // try {
+    // ByteArrayInputStream bais = new ByteArrayInputStream(imageView.getUrl());
+    // BufferedImage bufferedImage = ImageIO.read(bais);
+    // String idGenerated = getIdGenerateImage();
+    // boolean validateImage = true;
+    // while (validateImage) {
+    // File file = new File("./archivos/" + idGenerated + ".png");
+    // if (file.exists()) {
+    // idGenerated = getIdGenerateImage();
+    // } else {
+    // validateImage = false;
+    // idGenerated = "./archivos/" + idGenerated + ".png";
+    // idImage = idGenerated;
+    // }
+    // }
+    // ImageIO.write(bufferedImage, "png", new File(idGenerated));
+    // } catch (IOException ex1) {
+    // }
+    // JRDesignImage image = new JRDesignImage(jasperDesign);
+    // image.setX(
+    // box.getAlignment() == Pos.CENTER_LEFT ? 0
+    // : box.getAlignment() == Pos.CENTER
+    // ? (int) (width - imageView.getFitWidth()) / 2
+    // : box.getAlignment() == Pos.CENTER_RIGHT ? (int) (width -
+    // imageView.getFitWidth()) : 0
+    // );
+    // image.setY(rows);
+    // image.setWidth((int) imageView.getFitWidth());
+    // image.setHeight((int) imageView.getFitHeight());
+    // image.setScaleImage(ScaleImageEnum.FILL_FRAME);
+    // JRDesignExpression expr = new JRDesignExpression();
+    // expr.setText("\"" + idImage + "\"");
+    // image.setExpression(expr);
+    // band.addElement(image);
+    // rows += imageView.getFitHeight();
+    // fileImages.add(idImage);
+    // }
+    // }
+    // }
+    // return rows;
+    // }
     public void printCortarPapel(String printerName) throws PrintException, IOException {
         DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
         PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
@@ -1352,7 +1464,7 @@ public class BillPrintable implements Printable {
         PrintService service = findPrintService(printerName, printService);
         DocPrintJob job = service.createPrintJob();
         byte[] bytes = "\n\n\n".getBytes("CP437");
-        byte[] cutP = new byte[]{0x1d, 'V', 1};
+        byte[] cutP = new byte[] { 0x1d, 'V', 1 };
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(bytes);
         outputStream.write(cutP);
@@ -1379,7 +1491,7 @@ public class BillPrintable implements Printable {
             DocPrintJob job = service.createPrintJob();
 
             byte[] bytes = readFileToByteArray(file);
-            byte[] cutP = new byte[]{0x1d, 'V', 1};
+            byte[] cutP = new byte[] { 0x1d, 'V', 1 };
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             outputStream.write(bytes);
             if (cortar) {
@@ -1431,7 +1543,8 @@ public class BillPrintable implements Printable {
         return bArray;
     }
 
-    public void loadEstructuraTicket(int idTicket, String ruta, AnchorPane apEncabezado, AnchorPane apDetalleCabecera, AnchorPane apPie) {
+    public void loadEstructuraTicket(int idTicket, String ruta, AnchorPane apEncabezado, AnchorPane apDetalleCabecera,
+            AnchorPane apPie) {
         apEncabezado.getChildren().clear();
         apDetalleCabecera.getChildren().clear();
         apPie.getChildren().clear();
@@ -1439,7 +1552,8 @@ public class BillPrintable implements Printable {
 
         ArrayList<ImagenTB> imagenTBs = ImageADO.ListaImagePorIdRelacionado(idTicket);
 
-        sheetWidth = jSONObject.get("column") != null ? Short.parseShort(jSONObject.get("column").toString()) : (short) 40;
+        sheetWidth = jSONObject.get("column") != null ? Short.parseShort(jSONObject.get("column").toString())
+                : (short) 40;
 
         if (jSONObject.get("cabecera") != null) {
             JSONObject cabeceraObjects = Json.obtenerObjetoJSON(jSONObject.get("cabecera").toString());
@@ -1448,19 +1562,39 @@ public class BillPrintable implements Printable {
                 JSONObject objectObtener = Json.obtenerObjetoJSON(cabeceraObjects.get("cb_" + (i + 1)).toString());
                 if (objectObtener.get("text") != null) {
                     JSONObject object = Json.obtenerObjetoJSON(objectObtener.get("text").toString());
-                    TextFieldTicket field = addElementTextField("iu", object.get("value").toString(), Boolean.valueOf(object.get("multiline").toString()), Short.parseShort(object.get("lines").toString()), Short.parseShort(object.get("width").toString()), getAlignment(object.get("align").toString()), Boolean.parseBoolean(object.get("editable").toString()), String.valueOf(object.get("variable").toString()), String.valueOf(object.get("font").toString()), Float.valueOf(object.get("size").toString()));
+                    TextFieldTicket field = addElementTextField("iu", object.get("value").toString(),
+                            Boolean.valueOf(object.get("multiline").toString()),
+                            Short.parseShort(object.get("lines").toString()),
+                            Short.parseShort(object.get("width").toString()),
+                            getAlignment(object.get("align").toString()),
+                            Boolean.parseBoolean(object.get("editable").toString()),
+                            String.valueOf(object.get("variable").toString()),
+                            String.valueOf(object.get("font").toString()),
+                            Float.valueOf(object.get("size").toString()));
                     box.getChildren().add(field);
                 } else if (objectObtener.get("list") != null) {
                     JSONArray array = Json.obtenerArrayJSON(objectObtener.get("list").toString());
                     Iterator it = array.iterator();
                     while (it.hasNext()) {
                         JSONObject object = Json.obtenerObjetoJSON(it.next().toString());
-                        TextFieldTicket field = addElementTextField("iu", object.get("value").toString(), Boolean.valueOf(object.get("multiline").toString()), Short.parseShort(object.get("lines").toString()), Short.parseShort(object.get("width").toString()), getAlignment(object.get("align").toString()), Boolean.parseBoolean(object.get("editable").toString()), String.valueOf(object.get("variable").toString()), String.valueOf(object.get("font").toString()), Float.valueOf(object.get("size").toString()));
+                        TextFieldTicket field = addElementTextField("iu", object.get("value").toString(),
+                                Boolean.valueOf(object.get("multiline").toString()),
+                                Short.parseShort(object.get("lines").toString()),
+                                Short.parseShort(object.get("width").toString()),
+                                getAlignment(object.get("align").toString()),
+                                Boolean.parseBoolean(object.get("editable").toString()),
+                                String.valueOf(object.get("variable").toString()),
+                                String.valueOf(object.get("font").toString()),
+                                Float.valueOf(object.get("size").toString()));
                         box.getChildren().add(field);
                     }
                 } else if (objectObtener.get("image") != null) {
                     JSONObject object = Json.obtenerObjetoJSON(objectObtener.get("image").toString());
-                    ImageViewTicket imageView = addElementImageView("", Short.parseShort(object.get("width").toString()), Double.parseDouble(object.get("fitwidth").toString()), Double.parseDouble(object.get("fitheight").toString()), false, object.get("type").toString());
+                    ImageViewTicket imageView = addElementImageView("",
+                            Short.parseShort(object.get("width").toString()),
+                            Double.parseDouble(object.get("fitwidth").toString()),
+                            Double.parseDouble(object.get("fitheight").toString()), false,
+                            object.get("type").toString());
                     imageView.setId(String.valueOf(object.get("value").toString()));
                     box.setPrefWidth(imageView.getColumnWidth() * pointWidthSizeView);
                     box.setPrefHeight(imageView.getFitHeight());
@@ -1476,19 +1610,39 @@ public class BillPrintable implements Printable {
                 JSONObject objectObtener = Json.obtenerObjetoJSON(detalleObjects.get("dr_" + (i + 1)).toString());
                 if (objectObtener.get("text") != null) {
                     JSONObject object = Json.obtenerObjetoJSON(objectObtener.get("text").toString());
-                    TextFieldTicket field = addElementTextField("iu", object.get("value").toString(), Boolean.valueOf(object.get("multiline").toString()), Short.parseShort(object.get("lines").toString()), Short.parseShort(object.get("width").toString()), getAlignment(object.get("align").toString()), Boolean.parseBoolean(object.get("editable").toString()), String.valueOf(object.get("variable").toString()), String.valueOf(object.get("font").toString()), Float.valueOf(object.get("size").toString()));
+                    TextFieldTicket field = addElementTextField("iu", object.get("value").toString(),
+                            Boolean.valueOf(object.get("multiline").toString()),
+                            Short.parseShort(object.get("lines").toString()),
+                            Short.parseShort(object.get("width").toString()),
+                            getAlignment(object.get("align").toString()),
+                            Boolean.parseBoolean(object.get("editable").toString()),
+                            String.valueOf(object.get("variable").toString()),
+                            String.valueOf(object.get("font").toString()),
+                            Float.valueOf(object.get("size").toString()));
                     box.getChildren().add(field);
                 } else if (objectObtener.get("list") != null) {
                     JSONArray array = Json.obtenerArrayJSON(objectObtener.get("list").toString());
                     Iterator it = array.iterator();
                     while (it.hasNext()) {
                         JSONObject object = Json.obtenerObjetoJSON(it.next().toString());
-                        TextFieldTicket field = addElementTextField("iu", object.get("value").toString(), Boolean.valueOf(object.get("multiline").toString()), Short.parseShort(object.get("lines").toString()), Short.parseShort(object.get("width").toString()), getAlignment(object.get("align").toString()), Boolean.parseBoolean(object.get("editable").toString()), String.valueOf(object.get("variable").toString()), String.valueOf(object.get("font").toString()), Float.valueOf(object.get("size").toString()));
+                        TextFieldTicket field = addElementTextField("iu", object.get("value").toString(),
+                                Boolean.valueOf(object.get("multiline").toString()),
+                                Short.parseShort(object.get("lines").toString()),
+                                Short.parseShort(object.get("width").toString()),
+                                getAlignment(object.get("align").toString()),
+                                Boolean.parseBoolean(object.get("editable").toString()),
+                                String.valueOf(object.get("variable").toString()),
+                                String.valueOf(object.get("font").toString()),
+                                Float.valueOf(object.get("size").toString()));
                         box.getChildren().add(field);
                     }
                 } else if (objectObtener.get("image") != null) {
                     JSONObject object = Json.obtenerObjetoJSON(objectObtener.get("image").toString());
-                    ImageViewTicket imageView = addElementImageView("", Short.parseShort(object.get("width").toString()), Double.parseDouble(object.get("fitwidth").toString()), Double.parseDouble(object.get("fitheight").toString()), false, object.get("type").toString());
+                    ImageViewTicket imageView = addElementImageView("",
+                            Short.parseShort(object.get("width").toString()),
+                            Double.parseDouble(object.get("fitwidth").toString()),
+                            Double.parseDouble(object.get("fitheight").toString()), false,
+                            object.get("type").toString());
                     imageView.setId(String.valueOf(object.get("value").toString()));
                     box.setPrefWidth(imageView.getColumnWidth() * pointWidthSizeView);
                     box.setPrefHeight(imageView.getFitHeight());
@@ -1505,19 +1659,39 @@ public class BillPrintable implements Printable {
                 JSONObject objectObtener = Json.obtenerObjetoJSON(pieObjects.get("cp_" + (i + 1)).toString());
                 if (objectObtener.get("text") != null) {
                     JSONObject object = Json.obtenerObjetoJSON(objectObtener.get("text").toString());
-                    TextFieldTicket field = addElementTextField("iu", object.get("value").toString(), Boolean.valueOf(object.get("multiline").toString()), Short.parseShort(object.get("lines").toString()), Short.parseShort(object.get("width").toString()), getAlignment(object.get("align").toString()), Boolean.parseBoolean(object.get("editable").toString()), String.valueOf(object.get("variable").toString()), String.valueOf(object.get("font").toString()), Float.valueOf(object.get("size").toString()));
+                    TextFieldTicket field = addElementTextField("iu", object.get("value").toString(),
+                            Boolean.valueOf(object.get("multiline").toString()),
+                            Short.parseShort(object.get("lines").toString()),
+                            Short.parseShort(object.get("width").toString()),
+                            getAlignment(object.get("align").toString()),
+                            Boolean.parseBoolean(object.get("editable").toString()),
+                            String.valueOf(object.get("variable").toString()),
+                            String.valueOf(object.get("font").toString()),
+                            Float.valueOf(object.get("size").toString()));
                     box.getChildren().add(field);
                 } else if (objectObtener.get("list") != null) {
                     JSONArray array = Json.obtenerArrayJSON(objectObtener.get("list").toString());
                     Iterator it = array.iterator();
                     while (it.hasNext()) {
                         JSONObject object = Json.obtenerObjetoJSON(it.next().toString());
-                        TextFieldTicket field = addElementTextField("iu", object.get("value").toString(), Boolean.valueOf(object.get("multiline").toString()), Short.parseShort(object.get("lines").toString()), Short.parseShort(object.get("width").toString()), getAlignment(object.get("align").toString()), Boolean.parseBoolean(object.get("editable").toString()), String.valueOf(object.get("variable").toString()), String.valueOf(object.get("font").toString()), Float.valueOf(object.get("size").toString()));
+                        TextFieldTicket field = addElementTextField("iu", object.get("value").toString(),
+                                Boolean.valueOf(object.get("multiline").toString()),
+                                Short.parseShort(object.get("lines").toString()),
+                                Short.parseShort(object.get("width").toString()),
+                                getAlignment(object.get("align").toString()),
+                                Boolean.parseBoolean(object.get("editable").toString()),
+                                String.valueOf(object.get("variable").toString()),
+                                String.valueOf(object.get("font").toString()),
+                                Float.valueOf(object.get("size").toString()));
                         box.getChildren().add(field);
                     }
                 } else if (objectObtener.get("image") != null) {
                     JSONObject object = Json.obtenerObjetoJSON(objectObtener.get("image").toString());
-                    ImageViewTicket imageView = addElementImageView("", Short.parseShort(object.get("width").toString()), Double.parseDouble(object.get("fitwidth").toString()), Double.parseDouble(object.get("fitheight").toString()), false, object.get("type").toString());
+                    ImageViewTicket imageView = addElementImageView("",
+                            Short.parseShort(object.get("width").toString()),
+                            Double.parseDouble(object.get("fitwidth").toString()),
+                            Double.parseDouble(object.get("fitheight").toString()), false,
+                            object.get("type").toString());
                     imageView.setId(String.valueOf(object.get("value").toString()));
                     box.setPrefWidth(imageView.getColumnWidth() * pointWidthSizeView);
                     box.setPrefHeight(imageView.getFitHeight());
@@ -1535,7 +1709,8 @@ public class BillPrintable implements Printable {
                         ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
                         if (imagenTBs.get(i).getIdSubRelacion().equalsIgnoreCase(imageViewTicket.getId())) {
                             imageViewTicket.setUrl(imagenTBs.get(i).getImagen());
-                            imageViewTicket.setImage(new javafx.scene.image.Image(new ByteArrayInputStream(imagenTBs.get(i).getImagen())));
+                            imageViewTicket.setImage(new javafx.scene.image.Image(
+                                    new ByteArrayInputStream(imagenTBs.get(i).getImagen())));
                         }
                     }
                 }
@@ -1550,7 +1725,8 @@ public class BillPrintable implements Printable {
                         ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
                         if (imagenTBs.get(i).getIdSubRelacion().equalsIgnoreCase(imageViewTicket.getId())) {
                             imageViewTicket.setUrl(imagenTBs.get(i).getImagen());
-                            imageViewTicket.setImage(new javafx.scene.image.Image(new ByteArrayInputStream(imagenTBs.get(i).getImagen())));
+                            imageViewTicket.setImage(new javafx.scene.image.Image(
+                                    new ByteArrayInputStream(imagenTBs.get(i).getImagen())));
                         }
                     }
                 }
@@ -1565,7 +1741,8 @@ public class BillPrintable implements Printable {
                         ImageViewTicket imageViewTicket = (ImageViewTicket) hBox.getChildren().get(0);
                         if (imagenTBs.get(i).getIdSubRelacion().equalsIgnoreCase(imageViewTicket.getId())) {
                             imageViewTicket.setUrl(imagenTBs.get(i).getImagen());
-                            imageViewTicket.setImage(new javafx.scene.image.Image(new ByteArrayInputStream(imagenTBs.get(i).getImagen())));
+                            imageViewTicket.setImage(new javafx.scene.image.Image(
+                                    new ByteArrayInputStream(imagenTBs.get(i).getImagen())));
                         }
                     }
                 }
@@ -1607,7 +1784,8 @@ public class BillPrintable implements Printable {
         return hBox;
     }
 
-    private TextFieldTicket addElementTextField(String id, String titulo, boolean multilinea, short lines, short widthColumn, Pos align, boolean editable, String variable, String font, float size) {
+    private TextFieldTicket addElementTextField(String id, String titulo, boolean multilinea, short lines,
+            short widthColumn, Pos align, boolean editable, String variable, String font, float size) {
         TextFieldTicket field = new TextFieldTicket(titulo, id);
         field.setMultilineas(multilinea);
         field.setLines(lines);
@@ -1621,7 +1799,8 @@ public class BillPrintable implements Printable {
         return field;
     }
 
-    private ImageViewTicket addElementImageView(String path, short widthColumn, double width, double height, boolean newImage, String type) {
+    private ImageViewTicket addElementImageView(String path, short widthColumn, double width, double height,
+            boolean newImage, String type) {
         ImageViewTicket imageView = new ImageViewTicket();
         imageView.setColumnWidth(widthColumn);
         imageView.setFitWidth(width);

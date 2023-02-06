@@ -371,53 +371,85 @@ public class FxOrdenCompraController implements Initializable {
         if (cbProveedor.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(apWindow, "Orden de Compra", "Seleccione su provedor.");
             cbProveedor.requestFocus();
-        } else if (dtFechaVencimiento.getValue() == null) {
+            return;
+        }
+
+        if (dtFechaVencimiento.getValue() == null) {
             Tools.AlertMessageWarning(apWindow, "Orden de Compra", "Ingrese la fecha de entrega.");
             dtFechaVencimiento.requestFocus();
-        } else if (tvList.getItems().isEmpty()) {
+            return;
+        }
+
+        if (tvList.getItems().isEmpty()) {
             Tools.AlertMessageWarning(apWindow, "Orden de Compra", "No hay productos en la lista.");
             btnProducto.requestFocus();
-        } else if (cbMoneda.getSelectionModel().getSelectedIndex() < 0) {
+            return;
+        }
+
+        if (cbMoneda.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(apWindow, "Orden de Compra", "Seleccione el tipo de moneda.");
             cbMoneda.requestFocus();
-        } else {
-            short value = Tools.AlertMessageConfirmation(apWindow, "Orden de Compra", "¿Está seguro de continuar?");
-            if (value == 1) {
-                ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
-                    Thread t = new Thread(runnable);
-                    t.setDaemon(true);
-                    return t;
+            return;
+        }
+
+        short value = Tools.AlertMessageConfirmation(apWindow, "Orden de Compra", "¿Está seguro de continuar?");
+        if (value == 1) {
+            ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+                Thread t = new Thread(runnable);
+                t.setDaemon(true);
+                return t;
+            });
+
+            Task<String> task = new Task<String>() {
+                @Override
+                protected String call() {
+                    OrdenCompraTB compraTB = new OrdenCompraTB();
+                    compraTB.setIdOrdenCompra(idOrdenCompra);
+                    compraTB.setNumeracion(0);
+                    compraTB.setIdEmpleado(Session.USER_ID);
+                    compraTB.setIdProveedor(cbProveedor.getSelectionModel().getSelectedItem().getIdProveedor());
+                    compraTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
+                    compraTB.setTipoCambio(cbMoneda.getSelectionModel().getSelectedItem().getTipoCambio());
+                    compraTB.setFechaRegistro(Tools.getDatePicker(dtFechaEmision));
+                    compraTB.setHoraRegistro(Tools.getTime());
+                    compraTB.setFechaVencimiento(Tools.getDatePicker(dtFechaVencimiento));
+                    compraTB.setHoraVencimiento(Tools.getTime());
+                    compraTB.setObservacion(txtObservacion.getText().trim());
+                    compraTB.setOrdenCompraDetalleTBs(new ArrayList<>(tvList.getItems()));
+
+                    return OrdenCompraADO.InsertarOrdenCompra(compraTB);
+                }
+            };
+
+            task.setOnScheduled(w -> {
+                hbBody.setDisable(true);
+                hbLoad.setVisible(true);
+                btnAceptarLoad.setVisible(false);
+                lblMessageLoad.setText("Procesando información...");
+                lblMessageLoad.setTextFill(Color.web("#ffffff"));
+            });
+            task.setOnFailed(w -> {
+                btnAceptarLoad.setVisible(true);
+                btnAceptarLoad.setOnAction(event -> {
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    resetOrdenCompra();
                 });
-
-                Task<String> task = new Task<String>() {
-                    @Override
-                    protected String call() {
-                        OrdenCompraTB compraTB = new OrdenCompraTB();
-                        compraTB.setIdOrdenCompra(idOrdenCompra);
-                        compraTB.setNumeracion(0);
-                        compraTB.setIdEmpleado(Session.USER_ID);
-                        compraTB.setIdProveedor(cbProveedor.getSelectionModel().getSelectedItem().getIdProveedor());
-                        compraTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
-                        compraTB.setTipoCambio(cbMoneda.getSelectionModel().getSelectedItem().getTipoCambio());
-                        compraTB.setFechaRegistro(Tools.getDatePicker(dtFechaEmision));
-                        compraTB.setHoraRegistro(Tools.getTime());
-                        compraTB.setFechaVencimiento(Tools.getDatePicker(dtFechaVencimiento));
-                        compraTB.setHoraVencimiento(Tools.getTime());
-                        compraTB.setObservacion(txtObservacion.getText().trim());
-                        compraTB.setOrdenCompraDetalleTBs(new ArrayList<>(tvList.getItems()));
-
-                        return OrdenCompraADO.InsertarOrdenCompra(compraTB);
+                btnAceptarLoad.setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        hbBody.setDisable(false);
+                        hbLoad.setVisible(false);
+                        resetOrdenCompra();
                     }
-                };
-
-                task.setOnScheduled(w -> {
-                    hbBody.setDisable(true);
-                    hbLoad.setVisible(true);
-                    btnAceptarLoad.setVisible(false);
-                    lblMessageLoad.setText("Procesando información...");
-                    lblMessageLoad.setTextFill(Color.web("#ffffff"));
                 });
-                task.setOnFailed(w -> {
+                lblMessageLoad.setText(task.getException().getLocalizedMessage());
+                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+            });
+            task.setOnSucceeded(w -> {
+                String result = task.getValue();
+                if (result.equalsIgnoreCase("inserted")) {
+                    lblMessageLoad.setText("Se registró correctamente la orden de compra.");
+                    lblMessageLoad.setTextFill(Color.web("#ffffff"));
                     btnAceptarLoad.setVisible(true);
                     btnAceptarLoad.setOnAction(event -> {
                         hbBody.setDisable(false);
@@ -431,69 +463,48 @@ public class FxOrdenCompraController implements Initializable {
                             resetOrdenCompra();
                         }
                     });
-                    lblMessageLoad.setText(task.getException().getLocalizedMessage());
+                } else if (result.equalsIgnoreCase("updated")) {
+                    lblMessageLoad.setText("se actualizó correctamente la orden de compra.");
+                    lblMessageLoad.setTextFill(Color.web("#ffffff"));
+                    btnAceptarLoad.setVisible(true);
+                    btnAceptarLoad.setOnAction(event -> {
+                        hbBody.setDisable(false);
+                        hbLoad.setVisible(false);
+                        resetOrdenCompra();
+                    });
+                    btnAceptarLoad.setOnKeyPressed(event -> {
+                        if (event.getCode() == KeyCode.ENTER) {
+                            hbBody.setDisable(false);
+                            hbLoad.setVisible(false);
+                            resetOrdenCompra();
+                        }
+                    });
+                } else {
+                    lblMessageLoad.setText(result);
                     lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-                });
-                task.setOnSucceeded(w -> {
-                    String result = task.getValue();
-                    if (result.equalsIgnoreCase("inserted")) {
-                        lblMessageLoad.setText("Se registró correctamente la orden de compra.");
-                        lblMessageLoad.setTextFill(Color.web("#ffffff"));
-                        btnAceptarLoad.setVisible(true);
-                        btnAceptarLoad.setOnAction(event -> {
+                    btnAceptarLoad.setVisible(true);
+                    btnAceptarLoad.setOnAction(event -> {
+                        hbBody.setDisable(false);
+                        hbLoad.setVisible(false);
+                        resetOrdenCompra();
+                    });
+                    btnAceptarLoad.setOnKeyPressed(event -> {
+                        if (event.getCode() == KeyCode.ENTER) {
                             hbBody.setDisable(false);
                             hbLoad.setVisible(false);
                             resetOrdenCompra();
-                        });
-                        btnAceptarLoad.setOnKeyPressed(event -> {
-                            if (event.getCode() == KeyCode.ENTER) {
-                                hbBody.setDisable(false);
-                                hbLoad.setVisible(false);
-                                resetOrdenCompra();
-                            }
-                        });
-                    } else if (result.equalsIgnoreCase("updated")) {
-                        lblMessageLoad.setText("se actualizó correctamente la orden de compra.");
-                        lblMessageLoad.setTextFill(Color.web("#ffffff"));
-                        btnAceptarLoad.setVisible(true);
-                        btnAceptarLoad.setOnAction(event -> {
-                            hbBody.setDisable(false);
-                            hbLoad.setVisible(false);
-                            resetOrdenCompra();
-                        });
-                        btnAceptarLoad.setOnKeyPressed(event -> {
-                            if (event.getCode() == KeyCode.ENTER) {
-                                hbBody.setDisable(false);
-                                hbLoad.setVisible(false);
-                                resetOrdenCompra();
-                            }
-                        });
-                    } else {
-                        lblMessageLoad.setText(result);
-                        lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-                        btnAceptarLoad.setVisible(true);
-                        btnAceptarLoad.setOnAction(event -> {
-                            hbBody.setDisable(false);
-                            hbLoad.setVisible(false);
-                            resetOrdenCompra();
-                        });
-                        btnAceptarLoad.setOnKeyPressed(event -> {
-                            if (event.getCode() == KeyCode.ENTER) {
-                                hbBody.setDisable(false);
-                                hbLoad.setVisible(false);
-                                resetOrdenCompra();
-                            }
-                        });
-                    }
-                });
-
-                exec.execute(task);
-
-                if (!exec.isShutdown()) {
-                    exec.shutdown();
+                        }
+                    });
                 }
+            });
+
+            exec.execute(task);
+
+            if (!exec.isShutdown()) {
+                exec.shutdown();
             }
         }
+
     }
 
     public void resetOrdenCompra() {

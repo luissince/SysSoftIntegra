@@ -376,7 +376,7 @@ public class OrdenCompraADO {
                         + "FechaVencimiento,"
                         + "HoraVencimiento,"
                         + "Observacion"
-                        + ")VALUES(?,?,?,?,?,?,?,?,?,?)");
+                        + ")VALUES(?,?,?,?,?,?,?,?,?,?,?)");
                 statementOrdenCompra.setString(1, idOrdenCompra);
                 statementOrdenCompra.setInt(2, numeracion);
                 statementOrdenCompra.setString(3, ordenCompraTB.getIdProveedor());

@@ -3,10 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/inventario/inventarioinicial/FxInventarioInicialController.java</file>
-            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/operaciones/venta/FxVentaDetalleController.java</file>
-            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/reporte/FxCompraReporteController.java</file>
-            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/archivos/connection.json</file>
+            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/operaciones/guiaremision/FxGuiaRemisionController.java</file>
+            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/model/EmpresaADO.java</file>
         </group>
     </open-files>
 </project-private>

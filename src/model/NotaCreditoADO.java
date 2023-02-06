@@ -372,7 +372,6 @@ public class NotaCreditoADO {
     public static String Registrar_NotaCredito(NotaCreditoTB notaCreditoTB, int procedencia) {
         PreparedStatement statementValidate = null;
         PreparedStatement statementNotaCredito = null;
-        PreparedStatement statementComprobante = null;
         PreparedStatement statementDetalle = null;
         PreparedStatement statementSuministro = null;
         PreparedStatement statementKardex = null;
@@ -394,7 +393,7 @@ public class NotaCreditoADO {
                 statementCodigoNotaCredito.execute();
                 String idNotaCredito = statementCodigoNotaCredito.getString(1);
 
-                statementCodigoSerieNumeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero(?)}");
+                statementCodigoSerieNumeracion = DBUtil.getConnection().prepareCall("{? = call Fc_Serie_Numero_NotaCredito(?)}");
                 statementCodigoSerieNumeracion.registerOutParameter(1, java.sql.Types.VARCHAR);
                 statementCodigoSerieNumeracion.setInt(2, notaCreditoTB.getIdComprobante());
                 statementCodigoSerieNumeracion.execute();
@@ -427,14 +426,6 @@ public class NotaCreditoADO {
                 statementNotaCredito.setString(11, notaCreditoTB.getIdVenta());
                 statementNotaCredito.setInt(12, notaCreditoTB.getEstado());
                 statementNotaCredito.addBatch();
-
-                statementComprobante = DBUtil.getConnection().prepareStatement("INSERT INTO ComprobanteTB(IdTipoDocumento,Serie,Numeracion,FechaRegistro)VALUES(?,?,?,?)");
-                statementComprobante.setInt(1, notaCreditoTB.getIdComprobante());
-                statementComprobante.setString(2, id_comprabante[0]);
-                statementComprobante.setString(3, id_comprabante[1]);
-                statementComprobante.setString(4, notaCreditoTB.getFechaRegistro());
-                statementComprobante.addBatch();
-                statementComprobante.executeBatch();
 
                 statementDetalle = DBUtil.getConnection().prepareStatement("INSERT INTO NotaCreditoDetalleTB("
                         + "IdNotaCredito,\n"
@@ -536,9 +527,6 @@ public class NotaCreditoADO {
                 }
                 if (statementNotaCredito != null) {
                     statementNotaCredito.close();
-                }
-                if (statementComprobante != null) {
-                    statementComprobante.close();
                 }
                 if (statementDetalle != null) {
                     statementDetalle.close();

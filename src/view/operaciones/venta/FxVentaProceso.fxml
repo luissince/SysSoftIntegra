@@ -80,7 +80,7 @@
                               </VBox>
                            </children>
                         </HBox>
-                        <HBox alignment="TOP_CENTER">
+                        <HBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
                            <children>
                               <AnchorPane HBox.hgrow="ALWAYS">
                                  <children>
@@ -337,9 +337,9 @@
                                                 </VBox>
                                              </children>
                                           </AnchorPane>
-                                          <HBox alignment="CENTER">
+                                          <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
                                              <children>
-                                                <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefWidth="400.0" styleClass="labelRoboto13" text="El proceso de pago adelantado consiste en registrar el dinero sin modificar la cantidad de los productos agregados en el detalle de venta." textFill="#020203" wrapText="true" HBox.hgrow="ALWAYS">
+                                                <Label alignment="CENTER" prefWidth="500.0" styleClass="labelRoboto13" text="El proceso de pago adelantado consiste en registrar el dinero sin modificar la cantidad de los productos agregados en el detalle de venta." textFill="#020203" wrapText="true" HBox.hgrow="ALWAYS">
                                                    <graphic>
                                                       <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
