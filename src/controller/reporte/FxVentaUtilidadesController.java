@@ -38,16 +38,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.DetalleADO;
 import model.DetalleTB;
 import model.Utilidad;
-import model.UtilidadADO;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
+import service.DetalleADO;
+import service.UtilidadADO;
+
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -222,7 +223,7 @@ public class FxVentaUtilidadesController implements Initializable {
             InputStream dir = getClass().getResourceAsStream("/report/Utilidad.jasper");
 
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(dir);
-            Map map = new HashMap();
+            Map<String, Object> map = new HashMap<String, Object>();
             map.put("RANGO_FECHA", dpFechaInicial.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")) + " - " + dpFechaFinal.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")));
             map.put("PRODUCTOS", cbProductosSeleccionar.isSelected() ? "TODOS" : txtProducto.getText());
             map.put("CATEGORIA", cbCategoriaSeleccionar.isSelected() ? "TODOS" : cbCategorias.getSelectionModel().getSelectedItem().getNombre());

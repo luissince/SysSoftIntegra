@@ -18,10 +18,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.HistorialSuministroSalidaADO;
 import model.HistorialSuministroSalidaTB;
 import model.SuministroTB;
 import model.VentaTB;
+import service.HistorialSuministroSalidaADO;
 
 public class FxVentaLlevarControllerHistorial implements Initializable {
 

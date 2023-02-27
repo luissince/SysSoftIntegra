@@ -2,7 +2,6 @@ package controller.configuracion.roles;
 
 import controller.menus.FxPrincipalController;
 import controller.tools.FilesRouters;
-import controller.tools.ObjectGlobal;
 import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
@@ -20,9 +19,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.MenuADO;
-import model.RolADO;
 import model.RolTB;
+import service.MenuADO;
+import service.RolADO;
 
 public class FxRolesController implements Initializable {
 

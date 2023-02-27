@@ -15,7 +15,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import model.PreciosTB;
-import model.SuministroADO;
+import service.SuministroADO;
 
 public class FxPostVentaDetalleProductoController implements Initializable {
 

@@ -25,13 +25,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import model.ClienteADO;
 import model.ClienteTB;
 import model.ConductorTB;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.UbigeoADO;
 import model.UbigeoTB;
+import service.ClienteADO;
+import service.DetalleADO;
+import service.UbigeoADO;
+
 import org.json.simple.JSONObject;
 
 public class FxClienteProcesoController implements Initializable {
@@ -116,13 +117,16 @@ public class FxClienteProcesoController implements Initializable {
             public Object call() throws Exception {
                 Object listTipoDocumento = DetalleADO.GetDetailId("0003");
                 Object listMotivoTraslado = DetalleADO.GetDetailId("0017");
-                Object listModalidadTraslado = DetalleADO.GetDetailId("0018");// 0018 establece las cadenas para combobox
+                Object listModalidadTraslado = DetalleADO.GetDetailId("0018");// 0018 establece las cadenas para
+                                                                              // combobox
 
                 if (listTipoDocumento instanceof ObservableList
                         && listMotivoTraslado instanceof ObservableList
                         && listModalidadTraslado instanceof ObservableList) {
-//                         && listUbigeo instanceof ObservableList) {
-                    return new Object[]{listTipoDocumento, listMotivoTraslado, listModalidadTraslado};//return (ObservableList<DetalleTB>) listTicket;
+                    // && listUbigeo instanceof ObservableList) {
+                    return new Object[] { listTipoDocumento, listMotivoTraslado, listModalidadTraslado };// return
+                                                                                                         // (ObservableList<DetalleTB>)
+                                                                                                         // listTicket;
                 } else {
                     throw new Exception("Se produjo un error, intente nuevamente.");
                 }
@@ -188,7 +192,8 @@ public class FxClienteProcesoController implements Initializable {
         });
         searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             searchComboBoxUbigeoLlegada.getComboBox().getItems().clear();
-            searchComboBoxUbigeoLlegada.getComboBox().getItems().addAll(UbigeoADO.GetSearchComboBoxUbigeo(searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().getText().trim()));
+            searchComboBoxUbigeoLlegada.getComboBox().getItems().addAll(UbigeoADO.GetSearchComboBoxUbigeo(
+                    searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getSearchBox().getText().trim()));
         });
         searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             if (null == t.getCode()) {
@@ -213,14 +218,15 @@ public class FxClienteProcesoController implements Initializable {
                 }
             }
         });
-        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty().addListener((p, o, item) -> {
-            if (item != null) {
-                searchComboBoxUbigeoLlegada.getComboBox().getSelectionModel().select(item);
-                if (searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().isClickSelection()) {
-                    searchComboBoxUbigeoLlegada.getComboBox().hide();
-                }
-            }
-        });
+        searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty()
+                .addListener((p, o, item) -> {
+                    if (item != null) {
+                        searchComboBoxUbigeoLlegada.getComboBox().getSelectionModel().select(item);
+                        if (searchComboBoxUbigeoLlegada.getSearchComboBoxSkin().isClickSelection()) {
+                            searchComboBoxUbigeoLlegada.getComboBox().hide();
+                        }
+                    }
+                });
     }
 
     public void loadEditCliente(String idCliente) {
@@ -234,7 +240,7 @@ public class FxClienteProcesoController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() throws Exception {
-                Object listTipoDocumento = DetalleADO.GetDetailId("0003");//se establece las diferente opciones
+                Object listTipoDocumento = DetalleADO.GetDetailId("0003");// se establece las diferente opciones
                 Object listMotivoTraslado = DetalleADO.GetDetailId("0017");
                 Object listModalidadTraslado = DetalleADO.GetDetailId("0018");
                 Object cliente = ClienteADO.GetByIdCliente(idCliente);
@@ -242,7 +248,7 @@ public class FxClienteProcesoController implements Initializable {
                         && listMotivoTraslado instanceof ObservableList
                         && listModalidadTraslado instanceof ObservableList
                         && cliente instanceof ClienteTB) {
-                    return new Object[]{listTipoDocumento, listMotivoTraslado, listModalidadTraslado, cliente};
+                    return new Object[] { listTipoDocumento, listMotivoTraslado, listModalidadTraslado, cliente };
                 } else {
                     throw new Exception("Se produjo un error, intente nuevamente.");
                 }
@@ -276,8 +282,8 @@ public class FxClienteProcesoController implements Initializable {
         task.setOnSucceeded(e -> {
             Object[] result = (Object[]) task.getValue();
 
-            ObservableList<DetalleTB> tipoDocumento = (ObservableList<DetalleTB>) result[0];//muestre las opciones de el combo box 
-            cbDocumentType.getItems().addAll(tipoDocumento);//cbDocumentType.getItems().addAll(tipoDocumento);
+            ObservableList<DetalleTB> tipoDocumento = (ObservableList<DetalleTB>) result[0];
+            cbDocumentType.getItems().addAll(tipoDocumento);
             cbTipoDcoumentDriver.getItems().addAll(tipoDocumento);
 
             ObservableList<DetalleTB> motivoTraslado = (ObservableList<DetalleTB>) result[1];
@@ -341,8 +347,8 @@ public class FxClienteProcesoController implements Initializable {
                 txtFieldNdocumentoDriver.setText(clienteTB.getConductorTB().getNumeroDocumento());
                 txtFieldNombreDriver.setText(clienteTB.getConductorTB().getInformacion());
                 TxtFeldCelularDriver.setText(clienteTB.getConductorTB().getCelular());
-                TxtFieldNPlacaCar.setText(clienteTB.getConductorTB().getPlacaVehiculo());
-                TxtFieldMarcaCar.setText(clienteTB.getConductorTB().getMarcaVehiculo());
+                // TxtFieldNPlacaCar.setText(clienteTB.getConductorTB().getPlacaVehiculo());
+                TxtFieldMarcaCar.setText(clienteTB.getConductorTB().getLicenciaConducir());
             }
 
             btnRegister.setText("Actualizar");
@@ -384,7 +390,8 @@ public class FxClienteProcesoController implements Initializable {
             clienteTB.setTipoDocumento(cbDocumentType.getSelectionModel().getSelectedItem().getIdDetalle());
             clienteTB.setInformacion(txtInformacion.getText().trim().toUpperCase());
             clienteTB.setNumeroDocumento(txtDocumentNumber.getText().trim().toUpperCase());
-//          clienteTB.setFechaNacimiento(new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse(Tools.getDatePicker(dpBirthdate)).getTime()));
+            // clienteTB.setFechaNacimiento(new java.sql.Date(new
+            // SimpleDateFormat("yyyy-MM-dd").parse(Tools.getDatePicker(dpBirthdate)).getTime()));
             clienteTB.setTelefono(txtTelefono.getText());
             clienteTB.setCelular(txtCelular.getText());
             clienteTB.setEmail(txtEmail.getText());
@@ -393,26 +400,33 @@ public class FxClienteProcesoController implements Initializable {
             clienteTB.setEstado(rbActivo.isSelected() ? 1 : 0);
             clienteTB.setPredeterminado(false);
             clienteTB.setSistema(false);
-            clienteTB.setIdMotivoTraslado(cbMotivoTraslado.getSelectionModel().getSelectedIndex() >= 0// adquiere los indices de los strings
-                    ? cbMotivoTraslado.getSelectionModel().getSelectedItem().getIdDetalle() : 0);
+            clienteTB.setIdMotivoTraslado(cbMotivoTraslado.getSelectionModel().getSelectedIndex() >= 0// adquiere los
+                                                                                                      // indices de los
+                                                                                                      // strings
+                    ? cbMotivoTraslado.getSelectionModel().getSelectedItem().getIdDetalle()
+                    : 0);
             clienteTB.setIdModalidadTraslado(cbModalidadTraslado.getSelectionModel().getSelectedIndex() >= 0
-                    ? cbModalidadTraslado.getSelectionModel().getSelectedItem().getIdDetalle() : 0);
+                    ? cbModalidadTraslado.getSelectionModel().getSelectedItem().getIdDetalle()
+                    : 0);
 
-            clienteTB.setIdUbigeo(cbUbigeo.getSelectionModel().getSelectedIndex() >= 0// adquiere los indices de los strings
-                    ? cbUbigeo.getSelectionModel().getSelectedItem().getIdUbigeo() : 0);
+            clienteTB.setIdUbigeo(cbUbigeo.getSelectionModel().getSelectedIndex() >= 0// adquiere los indices de los
+                                                                                      // strings
+                    ? cbUbigeo.getSelectionModel().getSelectedItem().getIdUbigeo()
+                    : 0);
 
             ConductorTB conductorTB = new ConductorTB();
             conductorTB.setIdConductor(idConducto);
-            conductorTB.setIdCliente(idCliente);
+            // conductorTB.setIdCliente(idCliente);
             conductorTB.setIdTipoDocumento(cbTipoDcoumentDriver.getSelectionModel().getSelectedIndex() >= 0
-                    ? cbTipoDcoumentDriver.getSelectionModel().getSelectedItem().getIdDetalle() : 0);
+                    ? cbTipoDcoumentDriver.getSelectionModel().getSelectedItem().getIdDetalle()
+                    : 0);
             conductorTB.setNumeroDocumento(txtFieldNdocumentoDriver.getText());
             conductorTB.setInformacion(txtFieldNombreDriver.getText());
             conductorTB.setCelular(TxtFeldCelularDriver.getText());
-            conductorTB.setPlacaVehiculo(TxtFieldNPlacaCar.getText());
-            conductorTB.setMarcaVehiculo(TxtFieldMarcaCar.getText());
-//            conductorTB.setFecha(Tools.getDate());
-//            conductorTB.setHora(Tools.getTime());
+            // conductorTB.setPlacaVehiculo(TxtFieldNPlacaCar.getText());
+            conductorTB.setLicenciaConducir(TxtFieldMarcaCar.getText());
+            // conductorTB.setFecha(Tools.getDate());
+            // conductorTB.setHora(Tools.getTime());
             conductorTB.setIdUsuario(Session.USER_ID);
             clienteTB.setConductorTB(conductorTB);
 
@@ -427,11 +441,13 @@ public class FxClienteProcesoController implements Initializable {
                     Tools.Dispose(window);
                     break;
                 case "duplicate":
-                    Tools.AlertMessageWarning(window, "Cliente", "No se puede haber 2 personas con el mismo documento de identidad.");
+                    Tools.AlertMessageWarning(window, "Cliente",
+                            "No se puede haber 2 personas con el mismo documento de identidad.");
                     txtDocumentNumber.requestFocus();
                     break;
                 case "duplicatename":
-                    Tools.AlertMessageWarning(window, "Cliente", "No se puede haber 2 personas con la misma información.");
+                    Tools.AlertMessageWarning(window, "Cliente",
+                            "No se puede haber 2 personas con la misma información.");
                     txtInformacion.requestFocus();
                     break;
                 default:
@@ -578,8 +594,11 @@ public class FxClienteProcesoController implements Initializable {
                         if (sONObject.get("dni") != null) {
                             txtDocumentNumber.setText(sONObject.get("dni").toString());
                         }
-                        if (sONObject.get("apellidoPaterno") != null && sONObject.get("apellidoMaterno") != null && sONObject.get("nombres") != null) {
-                            txtInformacion.setText(sONObject.get("apellidoPaterno").toString() + " " + sONObject.get("apellidoMaterno").toString() + " " + sONObject.get("nombres").toString());
+                        if (sONObject.get("apellidoPaterno") != null && sONObject.get("apellidoMaterno") != null
+                                && sONObject.get("nombres") != null) {
+                            txtInformacion.setText(sONObject.get("apellidoPaterno").toString() + " "
+                                    + sONObject.get("apellidoMaterno").toString() + " "
+                                    + sONObject.get("nombres").toString());
                         }
                     }
                 }

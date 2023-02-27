@@ -39,14 +39,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.ClienteADO;
 import model.ClienteTB;
-import model.CotizacionADO;
 import model.CotizacionDetalleTB;
 import model.CotizacionTB;
-import model.MonedaADO;
 import model.MonedaTB;
 import model.SuministroTB;
+import service.ClienteADO;
+import service.CotizacionADO;
+import service.MonedaADO;
 
 public class FxCotizacionController implements Initializable {
 

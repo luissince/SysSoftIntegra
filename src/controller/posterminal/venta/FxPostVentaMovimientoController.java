@@ -16,7 +16,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import model.MovimientoCajaTB;
-import model.VentaADO;
+import service.VentaADO;
 
 public class FxPostVentaMovimientoController implements Initializable {
 

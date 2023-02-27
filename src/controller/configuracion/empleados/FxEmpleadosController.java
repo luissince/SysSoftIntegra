@@ -28,8 +28,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.EmpleadoADO;
 import model.EmpleadoTB;
+import service.EmpleadoADO;
 
 public class FxEmpleadosController implements Initializable {
 

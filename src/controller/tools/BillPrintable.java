@@ -16,8 +16,6 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
-import static java.awt.print.Printable.NO_SUCH_PAGE;
-import static java.awt.print.Printable.PAGE_EXISTS;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,12 +46,13 @@ import model.CotizacionDetalleTB;
 import model.DetalleCompraTB;
 import model.GuiaRemisionDetalleTB;
 import model.HistorialSuministroSalidaTB;
-import model.ImageADO;
 import model.ImagenTB;
 import model.NotaCreditoDetalleTB;
 import model.OrdenCompraDetalleTB;
 import model.SuministroTB;
 import model.VentaCreditoTB;
+import service.ImageADO;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

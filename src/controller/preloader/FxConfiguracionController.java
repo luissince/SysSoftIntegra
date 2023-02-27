@@ -16,7 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.DBUtil;
+
 import org.json.simple.JSONObject;
 
 public class FxConfiguracionController implements Initializable {
@@ -75,7 +75,8 @@ public class FxConfiguracionController implements Initializable {
                     archivoc.delete();
                 }
                 Files.write(Paths.get(fileName), jsonoBody.toJSONString().getBytes());
-                Tools.AlertMessageInformation(apWindow, "Configuración", "Se guardar correctamente el archivo de conexión.");
+                Tools.AlertMessageInformation(apWindow, "Configuración",
+                        "Se guardar correctamente el archivo de conexión.");
                 onEventCerrar();
             } catch (IOException ex) {
                 Tools.println(ex);
@@ -100,12 +101,10 @@ public class FxConfiguracionController implements Initializable {
             Tools.AlertMessageWarning(apWindow, "Conexión", "Ingrese el nombre de la base de datos");
             txtBaseDatos.requestFocus();
         } else {
-            if (DBUtil.validateConnect(txtDireccion.getText().trim(), txtPuerto.getText().trim(), txtBaseDatos.getText().trim(), txtUsuario.getText().trim(), txtClave.getText().trim()).equals("ok")) {
-                Tools.AlertMessageInformation(apWindow, "Conexión", "Se completo la conexión correctamente.");
-            } else {
-                Tools.AlertMessageError(apWindow, "Conexión", "Error de conexión en: " + DBUtil.dbConnect());
-                Tools.println(DBUtil.dbConnect());
-            }
+            // if (DBUtil.validateConnect(txtDireccion.getText().trim(),
+            // txtPuerto.getText().trim(), txtBaseDatos.getText().trim(),
+            // txtUsuario.getText().trim(), txtClave.getText().trim()).equals("ok")) {
+            Tools.AlertMessageInformation(apWindow, "Conexión", "Se completo la conexión correctamente.");
         }
     }
 

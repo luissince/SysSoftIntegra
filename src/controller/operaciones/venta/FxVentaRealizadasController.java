@@ -36,6 +36,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.*;
+import service.DetalleADO;
+import service.TipoDocumentoADO;
+import service.VentaADO;
 
 public class FxVentaRealizadasController implements Initializable {
 
@@ -100,6 +103,7 @@ public class FxVentaRealizadasController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         paginacion = 1;
         opcion = 0;
+        
         loadTableView();
         Tools.actualDate(Tools.getDate(), dtFechaInicial);
         Tools.actualDate(Tools.getDate(), dtFechaFinal);

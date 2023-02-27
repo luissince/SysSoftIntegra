@@ -39,12 +39,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.ProduccionADO;
 import model.ProduccionTB;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.DetalleADO;
+import service.ProduccionADO;
+import service.SuministroADO;
 
 public class FxProducirEditarController implements Initializable {
 

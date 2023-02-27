@@ -64,7 +64,8 @@ public class Tools {
         return AlertMessage(node.getScene().getWindow(), Alert.AlertType.ERROR, title, value, false);
     }
 
-    public static short AlertMessage(Window window, Alert.AlertType type, String title, String message, boolean validation) {
+    public static short AlertMessage(Window window, Alert.AlertType type, String title, String message,
+            boolean validation) {
         final URL url = Tools.class.getClass().getResource(FilesRouters.STYLE_ALERT);
         Alert alert = new Alert(type);
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
@@ -222,7 +223,7 @@ public class Tools {
         Formatter formatter = new Formatter();
         return String.valueOf(formatter.format("%06d", Integer.parseInt(numero)));
     }
-    
+
     public static String formatNumber(int numero) {
         if (String.valueOf(numero).length() >= 6) {
             return String.valueOf(numero);
@@ -298,9 +299,11 @@ public class Tools {
 
     public static void actualDate(String date, DatePicker datePicker) {
         if (date.contains("-")) {
-            datePicker.setValue(LocalDate.of(Integer.parseInt(date.split("-")[0]), Integer.parseInt(date.split("-")[1]), Integer.parseInt(date.split("-")[2])));
+            datePicker.setValue(LocalDate.of(Integer.parseInt(date.split("-")[0]), Integer.parseInt(date.split("-")[1]),
+                    Integer.parseInt(date.split("-")[2])));
         } else if (date.contains("/")) {
-            datePicker.setValue(LocalDate.of(Integer.parseInt(date.split("/")[0]), Integer.parseInt(date.split("/")[1]), Integer.parseInt(date.split("/")[2])));
+            datePicker.setValue(LocalDate.of(Integer.parseInt(date.split("/")[0]), Integer.parseInt(date.split("/")[1]),
+                    Integer.parseInt(date.split("/")[2])));
         }
     }
 
@@ -323,7 +326,8 @@ public class Tools {
     }
 
     public static Object getValueAt(TableView table, int rowIndex, int columnIndex) {
-        if (rowIndex >= 0 && rowIndex < table.getItems().size() && columnIndex >= 0 && columnIndex < table.getColumns().size()) {
+        if (rowIndex >= 0 && rowIndex < table.getItems().size() && columnIndex >= 0
+                && columnIndex < table.getColumns().size()) {
             return ((TableColumn) table.getColumns().get(columnIndex)).getCellObservableValue(rowIndex).getValue();
         } else {
             return null;
@@ -399,8 +403,9 @@ public class Tools {
     }
 
     public static byte[] getImageBytes(File file) {
+        FileInputStream inputStream = null;
         try {
-            FileInputStream inputStream = new FileInputStream(file);
+            inputStream = new FileInputStream(file);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             byte[] bs = new byte[1024];
             for (int readNum; (readNum = inputStream.read(bs)) != -1;) {
@@ -409,6 +414,13 @@ public class Tools {
             return outputStream.toByteArray();
         } catch (FileNotFoundException ex) {
         } catch (IOException ex) {
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                }
+            }
         }
         return null;
     }
@@ -444,7 +456,6 @@ public class Tools {
         notifications.show();
     }
 
-
     public static String AddText2Guines(String value) {
         return value.trim().isEmpty() ? "--" : value;
     }
@@ -461,12 +472,12 @@ public class Tools {
         }
         return label;
     }
-    
-    public static String colorFxDefault(){
+
+    public static String colorFxDefault() {
         return "-fx-text-fill:#020203;";
     }
-    
-    public static String colorFxError(){
+
+    public static String colorFxError() {
         return "-fx-text-fill:#a70820;";
     }
 
@@ -481,8 +492,8 @@ public class Tools {
     public static String textShow(String title, String text) {
         return text.isEmpty() ? "" : (title.toUpperCase() + "" + text.toUpperCase());
     }
-    
-    public static String text(String value){
+
+    public static String text(String value) {
         return value == null ? "" : value.trim().toUpperCase();
     }
 

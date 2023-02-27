@@ -12,8 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.DetalleADO;
 import model.DetalleTB;
+import service.DetalleADO;
 
 public class FxDetalleProcesoController implements Initializable {
 

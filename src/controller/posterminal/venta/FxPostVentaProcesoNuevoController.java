@@ -27,9 +27,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.ResultTransaction;
-import model.VentaADO;
 import model.VentaCreditoTB;
 import model.VentaTB;
+import service.VentaADO;
 
 public class FxPostVentaProcesoNuevoController implements Initializable {
 

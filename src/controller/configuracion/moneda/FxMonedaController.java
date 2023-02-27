@@ -28,8 +28,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.MonedaADO;
 import model.MonedaTB;
+import service.MonedaADO;
 
 public class FxMonedaController implements Initializable {
 

@@ -45,8 +45,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.SuministroADO;
 
 public class FxSuministrosListaController implements Initializable {
 

@@ -28,9 +28,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import model.MenuADO;
 import model.PrivilegioTB;
 import model.SubMenusTB;
+import service.MenuADO;
 
 public class FxConsultasController implements Initializable {
 
@@ -279,7 +279,6 @@ public class FxConsultasController implements Initializable {
         AnchorPane.setRightAnchor(nodeGuiaRemision, 0d);
         AnchorPane.setBottomAnchor(nodeGuiaRemision, 0d);
         fxPrincipalController.getVbContent().getChildren().add(nodeGuiaRemision);
-        controllerGuiaRemision.loadInit();
     }
 
     private void openWindowPurchasesMade() {

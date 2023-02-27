@@ -11,8 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.SuministroADO;
 
 public class FxInventarioAjusteController implements Initializable {
 

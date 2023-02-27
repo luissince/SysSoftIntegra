@@ -32,7 +32,7 @@ public final class FilesRouters {
 
     public static final String STYLE_ALERT = "/view/style/alert.css";
 
-    public static final String TITLE_APP = "SysSoftIntegra";
+    public static final String TITLE_APP = "SysSoft Integra";
 
     public static final String FX_LOGIN = "/view/login/FxLogin.fxml";
 

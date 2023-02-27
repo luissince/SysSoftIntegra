@@ -27,8 +27,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.ProveedorADO;
 import model.ProveedorTB;
+import service.ProveedorADO;
 
 public class FxProveedorController implements Initializable {
 

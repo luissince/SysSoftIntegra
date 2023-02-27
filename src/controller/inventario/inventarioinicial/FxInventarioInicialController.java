@@ -32,8 +32,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import model.PreciosTB;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.SuministroADO;
+
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;

@@ -23,9 +23,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import model.MenuADO;
 import model.PrivilegioTB;
 import model.SubMenusTB;
+import service.MenuADO;
 
 public class FxInventarioController implements Initializable {
 

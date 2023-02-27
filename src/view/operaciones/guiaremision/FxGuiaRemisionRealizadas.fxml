@@ -128,10 +128,11 @@
                               <TableView fx:id="tvList" fixedCellSize="-0.0" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="298.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
                                  <columns>
                                     <TableColumn fx:id="tcNumero" prefWidth="60.0" style="-fx-alignment: CENTER;" text="N°" />
-                                    <TableColumn fx:id="tcVendedor" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Vendedor" />
-                                    <TableColumn fx:id="tcComprobante" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Comprobante" />
                                     <TableColumn fx:id="tcFecha" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha" />
+                                    <TableColumn fx:id="tcComprobante" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Comprobante" />
+                                    <TableColumn fx:id="tcReferencia" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Referencia" />
                                     <TableColumn fx:id="tcCliente" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Cliente" />
+                                    <TableColumn fx:id="tcEstado" prefWidth="180.0" style="-fx-alignment: CENTER-LEFT;" text="Estado" />
                                  </columns>
                               </TableView>
                            </children>

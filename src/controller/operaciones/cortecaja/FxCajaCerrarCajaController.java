@@ -16,10 +16,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import model.BancoADO;
 import model.BancoHistorialTB;
 import model.BancoTB;
-import model.CajaADO;
+import service.BancoADO;
+import service.CajaADO;
 
 public class FxCajaCerrarCajaController implements Initializable {
 

@@ -12,8 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.MonedaADO;
 import model.MonedaTB;
+import service.MonedaADO;
 
 public class FxMonedaProcesoController implements Initializable {
 

@@ -14,14 +14,14 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.CajaADO;
 import model.CajaTB;
 import model.IngresoTB;
 import model.ModeloObject;
 import model.MovimientoCajaTB;
-import model.VentaADO;
 import model.VentaCreditoTB;
 import model.VentaTB;
+import service.CajaADO;
+import service.VentaADO;
 
 public class FxVentaAbonoProcesoController implements Initializable {
 

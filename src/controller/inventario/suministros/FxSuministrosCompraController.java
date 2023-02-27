@@ -34,13 +34,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.DetalleCompraTB;
-import model.ImpuestoADO;
 import model.ImpuestoTB;
 import model.LoteTB;
-import model.PreciosADO;
 import model.PreciosTB;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.ImpuestoADO;
+import service.PreciosADO;
+import service.SuministroADO;
 
 public class FxSuministrosCompraController implements Initializable {
 

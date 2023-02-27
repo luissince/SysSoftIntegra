@@ -12,7 +12,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.VentaADO;
+import service.VentaADO;
 
 public class FxVentaLlevarController implements Initializable {
 

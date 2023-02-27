@@ -23,8 +23,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.AjusteInventarioADO;
 import model.MovimientoInventarioDetalleTB;
+import service.AjusteInventarioADO;
 import model.AjusteInventarioTB;
 
 public class FxMovimientosDetalleController implements Initializable {

@@ -30,9 +30,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import model.CompraADO;
 import model.CompraTB;
 import model.DetalleCompraTB;
+import service.CompraADO;
 
 public class FxCuentasPorPagarVisualizarController implements Initializable {
 

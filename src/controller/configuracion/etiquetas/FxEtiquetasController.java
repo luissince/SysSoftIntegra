@@ -15,8 +15,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import static java.awt.print.Printable.NO_SUCH_PAGE;
-import static java.awt.print.Printable.PAGE_EXISTS;
 import java.awt.print.PrinterException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -62,12 +60,14 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
-import model.EtiquetaADO;
+
 import model.EtiquetaTB;
 import net.sourceforge.barbecue.Barcode;
 import net.sourceforge.barbecue.BarcodeException;
 import net.sourceforge.barbecue.BarcodeFactory;
 import net.sourceforge.barbecue.output.OutputException;
+import service.EtiquetaADO;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

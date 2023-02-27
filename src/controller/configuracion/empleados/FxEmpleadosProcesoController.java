@@ -21,12 +21,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.EmpleadoADO;
 import model.EmpleadoTB;
-import model.RolADO;
 import model.RolTB;
+import service.DetalleADO;
+import service.EmpleadoADO;
+import service.RolADO;
 
 public class FxEmpleadosProcesoController implements Initializable {
 

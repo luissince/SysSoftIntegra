@@ -30,13 +30,14 @@ import javafx.util.Duration;
 import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import javax.print.PrintService;
-import model.CajaADO;
+
 import model.CajaTB;
 import model.MovimientoCajaTB;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import service.CajaADO;
 
 public class TicketCaja {
 
@@ -295,7 +296,7 @@ public class TicketCaja {
                         ArrayList<Double> arrayList = (ArrayList<Double>) objectData[1];
                         ArrayList<MovimientoCajaTB> arrList = (ArrayList<MovimientoCajaTB>) objectData[2];
 
-                        ArrayList newList = new ArrayList();
+                        ArrayList<MovimientoCajaTB> newList = new ArrayList<MovimientoCajaTB>();
                         arrList.stream().map(mc -> {
                             MovimientoCajaTB movimientoCajaTB = new MovimientoCajaTB();
                             movimientoCajaTB.setId(mc.getId());
@@ -355,7 +356,7 @@ public class TicketCaja {
 
                         InputStream dir = getClass().getResourceAsStream("/report/CortedeCaja.jasper");
 
-                        Map map = new HashMap();
+                        Map<String, Object> map = new HashMap<String, Object>();
                         map.put("LOGO", imgInputStream);
                         map.put("ICON", imgInputStreamIcon);
                         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);

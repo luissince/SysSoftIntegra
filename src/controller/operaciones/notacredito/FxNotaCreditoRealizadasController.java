@@ -25,8 +25,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import model.NotaCreditoADO;
 import model.NotaCreditoTB;
+import service.NotaCreditoADO;
 
 public class FxNotaCreditoRealizadasController implements Initializable {
 

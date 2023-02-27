@@ -16,9 +16,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.TrasladoADO;
 import model.TrasladoHistorialTB;
 import model.TrasladoTB;
+import service.TrasladoADO;
 
 public class FxTrasladoDetalleController implements Initializable {
 

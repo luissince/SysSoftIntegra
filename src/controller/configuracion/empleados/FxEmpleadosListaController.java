@@ -25,8 +25,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import model.EmpleadoADO;
 import model.EmpleadoTB;
+import service.EmpleadoADO;
 
 public class FxEmpleadosListaController implements Initializable {
 

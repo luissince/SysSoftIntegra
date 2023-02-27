@@ -38,13 +38,15 @@ import javafx.stage.Stage;
 import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import javax.print.PrintService;
-import model.NotaCreditoADO;
+
 import model.NotaCreditoDetalleTB;
 import model.NotaCreditoTB;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import service.NotaCreditoADO;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

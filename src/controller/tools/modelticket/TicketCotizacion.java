@@ -33,15 +33,17 @@ import javafx.util.Duration;
 import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import javax.print.PrintService;
-import model.BancoADO;
-import model.CotizacionADO;
+
 import model.CotizacionDetalleTB;
 import model.CotizacionTB;
-import model.EmpresaADO;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import service.BancoADO;
+import service.CotizacionADO;
+import service.EmpresaADO;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

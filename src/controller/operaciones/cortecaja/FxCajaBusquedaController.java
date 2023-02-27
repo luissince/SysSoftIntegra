@@ -21,8 +21,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import model.CajaADO;
 import model.CajaTB;
+import service.CajaADO;
 
 public class FxCajaBusquedaController implements Initializable {
 

@@ -31,11 +31,13 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-import model.DetalleADO;
 import model.DetalleTB;
-import static model.MantenimientoADO.*;
-import static model.DetalleADO.*;
+
+import static service.DetalleADO.*;
+import static service.MantenimientoADO.*;
+
 import model.MantenimientoTB;
+import service.DetalleADO;
 
 public class FxDetalleMantenimientoController implements Initializable {
 

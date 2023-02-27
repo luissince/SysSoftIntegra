@@ -7,7 +7,6 @@ import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,11 +31,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.DBUtil;
-import model.MenuADO;
 import model.MenuTB;
 import model.SubMenusTB;
-import model.VentaADO;
+import service.MenuADO;
+import service.VentaADO;
+
 import org.json.simple.JSONArray;
 
 public class FxPrincipalController implements Initializable {
@@ -80,44 +79,44 @@ public class FxPrincipalController implements Initializable {
 
     private HBox hbReferent;
 
-    /*DASHBOARD CONTROLLER*/
+    /* DASHBOARD CONTROLLER */
     private VBox fxBienvenida;
 
-    /*DASHBOARD CONTROLLER*/
+    /* DASHBOARD CONTROLLER */
     private AnchorPane fxInicio;
 
-    /*DASHBOARD OPERACIONES*/
+    /* DASHBOARD OPERACIONES */
     private HBox fxOperaciones;
 
     private FxOperacionesController operacionesController;
 
-    /*CONSULTAS CONTROLLER*/
+    /* CONSULTAS CONTROLLER */
     private HBox fxConsultas;
 
     private FxConsultasController consultasController;
 
-    /*DASHBOARD INVENTARIO*/
+    /* DASHBOARD INVENTARIO */
     private HBox fxInventario;
 
     private FxInventarioController inventarioController;
 
-    /*DASHBOARD POS TERMINAR*/
+    /* DASHBOARD POS TERMINAR */
     private HBox fxPosTerminal;
 
     private FxPosTerminalController posTerminalController;
 
-    /*DASHBOARD PRODUCCION*/
+    /* DASHBOARD PRODUCCION */
     private HBox fxProduccion;
 
-    /*DASHBOARD CONTACTOS*/
+    /* DASHBOARD CONTACTOS */
     private HBox fxContactos;
 
     private FxContactosController contactosController;
 
-    /*DASHBOARD REPORTES*/
+    /* DASHBOARD REPORTES */
     private HBox fxReportes;
 
-    /*DASHBOARD CONFIGURACION*/
+    /* DASHBOARD CONFIGURACION */
     private HBox fxConfiguracion;
 
     private FxConfiguracionController configuracionController;
@@ -177,7 +176,6 @@ public class FxPrincipalController implements Initializable {
         } catch (IOException ex) {
             System.out.println("Error en controller principal:" + ex.getLocalizedMessage());
         }
-
     }
 
     public void initLoadMenus() {
@@ -189,7 +187,7 @@ public class FxPrincipalController implements Initializable {
 
         Task<ObservableList<MenuTB>> task = new Task<ObservableList<MenuTB>>() {
             @Override
-            protected ObservableList<MenuTB> call() throws Exception {
+            protected ObservableList<MenuTB> call() {
                 btnInicio.setOnMouseClicked((event) -> onMouseClickedMenus(event, fxInicio, btnInicio));
                 btnOperaciones.setOnMouseClicked((event) -> onMouseClickedMenus(event, fxOperaciones, btnOperaciones));
                 btnConsultas.setOnMouseClicked((event) -> onMouseClickedMenus(event, fxConsultas, btnConsultas));
@@ -198,73 +196,80 @@ public class FxPrincipalController implements Initializable {
                 btnPosTerminal.setOnMouseClicked((event) -> onMouseClickedMenus(event, fxPosTerminal, btnPosTerminal));
                 btnContactos.setOnMouseClicked((event) -> onMouseClickedMenus(event, fxContactos, btnContactos));
                 btnReportes.setOnMouseClicked((event) -> onMouseClickedMenus(event, fxReportes, btnReportes));
-                btnConfiguracion.setOnMouseClicked((event) -> onMouseClickedMenus(event, fxConfiguracion, btnConfiguracion));
+                btnConfiguracion
+                        .setOnMouseClicked((event) -> onMouseClickedMenus(event, fxConfiguracion, btnConfiguracion));
                 return MenuADO.GetMenus(Session.USER_ROL);
             }
         };
 
         task.setOnSucceeded(e -> {
             ObservableList<MenuTB> menuTBs = task.getValue();
-            //CONTROLADOR INICIO
+            // CONTROLADOR INICIO
             if (menuTBs.get(0).getIdMenu() != 0 && !menuTBs.get(0).isEstado()) {
                 hbMenus.getChildren().remove(btnInicio);
             }
-            //OPERACIONES OPERACIONES
+            // OPERACIONES OPERACIONES
             if (menuTBs.get(1).getIdMenu() != 0 && !menuTBs.get(1).isEstado()) {
                 hbMenus.getChildren().remove(btnOperaciones);
             } else {
-                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL, menuTBs.get(1).getIdMenu());
+                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL,
+                        menuTBs.get(1).getIdMenu());
                 operacionesController.loadSubMenus(subMenusTBs);
             }
-            //OPERACIONES CONSULTAS
+            // OPERACIONES CONSULTAS
             if (menuTBs.get(2).getIdMenu() != 0 && !menuTBs.get(2).isEstado()) {
                 hbMenus.getChildren().remove(btnConsultas);
             } else {
-                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL, menuTBs.get(2).getIdMenu());
+                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL,
+                        menuTBs.get(2).getIdMenu());
                 consultasController.loadSubMenus(subMenusTBs);
             }
-            //OPERACIONES INVENTARIO
+            // OPERACIONES INVENTARIO
             if (menuTBs.get(3).getIdMenu() != 0 && !menuTBs.get(3).isEstado()) {
                 hbMenus.getChildren().remove(btnInventario);
             } else {
-                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL, menuTBs.get(3).getIdMenu());
+                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL,
+                        menuTBs.get(3).getIdMenu());
                 inventarioController.loadSubMenus(subMenusTBs);
             }
-            //OPERACIONES PRODUCCION
+            // OPERACIONES PRODUCCION
             if (menuTBs.get(4).getIdMenu() != 0 && !menuTBs.get(4).isEstado()) {
                 hbMenus.getChildren().remove(btnProduccion);
             }
 
-            //OPERACIONES POS TERMINAL
+            // OPERACIONES POS TERMINAL
             if (menuTBs.get(5).getIdMenu() != 0 && !menuTBs.get(5).isEstado()) {
                 hbMenus.getChildren().remove(btnPosTerminal);
             } else {
-                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL, menuTBs.get(5).getIdMenu());
+                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL,
+                        menuTBs.get(5).getIdMenu());
                 posTerminalController.loadSubMenus(subMenusTBs);
             }
 
-            //OPERACIONES CONTACTOS
+            // OPERACIONES CONTACTOS
             if (menuTBs.get(6).getIdMenu() != 0 && !menuTBs.get(6).isEstado()) {
                 hbMenus.getChildren().remove(btnContactos);
             } else {
-                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL, menuTBs.get(6).getIdMenu());
+                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL,
+                        menuTBs.get(6).getIdMenu());
                 contactosController.loadSubMenus(subMenusTBs);
             }
 
-            //OPERACIONES REPORTES
+            // OPERACIONES REPORTES
             if (menuTBs.get(7).getIdMenu() != 0 && !menuTBs.get(7).isEstado()) {
                 hbMenus.getChildren().remove(btnReportes);
             }
 
-            //OPERACIONES CONFIGURACIÓN
+            // OPERACIONES CONFIGURACIÓN
             if (menuTBs.get(8).getIdMenu() != 0 && !menuTBs.get(8).isEstado()) {
                 hbMenus.getChildren().remove(btnConfiguracion);
             } else {
-                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL, menuTBs.get(8).getIdMenu());
+                ObservableList<SubMenusTB> subMenusTBs = MenuADO.GetSubMenus(Session.USER_ROL,
+                        menuTBs.get(8).getIdMenu());
                 configuracionController.loadSubMenus(subMenusTBs);
             }
 
-            //NOTIFICACIONES
+            // NOTIFICACIONES
             Object object = VentaADO.ListarNotificaciones();
             if (object instanceof JSONArray) {
                 JSONArray jSONArray = (JSONArray) object;
@@ -291,18 +296,11 @@ public class FxPrincipalController implements Initializable {
         stage.setOnCloseRequest(c -> {
             try {
                 openFondoModal();
-                short option = Tools.AlertMessageConfirmation(spWindow, "SysSoft Integra", "¿Está seguro de cerrar la aplicación?");
+                short option = Tools.AlertMessageConfirmation(spWindow, "SysSoft Integra",
+                        "¿Está seguro de cerrar la aplicación?");
                 if (option == 1) {
-                    try {
-                        if (DBUtil.getConnection() != null && !DBUtil.getConnection().isClosed()) {
-                            DBUtil.getConnection().close();
-                        }
-                        System.exit(0);
-                        Platform.exit();
-                    } catch (SQLException e) {
-                        System.exit(0);
-                        Platform.exit();
-                    }
+                    System.exit(0);
+                    Platform.exit();
                 } else {
                     closeFondoModal();
                     c.consume();
@@ -381,18 +379,11 @@ public class FxPrincipalController implements Initializable {
         primaryStage.centerOnScreen();
         primaryStage.setMaximized(true);
         primaryStage.setOnCloseRequest(c -> {
-            short option = Tools.AlertMessageConfirmation(parent, "SysSoft Integra", "¿Está seguro de cerrar la aplicación?");
+            short option = Tools.AlertMessageConfirmation(parent, "SysSoft Integra",
+                    "¿Está seguro de cerrar la aplicación?");
             if (option == 1) {
-                try {
-                    if (DBUtil.getConnection() != null && !DBUtil.getConnection().isClosed()) {
-                        DBUtil.getConnection().close();
-                    }
-                    System.exit(0);
-                    Platform.exit();
-                } catch (SQLException e) {
-                    System.exit(0);
-                    Platform.exit();
-                }
+                System.exit(0);
+                Platform.exit();
             } else {
                 c.consume();
             }

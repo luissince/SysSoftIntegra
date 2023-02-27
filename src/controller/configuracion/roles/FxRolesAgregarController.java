@@ -10,8 +10,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.RolADO;
 import model.RolTB;
+import service.RolADO;
 
 public class FxRolesAgregarController implements Initializable {
 

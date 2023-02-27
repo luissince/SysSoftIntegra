@@ -28,33 +28,38 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import model.ClienteADO;
 import model.ClienteTB;
 import model.ConductorTB;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.EmpresaADO;
 import model.EmpresaTB;
-import model.GuiaRemisionADO;
 import model.GuiaRemisionDetalleTB;
 import model.GuiaRemisionTB;
 import model.SuministroTB;
-import model.TipoDocumentoADO;
 import model.TipoDocumentoTB;
-import model.UbigeoADO;
 import model.UbigeoTB;
-import model.VentaADO;
+import model.VehiculoTB;
 import model.VentaTB;
+import service.ClienteADO;
+import service.ConductorADO;
+import service.DetalleADO;
+import service.EmpresaADO;
+import service.GuiaRemisionADO;
+import service.TipoDocumentoADO;
+import service.UbigeoADO;
+import service.VehiculoADO;
+import service.VentaADO;
 
 public class FxGuiaRemisionController implements Initializable {
 
@@ -67,29 +72,21 @@ public class FxGuiaRemisionController implements Initializable {
     @FXML
     private ComboBox<ClienteTB> cbCliente;
     @FXML
-    private TextField txtEmail;
+    private RadioButton rbPublico;
+    @FXML
+    private RadioButton rbPrivado;
+    @FXML
+    private ComboBox<ConductorTB> cbConductor;
     @FXML
     private ComboBox<DetalleTB> cbMotivoTraslado;
     @FXML
-    private ComboBox<DetalleTB> cbModalidadTraslado;
-    @FXML
     private DatePicker dtFechaTraslado;
     @FXML
-    private TextField txtPesoBruto;
+    private ComboBox<DetalleTB> cbTipoPesoCarga;
     @FXML
-    private TextField txtNumeroBultos;
+    private TextField txtPesoCarga;
     @FXML
-    private ComboBox<DetalleTB> cbTipoDocumento;
-    @FXML
-    private TextField txtNumeroDocumento;
-    @FXML
-    private TextField txtNombreConducto;
-    @FXML
-    private TextField txtTelefonoCelular;
-    @FXML
-    private TextField txtNumeroPlacaVehiculo;
-    @FXML
-    private TextField txtMarcaVehiculo;
+    private ComboBox<VehiculoTB> cbVehiculo;
     @FXML
     private TextField txtDireccionPartida;
     @FXML
@@ -118,6 +115,10 @@ public class FxGuiaRemisionController implements Initializable {
     private TableColumn<GuiaRemisionDetalleTB, TextField> tcPeso;
     @FXML
     private TableColumn<GuiaRemisionDetalleTB, Button> tcOpcion;
+    @FXML
+    private Button btnAgregarVehiculo;
+    @FXML
+    private Button btnAgregarConductor;
 
     private FxPrincipalController fxPrincipalController;
 
@@ -139,6 +140,22 @@ public class FxGuiaRemisionController implements Initializable {
         tcPeso.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
         tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
 
+        Tools.actualDate(Tools.getDate(), dtFechaTraslado);
+        txtDireccionPartida.setText(Session.COMPANY_DOMICILIO);
+
+        ToggleGroup groupModalidad = new ToggleGroup();
+        rbPublico.setToggleGroup(groupModalidad);
+        rbPrivado.setToggleGroup(groupModalidad);
+
+        loadCliente();
+        loadVehiculo();
+        loadConductor();
+        loadUbigeoPartida();
+        loadUbigeoLlegada();
+        loadComponents();
+    }
+
+    private void loadCliente() {
         SearchComboBox<ClienteTB> searchComboBoxCliente = new SearchComboBox<>(cbCliente, false);
         searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
             if (t.getCode() == KeyCode.ENTER) {
@@ -154,7 +171,7 @@ public class FxGuiaRemisionController implements Initializable {
             searchComboBoxCliente.getComboBox().getItems().clear();
             List<ClienteTB> clienteTBs = ClienteADO.GetSearchComboBoxCliente(4,
                     searchComboBoxCliente.getSearchComboBoxSkin().getSearchBox().getText().trim());
-            clienteTBs.forEach(e -> searchComboBoxCliente.getComboBox().getItems().add(e));
+            searchComboBoxCliente.getComboBox().getItems().addAll(clienteTBs);
         });
         searchComboBoxCliente.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             if (null == t.getCode()) {
@@ -188,13 +205,110 @@ public class FxGuiaRemisionController implements Initializable {
                         }
                     }
                 });
+    }
 
-        Tools.actualDate(Tools.getDate(), dtFechaTraslado);
-        txtDireccionPartida.setText(Session.COMPANY_DOMICILIO);
+    private void loadVehiculo() {
+        SearchComboBox<VehiculoTB> searchComboBoxVehiculo = new SearchComboBox<>(cbVehiculo, false);
+        searchComboBoxVehiculo.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
+            if (t.getCode() == KeyCode.ENTER) {
+                if (!searchComboBoxVehiculo.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
+                    searchComboBoxVehiculo.getSearchComboBoxSkin().getItemView().getSelectionModel().select(0);
+                    searchComboBoxVehiculo.getSearchComboBoxSkin().getItemView().requestFocus();
+                }
+            } else if (t.getCode() == KeyCode.ESCAPE) {
+                searchComboBoxVehiculo.getComboBox().hide();
+            }
+        });
+        searchComboBoxVehiculo.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
+            searchComboBoxVehiculo.getComboBox().getItems().clear();
+            List<VehiculoTB> vehiculoTBs = VehiculoADO.GetSearchComboBoxVehiculo(
+                    searchComboBoxVehiculo.getSearchComboBoxSkin().getSearchBox().getText().trim());
+            searchComboBoxVehiculo.getComboBox().getItems().addAll(vehiculoTBs);
+        });
+        searchComboBoxVehiculo.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
+            if (null == t.getCode()) {
+                searchComboBoxVehiculo.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                searchComboBoxVehiculo.getSearchComboBoxSkin().getSearchBox().selectAll();
+            } else {
+                switch (t.getCode()) {
+                    case ENTER:
+                    case SPACE:
+                    case ESCAPE:
+                        searchComboBoxVehiculo.getComboBox().hide();
+                        break;
+                    case UP:
+                    case DOWN:
+                    case LEFT:
+                    case RIGHT:
+                        break;
+                    default:
+                        searchComboBoxVehiculo.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                        searchComboBoxVehiculo.getSearchComboBoxSkin().getSearchBox().selectAll();
+                        break;
+                }
+            }
+        });
+        searchComboBoxVehiculo.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty()
+                .addListener((p, o, item) -> {
+                    if (item != null) {
+                        searchComboBoxVehiculo.getComboBox().getSelectionModel().select(item);
+                        if (searchComboBoxVehiculo.getSearchComboBoxSkin().isClickSelection()) {
+                            searchComboBoxVehiculo.getComboBox().hide();
+                        }
+                    }
+                });
+    }
 
-        loadUbigeoPartida();
-        loadUbigeoLlegada();
-        loadComponents();
+    private void loadConductor() {
+        SearchComboBox<ConductorTB> searchComboBoxConductor = new SearchComboBox<>(cbConductor, false);
+        searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
+            if (t.getCode() == KeyCode.ENTER) {
+                if (!searchComboBoxConductor.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
+                    searchComboBoxConductor.getSearchComboBoxSkin().getItemView().getSelectionModel().select(0);
+                    searchComboBoxConductor.getSearchComboBoxSkin().getItemView().requestFocus();
+                }
+            } else if (t.getCode() == KeyCode.ESCAPE) {
+                searchComboBoxConductor.getComboBox().hide();
+            }
+        });
+        searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
+            searchComboBoxConductor.getComboBox().getItems().clear();
+            List<ConductorTB> conductorTBs = ConductorADO.GetSearchComboBoxConductor(
+                    searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().getText().trim());
+            searchComboBoxConductor.getComboBox().getItems().addAll(conductorTBs);
+        });
+        searchComboBoxConductor.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
+            if (null == t.getCode()) {
+                searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().selectAll();
+            } else {
+                switch (t.getCode()) {
+                    case ENTER:
+                    case SPACE:
+                    case ESCAPE:
+                        searchComboBoxConductor.getComboBox().hide();
+                        break;
+                    case UP:
+                    case DOWN:
+                    case LEFT:
+                    case RIGHT:
+                        break;
+                    default:
+                        searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                        searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().selectAll();
+                        break;
+                }
+            }
+        });
+        searchComboBoxConductor.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty()
+                .addListener((p, o, item) -> {
+                    if (item != null) {
+                        searchComboBoxConductor.getComboBox().getSelectionModel().select(item);
+                        if (searchComboBoxConductor.getSearchComboBoxSkin().isClickSelection()) {
+                            searchComboBoxConductor.getComboBox().hide();
+                        }
+                    }
+                });
     }
 
     private void loadUbigeoPartida() {
@@ -213,9 +327,7 @@ public class FxGuiaRemisionController implements Initializable {
             searchComboBoxUbigeoPartida.getComboBox().getItems().clear();
             List<UbigeoTB> ubigeoTBs = UbigeoADO.GetSearchComboBoxUbigeo(
                     searchComboBoxUbigeoPartida.getSearchComboBoxSkin().getSearchBox().getText().trim());
-            ubigeoTBs.forEach(e -> {
-                searchComboBoxUbigeoPartida.getComboBox().getItems().add(e);
-            });
+            searchComboBoxUbigeoPartida.getComboBox().getItems().addAll(ubigeoTBs);
         });
         searchComboBoxUbigeoPartida.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             if (null == t.getCode()) {
@@ -320,6 +432,7 @@ public class FxGuiaRemisionController implements Initializable {
                         DetalleADO.GetDetailId("0017"),
                         DetalleADO.GetDetailId("0018"),
                         DetalleADO.GetDetailId("0003"),
+                        DetalleADO.GetDetailId("0021"),
                         TipoDocumentoADO.GetDocumentoCombBoxVentas(),
                         EmpresaADO.GetEmpresa()
                 };
@@ -343,29 +456,30 @@ public class FxGuiaRemisionController implements Initializable {
             cbMotivoTraslado.getItems().clear();
             cbMotivoTraslado.getItems().addAll((ObservableList<DetalleTB>) result[1]);
 
-            cbModalidadTraslado.getItems().clear();
-            cbModalidadTraslado.getItems().addAll((ObservableList<DetalleTB>) result[2]);
-
+            // cbModalidadTraslado.getItems().clear();
+            // cbModalidadTraslado.getItems().addAll((ObservableList<DetalleTB>) result[2]);
             Tools.actualDate(Tools.getDate(), dtFechaTraslado);
-            txtPesoBruto.setText("0");
-            txtNumeroBultos.setText("");
+            cbTipoPesoCarga.getItems().clear();
+            txtPesoCarga.setText("");
 
-            cbTipoDocumento.getItems().clear();
-            cbTipoDocumento.getItems().addAll((ObservableList<DetalleTB>) result[3]);
-            txtNumeroDocumento.setText("");
-            txtNombreConducto.setText("");
-            txtTelefonoCelular.setText("");
-            txtNumeroPlacaVehiculo.setText("");
-            txtMarcaVehiculo.setText("");
+            // cbTipoDocumento.getItems().clear();
+            // cbTipoDocumento.getItems().addAll((ObservableList<DetalleTB>) result[3]);
+            // txtNumeroDocumento.setText("");
+            // txtNombreConducto.setText("");
+            // txtTelefonoCelular.setText("");
+            // txtNumeroPlacaVehiculo.setText("");
+            // txtNumeroLicenciaConducir.setText("");
             txtDireccionPartida.setText("");
             txtDireccionLlegada.setText("");
-            
-            cbTipoComprobante.getItems().clear();
-            cbTipoComprobante.getItems().addAll((List<TipoDocumentoTB>) result[4]);
-            txtSerieFactura.setText("");
-            txtNumeracionFactura.setText("");            
 
-            EmpresaTB empresaTB = (EmpresaTB) result[5];
+            cbTipoPesoCarga.getItems().addAll((ObservableList<DetalleTB>) result[4]);
+
+            cbTipoComprobante.getItems().clear();
+            cbTipoComprobante.getItems().addAll((List<TipoDocumentoTB>) result[5]);
+            txtSerieFactura.setText("");
+            txtNumeracionFactura.setText("");
+
+            EmpresaTB empresaTB = (EmpresaTB) result[6];
 
             cbUbigeoPartida.getItems().clear();
             if (empresaTB.getUbigeoTB().getIdUbigeo() > 0) {
@@ -526,103 +640,151 @@ public class FxGuiaRemisionController implements Initializable {
     }
 
     private void onEventGuardar() {
+        /**
+         * Tipo de guia de remision
+         */
         if (cbDocumentoGuia.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el documento guía usar.");
             cbDocumentoGuia.requestFocus();
-        } else if (cbCliente.getSelectionModel().getSelectedIndex() < 0) {
+            return;
+        }
+
+        /**
+         * Datos del cliente
+         */
+        if (cbCliente.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione un cliente.");
             cbCliente.requestFocus();
-        } else if (cbMotivoTraslado.getSelectionModel().getSelectedIndex() < 0) {
+            return;
+        }
+
+        /**
+         * Datos del traslado
+         */
+        if (cbMotivoTraslado.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el motivo del traslado.");
             cbMotivoTraslado.requestFocus();
-        } else if (cbModalidadTraslado.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione la modalidad de traslado.");
-            cbModalidadTraslado.requestFocus();
-        } else if (dtFechaTraslado.getValue() == null) {
+            return;
+        }
+
+        if (dtFechaTraslado.getValue() == null) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese la fecha de traslado.");
             dtFechaTraslado.requestFocus();
-        } else if (Tools.isText(txtPesoBruto.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese el peso de los bultos a trasaladar.");
-            txtPesoBruto.requestFocus();
-        } else if (Tools.isText(txtNumeroBultos.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese el número de bultos a trasladar.");
-            txtNumeroBultos.requestFocus();
-        } else if (cbTipoDocumento.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el tipo de documento del conducto.");
-            cbTipoDocumento.requestFocus();
-        } else if (Tools.isText(txtNumeroDocumento.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese el número de documento del conductor.");
-            txtNumeroDocumento.requestFocus();
-        } else if (Tools.isText(txtNombreConducto.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese los datos completos del conducto");
-            txtNombreConducto.requestFocus();
-        } else if (Tools.isText(txtTelefonoCelular.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese el teléfono o celular del conducto");
-            txtTelefonoCelular.requestFocus();
-        } else if (Tools.isText(txtNumeroPlacaVehiculo.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese el número de placa del vehículo");
-            txtNumeroPlacaVehiculo.requestFocus();
-        } else if (Tools.isText(txtMarcaVehiculo.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese la marca del vehículo.");
-            txtMarcaVehiculo.requestFocus();
-        } else if (Tools.isText(txtDireccionPartida.getText())) {
+            return;
+        }
+
+        if (cbTipoPesoCarga.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el tipo de peso de la carga.");
+            cbTipoPesoCarga.requestFocus();
+            return;
+        }
+
+        if (Tools.isText(txtPesoCarga.getText())) {
+            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese el peso de la carga.");
+            txtPesoCarga.requestFocus();
+            return;
+        }
+
+        /**
+         * Datos del transporte privado
+         */
+        if (cbVehiculo.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el documento guía usar.");
+            cbVehiculo.requestFocus();
+            return;
+        }
+
+        /**
+         * Dirección de la partida y punto de llegada
+         */
+        if (Tools.isText(txtDireccionPartida.getText())) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese la dirección de partida.");
             txtDireccionPartida.requestFocus();
-        } else if (cbUbigeoPartida.getSelectionModel().getSelectedIndex() < 0) {
+            return;
+        }
+
+        if (cbUbigeoPartida.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el ubigeo de partida.");
             cbUbigeoPartida.requestFocus();
-        } else if (Tools.isText(txtDireccionLlegada.getText())) {
+            return;
+        }
+
+        if (Tools.isText(txtDireccionLlegada.getText())) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese la dirección de llegada.");
             txtDireccionLlegada.requestFocus();
-        } else if (cbUbigeoLlegada.getSelectionModel().getSelectedIndex() < 0) {
+            return;
+        }
+
+        if (cbUbigeoLlegada.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el ubigeo de llegada.");
             cbUbigeoLlegada.requestFocus();
-        } else if (tvList.getItems().isEmpty()) {
+            return;
+        }
+
+        /**
+         * Detalle de la guía de remisión
+         */
+        if (tvList.getItems().isEmpty()) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Agregar productos a lista.");
             tvList.requestFocus();
-        } else {
+            return;
+        }
 
-            short value = Tools.AlertMessageConfirmation(spWindow, "Guia Remisión", "¿Está seguro de continuar?");
-            if (value == 1) {
-                GuiaRemisionTB guiaRemisionTB = new GuiaRemisionTB();
-                guiaRemisionTB.setIdVenta(idVenta);
-                guiaRemisionTB.setIdCliente(cbCliente.getSelectionModel().getSelectedItem().getIdCliente());
-                guiaRemisionTB.setIdVendedor(Session.USER_ID);
-                guiaRemisionTB
-                        .setIdComprobante(cbDocumentoGuia.getSelectionModel().getSelectedItem().getIdTipoDocumento());
-                guiaRemisionTB.setEmail(txtEmail.getText().trim());
-                guiaRemisionTB
-                        .setIdMotivoTraslado(cbMotivoTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
-                guiaRemisionTB.setIdModalidadTraslado(
-                        cbModalidadTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
-                guiaRemisionTB.setFechaTraslado(Tools.getDatePicker(dtFechaTraslado));
-                guiaRemisionTB.setPesoBruto(Double.parseDouble(txtPesoBruto.getText()));
-                guiaRemisionTB.setNumeroBultos(Integer.parseInt(txtNumeroBultos.getText()));
-                guiaRemisionTB
-                        .setTipoDocumentoConducto(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
-                guiaRemisionTB.setNumeroConductor(txtNumeroDocumento.getText().trim());
-                guiaRemisionTB.setNombreConductor(txtNombreConducto.getText().trim());
-                guiaRemisionTB.setTelefonoCelularConducto(txtTelefonoCelular.getText());
-                guiaRemisionTB.setNumeroPlaca(txtNumeroPlacaVehiculo.getText().trim());
-                guiaRemisionTB.setMarcaVehiculo(txtMarcaVehiculo.getText().trim());
-                guiaRemisionTB.setDireccionPartida(txtDireccionPartida.getText().trim());
-                guiaRemisionTB.setIdUbigeoPartida(cbUbigeoPartida.getSelectionModel().getSelectedItem().getIdUbigeo());
-                guiaRemisionTB.setDireccionLlegada(txtDireccionLlegada.getText().trim());
-                guiaRemisionTB.setIdUbigeoLlegada(cbUbigeoLlegada.getSelectionModel().getSelectedItem().getIdUbigeo());
-                guiaRemisionTB.setIdTipoComprobanteFactura(cbTipoComprobante.getSelectionModel().getSelectedIndex() >= 0
-                        ? cbTipoComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento()
-                        : 0);
-                guiaRemisionTB.setSerieFactura(txtSerieFactura.getText().trim());
-                guiaRemisionTB.setNumeracionFactura(txtNumeracionFactura.getText().trim());
-                guiaRemisionTB.setListGuiaRemisionDetalle(tvList.getItems());
+        short value = Tools.AlertMessageConfirmation(spWindow, "Guia Remisión", "¿Está seguro de continuar?");
+        if (value == 1) {
+            GuiaRemisionTB guiaRemisionTB = new GuiaRemisionTB();
+            guiaRemisionTB
+                    .setIdComprobante(cbDocumentoGuia.getSelectionModel().getSelectedItem().getIdTipoDocumento());
 
-                String[] result = GuiaRemisionADO.InsertarGuiaRemision(guiaRemisionTB).split("/");
-                if (result[0].equalsIgnoreCase("register")) {
-                    openModalImpresion(result[1]);
-                    reset();
-                } else {
-                    Tools.AlertMessageError(spWindow, "Guia Remisión", result[0]);
-                }
+            guiaRemisionTB.setIdCliente(cbCliente.getSelectionModel().getSelectedItem().getIdCliente());
+            guiaRemisionTB.setIdVendedor(Session.USER_ID);
+
+            /**
+             * Datos del traslado
+             */
+            guiaRemisionTB
+                    .setIdMotivoTraslado(cbMotivoTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
+            // guiaRemisionTB.setIdModalidadTraslado(
+            // cbModalidadTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
+            guiaRemisionTB.setFechaTraslado(Tools.getDatePicker(dtFechaTraslado));
+            guiaRemisionTB.setIdPesoCarga(cbTipoPesoCarga.getSelectionModel().getSelectedItem().getIdDetalle());
+            guiaRemisionTB.setPesoCarga(Double.parseDouble(txtPesoCarga.getText()));
+
+            /**
+             * Datos del transporte privado
+             */
+            // guiaRemisionTB
+            // .setIdTipoDocumentoConducto(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
+            // guiaRemisionTB.setNumeroDocumentoConductor(txtNumeroDocumento.getText().trim());
+            // guiaRemisionTB.setNombresConductor(txtNombreConducto.getText().trim());
+            // guiaRemisionTB.setTelefonoConducto(txtTelefonoCelular.getText());
+            // guiaRemisionTB.setNumeroPlaca(txtNumeroPlacaVehiculo.getText().trim());
+            // guiaRemisionTB.setNumeroLicencia(txtNumeroLicenciaConducir.getText().trim());
+            /**
+             * Dirección de partida y llegada
+             */
+            guiaRemisionTB.setDireccionPartida(txtDireccionPartida.getText().trim());
+            guiaRemisionTB.setIdUbigeoPartida(cbUbigeoPartida.getSelectionModel().getSelectedItem().getIdUbigeo());
+            guiaRemisionTB.setDireccionLlegada(txtDireccionLlegada.getText().trim());
+            guiaRemisionTB.setIdUbigeoLlegada(cbUbigeoLlegada.getSelectionModel().getSelectedItem().getIdUbigeo());
+
+            /**
+             * Documento de referencia
+             */
+            guiaRemisionTB.setIdVenta(idVenta);
+            guiaRemisionTB.setEstado(1);
+
+            /**
+             * Detalle de guía de remisión
+             */
+            guiaRemisionTB.setListGuiaRemisionDetalle(tvList.getItems());
+
+            String[] result = GuiaRemisionADO.InsertarGuiaRemision(guiaRemisionTB).split("/");
+            if (result[0].equalsIgnoreCase("register")) {
+                openModalImpresion(result[1]);
+                reset();
+            } else {
+                Tools.AlertMessageError(spWindow, "Guia Remisión", result[0]);
             }
 
         }
@@ -651,18 +813,17 @@ public class FxGuiaRemisionController implements Initializable {
 
     private void reset() {
         cbCliente.getItems().clear();
-        txtEmail.clear();
         cbMotivoTraslado.getSelectionModel().select(null);
-        cbModalidadTraslado.getSelectionModel().select(null);
+        // cbModalidadTraslado.getSelectionModel().select(null);
         Tools.actualDate(Tools.getDate(), dtFechaTraslado);
-        txtPesoBruto.clear();
-        txtNumeroBultos.clear();
-        cbTipoDocumento.getSelectionModel().select(null);
-        txtNumeroDocumento.clear();
-        txtNombreConducto.clear();
-        txtTelefonoCelular.clear();
-        txtNumeroPlacaVehiculo.clear();
-        txtMarcaVehiculo.clear();
+        cbTipoPesoCarga.getSelectionModel().select(null);
+        txtPesoCarga.clear();
+        // cbTipoDocumento.getSelectionModel().select(null);
+        // txtNumeroDocumento.clear();
+        // txtNombreConducto.clear();
+        // txtTelefonoCelular.clear();
+        // txtNumeroPlacaVehiculo.clear();
+        // txtNumeroLicenciaConducir.clear();
         txtDireccionPartida.clear();
         txtDireccionPartida.setText(Session.COMPANY_DOMICILIO);
         cbUbigeoPartida.getSelectionModel().select(null);
@@ -716,29 +877,29 @@ public class FxGuiaRemisionController implements Initializable {
                     }
                 }
 
-                for (int i = 0; i < cbModalidadTraslado.getItems().size(); i++) {
-                    if (cbModalidadTraslado.getItems().get(i).getIdDetalle() == clienteTB.getIdModalidadTraslado()) {
-                        cbModalidadTraslado.getSelectionModel().select(i);
-                        break;
-                    }
-                }
-
+                // for (int i = 0; i < cbModalidadTraslado.getItems().size(); i++) {
+                // if (cbModalidadTraslado.getItems().get(i).getIdDetalle() ==
+                // clienteTB.getIdModalidadTraslado()) {
+                // cbModalidadTraslado.getSelectionModel().select(i);
+                // break;
+                // }
+                // }
                 ConductorTB conductorTB = clienteTB.getConductorTB();
-                if (conductorTB != null) {
-                    for (int i = 0; i < cbTipoDocumento.getItems().size(); i++) {
-                        if (cbTipoDocumento.getItems().get(i).getIdDetalle() == conductorTB.getIdTipoDocumento()) {
-                            cbTipoDocumento.getSelectionModel().select(i);
-                            break;
-                        }
-                    }
+                // if (conductorTB != null) {
+                // for (int i = 0; i < cbTipoDocumento.getItems().size(); i++) {
+                // if (cbTipoDocumento.getItems().get(i).getIdDetalle() ==
+                // conductorTB.getIdTipoDocumento()) {
+                // cbTipoDocumento.getSelectionModel().select(i);
+                // break;
+                // }
+                // }
 
-                    txtNumeroDocumento.setText(conductorTB.getNumeroDocumento());
-                    txtNombreConducto.setText(conductorTB.getInformacion());
-                    txtTelefonoCelular.setText(conductorTB.getCelular());
-                    txtNumeroPlacaVehiculo.setText(conductorTB.getPlacaVehiculo());
-                    txtMarcaVehiculo.setText(conductorTB.getMarcaVehiculo());
-                }
-
+                // txtNumeroDocumento.setText(conductorTB.getNumeroDocumento());
+                // txtNombreConducto.setText(conductorTB.getInformacion());
+                // txtTelefonoCelular.setText(conductorTB.getCelular());
+                // txtNumeroPlacaVehiculo.setText(conductorTB.getPlacaVehiculo());
+                // txtNumeroLicenciaConducir.setText(conductorTB.getLicenciaConducir());
+                // }
                 txtDireccionLlegada.setText(clienteTB.getDireccion());
                 cbUbigeoLlegada.getItems().clear();
                 if (clienteTB.getUbigeoTB().getIdUbigeo() > 0) {
@@ -750,7 +911,6 @@ public class FxGuiaRemisionController implements Initializable {
 
                 tvList.getItems().clear();
                 empList.forEach((suministro) -> addProducto(suministro));
-                txtNumeroBultos.setText("" + empList.size());
                 lblLoad.setVisible(false);
             } else {
                 lblLoad.setVisible(false);
@@ -769,31 +929,12 @@ public class FxGuiaRemisionController implements Initializable {
     }
 
     @FXML
-    private void onKeyTypedPesoBruto(KeyEvent event) {
+    private void onKeyTypedPesoCarga(KeyEvent event) {
         char c = event.getCharacter().charAt(0);
         if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
             event.consume();
         }
-        if (c == '.' && txtPesoBruto.getText().contains(".")) {
-            event.consume();
-        }
-    }
-
-    @FXML
-    private void onKeyTypedNumeroBultos(KeyEvent event) {
-        char c = event.getCharacter().charAt(0);
-        if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
-            event.consume();
-        }
-        if (c == '.' && txtNumeroBultos.getText().contains(".")) {
-            event.consume();
-        }
-    }
-
-    @FXML
-    private void onKeyTypedNumeroDocumento(KeyEvent event) {
-        char c = event.getCharacter().charAt(0);
-        if ((c < '0' || c > '9') && (c != '\b') && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
+        if (c == '.' && txtPesoCarga.getText().contains(".")) {
             event.consume();
         }
     }
@@ -866,6 +1007,41 @@ public class FxGuiaRemisionController implements Initializable {
         openWindowVentas();
     }
 
+    @FXML
+    private void onKeyPressedVehiculo(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+        }
+    }
+
+    @FXML
+    private void onActionVehiculo(ActionEvent event) {
+    }
+
+    @FXML
+    private void onKeyPressedConductor(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+        }
+    }
+
+    @FXML
+    private void onActionConductor(ActionEvent event) {
+    }
+
+    @FXML
+    private void onActionModalidadTraslado(ActionEvent event) {
+        if (rbPublico.isSelected()) {
+            cbVehiculo.setDisable(true);
+            btnAgregarVehiculo.setDisable(true);
+            cbConductor.setDisable(true);
+            btnAgregarConductor.setDisable(true);
+        } else {
+            cbVehiculo.setDisable(false);
+            btnAgregarVehiculo.setDisable(false);
+            cbConductor.setDisable(false);
+            btnAgregarConductor.setDisable(false);
+        }
+    }
+
     public TableView<GuiaRemisionDetalleTB> getTvList() {
         return tvList;
     }
@@ -873,4 +1049,5 @@ public class FxGuiaRemisionController implements Initializable {
     public void setContent(FxPrincipalController fxPrincipalController) {
         this.fxPrincipalController = fxPrincipalController;
     }
+
 }

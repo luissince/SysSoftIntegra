@@ -20,10 +20,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import model.TicketADO;
 import model.TicketTB;
-import model.TipoDocumentoADO;
 import model.TipoDocumentoTB;
+import service.TicketADO;
+import service.TipoDocumentoADO;
 
 public class FxTipoDocumentoProcesoController implements Initializable {
 

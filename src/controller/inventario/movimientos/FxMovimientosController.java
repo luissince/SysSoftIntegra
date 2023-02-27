@@ -31,11 +31,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import model.AjusteInventarioADO;
 import model.AjusteInventarioTB;
 import model.PrivilegioTB;
-import model.TipoMovimientoADO;
 import model.TipoMovimientoTB;
+import service.AjusteInventarioADO;
+import service.TipoMovimientoADO;
 
 public class FxMovimientosController implements Initializable {
 

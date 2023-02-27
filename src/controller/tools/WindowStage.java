@@ -14,8 +14,7 @@ public class WindowStage {
 
     public static FXMLLoader LoaderWindow(URL ruta) {
         FXMLLoader fXMLLoader = new FXMLLoader();
-        URL url = ruta;
-        fXMLLoader.setLocation(url);
+        fXMLLoader.setLocation(ruta);
         fXMLLoader.setBuilderFactory(new JavaFXBuilderFactory());
         return fXMLLoader;
     }

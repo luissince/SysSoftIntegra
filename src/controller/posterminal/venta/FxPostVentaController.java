@@ -24,9 +24,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.CajaADO;
 import model.CajaTB;
 import model.PrivilegioTB;
+import service.CajaADO;
 
 public class FxPostVentaController implements Initializable {
 

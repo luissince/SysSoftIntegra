@@ -44,10 +44,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.ImageADO;
 import model.ImagenTB;
-import model.TicketADO;
 import model.TicketTB;
+import service.ImageADO;
+import service.TicketADO;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

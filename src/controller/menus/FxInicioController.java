@@ -48,7 +48,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.GlobalADO;
+import service.GlobalADO;
+
 import org.controlsfx.control.Notifications;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

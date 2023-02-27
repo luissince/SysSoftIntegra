@@ -10,11 +10,11 @@ import javafx.scene.control.ComboBox;
 
 public class SearchComboBox<T> {
 
-    private SearchComboBoxSkin searchComboBoxSkin;
+    private SearchComboBoxSkin<T> searchComboBoxSkin;
     private final ComboBox<T> comboBox;
     private final FilteredList<T> filterList;
     private BiPredicate<T, String> filter;
-    private CompletableFuture completableFuture;
+    private CompletableFuture<Void> completableFuture;
 
     public SearchComboBox(ComboBox<T> comboBox, boolean search) {
         this(comboBox, FXCollections.observableArrayList(), search);
@@ -27,7 +27,7 @@ public class SearchComboBox<T> {
             return true;
         };
         this.comboBox.setItems(items);
-        this.searchComboBoxSkin = new SearchComboBoxSkin(this, search);
+        this.searchComboBoxSkin = new SearchComboBoxSkin<T>(this, search);
         this.comboBox.setSkin(searchComboBoxSkin);
     }
 
@@ -47,21 +47,20 @@ public class SearchComboBox<T> {
         return filterList;
     }
 
-    public SearchComboBoxSkin getSearchComboBoxSkin() {
+    public SearchComboBoxSkin<T> getSearchComboBoxSkin() {
         return searchComboBoxSkin;
     }
 
-    public ComboBox getComboBox() {
+    public ComboBox<T> getComboBox() {
         return comboBox;
     }
 
-    public CompletableFuture getCompletableFuture() {
+    public CompletableFuture<Void> getCompletableFuture() {
         return completableFuture;
     }
 
-    public void setCompletableFuture(CompletableFuture completableFuture) {
-        this.completableFuture = completableFuture;       
+    public void setCompletableFuture(CompletableFuture<Void> completableFuture2) {
+        this.completableFuture = completableFuture2;
     }
-    
 
 }

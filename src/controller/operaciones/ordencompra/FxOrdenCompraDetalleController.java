@@ -2,7 +2,6 @@ package controller.operaciones.ordencompra;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
-import controller.tools.Session;
 import controller.tools.Tools;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,11 +25,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import model.MonedaADO;
-import model.MonedaTB;
-import model.OrdenCompraADO;
 import model.OrdenCompraDetalleTB;
 import model.OrdenCompraTB;
+import service.MonedaADO;
+import service.OrdenCompraADO;
 
 public class FxOrdenCompraDetalleController implements Initializable {
 

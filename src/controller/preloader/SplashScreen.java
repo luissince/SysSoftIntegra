@@ -17,13 +17,14 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.ClienteADO;
 import model.ClienteTB;
-import model.EmpresaADO;
 import model.EmpresaTB;
-import model.MonedaADO;
-import model.TicketADO;
 import model.TicketTB;
+import service.ClienteADO;
+import service.EmpresaADO;
+import service.MonedaADO;
+import service.TicketADO;
+
 import org.json.simple.JSONObject;
 
 public class SplashScreen extends Preloader {
@@ -74,7 +75,7 @@ public class SplashScreen extends Preloader {
                         ObjectGlobal.USER = String.valueOf(object.get("user"));
                         ObjectGlobal.PASSWORD = String.valueOf(object.get("password"));
                     }
-                   
+
                     boolean validateRegister = EmpresaADO.isConfiguration();
                     if (!validateRegister) {
                         Session.CONFIGURATION_STATE = true;
@@ -88,7 +89,8 @@ public class SplashScreen extends Preloader {
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_VENTA = true;
                             Session.NOMBRE_IMPRESORA_VENTA = prop.getProperty("printerNameVenta");
-                            Session.CORTAPAPEL_IMPRESORA_VENTA = Boolean.parseBoolean(prop.getProperty("printerCutPaperVenta"));
+                            Session.CORTAPAPEL_IMPRESORA_VENTA = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperVenta"));
                             Session.FORMATO_IMPRESORA_VENTA = prop.getProperty("printerTypeFormatVenta");
                             Session.DESING_IMPRESORA_VENTA = prop.getProperty("printerTypeDesingVenta");
                         } catch (IOException ex) {
@@ -101,7 +103,8 @@ public class SplashScreen extends Preloader {
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_COMPRA = true;
                             Session.NOMBRE_IMPRESORA_COMPRA = prop.getProperty("printerNameCompra");
-                            Session.CORTAPAPEL_IMPRESORA_COMPRA = Boolean.parseBoolean(prop.getProperty("printerCutPaperCompra"));
+                            Session.CORTAPAPEL_IMPRESORA_COMPRA = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperCompra"));
                             Session.FORMATO_IMPRESORA_COMPRA = prop.getProperty("printerTypeFormatCompra");
                             Session.DESING_IMPRESORA_COMPRA = prop.getProperty("printerTypeDesingCompra");
                         } catch (IOException ex) {
@@ -114,7 +117,8 @@ public class SplashScreen extends Preloader {
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_PRE_VENTA = true;
                             Session.NOMBRE_IMPRESORA_PRE_VENTA = prop.getProperty("printerNamePreVenta");
-                            Session.CORTAPAPEL_IMPRESORA_PRE_VENTA = Boolean.parseBoolean(prop.getProperty("printerCutPaperPreVenta"));
+                            Session.CORTAPAPEL_IMPRESORA_PRE_VENTA = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperPreVenta"));
                             Session.FORMATO_IMPRESORA_PRE_VENTA = prop.getProperty("printerTypeFormatPreVenta");
                             Session.DESING_IMPRESORA_PRE_VENTA = prop.getProperty("printerTypeDesingVenta");
                         } catch (IOException ex) {
@@ -127,7 +131,8 @@ public class SplashScreen extends Preloader {
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_CORTE_CAJA = true;
                             Session.NOMBRE_IMPRESORA_CORTE_CAJA = prop.getProperty("printerNameCorteCaja");
-                            Session.CORTAPAPEL_IMPRESORA_CORTE_CAJA = Boolean.parseBoolean(prop.getProperty("printerCutPaperCorteCaja"));
+                            Session.CORTAPAPEL_IMPRESORA_CORTE_CAJA = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperCorteCaja"));
                             Session.FORMATO_IMPRESORA_CORTE_CAJA = prop.getProperty("printerTypeFormatCorteCaja");
                             Session.DESING_IMPRESORA_CORTE_CAJA = prop.getProperty("printerTypeDesingCorteCaja");
                         } catch (IOException ex) {
@@ -140,7 +145,8 @@ public class SplashScreen extends Preloader {
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_COTIZACION = true;
                             Session.NOMBRE_IMPRESORA_COTIZACION = prop.getProperty("printerNameCotizacion");
-                            Session.CORTAPAPEL_IMPRESORA_COTIZACION = Boolean.parseBoolean(prop.getProperty("printerCutPaperCotizacion"));
+                            Session.CORTAPAPEL_IMPRESORA_COTIZACION = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperCotizacion"));
                             Session.FORMATO_IMPRESORA_COTIZACION = prop.getProperty("printerTypeFormatCotizacion");
                             Session.DESING_IMPRESORA_COTIZACION = prop.getProperty("printerTypeDesingCotizacion");
                         } catch (IOException ex) {
@@ -152,10 +158,14 @@ public class SplashScreen extends Preloader {
                             Properties prop = new Properties();
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_CUENTA_POR_COBRAR = true;
-                            Session.NOMBRE_IMPRESORA_CUENTA_POR_COBRAR = prop.getProperty("printerNameCuentasPorCobrar");
-                            Session.CORTAPAPEL_IMPRESORA_CUENTA_POR_COBRAR = Boolean.parseBoolean(prop.getProperty("printerCutPaperCuentasPorCobrar"));
-                            Session.FORMATO_IMPRESORA_CUENTA_POR_COBRAR = prop.getProperty("printerTypeFormatCuentasPorCobrar");
-                            Session.DESING_IMPRESORA_CUENTA_POR_COBRAR = prop.getProperty("printerTypeDesingCuentasPorCobrar");
+                            Session.NOMBRE_IMPRESORA_CUENTA_POR_COBRAR = prop
+                                    .getProperty("printerNameCuentasPorCobrar");
+                            Session.CORTAPAPEL_IMPRESORA_CUENTA_POR_COBRAR = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperCuentasPorCobrar"));
+                            Session.FORMATO_IMPRESORA_CUENTA_POR_COBRAR = prop
+                                    .getProperty("printerTypeFormatCuentasPorCobrar");
+                            Session.DESING_IMPRESORA_CUENTA_POR_COBRAR = prop
+                                    .getProperty("printerTypeDesingCuentasPorCobrar");
                         } catch (IOException ex) {
                             Session.ESTADO_IMPRESORA_CUENTA_POR_COBRAR = false;
                         }
@@ -166,9 +176,12 @@ public class SplashScreen extends Preloader {
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_CUENTA_POR_PAGAR = true;
                             Session.NOMBRE_IMPRESORA_CUENTA_POR_PAGAR = prop.getProperty("printerNameCuentasPorPagar");
-                            Session.CORTAPAPEL_IMPRESORA_CUENTA_POR_PAGAR = Boolean.parseBoolean(prop.getProperty("printerCutPaperCuentasPorPagar"));
-                            Session.FORMATO_IMPRESORA_CUENTA_POR_PAGAR = prop.getProperty("printerTypeFormatCuentasPorPagar");
-                            Session.DESING_IMPRESORA_CUENTA_POR_PAGAR = prop.getProperty("printerTypeDesingCuentasPorPagar");
+                            Session.CORTAPAPEL_IMPRESORA_CUENTA_POR_PAGAR = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperCuentasPorPagar"));
+                            Session.FORMATO_IMPRESORA_CUENTA_POR_PAGAR = prop
+                                    .getProperty("printerTypeFormatCuentasPorPagar");
+                            Session.DESING_IMPRESORA_CUENTA_POR_PAGAR = prop
+                                    .getProperty("printerTypeDesingCuentasPorPagar");
                         } catch (IOException ex) {
                             Session.ESTADO_IMPRESORA_CUENTA_POR_PAGAR = false;
                         }
@@ -178,10 +191,14 @@ public class SplashScreen extends Preloader {
                             Properties prop = new Properties();
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = true;
-                            Session.NOMBRE_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = prop.getProperty("printerNameHistorialSalidaProducto");
-                            Session.CORTAPAPEL_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = Boolean.parseBoolean(prop.getProperty("printerCutPaperHistorialSalidaProducto"));
-                            Session.FORMATO_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = prop.getProperty("printerTypeFormatHistorialSalidaProducto");
-                            Session.DESING_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = prop.getProperty("printerTypeDesingHistorialSalidaProducto");
+                            Session.NOMBRE_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = prop
+                                    .getProperty("printerNameHistorialSalidaProducto");
+                            Session.CORTAPAPEL_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperHistorialSalidaProducto"));
+                            Session.FORMATO_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = prop
+                                    .getProperty("printerTypeFormatHistorialSalidaProducto");
+                            Session.DESING_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = prop
+                                    .getProperty("printerTypeDesingHistorialSalidaProducto");
                         } catch (IOException ex) {
                             Session.ESTADO_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS = false;
                         }
@@ -192,7 +209,8 @@ public class SplashScreen extends Preloader {
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_PEDIDO = true;
                             Session.NOMBRE_IMPRESORA_PEDIDO = prop.getProperty("printerNamePedido");
-                            Session.CORTAPAPEL_IMPRESORA_PEDIDO = Boolean.parseBoolean(prop.getProperty("printerCutPaperPedido"));
+                            Session.CORTAPAPEL_IMPRESORA_PEDIDO = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperPedido"));
                             Session.FORMATO_IMPRESORA_PEDIDO = prop.getProperty("printerTypeFormatPedido");
                             Session.DESING_IMPRESORA_PEDIDO = prop.getProperty("printerTypeDesingPedido");
                         } catch (IOException ex) {
@@ -205,7 +223,8 @@ public class SplashScreen extends Preloader {
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_GUIA_REMISION = true;
                             Session.NOMBRE_IMPRESORA_GUIA_REMISION = prop.getProperty("printerNameGuiaRemision");
-                            Session.CORTAPAPEL_IMPRESORA_GUIA_REMISION = Boolean.parseBoolean(prop.getProperty("printerCutPaperGuiaRemision"));
+                            Session.CORTAPAPEL_IMPRESORA_GUIA_REMISION = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperGuiaRemision"));
                             Session.FORMATO_IMPRESORA_GUIA_REMISION = prop.getProperty("printerTypeFormatGuiaRemision");
                             Session.DESING_IMPRESORA_GUIA_REMISION = prop.getProperty("printerTypeDesingGuiaRemision");
                         } catch (IOException ex) {
@@ -218,7 +237,8 @@ public class SplashScreen extends Preloader {
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_ORDEN_COMPRA = true;
                             Session.NOMBRE_IMPRESORA_ORDEN_COMPRA = prop.getProperty("printerNameOrdenCompra");
-                            Session.CORTAPAPEL_IMPRESORA_ORDEN_COMPRA = Boolean.parseBoolean(prop.getProperty("printerCutPaperOrdenCompra"));
+                            Session.CORTAPAPEL_IMPRESORA_ORDEN_COMPRA = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperOrdenCompra"));
                             Session.FORMATO_IMPRESORA_ORDEN_COMPRA = prop.getProperty("printerTypeFormatOrdenCompra");
                             Session.DESING_IMPRESORA_ORDEN_COMPRA = prop.getProperty("printerTypeDesingOrdenCompra");
                         } catch (IOException ex) {
@@ -231,7 +251,8 @@ public class SplashScreen extends Preloader {
                             prop.load(input);
                             Session.ESTADO_IMPRESORA_NOTA_CREDITO = true;
                             Session.NOMBRE_IMPRESORA_NOTA_CREDITO = prop.getProperty("printerNameNotaCredito");
-                            Session.CORTAPAPEL_IMPRESORA_NOTA_CREDITO = Boolean.parseBoolean(prop.getProperty("printerCutPaperNotaCredito"));
+                            Session.CORTAPAPEL_IMPRESORA_NOTA_CREDITO = Boolean
+                                    .parseBoolean(prop.getProperty("printerCutPaperNotaCredito"));
                             Session.FORMATO_IMPRESORA_NOTA_CREDITO = prop.getProperty("printerTypeFormatNotaCredito");
                             Session.DESING_IMPRESORA_NOTA_CREDITO = prop.getProperty("printerTypeDesingNotaCredito");
                         } catch (IOException ex) {
@@ -246,7 +267,7 @@ public class SplashScreen extends Preloader {
                             TicketTB ticketTB = (TicketTB) ticketVentaTB;
                             Session.TICKET_VENTA_ID = ticketTB.getId();
                             Session.TICKET_VENTA_RUTA = ticketTB.getRuta();
-//                                Tools.println(ticketVentaTB.getRuta()); 
+                            // Tools.println(ticketVentaTB.getRuta());
                         } else {
                             Session.TICKET_VENTA_ID = 0;
                             Session.TICKET_VENTA_RUTA = "";
@@ -397,17 +418,12 @@ public class SplashScreen extends Preloader {
                             Session.CLIENTE_DIRECCION = "";
                         }
 
-                        ClienteADO.ListarClienteNumeroDocumento().forEach(c -> ObjectGlobal.DATA_CLIENTS.add(c));
-                        ClienteADO.ListarClienteInformacion().forEach(inf -> ObjectGlobal.DATA_INFO_CLIENTS.add(inf));
+                        ObjectGlobal.DATA_CLIENTS.addAll(ClienteADO.ListarClienteNumeroDocumento());
+                        ObjectGlobal.DATA_INFO_CLIENTS.addAll(ClienteADO.ListarClienteInformacion());
 
                     }
                 } else {
                     Session.CONNECTION_SESSION = false;
-
-//                    Tools.AlertMessageError(preloaderStage.getScene().getRoot(), "Preloader", "No se puedo cargar el archivo conexión, intente de nuevo o comuníquese con su proveedor.");
-//                    preloaderStage.hide();
-//                    Platform.exit();
-//                    return;
                 }
                 break;
             case BEFORE_START:

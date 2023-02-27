@@ -28,10 +28,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import model.CompraADO;
 import model.CompraTB;
-import model.DetalleADO;
 import model.DetalleTB;
+import service.CompraADO;
+import service.DetalleADO;
 
 public class FxComprasRealizadasController implements Initializable {
 

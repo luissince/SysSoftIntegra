@@ -15,10 +15,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.AlmacenADO;
 import model.AlmacenTB;
-import model.UbigeoADO;
 import model.UbigeoTB;
+import service.AlmacenADO;
+import service.UbigeoADO;
 
 public class FxAlmacenProcesoController implements Initializable {
 

@@ -48,13 +48,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.ImpuestoADO;
 import model.ImpuestoTB;
 import model.PreciosTB;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.DetalleADO;
+import service.ImpuestoADO;
+import service.SuministroADO;
 
 public class FxSuministrosProcesoModalController implements Initializable {
 

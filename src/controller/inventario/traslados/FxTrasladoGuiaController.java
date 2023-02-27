@@ -36,12 +36,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.SuministroADO;
 import model.SuministroTB;
-import model.TrasladoADO;
 import model.TrasladoTB;
+import service.DetalleADO;
+import service.SuministroADO;
+import service.TrasladoADO;
 
 public class FxTrasladoGuiaController implements Initializable {
 

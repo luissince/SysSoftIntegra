@@ -40,15 +40,16 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.CompraADO;
 import model.CompraTB;
-import model.DetalleADO;
 import model.DetalleTB;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import service.CompraADO;
+import service.DetalleADO;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
@@ -186,7 +187,7 @@ public class FxCompraReporteController implements Initializable {
 
                 }
 
-                Map map = new HashMap();
+                Map<String, Object> map = new HashMap<String, Object>();
                 map.put("PERIODO", dpFechaInicial.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")) + " - " + dpFechaFinal.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")));
                 map.put("COMPROBANTE", cbComprobanteSeleccionar.isSelected() ? "TODOS" : cbComprobantes.getSelectionModel().getSelectedItem().getNombre());
                 map.put("TIPO", cbTipoCompra.isSelected() ? "TODOS" : rbContado.isSelected() ? "AL CONTADO" : "AL CRÉDITO");

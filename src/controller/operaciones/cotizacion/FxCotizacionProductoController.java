@@ -14,9 +14,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import model.CotizacionDetalleTB;
-import model.DetalleADO;
 import model.DetalleTB;
 import model.SuministroTB;
+import service.DetalleADO;
 
 public class FxCotizacionProductoController implements Initializable {
 

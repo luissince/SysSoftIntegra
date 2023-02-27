@@ -28,12 +28,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import model.AlmacenADO;
 import model.AlmacenTB;
-import model.KardexADO;
 import model.KardexTB;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.AlmacenADO;
+import service.KardexADO;
+import service.SuministroADO;
 
 public class FxSuministrosKardexController implements Initializable {
 

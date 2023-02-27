@@ -30,8 +30,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.TrasladoADO;
 import model.TrasladoTB;
+import service.TrasladoADO;
 
 public class FxTrasladoController implements Initializable {
 

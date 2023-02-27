@@ -1,35 +1,38 @@
 
 package model;
 
-
 public class ConductorTB {
 
-    private String idConductor;
-    private String idCliente;
+    private int id;
+    private String IdConductor;
     private int idTipoDocumento;
     private String numeroDocumento;
     private String informacion;
     private String celular;
-    private String placaVehiculo;
-    private String marcaVehiculo;
+    private String telefono;
+    private String email;
+    private String licenciaConducir;
     private String fecha;
     private String hora;
     private String idUsuario;
 
+    public ConductorTB() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getIdConductor() {
-        return idConductor;
+        return IdConductor;
     }
 
     public void setIdConductor(String idConductor) {
-        this.idConductor = idConductor;
-    }
-
-    public String getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(String idCliente) {
-        this.idCliente = idCliente;
+        IdConductor = idConductor;
     }
 
     public int getIdTipoDocumento() {
@@ -64,20 +67,28 @@ public class ConductorTB {
         this.celular = celular;
     }
 
-    public String getPlacaVehiculo() {
-        return placaVehiculo;
+    public String getTelefono() {
+        return telefono;
     }
 
-    public void setPlacaVehiculo(String placaVehiculo) {
-        this.placaVehiculo = placaVehiculo;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
-    public String getMarcaVehiculo() {
-        return marcaVehiculo;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMarcaVehiculo(String marcaVehiculo) {
-        this.marcaVehiculo = marcaVehiculo;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLicenciaConducir() {
+        return licenciaConducir;
+    }
+
+    public void setLicenciaConducir(String licenciaConducir) {
+        this.licenciaConducir = licenciaConducir;
     }
 
     public String getFecha() {
@@ -103,5 +114,5 @@ public class ConductorTB {
     public void setIdUsuario(String idUsuario) {
         this.idUsuario = idUsuario;
     }
+
 }
-    

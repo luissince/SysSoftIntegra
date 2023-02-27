@@ -25,12 +25,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.EmpresaADO;
 import model.EmpresaTB;
-import model.UbigeoADO;
 import model.UbigeoTB;
+import service.DetalleADO;
+import service.EmpresaADO;
+import service.UbigeoADO;
 
 public class FxMiEmpresaController implements Initializable {
 

@@ -45,16 +45,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.EmpleadoADO;
 import model.EmpleadoTB;
-import model.FormulaADO;
 import model.FormulaTB;
-import model.ProduccionADO;
 import model.ProduccionTB;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.DetalleADO;
+import service.EmpleadoADO;
+import service.FormulaADO;
+import service.ProduccionADO;
+import service.SuministroADO;
 
 public class FxProducirAgregarController implements Initializable {
 

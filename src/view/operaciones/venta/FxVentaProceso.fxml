@@ -89,7 +89,7 @@
                                           <CheckBox fx:id="cbDeposito" mnemonicParsing="false" onAction="#onActionDepostio" styleClass="check-box-contenido" text="Deposito" />
                                           <AnchorPane>
                                              <children>
-                                                <VBox fx:id="vbEfectivoView" spacing="10.0" style="-fx-spacing: 0.6666666666666666em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                <VBox fx:id="vbEfectivoView" alignment="CENTER" spacing="10.0" style="-fx-spacing: 0.6666666666666666em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <children>
                                                       <VBox alignment="CENTER_LEFT">
                                                          <children>
@@ -236,7 +236,7 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                    <VBox fx:id="vbViewPagoAdelantado" alignment="CENTER" fillWidth="false" style="-fx-padding: 0.6666666666666666em;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <VBox fx:id="vbViewPagoAdelantado" alignment="CENTER" style="-fx-padding: 0.6666666666666666em;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
                                           <CheckBox fx:id="cbDepositoAdelantado" mnemonicParsing="false" onAction="#onActionDepositoAdelantado" styleClass="check-box-contenido" text="Deposito" />
                                           <AnchorPane>
@@ -258,11 +258,7 @@
                                                                               </ImageView>
                                                                            </graphic>
                                                                         </Label>
-                                                                        <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.3333333333333333em;">
-                                                                           <children>
-                                                                              <TextField fx:id="txtEfectivoAdelantado" onAction="#onActionAceptar" onKeyReleased="#onKeyReleasedEfectivoAdelantado" onKeyTyped="#onKeyTypedEfectivoAdelantado" prefHeight="30.0" prefWidth="260.0" promptText="0.00" styleClass="text-field-normal" />
-                                                                           </children>
-                                                                        </HBox>
+                                                                        <TextField fx:id="txtEfectivoAdelantado" onAction="#onActionAceptar" onKeyReleased="#onKeyReleasedEfectivoAdelantado" onKeyTyped="#onKeyTypedEfectivoAdelantado" prefHeight="30.0" prefWidth="260.0" promptText="0.00" styleClass="text-field-normal" />
                                                                      </children>
                                                                   </VBox>
                                                                   <VBox alignment="CENTER_LEFT">
@@ -276,11 +272,7 @@
                                                                               </ImageView>
                                                                            </graphic>
                                                                         </Label>
-                                                                        <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.3333333333333333em;">
-                                                                           <children>
-                                                                              <TextField fx:id="txtTarjetaAdelantado" onAction="#onActionAceptar" onKeyReleased="#OnKeyReleasedTarjetaAdelantado" onKeyTyped="#OnKeyTypedTarjetaAdelantado" prefHeight="30.0" prefWidth="260.0" promptText="0.00" styleClass="text-field-normal" />
-                                                                           </children>
-                                                                        </HBox>
+                                                                        <TextField fx:id="txtTarjetaAdelantado" onAction="#onActionAceptar" onKeyReleased="#OnKeyReleasedTarjetaAdelantado" onKeyTyped="#OnKeyTypedTarjetaAdelantado" prefHeight="30.0" prefWidth="260.0" promptText="0.00" styleClass="text-field-normal" />
                                                                      </children>
                                                                   </VBox>
                                                                   <HBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em;">
@@ -337,21 +329,36 @@
                                                 </VBox>
                                              </children>
                                           </AnchorPane>
-                                          <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                                          <HBox alignment="CENTER">
                                              <children>
-                                                <Label alignment="CENTER" prefWidth="500.0" styleClass="labelRoboto13" text="El proceso de pago adelantado consiste en registrar el dinero sin modificar la cantidad de los productos agregados en el detalle de venta." textFill="#020203" wrapText="true" HBox.hgrow="ALWAYS">
-                                                   <graphic>
-                                                      <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../../image/information.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                   </graphic>
-                                                </Label>
+                                                <VBox HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                                                         <children>
+                                                            <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                                               <children>
+                                                                  <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefWidth="200.0" styleClass="labelRoboto13" text="El proceso de pago adelantado consiste en registrar el dinero sin modificar la cantidad de los productos agregados en el detalle de venta." textFill="#020203" wrapText="true" VBox.vgrow="ALWAYS">
+                                                                     <graphic>
+                                                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                           <image>
+                                                                              <Image url="@../../image/information.png" />
+                                                                           </image>
+                                                                        </ImageView>
+                                                                     </graphic>
+                                                                  </Label>
+                                                               </children>
+                                                            </VBox>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </padding>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
                                              </children>
-                                             <padding>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                             </padding>
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
                                           </HBox>
                                        </children>
                                     </VBox>

@@ -28,8 +28,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import model.ClienteADO;
 import model.ClienteTB;
+import service.ClienteADO;
 
 public class FxClienteListaController implements Initializable {
 
@@ -74,12 +74,15 @@ public class FxClienteListaController implements Initializable {
                             fillCustomersTable("");
                         }
                         break;
+                    default:
+                        break;
 
                 }
             }
         });
         tcId.setCellValueFactory(cellData -> cellData.getValue().getId().asObject());
-        tcDocumento.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getTipoDocumentoName() + ": " + cellData.getValue().getNumeroDocumento()));
+        tcDocumento.setCellValueFactory(cellData -> Bindings
+                .concat(cellData.getValue().getTipoDocumentoName() + ": " + cellData.getValue().getNumeroDocumento()));
         tcPersona.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getInformacion()));
         tcDireccion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getDireccion()));
     }
@@ -123,13 +126,13 @@ public class FxClienteListaController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_CLIENTE_PROCESO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxClienteProcesoController controller = fXMLLoader.getController();
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Cliente", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
-            stage.setOnShown(w->controller.loadAddCliente()); 
+            stage.setOnShown(w -> controller.loadAddCliente());
             stage.show();
         } catch (IOException ex) {
             System.out.println("openWindowAddCliente()" + ex.getLocalizedMessage());
@@ -139,11 +142,13 @@ public class FxClienteListaController implements Initializable {
     private void selectClienteList() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             if (ventaReporteController != null) {
-                ventaReporteController.setClienteVentaReporte(tvList.getSelectionModel().getSelectedItem().getIdCliente(),
+                ventaReporteController.setClienteVentaReporte(
+                        tvList.getSelectionModel().getSelectedItem().getIdCliente(),
                         tvList.getSelectionModel().getSelectedItem().getInformacion());
                 Tools.Dispose(apWindow);
             } else if (notaCreditoReporteController != null) {
-                notaCreditoReporteController.setClienteVentaReporte(tvList.getSelectionModel().getSelectedItem().getIdCliente(),
+                notaCreditoReporteController.setClienteVentaReporte(
+                        tvList.getSelectionModel().getSelectedItem().getIdCliente(),
                         tvList.getSelectionModel().getSelectedItem().getInformacion());
                 Tools.Dispose(apWindow);
             } else if (posReporteController != null) {

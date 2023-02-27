@@ -29,9 +29,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.EtiquetaADO;
 import model.EtiquetaTB;
 import model.SuministroTB;
+import service.EtiquetaADO;
 
 public class FxEtiquetasBusquedaController implements Initializable {
 

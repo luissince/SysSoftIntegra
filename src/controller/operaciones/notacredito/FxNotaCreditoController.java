@@ -38,11 +38,11 @@ import javafx.stage.Stage;
 import model.DetalleTB;
 import model.DetalleVentaTB;
 import model.MonedaTB;
-import model.NotaCreditoADO;
 import model.NotaCreditoDetalleTB;
 import model.NotaCreditoTB;
 import model.TipoDocumentoTB;
 import model.VentaTB;
+import service.NotaCreditoADO;
 
 public class FxNotaCreditoController implements Initializable {
 

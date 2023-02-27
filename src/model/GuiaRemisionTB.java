@@ -1,49 +1,54 @@
-
 package model;
 
 import javafx.collections.ObservableList;
-
+import javafx.scene.control.Label;
 
 public class GuiaRemisionTB {
-    
+
     private int id;
-    private String idVenta;
     private String idGuiaRemision;
     private int idComprobante;
     private String serie;
     private String numeracion;
     private String idCliente;
     private String idVendedor;
-    private String email;
+    private String fechaRegistro;
+    private String horaRegistro;
     private int idMotivoTraslado;
-    private String motivoTrasladoDescripcion;
     private int idModalidadTraslado;
-    private String modalidadTrasladDescripcion;
     private String fechaTraslado;
     private String horaTraslado;
-    private double pesoBruto;
-    private int numeroBultos;
-    private int tipoDocumentoConducto;
-    private String numeroConductor;
-    private String nombreConductor;
-    private String telefonoCelularConducto;
+    private String idConductor;
+    private int idPesoCarga;
+    private double pesoCarga;
+    private int idTipoDocumentoConducto;
+    private String numeroDocumentoConductor;
+    private String nombresConductor;
+    private String telefonoConducto;
     private String numeroPlaca;
-    private String marcaVehiculo; 
+    private String numeroLicencia;
     private String direccionPartida;
     private int idUbigeoPartida;
-    private String ubigeoPartidaDescripcion;
     private String direccionLlegada;
     private int idUbigeoLlegada;
-    private String ubigeoLlegadaDescripcion;
-    private int idTipoComprobanteFactura;
-    private String comprobanteAsociado;
-    private String serieFactura;
-    private String numeracionFactura;
+    private String idVenta;
+    private int estado;
+    private String xmlSunat;
+    private String xmlDescripcion;
+    private String codigoHash;
+    private String xmlGenerado;
+    private String numeroTicketSunat;
+    private TipoDocumentoTB tipoDocumentoTB;
     private ObservableList<GuiaRemisionDetalleTB> listGuiaRemisionDetalle;
     private ClienteTB clienteTB;
     private EmpleadoTB empleadoTB;
-     private UbigeoTB ubigeoTB;
-    
+    private UbigeoTB ubigeoPartidaTB;
+    private UbigeoTB ubigeoLlegadaTB;
+    private DetalleTB detalleMotivoTrasladoTB;
+    private DetalleTB detalleModalidadTrasladoTB;
+    private VentaTB ventaTB;
+    private Label estadoLabel;
+
     public GuiaRemisionTB() {
     }
 
@@ -53,14 +58,6 @@ public class GuiaRemisionTB {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getIdVenta() {
-        return idVenta;
-    }
-
-    public void setIdVenta(String idVenta) {
-        this.idVenta = idVenta;
     }
 
     public String getIdGuiaRemision() {
@@ -111,12 +108,20 @@ public class GuiaRemisionTB {
         this.idVendedor = idVendedor;
     }
 
-    public String getEmail() {
-        return email;
+    public String getFechaRegistro() {
+        return fechaRegistro;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setFechaRegistro(String fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public String getHoraRegistro() {
+        return horaRegistro;
+    }
+
+    public void setHoraRegistro(String horaRegistro) {
+        this.horaRegistro = horaRegistro;
     }
 
     public int getIdMotivoTraslado() {
@@ -127,28 +132,12 @@ public class GuiaRemisionTB {
         this.idMotivoTraslado = idMotivoTraslado;
     }
 
-    public String getModalidadTrasladDescripcion() {
-        return modalidadTrasladDescripcion;
-    }
-
-    public void setModalidadTrasladDescripcion(String modalidadTrasladDescripcion) {
-        this.modalidadTrasladDescripcion = modalidadTrasladDescripcion;
-    }
-
     public int getIdModalidadTraslado() {
         return idModalidadTraslado;
     }
 
     public void setIdModalidadTraslado(int idModalidadTraslado) {
         this.idModalidadTraslado = idModalidadTraslado;
-    }
-
-    public String getMotivoTrasladoDescripcion() {
-        return motivoTrasladoDescripcion;
-    }
-
-    public void setMotivoTrasladoDescripcion(String motivoTrasladoDescripcion) {
-        this.motivoTrasladoDescripcion = motivoTrasladoDescripcion;
     }
 
     public String getFechaTraslado() {
@@ -167,52 +156,60 @@ public class GuiaRemisionTB {
         this.horaTraslado = horaTraslado;
     }
 
-    public double getPesoBruto() {
-        return pesoBruto;
+    public String getIdConductor() {
+        return idConductor;
     }
 
-    public void setPesoBruto(double pesoBruto) {
-        this.pesoBruto = pesoBruto;
+    public void setIdConductor(String idConductor) {
+        this.idConductor = idConductor;
     }
 
-    public int getNumeroBultos() {
-        return numeroBultos;
+    public int getIdPesoCarga() {
+        return idPesoCarga;
     }
 
-    public void setNumeroBultos(int numeroBultos) {
-        this.numeroBultos = numeroBultos;
+    public void setIdPesoCarga(int idPesoCarga) {
+        this.idPesoCarga = idPesoCarga;
     }
 
-    public int getTipoDocumentoConducto() {
-        return tipoDocumentoConducto;
+    public double getPesoCarga() {
+        return pesoCarga;
     }
 
-    public void setTipoDocumentoConducto(int tipoDocumentoConducto) {
-        this.tipoDocumentoConducto = tipoDocumentoConducto;
+    public void setPesoCarga(double pesoCarga) {
+        this.pesoCarga = pesoCarga;
     }
 
-    public String getNumeroConductor() {
-        return numeroConductor;
+    public int getIdTipoDocumentoConducto() {
+        return idTipoDocumentoConducto;
     }
 
-    public void setNumeroConductor(String numeroConductor) {
-        this.numeroConductor = numeroConductor;
+    public void setIdTipoDocumentoConducto(int idTipoDocumentoConducto) {
+        this.idTipoDocumentoConducto = idTipoDocumentoConducto;
     }
 
-    public String getNombreConductor() {
-        return nombreConductor;
+    public String getNumeroDocumentoConductor() {
+        return numeroDocumentoConductor;
     }
 
-    public void setNombreConductor(String nombreConductor) {
-        this.nombreConductor = nombreConductor;
+    public void setNumeroDocumentoConductor(String numeroDocumentoConductor) {
+        this.numeroDocumentoConductor = numeroDocumentoConductor;
     }
 
-    public String getTelefonoCelularConducto() {
-        return telefonoCelularConducto;
+    public String getNombresConductor() {
+        return nombresConductor;
     }
 
-    public void setTelefonoCelularConducto(String telefonoCelularConducto) {
-        this.telefonoCelularConducto = telefonoCelularConducto;
+    public void setNombresConductor(String nombresConductor) {
+        this.nombresConductor = nombresConductor;
+    }
+
+    public String getTelefonoConducto() {
+        return telefonoConducto;
+    }
+
+    public void setTelefonoConducto(String telefonoConducto) {
+        this.telefonoConducto = telefonoConducto;
     }
 
     public String getNumeroPlaca() {
@@ -223,12 +220,12 @@ public class GuiaRemisionTB {
         this.numeroPlaca = numeroPlaca;
     }
 
-    public String getMarcaVehiculo() {
-        return marcaVehiculo;
+    public String getNumeroLicencia() {
+        return numeroLicencia;
     }
 
-    public void setMarcaVehiculo(String marcaVehiculo) {
-        this.marcaVehiculo = marcaVehiculo;
+    public void setNumeroLicencia(String numeroLicencia) {
+        this.numeroLicencia = numeroLicencia;
     }
 
     public String getDireccionPartida() {
@@ -247,14 +244,6 @@ public class GuiaRemisionTB {
         this.idUbigeoPartida = idUbigeoPartida;
     }
 
-    public String getUbigeoPartidaDescripcion() {
-        return ubigeoPartidaDescripcion;
-    }
-
-    public void setUbigeoPartidaDescripcion(String ubigeoPartidaDescripcion) {
-        this.ubigeoPartidaDescripcion = ubigeoPartidaDescripcion;
-    }
-
     public String getDireccionLlegada() {
         return direccionLlegada;
     }
@@ -271,44 +260,68 @@ public class GuiaRemisionTB {
         this.idUbigeoLlegada = idUbigeoLlegada;
     }
 
-    public String getUbigeoLlegadaDescripcion() {
-        return ubigeoLlegadaDescripcion;
+    public String getIdVenta() {
+        return idVenta;
     }
 
-    public void setUbigeoLlegadaDescripcion(String ubigeoLlegadaDescripcion) {
-        this.ubigeoLlegadaDescripcion = ubigeoLlegadaDescripcion;
+    public void setIdVenta(String idVenta) {
+        this.idVenta = idVenta;
     }
 
-    public String getComprobanteAsociado() {
-        return comprobanteAsociado;
+    public int getEstado() {
+        return estado;
     }
 
-    public void setComprobanteAsociado(String comprobanteAsociado) {
-        this.comprobanteAsociado = comprobanteAsociado;
+    public void setEstado(int estado) {
+        this.estado = estado;
     }
 
-    public int getIdTipoComprobanteFactura() {
-        return idTipoComprobanteFactura;
+    public String getXmlSunat() {
+        return xmlSunat;
     }
 
-    public void setIdTipoComprobanteFactura(int idTipoComprobanteFactura) {
-        this.idTipoComprobanteFactura = idTipoComprobanteFactura;
+    public void setXmlSunat(String xmlSunat) {
+        this.xmlSunat = xmlSunat;
     }
 
-    public String getSerieFactura() {
-        return serieFactura;
+    public String getXmlDescripcion() {
+        return xmlDescripcion;
     }
 
-    public void setSerieFactura(String serieFactura) {
-        this.serieFactura = serieFactura;
+    public void setXmlDescripcion(String xmlDescripcion) {
+        this.xmlDescripcion = xmlDescripcion;
     }
 
-    public String getNumeracionFactura() {
-        return numeracionFactura;
+    public String getCodigoHash() {
+        return codigoHash;
     }
 
-    public void setNumeracionFactura(String numeracionFactura) {
-        this.numeracionFactura = numeracionFactura;
+    public void setCodigoHash(String codigoHash) {
+        this.codigoHash = codigoHash;
+    }
+
+    public String getXmlGenerado() {
+        return xmlGenerado;
+    }
+
+    public void setXmlGenerado(String xmlGenerado) {
+        this.xmlGenerado = xmlGenerado;
+    }
+
+    public String getNumeroTicketSunat() {
+        return numeroTicketSunat;
+    }
+
+    public void setNumeroTicketSunat(String numeroTicketSunat) {
+        this.numeroTicketSunat = numeroTicketSunat;
+    }
+
+    public TipoDocumentoTB getTipoDocumentoTB() {
+        return tipoDocumentoTB;
+    }
+
+    public void setTipoDocumentoTB(TipoDocumentoTB tipoDocumentoTB) {
+        this.tipoDocumentoTB = tipoDocumentoTB;
     }
 
     public ObservableList<GuiaRemisionDetalleTB> getListGuiaRemisionDetalle() {
@@ -327,20 +340,60 @@ public class GuiaRemisionTB {
         this.clienteTB = clienteTB;
     }
 
-    public UbigeoTB getUbigeoTB() {
-        return ubigeoTB;
-    }
-
-    public void setUbigeoTB(UbigeoTB ubigeoTB) {
-        this.ubigeoTB = ubigeoTB;
-    }
-
     public EmpleadoTB getEmpleadoTB() {
         return empleadoTB;
     }
 
     public void setEmpleadoTB(EmpleadoTB empleadoTB) {
         this.empleadoTB = empleadoTB;
-    }   
+    }
+
+    public UbigeoTB getUbigeoPartidaTB() {
+        return ubigeoPartidaTB;
+    }
+
+    public void setUbigeoPartidaTB(UbigeoTB ubigeoPartidaTB) {
+        this.ubigeoPartidaTB = ubigeoPartidaTB;
+    }
+
+    public UbigeoTB getUbigeoLlegadaTB() {
+        return ubigeoLlegadaTB;
+    }
+
+    public void setUbigeoLlegadaTB(UbigeoTB ubigeoLlegadaTB) {
+        this.ubigeoLlegadaTB = ubigeoLlegadaTB;
+    }
+
+    public DetalleTB getDetalleMotivoTrasladoTB() {
+        return detalleMotivoTrasladoTB;
+    }
+
+    public void setDetalleMotivoTrasladoTB(DetalleTB detalleMotivoTrasladoTB) {
+        this.detalleMotivoTrasladoTB = detalleMotivoTrasladoTB;
+    }
+
+    public DetalleTB getDetalleModalidadTrasladoTB() {
+        return detalleModalidadTrasladoTB;
+    }
+
+    public void setDetalleModalidadTrasladoTB(DetalleTB detalleModalidadTrasladoTB) {
+        this.detalleModalidadTrasladoTB = detalleModalidadTrasladoTB;
+    }
+
+    public VentaTB getVentaTB() {
+        return ventaTB;
+    }
+
+    public void setVentaTB(VentaTB ventaTB) {
+        this.ventaTB = ventaTB;
+    }
+
+    public Label getEstadoLabel() {
+        return estadoLabel;
+    }
+
+    public void setEstadoLabel(Label estadoLabel) {
+        this.estadoLabel = estadoLabel;
+    }
 
 }

@@ -22,9 +22,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import model.FormulaADO;
 import model.FormulaTB;
 import model.SuministroTB;
+import service.FormulaADO;
 
 public class FxFormulaVisualizarController implements Initializable {
 

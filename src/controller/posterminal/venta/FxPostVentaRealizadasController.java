@@ -36,6 +36,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.*;
+import service.DetalleADO;
+import service.TipoDocumentoADO;
+import service.VentaADO;
 
 public class FxPostVentaRealizadasController implements Initializable {
 
@@ -199,7 +202,7 @@ public class FxPostVentaRealizadasController implements Initializable {
             Object object = task.getValue();
             if (object instanceof Object[]) {
                 Object[] objects = (Object[]) object;
-                ObservableList<VentaTB> ventaTBs = (ObservableList<VentaTB>) objects[0];
+                ObservableList<VentaTB> ventaTBs =  (ObservableList<VentaTB>) objects[0];
                 if (!ventaTBs.isEmpty()) {
                     tvList.setItems(ventaTBs);
                     totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));

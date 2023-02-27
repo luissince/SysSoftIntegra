@@ -22,8 +22,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import model.OrdenCompraADO;
 import model.OrdenCompraTB;
+import service.OrdenCompraADO;
 
 public class FxOrdenCompraListaController implements Initializable {
 
@@ -74,25 +74,19 @@ public class FxOrdenCompraListaController implements Initializable {
         Tools.actualDate(Tools.getDate(), txtFechaFinal);
 
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getId()
-        ));
+                cellData.getValue().getId()));
         tcFechaRegistro.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getFechaRegistro() + "\n"
-                + cellData.getValue().getHoraRegistro()
-        ));
+                        + cellData.getValue().getHoraRegistro()));
         tcProveedor.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getProveedorTB().getNumeroDocumento() + "\n"
-                + cellData.getValue().getProveedorTB().getRazonSocial()
-        ));
+                        + cellData.getValue().getProveedorTB().getRazonSocial()));
         tcOrdenCompra.setCellValueFactory(cellData -> Bindings.concat(
-                "N° - " + Tools.formatNumber(cellData.getValue().getNumeracion())
-        ));
+                "N° - " + Tools.formatNumber(cellData.getValue().getNumeracion())));
         tcObservacion.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getObservacion().toUpperCase()
-        ));
+                cellData.getValue().getObservacion().toUpperCase()));
         tcTotal.setCellValueFactory(cellData -> Bindings.concat(
-                Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)
-        ));
+                Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
     }
 
     public void loadInit() {
@@ -113,7 +107,8 @@ public class FxOrdenCompraListaController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return OrdenCompraADO.ListarOrdenCompra(opcion, buscar, fechaInico, fechaFinal, (paginacion - 1) * 10, 10);
+                return OrdenCompraADO.ListarOrdenCompra(opcion, buscar, fechaInico, fechaFinal, (paginacion - 1) * 10,
+                        10);
             }
         };
 
@@ -128,14 +123,16 @@ public class FxOrdenCompraListaController implements Initializable {
                     lblPaginaActual.setText(paginacion + "");
                     lblPaginaSiguiente.setText(totalPaginacion + "");
                 } else {
-                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                    tvList.setPlaceholder(
+                            Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
                     lblPaginaActual.setText("0");
                     lblPaginaSiguiente.setText("0");
                 }
             } else if (object instanceof String) {
                 tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
             } else {
-                tvList.setPlaceholder(Tools.placeHolderTableView("Error en traer los datos, intente nuevamente.", "-fx-text-fill:#a70820;", false));
+                tvList.setPlaceholder(Tools.placeHolderTableView("Error en traer los datos, intente nuevamente.",
+                        "-fx-text-fill:#a70820;", false));
             }
             lblLoad.setVisible(false);
         });
@@ -146,7 +143,8 @@ public class FxOrdenCompraListaController implements Initializable {
         task.setOnScheduled(w -> {
             lblLoad.setVisible(true);
             tvList.getItems().clear();
-            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            tvList.setPlaceholder(
+                    Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
             totalPaginacion = 0;
         });
         exec.execute(task);

@@ -16,10 +16,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.ImpuestoADO;
 import model.ImpuestoTB;
+import service.DetalleADO;
+import service.ImpuestoADO;
 
 public class FxImpuestoProcesoController implements Initializable {
 

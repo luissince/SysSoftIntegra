@@ -19,14 +19,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import model.CajaADO;
 import model.CajaTB;
-import model.CompraADO;
 import model.CompraTB;
 import model.DetalleCompraTB;
 import model.IngresoTB;
 import model.LoteTB;
 import model.MovimientoCajaTB;
+import service.CajaADO;
+import service.CompraADO;
 
 public class FxComprasProcesoController implements Initializable {
 

@@ -12,8 +12,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import model.TicketADO;
 import model.TicketTB;
+import service.TicketADO;
 
 public class FxTicketBusquedaController implements Initializable {
 

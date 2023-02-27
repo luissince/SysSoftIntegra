@@ -1,6 +1,5 @@
 package controller.contactos.proveedores;
 
-import controller.operaciones.compras.FxComprasController;
 import controller.reporte.FxCompraReporteController;
 import controller.tools.FilesRouters;
 import controller.tools.Tools;
@@ -27,8 +26,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import model.ProveedorADO;
 import model.ProveedorTB;
+import service.ProveedorADO;
 
 public class FxProveedorListaController implements Initializable {
 

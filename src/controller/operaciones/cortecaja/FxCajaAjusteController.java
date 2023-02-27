@@ -9,7 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.CajaADO;
+import service.CajaADO;
 
 public class FxCajaAjusteController implements Initializable {
 

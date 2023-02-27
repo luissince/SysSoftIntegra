@@ -30,8 +30,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-import model.EmpleadoADO;
 import model.EmpleadoTB;
+import service.EmpleadoADO;
 
 public class FxLoginController implements Initializable {
 
@@ -48,7 +48,7 @@ public class FxLoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
     }
 
     private void eventEntrar() {
@@ -78,7 +78,10 @@ public class FxLoginController implements Initializable {
                     EmpleadoTB empleadoTB = (EmpleadoTB) object;
                     Session.USER_ROL = empleadoTB.getRol();
                     Session.USER_ID = empleadoTB.getIdEmpleado();
-                    Session.USER_NAME = (empleadoTB.getApellidos().substring(0, 1).toUpperCase() + empleadoTB.getApellidos().substring(1).toLowerCase()) + " " + empleadoTB.getNombres().substring(0, 1).toUpperCase() + empleadoTB.getNombres().substring(1).toLowerCase();
+                    Session.USER_NAME = (empleadoTB.getApellidos().substring(0, 1).toUpperCase()
+                            + empleadoTB.getApellidos().substring(1).toLowerCase()) + " "
+                            + empleadoTB.getNombres().substring(0, 1).toUpperCase()
+                            + empleadoTB.getNombres().substring(1).toLowerCase();
                     Session.USER_PUESTO = empleadoTB.getRolName();
                     return "ok";
                 } else {
@@ -100,6 +103,7 @@ public class FxLoginController implements Initializable {
                 lblError.setTextFill(Paint.valueOf("#ed3d1a"));
                 lblError.setText("Se completo la autentificación correctamente :D");
                 try {
+
                     Tools.Dispose(apLogin);
                     URL url = getClass().getResource(FilesRouters.FX_PRINCIPAL);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
@@ -112,15 +116,21 @@ public class FxLoginController implements Initializable {
                     stage.setTitle(FilesRouters.TITLE_APP);
                     stage.centerOnScreen();
                     stage.setMaximized(true);
+                    stage.setOnShowing(s -> {
+                        System.out.println("setOnShowing");
+
+                    });
                     stage.setOnShown(s -> {
+                        System.out.println("setOnShown");
                         controller.initLoadMenus();
                         controller.initInicioController();
-                        controller.initUserSession((Session.USER_PUESTO.substring(0, 1).toUpperCase() + Session.USER_PUESTO.substring(1).toLowerCase()));
+                        controller.initUserSession((Session.USER_PUESTO.substring(0, 1).toUpperCase()
+                                + Session.USER_PUESTO.substring(1).toLowerCase()));
                     });
                     stage.show();
                     stage.requestFocus();
-
                 } catch (IOException exception) {
+                    System.out.println("Error en la vista principal:" + exception.getMessage());
                     System.out.println("Error en la vista principal:" + exception.getLocalizedMessage());
                 }
                 lblEntrar.setDisable(false);

@@ -25,8 +25,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import model.OrdenCompraADO;
 import model.OrdenCompraTB;
+import service.OrdenCompraADO;
 
 public class FxOrdenCompraRealizadasController implements Initializable {
 

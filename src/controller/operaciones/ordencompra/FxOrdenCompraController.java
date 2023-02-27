@@ -40,13 +40,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.MonedaADO;
 import model.MonedaTB;
-import model.OrdenCompraADO;
 import model.OrdenCompraDetalleTB;
 import model.OrdenCompraTB;
-import model.ProveedorADO;
 import model.ProveedorTB;
+import service.MonedaADO;
+import service.OrdenCompraADO;
+import service.ProveedorADO;
 
 public class FxOrdenCompraController implements Initializable {
 
@@ -128,11 +128,15 @@ public class FxOrdenCompraController implements Initializable {
 
         tcOpcion.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
         tcProducto.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getSuministroTB().getClave() + "\n" + cellData.getValue().getSuministroTB().getNombreMarca()));
-        tcCantidad.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
-        tcCosto.setCellValueFactory(cellData -> Bindings.concat(monedaSimbolo + " " + Tools.roundingValue(cellData.getValue().getCosto(), 2)));
+                cellData.getValue().getSuministroTB().getClave() + "\n"
+                        + cellData.getValue().getSuministroTB().getNombreMarca()));
+        tcCantidad.setCellValueFactory(
+                cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
+        tcCosto.setCellValueFactory(cellData -> Bindings
+                .concat(monedaSimbolo + " " + Tools.roundingValue(cellData.getValue().getCosto(), 2)));
         tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getNombre()));
-        tcImporte.setCellValueFactory(cellData -> Bindings.concat(monedaSimbolo + " " + Tools.roundingValue(cellData.getValue().getCantidad() * cellData.getValue().getCosto(), 2)));
+        tcImporte.setCellValueFactory(cellData -> Bindings.concat(monedaSimbolo + " "
+                + Tools.roundingValue(cellData.getValue().getCantidad() * cellData.getValue().getCosto(), 2)));
         tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservacion()));
 
         tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.08));
@@ -156,7 +160,7 @@ public class FxOrdenCompraController implements Initializable {
     }
 
     private void loadComboBoxProveedor() {
-        SearchComboBox<ProveedorTB> scbProveedor = new SearchComboBox<>(cbProveedor, false);
+        SearchComboBox<ProveedorTB> scbProveedor = new SearchComboBox<ProveedorTB>(cbProveedor, false);
         scbProveedor.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
             if (t.getCode() == KeyCode.ENTER) {
                 if (!scbProveedor.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
@@ -179,7 +183,8 @@ public class FxOrdenCompraController implements Initializable {
                 scbProveedor.getComboBox().setPromptText("Cargando información...");
             });
             scbProveedor.setCompletableFuture(CompletableFuture.supplyAsync(() -> {
-                return ProveedorADO.getSearchComboBoxProveedores(scbProveedor.getSearchComboBoxSkin().getSearchBox().getText().trim());
+                return ProveedorADO.getSearchComboBoxProveedores(
+                        scbProveedor.getSearchComboBoxSkin().getSearchBox().getText().trim());
             }).thenAcceptAsync(complete -> {
                 if (complete instanceof List) {
                     Platform.runLater(() -> {
@@ -214,14 +219,15 @@ public class FxOrdenCompraController implements Initializable {
                 }
             }
         });
-        scbProveedor.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty().addListener((p, o, item) -> {
-            if (item != null) {
-                scbProveedor.getComboBox().getSelectionModel().select(item);
-                if (scbProveedor.getSearchComboBoxSkin().isClickSelection()) {
-                    scbProveedor.getComboBox().hide();
-                }
-            }
-        });
+        scbProveedor.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty()
+                .addListener((p, o, item) -> {
+                    if (item != null) {
+                        scbProveedor.getComboBox().getSelectionModel().select(item);
+                        if (scbProveedor.getSearchComboBoxSkin().isClickSelection()) {
+                            scbProveedor.getComboBox().hide();
+                        }
+                    }
+                });
     }
 
     private void openWindowSuministro() {
@@ -230,11 +236,12 @@ public class FxOrdenCompraController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxSuministrosListaController controller = fXMLLoader.getController();
             controller.setInitOrdenCompraController(this);
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto", apWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto",
+                    apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> principalController.closeFondoModal());
@@ -250,7 +257,7 @@ public class FxOrdenCompraController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_ORDEN_COMPRA_PRODUCTO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxOrdenCompraProductoController controller = fXMLLoader.getController();
             controller.setInitOrdenCompraController(this);
             //
@@ -275,7 +282,7 @@ public class FxOrdenCompraController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_PROVEEDORES_PROCESO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxProveedorProcesoController controller = fXMLLoader.getController();
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Proveedor", apWindow.getScene().getWindow());
@@ -346,7 +353,8 @@ public class FxOrdenCompraController implements Initializable {
                 for (int i = 0; i < cbMoneda.getItems().size(); i++) {
                     if (cbMoneda.getItems().get(i).isPredeterminado()) {
                         lblCambioMonedaTexto.setText("Importe Neto " + cbMoneda.getItems().get(i).getAbreviado() + ":");
-                        lblCambioMonedaMonto.setText(cbMoneda.getItems().get(i).getSimbolo() + " " + Tools.roundingValue(cambio * importeNetoTotal, 2));
+                        lblCambioMonedaMonto.setText(cbMoneda.getItems().get(i).getSimbolo() + " "
+                                + Tools.roundingValue(cambio * importeNetoTotal, 2));
                         break;
                     }
                 }
@@ -534,11 +542,12 @@ public class FxOrdenCompraController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_ORDEN_COMPRA_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxOrdenCompraListaController controller = fXMLLoader.getController();
             controller.setInitOrdenCompraListarController(this);
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Mostrar Ordenes de Compra", apWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Mostrar Ordenes de Compra",
+                    apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> principalController.closeFondoModal());
@@ -593,7 +602,10 @@ public class FxOrdenCompraController implements Initializable {
                 this.idOrdenCompra = idOrdenCompra;
 
                 cbProveedor.getItems().clear();
-                cbProveedor.getItems().add(new ProveedorTB(ordenCompraTB.getProveedorTB().getIdProveedor(), ordenCompraTB.getProveedorTB().getNumeroDocumento(), ordenCompraTB.getProveedorTB().getRazonSocial()));
+                cbProveedor.getItems()
+                        .add(new ProveedorTB(ordenCompraTB.getProveedorTB().getIdProveedor(),
+                                ordenCompraTB.getProveedorTB().getNumeroDocumento(),
+                                ordenCompraTB.getProveedorTB().getRazonSocial()));
                 cbProveedor.getSelectionModel().select(0);
 
                 lblProceso.setText("Orden de Compra en proceso de actualizar");
@@ -602,7 +614,8 @@ public class FxOrdenCompraController implements Initializable {
                 Tools.actualDate(Tools.getDate(), dtFechaEmision);
                 Tools.actualDate(Tools.getDate(), dtFechaVencimiento);
 
-                ObservableList<OrdenCompraDetalleTB> compraDetalleTBs = FXCollections.observableArrayList(ordenCompraTB.getOrdenCompraDetalleTBs());
+                ObservableList<OrdenCompraDetalleTB> compraDetalleTBs = FXCollections
+                        .observableArrayList(ordenCompraTB.getOrdenCompraDetalleTBs());
                 compraDetalleTBs.forEach(compraDetalleTB -> {
                     compraDetalleTB.getBtnRemove().setOnAction(e -> {
                         tvList.getItems().remove(compraDetalleTB);

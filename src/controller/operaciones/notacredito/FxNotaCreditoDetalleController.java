@@ -25,9 +25,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import model.NotaCreditoADO;
 import model.NotaCreditoDetalleTB;
 import model.NotaCreditoTB;
+import service.NotaCreditoADO;
 
 public class FxNotaCreditoDetalleController implements Initializable {
 

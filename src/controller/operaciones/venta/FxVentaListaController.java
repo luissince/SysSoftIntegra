@@ -24,8 +24,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import model.VentaADO;
 import model.VentaTB;
+import service.VentaADO;
 
 public class FxVentaListaController implements Initializable {
 

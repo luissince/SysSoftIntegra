@@ -26,7 +26,6 @@ import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.AjusteInventarioADO;
 import model.AjusteInventarioTB;
 import model.MovimientoInventarioDetalleTB;
 import model.SuministroTB;
@@ -34,6 +33,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import service.AjusteInventarioADO;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

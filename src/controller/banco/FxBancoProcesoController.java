@@ -17,10 +17,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import model.BancoADO;
 import model.BancoTB;
-import model.MonedaADO;
 import model.MonedaTB;
+import service.BancoADO;
+import service.MonedaADO;
 
 public class FxBancoProcesoController implements Initializable {
 

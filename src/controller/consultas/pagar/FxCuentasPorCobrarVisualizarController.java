@@ -32,8 +32,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.SuministroTB;
-import model.VentaADO;
 import model.VentaTB;
+import service.VentaADO;
 
 public class FxCuentasPorCobrarVisualizarController implements Initializable {
 

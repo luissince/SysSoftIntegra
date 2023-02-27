@@ -31,12 +31,12 @@ import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import model.DetalleVentaTB;
 import model.HistorialSuministroSalidaTB;
-import model.VentaADO;
 import model.VentaTB;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import service.VentaADO;
 
 public class TicketVentaLlevar {
 

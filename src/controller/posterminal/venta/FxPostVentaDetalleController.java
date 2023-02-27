@@ -36,8 +36,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.EmpleadoTB;
 import model.SuministroTB;
-import model.VentaADO;
 import model.VentaTB;
+import service.VentaADO;
 
 public class FxPostVentaDetalleController implements Initializable {
 

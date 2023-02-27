@@ -40,11 +40,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.DetalleADO;
 import model.DetalleTB;
 import model.PrivilegioTB;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.DetalleADO;
+import service.SuministroADO;
 
 public class FxSuministrosController implements Initializable {
 

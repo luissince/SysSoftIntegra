@@ -34,13 +34,15 @@ import javafx.util.Duration;
 import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import javax.print.PrintService;
-import model.OrdenCompraADO;
+
 import model.OrdenCompraDetalleTB;
 import model.OrdenCompraTB;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import service.OrdenCompraADO;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

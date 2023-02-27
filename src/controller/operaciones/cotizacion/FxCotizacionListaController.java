@@ -23,8 +23,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import model.CotizacionADO;
 import model.CotizacionTB;
+import service.CotizacionADO;
 
 public class FxCotizacionListaController implements Initializable {
 

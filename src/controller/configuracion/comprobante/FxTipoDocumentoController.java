@@ -28,8 +28,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.TipoDocumentoADO;
 import model.TipoDocumentoTB;
+import service.TipoDocumentoADO;
 
 public class FxTipoDocumentoController implements Initializable {
 

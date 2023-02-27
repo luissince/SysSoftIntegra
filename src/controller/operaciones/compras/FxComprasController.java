@@ -42,21 +42,21 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.AlmacenADO;
 import model.AlmacenTB;
-import model.CompraADO;
 import model.CompraTB;
-import model.DetalleADO;
 import model.DetalleCompraTB;
 import model.DetalleTB;
 import model.LoteTB;
-import model.OrdenCompraADO;
 import model.OrdenCompraTB;
 import model.PreciosTB;
 import model.PrivilegioTB;
-import model.ProveedorADO;
 import model.ProveedorTB;
 import model.SuministroTB;
+import service.AlmacenADO;
+import service.CompraADO;
+import service.DetalleADO;
+import service.OrdenCompraADO;
+import service.ProveedorADO;
 
 public class FxComprasController implements Initializable {
 

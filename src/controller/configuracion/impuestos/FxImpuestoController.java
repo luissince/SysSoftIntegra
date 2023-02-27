@@ -29,8 +29,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.ImpuestoADO;
 import model.ImpuestoTB;
+import service.ImpuestoADO;
 
 public class FxImpuestoController implements Initializable {
 

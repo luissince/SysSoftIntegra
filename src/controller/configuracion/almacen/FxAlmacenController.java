@@ -25,8 +25,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.AlmacenADO;
 import model.AlmacenTB;
+import service.AlmacenADO;
 
 public class FxAlmacenController implements Initializable {
 

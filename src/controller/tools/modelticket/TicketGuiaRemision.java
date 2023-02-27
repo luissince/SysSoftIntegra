@@ -36,10 +36,9 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.PrintServiceAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.PrinterName;
-import model.GuiaRemisionADO;
+
 import model.GuiaRemisionDetalleTB;
 import model.GuiaRemisionTB;
-import model.VentaADO;
 import model.VentaTB;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -48,6 +47,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
+import service.GuiaRemisionADO;
+import service.VentaADO;
 
 public class TicketGuiaRemision {
 
@@ -61,7 +62,8 @@ public class TicketGuiaRemision {
 
     private final AnchorPane hbPie;
 
-    public TicketGuiaRemision(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie) {
+    public TicketGuiaRemision(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado,
+            AnchorPane hbDetalleCabecera, AnchorPane hbPie) {
         this.node = node;
         this.billPrintable = billPrintable;
         this.hbEncabezado = hbEncabezado;
@@ -70,13 +72,16 @@ public class TicketGuiaRemision {
     }
 
     public void imprimir(String idGuiaRemision) {
-        if (!Session.ESTADO_IMPRESORA_GUIA_REMISION && Tools.isText(Session.NOMBRE_IMPRESORA_GUIA_REMISION) && Tools.isText(Session.FORMATO_IMPRESORA_GUIA_REMISION)) {
-            Tools.AlertMessageWarning(node, "Guía de Remisión", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+        if (!Session.ESTADO_IMPRESORA_GUIA_REMISION && Tools.isText(Session.NOMBRE_IMPRESORA_GUIA_REMISION)
+                && Tools.isText(Session.FORMATO_IMPRESORA_GUIA_REMISION)) {
+            Tools.AlertMessageWarning(node, "Guía de Remisión",
+                    "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
             return;
         }
         if (Session.FORMATO_IMPRESORA_GUIA_REMISION.equalsIgnoreCase("ticket")) {
             if (Session.TICKET_GUIA_REMISION_ID == 0 && Session.TICKET_GUIA_REMISION_RUTA.equalsIgnoreCase("")) {
-                Tools.AlertMessageWarning(node, "Guía de Remisión", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
+                Tools.AlertMessageWarning(node, "Guía de Remisión",
+                        "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
             } else {
                 executeProcessPrinterGuiaRemision(
                         idGuiaRemision,
@@ -85,8 +90,7 @@ public class TicketGuiaRemision {
                         Session.TICKET_GUIA_REMISION_RUTA,
                         Session.NOMBRE_IMPRESORA_GUIA_REMISION,
                         Session.CORTAPAPEL_IMPRESORA_GUIA_REMISION,
-                        Session.FORMATO_IMPRESORA_GUIA_REMISION
-                );
+                        Session.FORMATO_IMPRESORA_GUIA_REMISION);
             }
         } else if (Session.FORMATO_IMPRESORA_GUIA_REMISION.equalsIgnoreCase("a4")) {
             executeProcessPrinterGuiaRemision(
@@ -96,14 +100,15 @@ public class TicketGuiaRemision {
                     Session.TICKET_GUIA_REMISION_RUTA,
                     Session.NOMBRE_IMPRESORA_GUIA_REMISION,
                     Session.CORTAPAPEL_IMPRESORA_GUIA_REMISION,
-                    Session.FORMATO_IMPRESORA_GUIA_REMISION
-            );
+                    Session.FORMATO_IMPRESORA_GUIA_REMISION);
         } else {
-            Tools.AlertMessageWarning(node, "Guía de Remisión", "Error al validar el formato de impresión configure en la sección configuración/impresora.");
+            Tools.AlertMessageWarning(node, "Guía de Remisión",
+                    "Error al validar el formato de impresión configure en la sección configuración/impresora.");
         }
     }
 
-    private void executeProcessPrinterGuiaRemision(String idGuiaRemision, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel, String format) {
+    private void executeProcessPrinterGuiaRemision(String idGuiaRemision, String desing, int ticketId,
+            String ticketRuta, String nombreImpresora, boolean cortaPapel, String format) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -113,7 +118,7 @@ public class TicketGuiaRemision {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object object = GuiaRemisionADO.CargarGuiaRemisionReporte(idGuiaRemision);
+                Object object = GuiaRemisionADO.ObtenerGuiaRemisionById(idGuiaRemision);
                 if (object instanceof GuiaRemisionTB) {
                     try {
                         GuiaRemisionTB guiaRemisionTB = (GuiaRemisionTB) object;
@@ -130,8 +135,10 @@ public class TicketGuiaRemision {
                             JRPrintServiceExporter exporter = new JRPrintServiceExporter();
 
                             exporter.setParameter(JRExporterParameter.JASPER_PRINT, reportJasper(guiaRemisionTB));
-                            exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);
-                            exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, printServiceAttributeSet);
+                            exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET,
+                                    printRequestAttributeSet);
+                            exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET,
+                                    printServiceAttributeSet);
                             exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
                             exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
                             exporter.exportReport();
@@ -139,11 +146,14 @@ public class TicketGuiaRemision {
 
                         } else {
                             if (desing.equalsIgnoreCase("withdesing")) {
-                                return printTicketWithDesingGuiaRemision(guiaRemisionTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
+                                return printTicketWithDesingGuiaRemision(guiaRemisionTB, ticketId, ticketRuta,
+                                        nombreImpresora, cortaPapel);
                             } else {
                                 return "empty";
-//                                billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
-//                                return printTicketNoDesingCorteCaja(cajaTB, (ArrayList<Double>) object[1], nombreImpresora, cortaPapel);
+                                // billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado,
+                                // hbDetalleCabecera, hbPie);
+                                // return printTicketNoDesingCorteCaja(cajaTB, (ArrayList<Double>) object[1],
+                                // nombreImpresora, cortaPapel);
                             }
                         }
                     } catch (PrinterException | IOException | PrintException | JRException ex) {
@@ -166,7 +176,8 @@ public class TicketGuiaRemision {
             } else if (result.equalsIgnoreCase("error_name")) {
                 Tools.showAlertNotification("/view/image/warning_large.png",
                         "Envío de impresión",
-                        Tools.newLineString("Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
+                        Tools.newLineString(
+                                "Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else if (result.equalsIgnoreCase("empty")) {
@@ -186,7 +197,8 @@ public class TicketGuiaRemision {
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Envío de impresión",
-                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -204,7 +216,8 @@ public class TicketGuiaRemision {
         }
     }
 
-    private String printTicketWithDesingGuiaRemision(GuiaRemisionTB guiaRemisionTB, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
+    private String printTicketWithDesingGuiaRemision(GuiaRemisionTB guiaRemisionTB, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
         billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
 
         for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
@@ -240,22 +253,29 @@ public class TicketGuiaRemision {
                     "0",
                     "0",
                     "0",
-                    guiaRemisionTB.getComprobanteAsociado(),
-                    guiaRemisionTB.getSerieFactura() + "-" + guiaRemisionTB.getNumeracionFactura(),
+                    // guiaRemisionTB.getComprobanteAsociado(),
+                    "",
+                    // guiaRemisionTB.getSerieFactura() + "-" +
+                    // guiaRemisionTB.getNumeracionFactura(),
+                    "",
                     guiaRemisionTB.getDireccionPartida(),
-                    guiaRemisionTB.getUbigeoPartidaDescripcion(),
+                    guiaRemisionTB.getUbigeoPartidaTB().getDepartamento() + " - "
+                            + guiaRemisionTB.getUbigeoPartidaTB().getProvincia() + " - "
+                            + guiaRemisionTB.getUbigeoPartidaTB().getDistrito(),
                     guiaRemisionTB.getDireccionLlegada(),
-                    guiaRemisionTB.getUbigeoLlegadaDescripcion(),
-                    guiaRemisionTB.getNumeroConductor(),
-                    guiaRemisionTB.getNombreConductor(),
-                    guiaRemisionTB.getMarcaVehiculo(),
+                    guiaRemisionTB.getUbigeoLlegadaTB().getDepartamento() + " - "
+                            + guiaRemisionTB.getUbigeoLlegadaTB().getProvincia() + " - "
+                            + guiaRemisionTB.getUbigeoLlegadaTB().getDistrito(),
+                    guiaRemisionTB.getNumeroDocumentoConductor(),
+                    guiaRemisionTB.getNombresConductor(),
+                    guiaRemisionTB.getNumeroLicencia(),
                     guiaRemisionTB.getNumeroPlaca(),
-                    guiaRemisionTB.getMotivoTrasladoDescripcion(),
+                    // guiaRemisionTB.getMotivoTrasladoDescripcion(),
                     "",
                     "",
                     "",
-                    ""
-            );
+                    "",
+                    "");
         }
 
         AnchorPane hbDetalle = new AnchorPane();
@@ -324,7 +344,7 @@ public class TicketGuiaRemision {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return GuiaRemisionADO.CargarGuiaRemisionReporte(idGuiaRemision);
+                return GuiaRemisionADO.ObtenerGuiaRemisionById(idGuiaRemision);
             }
         };
         task.setOnScheduled(w -> {
@@ -380,7 +400,7 @@ public class TicketGuiaRemision {
         URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
         FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
         Parent parent = fXMLLoader.load(url.openStream());
-        //Controlller here
+        // Controlller here
         FxReportViewController controller = fXMLLoader.getController();
         controller.setJasperPrint(reportJasper(guiaRemisionTB));
         controller.show();
@@ -399,7 +419,7 @@ public class TicketGuiaRemision {
             imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
         }
         InputStream dir = getClass().getResourceAsStream("/report/GuiadeRemision.jasper");
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap();
         map.put("LOGO", imgInputStream);
         map.put("ICON", imgInputStreamIcon);
         map.put("RUC_EMPRESA", Session.COMPANY_NUMERO_DOCUMENTO);
@@ -411,13 +431,21 @@ public class TicketGuiaRemision {
 
         map.put("NUMERACION_GUIA_REMISION", guiaRemisionTB.getSerie() + "-" + guiaRemisionTB.getNumeracion());
         map.put("FECHA_TRASLADO", guiaRemisionTB.getFechaTraslado());
-        map.put("NUMERO_FACTURA", guiaRemisionTB.getSerieFactura() + "-" + guiaRemisionTB.getNumeracionFactura());
+        // map.put("NUMERO_FACTURA", guiaRemisionTB.getSerieFactura() + "-" +
+        // guiaRemisionTB.getNumeracionFactura());
+        map.put("NUMERO_FACTURA", "");
 
         map.put("DIRECCION_PARTIDA", guiaRemisionTB.getDireccionPartida());
-        map.put("UBIGEO_PARTIDA", guiaRemisionTB.getUbigeoPartidaDescripcion());
+        map.put("UBIGEO_PARTIDA",
+                guiaRemisionTB.getUbigeoPartidaTB().getDepartamento() + " - "
+                        + guiaRemisionTB.getUbigeoPartidaTB().getProvincia() + " - "
+                        + guiaRemisionTB.getUbigeoPartidaTB().getDistrito());
 
         map.put("DIRECCION_LLEGAGA", guiaRemisionTB.getDireccionLlegada());
-        map.put("UBIGEO_LLEGADA", guiaRemisionTB.getUbigeoLlegadaDescripcion());
+        map.put("UBIGEO_LLEGADA",
+                guiaRemisionTB.getUbigeoLlegadaTB().getDepartamento() + " - "
+                        + guiaRemisionTB.getUbigeoLlegadaTB().getProvincia() + " - "
+                        + guiaRemisionTB.getUbigeoLlegadaTB().getDistrito());
 
         map.put("NOMBRE_COMERCIAL", Session.COMPANY_NOMBRE_COMERCIAL);
         map.put("RUC_EMPRESA", Session.COMPANY_NUMERO_DOCUMENTO);
@@ -425,26 +453,31 @@ public class TicketGuiaRemision {
         map.put("NOMBRE_CLIENTE", guiaRemisionTB.getClienteTB().getInformacion());
         map.put("RUC_CLIENTE", guiaRemisionTB.getClienteTB().getNumeroDocumento());
 
-        map.put("DATOS_TRANSPORTISTA", guiaRemisionTB.getNombreConductor());
-        map.put("DOCUMENTO_TRANSPORTISTA", guiaRemisionTB.getNumeroConductor());
-        map.put("MARCA_VEHICULO", guiaRemisionTB.getMarcaVehiculo());
+        map.put("DATOS_TRANSPORTISTA", guiaRemisionTB.getNombresConductor());
+        map.put("DOCUMENTO_TRANSPORTISTA", guiaRemisionTB.getNumeroDocumentoConductor());
+        map.put("MARCA_VEHICULO", guiaRemisionTB.getNumeroLicencia());
         map.put("NUMERO_PLACA", guiaRemisionTB.getNumeroPlaca());
 
-        map.put("MOTIVO_TRANSPORTE", guiaRemisionTB.getMotivoTrasladoDescripcion());
+        // map.put("MOTIVO_TRANSPORTE", guiaRemisionTB.getMotivoTrasladoDescripcion());
+        map.put("MOTIVO_TRANSPORTE", "");
 
-        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(guiaRemisionTB.getListGuiaRemisionDetalle()));
+        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map,
+                new JRBeanCollectionDataSource(guiaRemisionTB.getListGuiaRemisionDetalle()));
         return jasperPrint;
     }
 
     public void imprimirGuiaLibre(String idVenta) {
-        if (!Session.ESTADO_IMPRESORA_GUIA_REMISION && Tools.isText(Session.NOMBRE_IMPRESORA_GUIA_REMISION) && Tools.isText(Session.FORMATO_IMPRESORA_GUIA_REMISION)) {
-            Tools.AlertMessageWarning(node, "Guía de Remisión", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+        if (!Session.ESTADO_IMPRESORA_GUIA_REMISION && Tools.isText(Session.NOMBRE_IMPRESORA_GUIA_REMISION)
+                && Tools.isText(Session.FORMATO_IMPRESORA_GUIA_REMISION)) {
+            Tools.AlertMessageWarning(node, "Guía de Remisión",
+                    "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
             return;
         }
         if (Session.FORMATO_IMPRESORA_GUIA_REMISION.equalsIgnoreCase("a4")) {
             printGuiaRemisionLibre(idVenta, Session.NOMBRE_IMPRESORA_GUIA_REMISION);
         } else {
-            Tools.AlertMessageWarning(node, "Guía de Remisión", "Error al validar el formato de impresión configure en la sección configuración/impresora.");
+            Tools.AlertMessageWarning(node, "Guía de Remisión",
+                    "Error al validar el formato de impresión configure en la sección configuración/impresora.");
         }
     }
 
@@ -474,8 +507,10 @@ public class TicketGuiaRemision {
                         JRPrintServiceExporter exporter = new JRPrintServiceExporter();
 
                         exporter.setParameter(JRExporterParameter.JASPER_PRINT, reportLibre(ventaTB));
-                        exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);
-                        exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, printServiceAttributeSet);
+                        exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET,
+                                printRequestAttributeSet);
+                        exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET,
+                                printServiceAttributeSet);
                         exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
                         exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
                         exporter.exportReport();
@@ -501,7 +536,8 @@ public class TicketGuiaRemision {
             } else if (result.equalsIgnoreCase("error_name")) {
                 Tools.showAlertNotification("/view/image/warning_large.png",
                         "Envío de impresión",
-                        Tools.newLineString("Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
+                        Tools.newLineString(
+                                "Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else if (result.equalsIgnoreCase("empty")) {
@@ -521,7 +557,8 @@ public class TicketGuiaRemision {
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Envío de impresión",
-                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -558,28 +595,31 @@ public class TicketGuiaRemision {
         map.put("CELULAR_EMPRESA", Session.COMPANY_CELULAR);
         map.put("EMAIL_EMPRESA", Session.COMPANY_EMAIL);
 
-//        map.put("NUMERACION_GUIA_REMISION", guiaRemisionTB.getSerie() + "-" + guiaRemisionTB.getNumeracion());
-//        map.put("FECHA_TRASLADO", guiaRemisionTB.getFechaTraslado());
-//        map.put("NUMERO_FACTURA", guiaRemisionTB.getSerieFactura() + "-" + guiaRemisionTB.getNumeracionFactura());
-//
-//        map.put("DIRECCION_PARTIDA", guiaRemisionTB.getDireccionPartida());
-//        map.put("UBIGEO_PARTIDA", guiaRemisionTB.getUbigeoPartidaDescripcion());
-//
-//        map.put("DIRECCION_LLEGAGA", guiaRemisionTB.getDireccionLlegada());
-//        map.put("UBIGEO_LLEGADA", guiaRemisionTB.getUbigeoLlegadaDescripcion());
+        // map.put("NUMERACION_GUIA_REMISION", guiaRemisionTB.getSerie() + "-" +
+        // guiaRemisionTB.getNumeracion());
+        // map.put("FECHA_TRASLADO", guiaRemisionTB.getFechaTraslado());
+        // map.put("NUMERO_FACTURA", guiaRemisionTB.getSerieFactura() + "-" +
+        // guiaRemisionTB.getNumeracionFactura());
+        //
+        // map.put("DIRECCION_PARTIDA", guiaRemisionTB.getDireccionPartida());
+        // map.put("UBIGEO_PARTIDA", guiaRemisionTB.getUbigeoPartidaDescripcion());
+        //
+        // map.put("DIRECCION_LLEGAGA", guiaRemisionTB.getDireccionLlegada());
+        // map.put("UBIGEO_LLEGADA", guiaRemisionTB.getUbigeoLlegadaDescripcion());
         map.put("NOMBRE_COMERCIAL", Session.COMPANY_NOMBRE_COMERCIAL);
         map.put("RUC_EMPRESA", Session.COMPANY_NUMERO_DOCUMENTO);
 
-//        map.put("NOMBRE_CLIENTE", guiaRemisionTB.getClienteTB().getInformacion());
-//        map.put("RUC_CLIENTE", guiaRemisionTB.getClienteTB().getNumeroDocumento());
-//
-//        map.put("DATOS_TRANSPORTISTA", guiaRemisionTB.getNombreConductor());
-//        map.put("DOCUMENTO_TRANSPORTISTA", guiaRemisionTB.getNumeroConductor());
-//        map.put("MARCA_VEHICULO", guiaRemisionTB.getMarcaVehiculo());
-//        map.put("NUMERO_PLACA", guiaRemisionTB.getNumeroPlaca());
-//
-//        map.put("MOTIVO_TRANSPORTE", guiaRemisionTB.getMotivoTrasladoDescripcion());
-        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(ventaTB.getSuministroTBs()));
+        // map.put("NOMBRE_CLIENTE", guiaRemisionTB.getClienteTB().getInformacion());
+        // map.put("RUC_CLIENTE", guiaRemisionTB.getClienteTB().getNumeroDocumento());
+        //
+        // map.put("DATOS_TRANSPORTISTA", guiaRemisionTB.getNombreConductor());
+        // map.put("DOCUMENTO_TRANSPORTISTA", guiaRemisionTB.getNumeroConductor());
+        // map.put("MARCA_VEHICULO", guiaRemisionTB.getMarcaVehiculo());
+        // map.put("NUMERO_PLACA", guiaRemisionTB.getNumeroPlaca());
+        //
+        // map.put("MOTIVO_TRANSPORTE", guiaRemisionTB.getMotivoTrasladoDescripcion());
+        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map,
+                new JRBeanCollectionDataSource(ventaTB.getSuministroTBs()));
         return jasperPrint;
     }
 }

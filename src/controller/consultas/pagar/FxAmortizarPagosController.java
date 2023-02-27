@@ -14,14 +14,14 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.CajaADO;
 import model.CajaTB;
-import model.CompraADO;
 import model.CompraCreditoTB;
 import model.CompraTB;
 import model.IngresoTB;
 import model.ModeloObject;
 import model.MovimientoCajaTB;
+import service.CajaADO;
+import service.CompraADO;
 
 public class FxAmortizarPagosController implements Initializable {
 

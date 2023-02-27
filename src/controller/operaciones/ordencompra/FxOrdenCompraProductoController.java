@@ -2,7 +2,6 @@ package controller.operaciones.ordencompra;
 
 import controller.tools.Tools;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
@@ -21,14 +20,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import model.CompraADO;
 import model.DetalleCompraTB;
-import model.ImpuestoADO;
 import model.ImpuestoTB;
 import model.OrdenCompraDetalleTB;
-import model.OrdenCompraTB;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.CompraADO;
+import service.ImpuestoADO;
 
 public class FxOrdenCompraProductoController implements Initializable {
 

@@ -26,17 +26,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import model.AlmacenTB;
 import model.ClienteTB;
-import model.DetalleADO;
 import model.DetalleTB;
 import model.EmpleadoTB;
 import model.EmpresaTB;
-import model.GlobalADO;
 import model.ImpuestoTB;
 import model.MonedaTB;
 import model.ProveedorTB;
 import model.TipoDocumentoTB;
-import model.UbigeoADO;
 import model.UbigeoTB;
+import service.DetalleADO;
+import service.GlobalADO;
+import service.UbigeoADO;
 
 public class FxBienvenidaController implements Initializable {
 

@@ -32,9 +32,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.CompraADO;
 import model.CompraTB;
 import model.DetalleCompraTB;
+import service.CompraADO;
 
 public class FxComprasDetalleController implements Initializable {
 

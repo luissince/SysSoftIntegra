@@ -20,10 +20,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.ProveedorADO;
 import model.ProveedorTB;
+import service.DetalleADO;
+import service.ProveedorADO;
+
 import org.json.simple.JSONObject;
 
 public class FxProveedorProcesoController implements Initializable {

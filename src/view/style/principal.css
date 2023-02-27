@@ -1405,7 +1405,7 @@
 
 .table-view-principal .table-cell {
     -fx-font-family:"Roboto"; 
-    -fx-font-size: 1.0833333333333333em;/*13px*/
+    -fx-font-size: 1em;/*12px*/
     -fx-font-weight: normal;
     -fx-padding: 0.75em 0.3333333333333333em 0.75em 0.3333333333333333em;
     -fx-text-fill: #020203;
@@ -2466,7 +2466,7 @@
     -fx-text-fill: #309c40; 
     -fx-font-family: "Roboto"; 
     -fx-font-weight: normal;
-    -fx-font-size: 1.0833333333333333em;/*13px*/
+    -fx-font-size: 1em;/*12px*/
 }
 
 .label-proceso{
@@ -2481,7 +2481,7 @@
     -fx-text-fill: #990000; 
     -fx-font-family: "Roboto"; 
     -fx-font-weight: normal;
-    -fx-font-size: 1.0833333333333333em;/*13*/
+    -fx-font-size: 1em;/*12*/
 }
 
 .label-medio{
@@ -2496,7 +2496,7 @@
     -fx-text-fill: #6D5F02 ; 
     -fx-font-family: "Roboto"; 
     -fx-font-weight: normal;
-    -fx-font-size: 1.0833333333333333em;/*13px*/
+    -fx-font-size: 1em;/*12px*/
 }
 
 .label-ultimo{
@@ -2511,7 +2511,7 @@
     -fx-text-fill: white; 
     -fx-font-family: "Roboto"; 
     -fx-font-weight: normal;
-    -fx-font-size: 1.0833333333333333em;/*13px*/
+    -fx-font-size: 1em;/*12px*/
 }
 
 .text-field-ticket{

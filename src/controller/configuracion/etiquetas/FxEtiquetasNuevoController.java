@@ -15,8 +15,8 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import model.EtiquetaADO;
 import model.EtiquetaTB;
+import service.EtiquetaADO;
 
 public class FxEtiquetasNuevoController implements Initializable {
 

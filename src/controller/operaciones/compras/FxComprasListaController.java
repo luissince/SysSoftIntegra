@@ -21,8 +21,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import model.CompraADO;
 import model.CompraTB;
+import service.CompraADO;
 
 public class FxComprasListaController implements Initializable {
 

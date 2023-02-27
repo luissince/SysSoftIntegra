@@ -46,12 +46,9 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.PrintServiceAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.PrinterName;
-import model.BancoADO;
-import model.EmpresaADO;
+
 import model.SuministroTB;
 import model.TicketTB;
-import model.TipoDocumentoADO;
-import model.VentaADO;
 import model.VentaTB;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -60,6 +57,11 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
+import service.BancoADO;
+import service.EmpresaADO;
+import service.TipoDocumentoADO;
+import service.VentaADO;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

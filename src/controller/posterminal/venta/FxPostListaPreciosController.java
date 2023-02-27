@@ -16,8 +16,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import model.PreciosTB;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.SuministroADO;
 
 public class FxPostListaPreciosController implements Initializable {
 

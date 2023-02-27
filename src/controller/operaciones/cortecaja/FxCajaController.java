@@ -9,7 +9,6 @@ import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
@@ -31,10 +30,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.CajaADO;
 import model.CajaTB;
-import model.DBUtil;
 import model.PrivilegioTB;
+import service.CajaADO;
+import service.DBUtil;
 
 public class FxCajaController implements Initializable {
 
@@ -167,13 +166,18 @@ public class FxCajaController implements Initializable {
                         lblVentaTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaTarjeta, 2));
                         lblVentaDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaDeposito, 2));
 
-                        lblIngresosEfectivo.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoEfectivo, 2));
-                        lblIngresosTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoTarjeta, 2));
-                        lblIngresosDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoDeposito, 2));
+                        lblIngresosEfectivo
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoEfectivo, 2));
+                        lblIngresosTarjeta
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoTarjeta, 2));
+                        lblIngresosDeposito
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoDeposito, 2));
 
-                        lblRetirosEfectivo.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
+                        lblRetirosEfectivo
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
                         lblRetirosTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaTarjeta, 2));
-                        lblRetirosDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
+                        lblRetirosDeposito
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
 
                         totalDineroCaja = (montoBase + ventaEfectivo + ingresoEfectivo) - salidaEfectivo;
                         totalTarjeta = ventaTarjeta;
@@ -194,13 +198,18 @@ public class FxCajaController implements Initializable {
                         lblVentaTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaTarjeta, 2));
                         lblVentaDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaDeposito, 2));
 
-                        lblIngresosEfectivo.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoEfectivo, 2));
-                        lblIngresosTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoTarjeta, 2));
-                        lblIngresosDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoDeposito, 2));
+                        lblIngresosEfectivo
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoEfectivo, 2));
+                        lblIngresosTarjeta
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoTarjeta, 2));
+                        lblIngresosDeposito
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoDeposito, 2));
 
-                        lblRetirosEfectivo.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
+                        lblRetirosEfectivo
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
                         lblRetirosTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaTarjeta, 2));
-                        lblRetirosDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
+                        lblRetirosDeposito
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
 
                         totalDineroCaja = (montoBase + ventaEfectivo + ingresoEfectivo) - salidaEfectivo;
                         totalTarjeta = ventaTarjeta;
@@ -229,7 +238,8 @@ public class FxCajaController implements Initializable {
         });
 
         task.setOnFailed(e -> {
-            Tools.AlertMessageError(window, "Corte de caja", "No se pudo realizar la petición por problemas de conexión, intente nuevamente.");
+            Tools.AlertMessageError(window, "Corte de caja",
+                    "No se pudo realizar la petición por problemas de conexión, intente nuevamente.");
             idActual = "";
             totalDineroCaja = 0;
             totalTarjeta = 0;
@@ -301,13 +311,18 @@ public class FxCajaController implements Initializable {
                         lblVentaTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaTarjeta, 2));
                         lblVentaDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaDeposito, 2));
 
-                        lblIngresosEfectivo.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoEfectivo, 2));
-                        lblIngresosTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoTarjeta, 2));
-                        lblIngresosDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoDeposito, 2));
+                        lblIngresosEfectivo
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoEfectivo, 2));
+                        lblIngresosTarjeta
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoTarjeta, 2));
+                        lblIngresosDeposito
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoDeposito, 2));
 
-                        lblRetirosEfectivo.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
+                        lblRetirosEfectivo
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
                         lblRetirosTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaTarjeta, 2));
-                        lblRetirosDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
+                        lblRetirosDeposito
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
 
                         totalDineroCaja = (montoBase + ventaEfectivo + ingresoEfectivo) - salidaEfectivo;
                         totalTarjeta = ventaTarjeta;
@@ -329,13 +344,18 @@ public class FxCajaController implements Initializable {
                         lblVentaTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaTarjeta, 2));
                         lblVentaDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaDeposito, 2));
 
-                        lblIngresosEfectivo.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoEfectivo, 2));
-                        lblIngresosTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoTarjeta, 2));
-                        lblIngresosDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoDeposito, 2));
+                        lblIngresosEfectivo
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoEfectivo, 2));
+                        lblIngresosTarjeta
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoTarjeta, 2));
+                        lblIngresosDeposito
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ingresoDeposito, 2));
 
-                        lblRetirosEfectivo.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
+                        lblRetirosEfectivo
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
                         lblRetirosTarjeta.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaTarjeta, 2));
-                        lblRetirosDeposito.setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
+                        lblRetirosDeposito
+                                .setText(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
 
                         totalDineroCaja = (cajaTB.getContado() + ventaEfectivo + ingresoEfectivo) - salidaEfectivo;
                         totalTarjeta = ventaTarjeta;
@@ -366,7 +386,8 @@ public class FxCajaController implements Initializable {
         });
 
         task.setOnFailed(e -> {
-            Tools.AlertMessageError(window, "Corte de caja", "No se pudo realizar la petición por problemas de conexión, intente nuevamente.");
+            Tools.AlertMessageError(window, "Corte de caja",
+                    "No se pudo realizar la petición por problemas de conexión, intente nuevamente.");
             idActual = "";
             totalDineroCaja = 0;
             totalTarjeta = 0;
@@ -396,7 +417,7 @@ public class FxCajaController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_OPCIONES_IMPRIMIR);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxOpcionesImprimirController controller = fXMLLoader.getController();
             controller.loadTicketCaja(controller.getApWindow());
             controller.setIdCaja(idCaja);
@@ -453,18 +474,11 @@ public class FxCajaController implements Initializable {
             primaryStage.centerOnScreen();
             primaryStage.setMaximized(true);
             primaryStage.setOnCloseRequest(c -> {
-                short optionI = Tools.AlertMessageConfirmation(parent, "SysSoft Integra", "¿Está seguro de cerrar la aplicación?");
+                short optionI = Tools.AlertMessageConfirmation(parent, "SysSoft Integra",
+                        "¿Está seguro de cerrar la aplicación?");
                 if (optionI == 1) {
-                    try {
-                        if (DBUtil.getConnection() != null && !DBUtil.getConnection().isClosed()) {
-                            DBUtil.getConnection().close();
-                        }
-                        System.exit(0);
-                        Platform.exit();
-                    } catch (SQLException e) {
-                        System.exit(0);
-                        Platform.exit();
-                    }
+                    System.exit(0);
+                    Platform.exit();
                 } else {
                     c.consume();
                 }

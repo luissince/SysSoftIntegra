@@ -28,8 +28,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.ClienteADO;
 import model.ClienteTB;
+import service.ClienteADO;
 
 public class FxClienteController implements Initializable {
 

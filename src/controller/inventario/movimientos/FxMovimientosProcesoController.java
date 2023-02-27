@@ -37,14 +37,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.AjusteInventarioADO;
 import model.AjusteInventarioTB;
-import model.AlmacenADO;
 import model.AlmacenTB;
-import model.SuministroADO;
 import model.SuministroTB;
-import model.TipoMovimientoADO;
 import model.TipoMovimientoTB;
+import service.AjusteInventarioADO;
+import service.AlmacenADO;
+import service.SuministroADO;
+import service.TipoMovimientoADO;
 
 public class FxMovimientosProcesoController implements Initializable {
 

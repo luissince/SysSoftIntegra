@@ -7,7 +7,6 @@ import controller.tools.WindowStage;
 import controller.tools.Session;
 import controller.tools.Tools;
 import java.net.URL;
-import java.sql.SQLException;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +15,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.DBUtil;
 
 public class SysSoftIntegra extends Application {
 
@@ -72,18 +70,11 @@ public class SysSoftIntegra extends Application {
                 primaryStage.centerOnScreen();
                 primaryStage.setMaximized(true);
                 primaryStage.setOnCloseRequest(c -> {
-                    short option = Tools.AlertMessageConfirmation(parent, "SysSoft Integra", "¿Está seguro de cerrar la aplicación?");
+                    short option = Tools.AlertMessageConfirmation(parent, "SysSoft Integra",
+                            "¿Está seguro de cerrar la aplicación?");
                     if (option == 1) {
-                        try {
-                            if (DBUtil.getConnection() != null && !DBUtil.getConnection().isClosed()) {
-                                DBUtil.getConnection().close();
-                            }
-                            System.exit(0);
-                            Platform.exit();
-                        } catch (SQLException e) {
-                            System.exit(0);
-                            Platform.exit();
-                        }
+                        System.exit(0);
+                        Platform.exit();
                     } else {
                         c.consume();
                     }

@@ -28,9 +28,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import model.BancoADO;
 import model.BancoHistorialTB;
 import model.BancoTB;
+import service.BancoADO;
 
 public class FxBancoHistorialController implements Initializable {
 

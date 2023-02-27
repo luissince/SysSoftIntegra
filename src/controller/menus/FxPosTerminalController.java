@@ -5,7 +5,6 @@ import controller.posterminal.venta.FxPostVentaController;
 import controller.posterminal.venta.FxPostVentaRealizadasController;
 import controller.tools.FilesRouters;
 import controller.tools.Session;
-import controller.tools.Tools;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,9 +19,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import model.MenuADO;
 import model.PrivilegioTB;
 import model.SubMenusTB;
+import service.MenuADO;
 
 public class FxPosTerminalController implements Initializable {
 
@@ -42,12 +41,12 @@ public class FxPosTerminalController implements Initializable {
     private VBox btnVentasEchas;
 
     /*
-    Objectos de la ventana principal y venta que agrega a los hijos
+     * Objectos de la ventana principal y venta que agrega a los hijos
      */
     private FxPrincipalController fxPrincipalController;
 
     /*
-    Controller ventas
+     * Controller ventas
      */
     private FXMLLoader fXMLVentaOld;
 
@@ -56,7 +55,7 @@ public class FxPosTerminalController implements Initializable {
     private FxPostVentaController controllerVentaOld;
 
     /*
-    Controller ventas nueva
+     * Controller ventas nueva
      */
     private FXMLLoader fXMLVentaNew;
 
@@ -65,7 +64,7 @@ public class FxPosTerminalController implements Initializable {
     private FxPostVentaController controllerVentaNew;
 
     /*
-    Controller corte de caja
+     * Controller corte de caja
      */
     private FXMLLoader fXMLCorteCaja;
 
@@ -74,7 +73,7 @@ public class FxPosTerminalController implements Initializable {
     private FxCajaController controllerCorteCaja;
 
     /*
-    Controller ventas realizadas
+     * Controller ventas realizadas
      */
     private FXMLLoader fXMLVentaRealizadas;
 
@@ -114,7 +113,8 @@ public class FxPosTerminalController implements Initializable {
             hbOperacionesUno.getChildren().remove(btnTerminalUno);
             hbOperacionesUno.getChildren().remove(btnTerminalDos);
         } else {
-            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL, subMenusTBs.get(0).getIdSubMenu());
+            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL,
+                    subMenusTBs.get(0).getIdSubMenu());
             controllerVentaOld.loadPrivilegios(privilegioTBs);
             controllerVentaNew.loadPrivilegios(privilegioTBs);
         }
@@ -122,14 +122,16 @@ public class FxPosTerminalController implements Initializable {
         if (subMenusTBs.get(1).getIdSubMenu() != 0 && !subMenusTBs.get(1).isEstado()) {
             hbOperacionesUno.getChildren().remove(btnCorteCaja);
         } else {
-            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL, subMenusTBs.get(1).getIdSubMenu());
+            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL,
+                    subMenusTBs.get(1).getIdSubMenu());
             controllerCorteCaja.loadPrivilegios(privilegioTBs);
         }
 
         if (subMenusTBs.get(2).getIdSubMenu() != 0 && !subMenusTBs.get(2).isEstado()) {
             hbOperacionesUno.getChildren().remove(btnVentasEchas);
         } else {
-            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL, subMenusTBs.get(0).getIdSubMenu());
+            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL,
+                    subMenusTBs.get(0).getIdSubMenu());
             ventaRealizadasController.loadPrivilegios(privilegioTBs);
         }
     }

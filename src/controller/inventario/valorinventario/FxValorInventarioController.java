@@ -38,12 +38,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.AlmacenADO;
 import model.AlmacenTB;
-import model.DetalleADO;
 import model.DetalleTB;
-import model.SuministroADO;
 import model.SuministroTB;
+import service.AlmacenADO;
+import service.DetalleADO;
+import service.SuministroADO;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
