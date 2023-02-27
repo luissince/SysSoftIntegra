@@ -266,10 +266,14 @@ public class TicketGuiaRemision {
                     guiaRemisionTB.getUbigeoLlegadaTB().getDepartamento() + " - "
                             + guiaRemisionTB.getUbigeoLlegadaTB().getProvincia() + " - "
                             + guiaRemisionTB.getUbigeoLlegadaTB().getDistrito(),
-                    guiaRemisionTB.getNumeroDocumentoConductor(),
-                    guiaRemisionTB.getNombresConductor(),
-                    guiaRemisionTB.getNumeroLicencia(),
-                    guiaRemisionTB.getNumeroPlaca(),
+                    // guiaRemisionTB.getNumeroDocumentoConductor(),
+                    // guiaRemisionTB.getNombresConductor(),
+                    // guiaRemisionTB.getNumeroLicencia(),
+                    // guiaRemisionTB.getNumeroPlaca(),
+                    "",
+                    "",
+                    "",
+                    "",
                     // guiaRemisionTB.getMotivoTrasladoDescripcion(),
                     "",
                     "",
@@ -419,7 +423,7 @@ public class TicketGuiaRemision {
             imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
         }
         InputStream dir = getClass().getResourceAsStream("/report/GuiadeRemision.jasper");
-        Map<String, Object> map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("LOGO", imgInputStream);
         map.put("ICON", imgInputStreamIcon);
         map.put("RUC_EMPRESA", Session.COMPANY_NUMERO_DOCUMENTO);
@@ -453,10 +457,16 @@ public class TicketGuiaRemision {
         map.put("NOMBRE_CLIENTE", guiaRemisionTB.getClienteTB().getInformacion());
         map.put("RUC_CLIENTE", guiaRemisionTB.getClienteTB().getNumeroDocumento());
 
-        map.put("DATOS_TRANSPORTISTA", guiaRemisionTB.getNombresConductor());
-        map.put("DOCUMENTO_TRANSPORTISTA", guiaRemisionTB.getNumeroDocumentoConductor());
-        map.put("MARCA_VEHICULO", guiaRemisionTB.getNumeroLicencia());
-        map.put("NUMERO_PLACA", guiaRemisionTB.getNumeroPlaca());
+        // map.put("DATOS_TRANSPORTISTA", guiaRemisionTB.getNombresConductor());
+        // map.put("DOCUMENTO_TRANSPORTISTA",
+        // guiaRemisionTB.getNumeroDocumentoConductor());
+        // map.put("MARCA_VEHICULO", guiaRemisionTB.getNumeroLicencia());
+        // map.put("NUMERO_PLACA", guiaRemisionTB.getNumeroPlaca());
+
+        map.put("DATOS_TRANSPORTISTA", "");
+        map.put("DOCUMENTO_TRANSPORTISTA", "");
+        map.put("MARCA_VEHICULO", "");
+        map.put("NUMERO_PLACA", "");
 
         // map.put("MOTIVO_TRANSPORTE", guiaRemisionTB.getMotivoTrasladoDescripcion());
         map.put("MOTIVO_TRANSPORTE", "");
@@ -585,7 +595,7 @@ public class TicketGuiaRemision {
             imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
         }
         InputStream dir = getClass().getResourceAsStream("/report/GuiadeRemisionLibre.jasper");
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("LOGO", imgInputStream);
         map.put("ICON", imgInputStreamIcon);
         map.put("RUC_EMPRESA", Session.COMPANY_NUMERO_DOCUMENTO);

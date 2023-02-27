@@ -17,21 +17,22 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class SearchComboBoxSkin<T> extends ComboBoxListViewSkin {
+public class SearchComboBoxSkin<T> extends ComboBoxListViewSkin<T> {
 
     private VBox box;
     private final TextField searchBox;
     private final ListView<T> itemView;
     private boolean clickSelection = false;
 
-    public SearchComboBoxSkin(SearchComboBox searchComboBox, boolean search) {
+    public SearchComboBoxSkin(SearchComboBox<T> searchComboBox, boolean search) {
         super(searchComboBox.getComboBox());
 
         searchBox = new TextField();
         searchBox.getStyleClass().add("text-field-normal");
         searchBox.setPromptText("Ingrese los datos a buscar");
         searchBox.textProperty().addListener((ObservableValue<? extends String> p, String o, String text) -> {
-            searchComboBox.setPredicateFilter(item -> text.isEmpty() ? true : searchComboBox.getFilter().test(item, text));
+            searchComboBox
+                    .setPredicateFilter(item -> text.isEmpty() ? true : searchComboBox.getFilter().test(item, text));
         });
 
         itemView = new ListView<>();
@@ -40,7 +41,7 @@ public class SearchComboBoxSkin<T> extends ComboBoxListViewSkin {
 
         // cambia el foco del TextField al ListView usando las teclas ENTER y ESC
         if (search) {
-            searchBox.setOnKeyPressed(t -> {               
+            searchBox.setOnKeyPressed(t -> {
                 if (t.getCode() == KeyCode.ENTER) {
                     if (!itemView.getItems().isEmpty()) {
                         itemView.getSelectionModel().select(0);
@@ -53,7 +54,8 @@ public class SearchComboBoxSkin<T> extends ComboBoxListViewSkin {
         }
 
         // se ha hecho click sobre el ListView
-        itemView.addEventFilter(MouseEvent.ANY, me -> clickSelection = me.getEventType().equals(MouseEvent.MOUSE_PRESSED));
+        itemView.addEventFilter(MouseEvent.ANY,
+                me -> clickSelection = me.getEventType().equals(MouseEvent.MOUSE_PRESSED));
 
         searchComboBox.getComboBox().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -98,10 +100,10 @@ public class SearchComboBoxSkin<T> extends ComboBoxListViewSkin {
     protected void handleControlPropertyChanged(String p) {
         super.handleControlPropertyChanged(p);
         if ("SHOWING".equals(p)) {
-            ComboBox<T> scb = ((ComboBox) getSkinnable());
+            ComboBox<T> scb = (ComboBox<T>) getSkinnable();
             box.setMinWidth(scb.getWidth());
             box.setPrefWidth(scb.getWidth());
-            if (scb.isShowing()) {              
+            if (scb.isShowing()) {
                 searchBox.clear();
                 searchBox.requestFocus();
                 itemView.getSelectionModel().select(scb.getValue());

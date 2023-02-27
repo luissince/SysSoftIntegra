@@ -1,13 +1,8 @@
 package controller.tools;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import model.ClienteTB;
 
 public class ObjectGlobal {

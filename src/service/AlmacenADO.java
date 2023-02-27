@@ -17,6 +17,7 @@ public class AlmacenADO {
     public static Object ListarAlmacen(String buscar, int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementAlmacen = null;
+        PreparedStatement statementAlmacenCount = null;
         ResultSet resultSet = null;
         try {
             dbf.dbConnect();
@@ -52,9 +53,10 @@ public class AlmacenADO {
             }
             object[0] = empList;
 
-            statementAlmacen = dbf.getConnection().prepareStatement("{call Sp_Listar_Almacen_Count(?)}");
-            statementAlmacen.setString(1, buscar);
-            resultSet = statementAlmacen.executeQuery();
+            resultSet.close();
+            statementAlmacenCount = dbf.getConnection().prepareStatement("{call Sp_Listar_Almacen_Count(?)}");
+            statementAlmacenCount.setString(1, buscar);
+            resultSet = statementAlmacenCount.executeQuery();
             Integer cantidadTotal = 0;
             if (resultSet.next()) {
                 cantidadTotal = resultSet.getInt("Total");
@@ -68,6 +70,9 @@ public class AlmacenADO {
             try {
                 if (statementAlmacen != null) {
                     statementAlmacen.close();
+                }
+                if (statementAlmacenCount != null) {
+                    statementAlmacenCount.close();
                 }
                 if (resultSet != null) {
                     resultSet.close();
@@ -93,72 +98,77 @@ public class AlmacenADO {
 
             statementValidate = dbf.getConnection().prepareStatement("SELECT * FROM AlmacenTB WHERE IdAlmacen = ?");
             statementValidate.setInt(1, almacenTB.getIdAlmacen());
+
             if (statementValidate.executeQuery().next()) {
+                statementValidate.close();
                 statementValidate = dbf.getConnection()
                         .prepareStatement("SELECT * FROM AlmacenTB WHERE IdAlmacen <> ? AND Nombre = ?");
                 statementValidate.setInt(1, almacenTB.getIdAlmacen());
                 statementValidate.setString(2, almacenTB.getNombre());
+
                 if (statementValidate.executeQuery().next()) {
                     dbf.getConnection().rollback();
                     return "name";
-                } else {
-                    statementAlmacen = dbf.getConnection().prepareStatement(
-                            "UPDATE AlmacenTB SET Nombre = ?,IdUbigeo = ?,Direccion = ?,Fecha = ?,Hora = ?,IdUsuario = ? WHERE IdAlmacen = ?");
-                    statementAlmacen.setString(1, almacenTB.getNombre());
-                    statementAlmacen.setInt(2, almacenTB.getIdUbigeo());
-                    statementAlmacen.setString(3, almacenTB.getDireccion());
-                    statementAlmacen.setString(4, almacenTB.getFecha());
-                    statementAlmacen.setString(5, almacenTB.getHora());
-                    statementAlmacen.setString(6, almacenTB.getIdUsuario());
-                    statementAlmacen.setInt(7, almacenTB.getIdAlmacen());
-                    statementAlmacen.addBatch();
-
-                    statementAlmacen.executeBatch();
-                    dbf.getConnection().commit();
-                    return "updated";
                 }
 
+                statementAlmacen = dbf.getConnection().prepareStatement(
+                        "UPDATE AlmacenTB SET Nombre = ?,IdUbigeo = ?,Direccion = ?,Fecha = ?,Hora = ?,IdUsuario = ? WHERE IdAlmacen = ?");
+                statementAlmacen.setString(1, almacenTB.getNombre());
+                statementAlmacen.setInt(2, almacenTB.getIdUbigeo());
+                statementAlmacen.setString(3, almacenTB.getDireccion());
+                statementAlmacen.setString(4, almacenTB.getFecha());
+                statementAlmacen.setString(5, almacenTB.getHora());
+                statementAlmacen.setString(6, almacenTB.getIdUsuario());
+                statementAlmacen.setInt(7, almacenTB.getIdAlmacen());
+                statementAlmacen.addBatch();
+
+                statementAlmacen.executeBatch();
+                dbf.getConnection().commit();
+                return "updated";
             } else {
+                statementValidate.close();
                 statementValidate = dbf.getConnection().prepareStatement("SELECT * FROM AlmacenTB WHERE Nombre = ?");
                 statementValidate.setString(1, almacenTB.getNombre());
+
                 if (statementValidate.executeQuery().next()) {
                     dbf.getConnection().rollback();
                     return "name";
-                } else {
-                    statementCodigoAlmacen = dbf.getConnection().prepareCall("{? = call Fc_Almacen_Codigo_Numerico()}");
-                    statementCodigoAlmacen.registerOutParameter(1, java.sql.Types.INTEGER);
-                    statementCodigoAlmacen.execute();
-                    int idAlmacen = statementCodigoAlmacen.getInt(1);
-
-                    statementAlmacen = dbf.getConnection().prepareStatement(
-                            "INSERT INTO AlmacenTB(IdAlmacen,Nombre,IdUbigeo,Direccion,Fecha,Hora,IdUsuario) VALUES(?,?,?,?,?,?,?)");
-                    statementAlmacen.setInt(1, idAlmacen);
-                    statementAlmacen.setString(2, almacenTB.getNombre());
-                    statementAlmacen.setInt(3, almacenTB.getIdUbigeo());
-                    statementAlmacen.setString(4, almacenTB.getDireccion());
-                    statementAlmacen.setString(5, almacenTB.getFecha());
-                    statementAlmacen.setString(6, almacenTB.getHora());
-                    statementAlmacen.setString(7, almacenTB.getIdUsuario());
-                    statementAlmacen.addBatch();
-
-                    statementProducto = dbf.getConnection().prepareStatement("SELECT IdSuministro FROM SuministroTB");
-                    ResultSet resultSet = statementProducto.executeQuery();
-                    statementCantidad = dbf.getConnection().prepareStatement(
-                            "INSERT INTO CantidadTB(IdAlmacen,IdSuministro,StockMinimo,StockMaximo,Cantidad) VALUES(?,?,?,?,?)");
-                    while (resultSet.next()) {
-                        statementCantidad.setInt(1, idAlmacen);
-                        statementCantidad.setString(2, resultSet.getString("IdSuministro"));
-                        statementCantidad.setDouble(3, 0);
-                        statementCantidad.setDouble(4, 0);
-                        statementCantidad.setDouble(5, 0);
-                        statementCantidad.addBatch();
-                    }
-
-                    statementCantidad.executeBatch();
-                    statementAlmacen.executeBatch();
-                    dbf.getConnection().commit();
-                    return "inserted";
                 }
+
+                statementCodigoAlmacen = dbf.getConnection().prepareCall("{? = call Fc_Almacen_Codigo_Numerico()}");
+                statementCodigoAlmacen.registerOutParameter(1, java.sql.Types.INTEGER);
+                statementCodigoAlmacen.execute();
+                int idAlmacen = statementCodigoAlmacen.getInt(1);
+
+                statementAlmacen = dbf.getConnection().prepareStatement(
+                        "INSERT INTO AlmacenTB(IdAlmacen,Nombre,IdUbigeo,Direccion,Fecha,Hora,IdUsuario) VALUES(?,?,?,?,?,?,?)");
+                statementAlmacen.setInt(1, idAlmacen);
+                statementAlmacen.setString(2, almacenTB.getNombre());
+                statementAlmacen.setInt(3, almacenTB.getIdUbigeo());
+                statementAlmacen.setString(4, almacenTB.getDireccion());
+                statementAlmacen.setString(5, almacenTB.getFecha());
+                statementAlmacen.setString(6, almacenTB.getHora());
+                statementAlmacen.setString(7, almacenTB.getIdUsuario());
+                statementAlmacen.addBatch();
+
+                statementProducto = dbf.getConnection().prepareStatement("SELECT IdSuministro FROM SuministroTB");
+                ResultSet resultSet = statementProducto.executeQuery();
+                statementCantidad = dbf.getConnection().prepareStatement(
+                        "INSERT INTO CantidadTB(IdAlmacen,IdSuministro,StockMinimo,StockMaximo,Cantidad) VALUES(?,?,?,?,?)");
+                while (resultSet.next()) {
+                    statementCantidad.setInt(1, idAlmacen);
+                    statementCantidad.setString(2, resultSet.getString("IdSuministro"));
+                    statementCantidad.setDouble(3, 0);
+                    statementCantidad.setDouble(4, 0);
+                    statementCantidad.setDouble(5, 0);
+                    statementCantidad.addBatch();
+                }
+
+                statementCantidad.executeBatch();
+                statementAlmacen.executeBatch();
+                dbf.getConnection().commit();
+                return "inserted";
+
             }
         } catch (SQLException | ClassNotFoundException ex) {
             try {
@@ -203,38 +213,41 @@ public class AlmacenADO {
 
             statementValidate = dbf.getConnection().prepareStatement("SELECT * FROM CompraTB WHERE IdAlmacen = ?");
             statementValidate.setInt(1, idAlmacen);
+
             if (statementValidate.executeQuery().next()) {
                 dbf.getConnection().rollback();
                 return "compra";
-            } else {
-                statementValidate = dbf.getConnection()
-                        .prepareStatement("SELECT * FROM KardexSuministroTB WHERE IdAlmacen = ?");
-                statementValidate.setInt(1, idAlmacen);
-                if (statementValidate.executeQuery().next()) {
-                    dbf.getConnection().rollback();
-                    return "kardex";
-                } else {
-                    if (idAlmacen == 0) {
-                        dbf.getConnection().rollback();
-                        return "principal";
-                    } else {
-                        statementAlmacen = dbf.getConnection()
-                                .prepareStatement("DELETE FROM AlmacenTB WHERE IdAlmacen = ?");
-                        statementAlmacen.setInt(1, idAlmacen);
-                        statementAlmacen.addBatch();
-
-                        statementCantidad = dbf.getConnection()
-                                .prepareStatement("DELETE FROM CantidadTB WHERE IdAlmacen = ?");
-                        statementCantidad.setInt(1, idAlmacen);
-                        statementCantidad.addBatch();
-
-                        statementAlmacen.executeBatch();
-                        statementCantidad.executeBatch();
-                        dbf.getConnection().commit();
-                        return "deleted";
-                    }
-                }
             }
+
+            statementValidate.close();
+            statementValidate = dbf.getConnection()
+                    .prepareStatement("SELECT * FROM KardexSuministroTB WHERE IdAlmacen = ?");
+            statementValidate.setInt(1, idAlmacen);
+
+            if (statementValidate.executeQuery().next()) {
+                dbf.getConnection().rollback();
+                return "kardex";
+            }
+
+            if (idAlmacen == 0) {
+                dbf.getConnection().rollback();
+                return "principal";
+            }
+
+            statementAlmacen = dbf.getConnection()
+                    .prepareStatement("DELETE FROM AlmacenTB WHERE IdAlmacen = ?");
+            statementAlmacen.setInt(1, idAlmacen);
+            statementAlmacen.addBatch();
+
+            statementCantidad = dbf.getConnection()
+                    .prepareStatement("DELETE FROM CantidadTB WHERE IdAlmacen = ?");
+            statementCantidad.setInt(1, idAlmacen);
+            statementCantidad.addBatch();
+
+            statementAlmacen.executeBatch();
+            statementCantidad.executeBatch();
+            dbf.getConnection().commit();
+            return "deleted";
         } catch (SQLException | ClassNotFoundException ex) {
             try {
                 dbf.getConnection().rollback();

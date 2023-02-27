@@ -29,8 +29,6 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -318,19 +316,6 @@ public class Tools {
             return arr[2] + "/" + arr[1] + "/" + arr[0];
         } else {
             return date;
-        }
-    }
-
-    public static String getValueTable(TableView table, int position) {
-        return Tools.getValueAt(table, table.getSelectionModel().getSelectedIndex(), position).toString();
-    }
-
-    public static Object getValueAt(TableView table, int rowIndex, int columnIndex) {
-        if (rowIndex >= 0 && rowIndex < table.getItems().size() && columnIndex >= 0
-                && columnIndex < table.getColumns().size()) {
-            return ((TableColumn) table.getColumns().get(columnIndex)).getCellObservableValue(rowIndex).getValue();
-        } else {
-            return null;
         }
     }
 

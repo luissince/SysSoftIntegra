@@ -19,7 +19,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import model.ClienteTB;
-import model.ConductorTB;
 import model.DetalleVentaTB;
 import model.EmpleadoTB;
 import model.EmpresaTB;
@@ -2855,18 +2854,6 @@ public class VentaADO {
                 clienteTB.setDireccion(resultSetVenta.getString("Direccion"));
                 clienteTB.setIdMotivoTraslado(resultSetVenta.getInt("IdMotivoTraslado"));
                 clienteTB.setIdModalidadTraslado(resultSetVenta.getInt("IdModalidadTraslado"));
-
-                if (resultSetVenta.getString("IdConductor") != null) {
-                    ConductorTB conductorTB = new ConductorTB();
-                    conductorTB.setIdConductor(resultSetVenta.getString("IdConductor"));
-                    conductorTB.setIdTipoDocumento(resultSetVenta.getInt("IdTipoDocumentoCon"));
-                    conductorTB.setNumeroDocumento(resultSetVenta.getString("NumeroDocumentoCon"));
-                    conductorTB.setInformacion(resultSetVenta.getString("InformacionCon"));
-                    conductorTB.setCelular(resultSetVenta.getString("CelularCon"));
-                    // conductorTB.setPlacaVehiculo(resultSetVenta.getString("PlacaVehiculoCon"));
-                    conductorTB.setLicenciaConducir(resultSetVenta.getString("MarcaVehiculoCon"));
-                    clienteTB.setConductorTB(conductorTB);
-                }
 
                 UbigeoTB ubigeoTB = new UbigeoTB();
                 ubigeoTB.setIdUbigeo(resultSetVenta.getInt("IdUbigeo"));

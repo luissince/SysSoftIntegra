@@ -14,19 +14,14 @@ public class GuiaRemisionTB {
     private String idVendedor;
     private String fechaRegistro;
     private String horaRegistro;
+    private String idModalidadTraslado;
     private int idMotivoTraslado;
-    private int idModalidadTraslado;
     private String fechaTraslado;
     private String horaTraslado;
-    private String idConductor;
     private int idPesoCarga;
     private double pesoCarga;
-    private int idTipoDocumentoConducto;
-    private String numeroDocumentoConductor;
-    private String nombresConductor;
-    private String telefonoConducto;
-    private String numeroPlaca;
-    private String numeroLicencia;
+    private String idVehiculo;
+    private String idConductor;
     private String direccionPartida;
     private int idUbigeoPartida;
     private String direccionLlegada;
@@ -124,20 +119,20 @@ public class GuiaRemisionTB {
         this.horaRegistro = horaRegistro;
     }
 
+    public String getIdModalidadTraslado() {
+        return idModalidadTraslado;
+    }
+
+    public void setIdModalidadTraslado(String idModalidadTraslado) {
+        this.idModalidadTraslado = idModalidadTraslado;
+    }
+
     public int getIdMotivoTraslado() {
         return idMotivoTraslado;
     }
 
     public void setIdMotivoTraslado(int idMotivoTraslado) {
         this.idMotivoTraslado = idMotivoTraslado;
-    }
-
-    public int getIdModalidadTraslado() {
-        return idModalidadTraslado;
-    }
-
-    public void setIdModalidadTraslado(int idModalidadTraslado) {
-        this.idModalidadTraslado = idModalidadTraslado;
     }
 
     public String getFechaTraslado() {
@@ -156,14 +151,6 @@ public class GuiaRemisionTB {
         this.horaTraslado = horaTraslado;
     }
 
-    public String getIdConductor() {
-        return idConductor;
-    }
-
-    public void setIdConductor(String idConductor) {
-        this.idConductor = idConductor;
-    }
-
     public int getIdPesoCarga() {
         return idPesoCarga;
     }
@@ -180,52 +167,20 @@ public class GuiaRemisionTB {
         this.pesoCarga = pesoCarga;
     }
 
-    public int getIdTipoDocumentoConducto() {
-        return idTipoDocumentoConducto;
+    public String getIdVehiculo() {
+        return idVehiculo;
     }
 
-    public void setIdTipoDocumentoConducto(int idTipoDocumentoConducto) {
-        this.idTipoDocumentoConducto = idTipoDocumentoConducto;
+    public void setIdVehiculo(String idVehiculo) {
+        this.idVehiculo = idVehiculo;
     }
 
-    public String getNumeroDocumentoConductor() {
-        return numeroDocumentoConductor;
+    public String getIdConductor() {
+        return idConductor;
     }
 
-    public void setNumeroDocumentoConductor(String numeroDocumentoConductor) {
-        this.numeroDocumentoConductor = numeroDocumentoConductor;
-    }
-
-    public String getNombresConductor() {
-        return nombresConductor;
-    }
-
-    public void setNombresConductor(String nombresConductor) {
-        this.nombresConductor = nombresConductor;
-    }
-
-    public String getTelefonoConducto() {
-        return telefonoConducto;
-    }
-
-    public void setTelefonoConducto(String telefonoConducto) {
-        this.telefonoConducto = telefonoConducto;
-    }
-
-    public String getNumeroPlaca() {
-        return numeroPlaca;
-    }
-
-    public void setNumeroPlaca(String numeroPlaca) {
-        this.numeroPlaca = numeroPlaca;
-    }
-
-    public String getNumeroLicencia() {
-        return numeroLicencia;
-    }
-
-    public void setNumeroLicencia(String numeroLicencia) {
-        this.numeroLicencia = numeroLicencia;
+    public void setIdConductor(String idConductor) {
+        this.idConductor = idConductor;
     }
 
     public String getDireccionPartida() {

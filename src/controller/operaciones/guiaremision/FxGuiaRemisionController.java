@@ -431,7 +431,6 @@ public class FxGuiaRemisionController implements Initializable {
                         TipoDocumentoADO.GetTipoDocumentoGuiaRemision(),
                         DetalleADO.GetDetailId("0017"),
                         DetalleADO.GetDetailId("0018"),
-                        DetalleADO.GetDetailId("0003"),
                         DetalleADO.GetDetailId("0021"),
                         TipoDocumentoADO.GetDocumentoCombBoxVentas(),
                         EmpresaADO.GetEmpresa()
@@ -456,30 +455,21 @@ public class FxGuiaRemisionController implements Initializable {
             cbMotivoTraslado.getItems().clear();
             cbMotivoTraslado.getItems().addAll((ObservableList<DetalleTB>) result[1]);
 
-            // cbModalidadTraslado.getItems().clear();
-            // cbModalidadTraslado.getItems().addAll((ObservableList<DetalleTB>) result[2]);
             Tools.actualDate(Tools.getDate(), dtFechaTraslado);
             cbTipoPesoCarga.getItems().clear();
             txtPesoCarga.setText("");
 
-            // cbTipoDocumento.getItems().clear();
-            // cbTipoDocumento.getItems().addAll((ObservableList<DetalleTB>) result[3]);
-            // txtNumeroDocumento.setText("");
-            // txtNombreConducto.setText("");
-            // txtTelefonoCelular.setText("");
-            // txtNumeroPlacaVehiculo.setText("");
-            // txtNumeroLicenciaConducir.setText("");
             txtDireccionPartida.setText("");
             txtDireccionLlegada.setText("");
 
-            cbTipoPesoCarga.getItems().addAll((ObservableList<DetalleTB>) result[4]);
+            cbTipoPesoCarga.getItems().addAll((ObservableList<DetalleTB>) result[3]);
 
             cbTipoComprobante.getItems().clear();
-            cbTipoComprobante.getItems().addAll((List<TipoDocumentoTB>) result[5]);
+            cbTipoComprobante.getItems().addAll((List<TipoDocumentoTB>) result[4]);
             txtSerieFactura.setText("");
             txtNumeracionFactura.setText("");
 
-            EmpresaTB empresaTB = (EmpresaTB) result[6];
+            EmpresaTB empresaTB = (EmpresaTB) result[5];
 
             cbUbigeoPartida.getItems().clear();
             if (empresaTB.getUbigeoTB().getIdUbigeo() > 0) {
@@ -674,13 +664,13 @@ public class FxGuiaRemisionController implements Initializable {
         }
 
         if (cbTipoPesoCarga.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el tipo de peso de la carga.");
+            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el tipo de peso.");
             cbTipoPesoCarga.requestFocus();
             return;
         }
 
         if (Tools.isText(txtPesoCarga.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese el peso de la carga.");
+            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese el peso total.");
             txtPesoCarga.requestFocus();
             return;
         }
@@ -688,9 +678,18 @@ public class FxGuiaRemisionController implements Initializable {
         /**
          * Datos del transporte privado
          */
-        if (cbVehiculo.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el documento guía usar.");
+        if (rbPrivado.isSelected() && cbVehiculo.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el vehículo.");
             cbVehiculo.requestFocus();
+            return;
+        }
+
+        /**
+         * Datos del conductor
+         */
+        if (rbPrivado.isSelected() && cbConductor.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el conductor.");
+            cbConductor.requestFocus();
             return;
         }
 
@@ -740,12 +739,15 @@ public class FxGuiaRemisionController implements Initializable {
             guiaRemisionTB.setIdVendedor(Session.USER_ID);
 
             /**
+             * Modalidad del traslado
+             */
+            guiaRemisionTB.setIdModalidadTraslado(rbPublico.isSelected() ? "MT0001" : "MT0002");
+
+            /**
              * Datos del traslado
              */
             guiaRemisionTB
                     .setIdMotivoTraslado(cbMotivoTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
-            // guiaRemisionTB.setIdModalidadTraslado(
-            // cbModalidadTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
             guiaRemisionTB.setFechaTraslado(Tools.getDatePicker(dtFechaTraslado));
             guiaRemisionTB.setIdPesoCarga(cbTipoPesoCarga.getSelectionModel().getSelectedItem().getIdDetalle());
             guiaRemisionTB.setPesoCarga(Double.parseDouble(txtPesoCarga.getText()));
@@ -753,13 +755,17 @@ public class FxGuiaRemisionController implements Initializable {
             /**
              * Datos del transporte privado
              */
-            // guiaRemisionTB
-            // .setIdTipoDocumentoConducto(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
-            // guiaRemisionTB.setNumeroDocumentoConductor(txtNumeroDocumento.getText().trim());
-            // guiaRemisionTB.setNombresConductor(txtNombreConducto.getText().trim());
-            // guiaRemisionTB.setTelefonoConducto(txtTelefonoCelular.getText());
-            // guiaRemisionTB.setNumeroPlaca(txtNumeroPlacaVehiculo.getText().trim());
-            // guiaRemisionTB.setNumeroLicencia(txtNumeroLicenciaConducir.getText().trim());
+            guiaRemisionTB.setIdVehiculo(cbVehiculo.getSelectionModel().getSelectedIndex() >= 0
+                    ? cbVehiculo.getSelectionModel().getSelectedItem().getIdVehiculo()
+                    : "");
+
+            /**
+             * Datos del conductor
+             */
+            guiaRemisionTB.setIdConductor(cbConductor.getSelectionModel().getSelectedIndex() >= 0
+                    ? cbConductor.getSelectionModel().getSelectedItem().getIdConductor()
+                    : "");
+
             /**
              * Dirección de partida y llegada
              */
@@ -877,29 +883,6 @@ public class FxGuiaRemisionController implements Initializable {
                     }
                 }
 
-                // for (int i = 0; i < cbModalidadTraslado.getItems().size(); i++) {
-                // if (cbModalidadTraslado.getItems().get(i).getIdDetalle() ==
-                // clienteTB.getIdModalidadTraslado()) {
-                // cbModalidadTraslado.getSelectionModel().select(i);
-                // break;
-                // }
-                // }
-                ConductorTB conductorTB = clienteTB.getConductorTB();
-                // if (conductorTB != null) {
-                // for (int i = 0; i < cbTipoDocumento.getItems().size(); i++) {
-                // if (cbTipoDocumento.getItems().get(i).getIdDetalle() ==
-                // conductorTB.getIdTipoDocumento()) {
-                // cbTipoDocumento.getSelectionModel().select(i);
-                // break;
-                // }
-                // }
-
-                // txtNumeroDocumento.setText(conductorTB.getNumeroDocumento());
-                // txtNombreConducto.setText(conductorTB.getInformacion());
-                // txtTelefonoCelular.setText(conductorTB.getCelular());
-                // txtNumeroPlacaVehiculo.setText(conductorTB.getPlacaVehiculo());
-                // txtNumeroLicenciaConducir.setText(conductorTB.getLicenciaConducir());
-                // }
                 txtDireccionLlegada.setText(clienteTB.getDireccion());
                 cbUbigeoLlegada.getItems().clear();
                 if (clienteTB.getUbigeoTB().getIdUbigeo() > 0) {

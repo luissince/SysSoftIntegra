@@ -117,40 +117,51 @@ public class CajaADO {
         ResultSet resultSet = null;
         try {
             dbf.dbConnect();
-            statementValidar = dbf.getConnection().prepareStatement("SELECT * FROM CajaTB WHERE IdUsuario = ? AND Estado = 1");
+
+            statementValidar = dbf.getConnection()
+                    .prepareStatement("SELECT * FROM CajaTB WHERE IdUsuario = ? AND Estado = 1");
             statementValidar.setString(1, idUsuario);
+
             if (statementValidar.executeQuery().next()) {
-                statementValidar = dbf.getConnection().prepareStatement("SELECT IdCaja,FechaApertura,HoraApertura FROM CajaTB WHERE IdUsuario = ? AND Estado = 1 AND CAST(FechaApertura AS DATE) = CAST(GETDATE() AS DATE)");
+                statementValidar.close();
+                statementValidar = dbf.getConnection().prepareStatement(
+                        "SELECT IdCaja,FechaApertura,HoraApertura FROM CajaTB WHERE IdUsuario = ? AND Estado = 1 AND CAST(FechaApertura AS DATE) = CAST(GETDATE() AS DATE)");
                 statementValidar.setString(1, idUsuario);
+
                 if (statementValidar.executeQuery().next()) {
                     resultSet = statementValidar.executeQuery();
                     resultSet.next();
                     CajaTB cajaTB = new CajaTB();
                     cajaTB.setId(2);
                     cajaTB.setIdCaja(resultSet.getString("IdCaja"));
-                    cajaTB.setFechaApertura(resultSet.getDate("FechaApertura").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                    cajaTB.setHoraApertura(resultSet.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
-                    return cajaTB;
-                } else {
-                    statementValidar = dbf.getConnection().prepareStatement("SELECT IdCaja,FechaApertura,HoraApertura FROM CajaTB WHERE IdUsuario = ? AND Estado = 1");
-                    statementValidar.setString(1, idUsuario);
-                    resultSet = statementValidar.executeQuery();
-                    resultSet.next();
-                    CajaTB cajaTB = new CajaTB();
-                    cajaTB.setId(3);
-                    cajaTB.setIdCaja(resultSet.getString("IdCaja"));
-                    cajaTB.setFechaApertura(resultSet.getDate("FechaApertura").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                    cajaTB.setHoraApertura(resultSet.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
-
+                    cajaTB.setFechaApertura(resultSet.getDate("FechaApertura").toLocalDate()
+                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    cajaTB.setHoraApertura(resultSet.getTime("HoraApertura").toLocalTime()
+                            .format(DateTimeFormatter.ofPattern("hh:mm a")));
                     return cajaTB;
                 }
-            } else {
+
+                statementValidar.close();
+                statementValidar = dbf.getConnection().prepareStatement(
+                        "SELECT IdCaja,FechaApertura,HoraApertura FROM CajaTB WHERE IdUsuario = ? AND Estado = 1");
+                statementValidar.setString(1, idUsuario);
+                resultSet = statementValidar.executeQuery();
+                resultSet.next();
                 CajaTB cajaTB = new CajaTB();
-                cajaTB.setId(1);
-                cajaTB.setIdCaja("");
+                cajaTB.setId(3);
+                cajaTB.setIdCaja(resultSet.getString("IdCaja"));
+                cajaTB.setFechaApertura(resultSet.getDate("FechaApertura").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                cajaTB.setHoraApertura(
+                        resultSet.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
+
                 return cajaTB;
             }
 
+            CajaTB cajaTB = new CajaTB();
+            cajaTB.setId(1);
+            cajaTB.setIdCaja("");
+            return cajaTB;
         } catch (SQLException | ClassNotFoundException ex) {
             return ex.getLocalizedMessage();
         } finally {
@@ -176,11 +187,15 @@ public class CajaADO {
         try {
             dbf.dbConnect();
 
-            statementValidar = dbf.getConnection().prepareStatement("SELECT * FROM CajaTB WHERE IdUsuario = ? AND Estado = 1");
+            statementValidar = dbf.getConnection()
+                    .prepareStatement("SELECT * FROM CajaTB WHERE IdUsuario = ? AND Estado = 1");
             statementValidar.setString(1, idUsuario);
+
             if (statementValidar.executeQuery().next()) {
 
-                statementValidar = dbf.getConnection().prepareStatement("SELECT IdCaja,FechaApertura,HoraApertura FROM CajaTB WHERE IdUsuario = ? AND Estado = 1 AND CAST(FechaApertura AS DATE) = CAST(GETDATE() AS DATE)");
+                statementValidar.close();
+                statementValidar = dbf.getConnection().prepareStatement(
+                        "SELECT IdCaja,FechaApertura,HoraApertura FROM CajaTB WHERE IdUsuario = ? AND Estado = 1 AND CAST(FechaApertura AS DATE) = CAST(GETDATE() AS DATE)");
                 statementValidar.setString(1, idUsuario);
                 if (statementValidar.executeQuery().next()) {
                     resultSet = statementValidar.executeQuery();
@@ -189,107 +204,130 @@ public class CajaADO {
                         CajaTB cajaTB = new CajaTB();
                         cajaTB.setId(2);
                         cajaTB.setIdCaja(resultSet.getString("IdCaja"));
-                        cajaTB.setFechaApertura(resultSet.getDate("FechaApertura").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                        cajaTB.setHoraApertura(resultSet.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
+                        cajaTB.setFechaApertura(resultSet.getDate("FechaApertura").toLocalDate()
+                                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                        cajaTB.setHoraApertura(resultSet.getTime("HoraApertura").toLocalTime()
+                                .format(DateTimeFormatter.ofPattern("hh:mm a")));
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT Monto FROM MovimientoCajaTB WHERE IdCaja = ? AND TipoMovimiento = 1");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT Monto FROM MovimientoCajaTB WHERE IdCaja = ? AND TipoMovimiento = 1");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double apertura = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                apertura += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Monto"), 2));
+                                apertura += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Monto"), 2));
                             }
                             cajaTB.setContado(apertura);
                         }
 
-                        ArrayList<Double> arrayList = new ArrayList();
+                        ArrayList<Double> arrayList = new ArrayList<>();
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS VentaEfectivo FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 2 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase.close();
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS VentaEfectivo FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 2 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ventaEfectivo = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ventaEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("VentaEfectivo"), 2));
+                                ventaEfectivo += Double.parseDouble(
+                                        Tools.roundingValue(setMovimientoBase.getDouble("VentaEfectivo"), 2));
                             }
                             arrayList.add(ventaEfectivo);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS VentaTarjeta FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 3 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS VentaTarjeta FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 3 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ventaTarjeta = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ventaTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("VentaTarjeta"), 2));
+                                ventaTarjeta += Double.parseDouble(
+                                        Tools.roundingValue(setMovimientoBase.getDouble("VentaTarjeta"), 2));
                             }
                             arrayList.add(ventaTarjeta);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Deposito FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 6 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Deposito FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 6 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ventaDeposito = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ventaDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Deposito"), 2));
+                                ventaDeposito += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Deposito"), 2));
                             }
                             arrayList.add(ventaDeposito);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 4 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 4 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ingresoEfectivo = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ingresoEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
+                                ingresoEfectivo += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
                             }
                             arrayList.add(ingresoEfectivo);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 7 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 7 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ingresoTarjeta = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ingresoTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
+                                ingresoTarjeta += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
                             }
                             arrayList.add(ingresoTarjeta);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 8 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 8 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ingresoDeposito = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ingresoDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
+                                ingresoDeposito += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
                             }
                             arrayList.add(ingresoDeposito);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 5 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 5 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double salidaEfectivo = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                salidaEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
+                                salidaEfectivo += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
                             }
                             arrayList.add(salidaEfectivo);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 9 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 9 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double salidaTarjeta = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                salidaTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
+                                salidaTarjeta += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
                             }
                             arrayList.add(salidaTarjeta);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 10 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 10 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double salidaDeposito = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                salidaDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
+                                salidaDeposito += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
                             }
                             arrayList.add(salidaDeposito);
                         }
@@ -301,7 +339,8 @@ public class CajaADO {
                     }
 
                 } else {
-                    statementValidar = dbf.getConnection().prepareStatement("SELECT IdCaja,FechaApertura,HoraApertura FROM CajaTB WHERE IdUsuario = ? AND Estado = 1");
+                    statementValidar = dbf.getConnection().prepareStatement(
+                            "SELECT IdCaja,FechaApertura,HoraApertura FROM CajaTB WHERE IdUsuario = ? AND Estado = 1");
                     statementValidar.setString(1, idUsuario);
                     resultSet = statementValidar.executeQuery();
                     if (resultSet.next()) {
@@ -309,107 +348,130 @@ public class CajaADO {
                         CajaTB cajaTB = new CajaTB();
                         cajaTB.setId(3);
                         cajaTB.setIdCaja(resultSet.getString("IdCaja"));
-                        cajaTB.setFechaApertura(resultSet.getDate("FechaApertura").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                        cajaTB.setHoraApertura(resultSet.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
+                        cajaTB.setFechaApertura(resultSet.getDate("FechaApertura").toLocalDate()
+                                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                        cajaTB.setHoraApertura(resultSet.getTime("HoraApertura").toLocalTime()
+                                .format(DateTimeFormatter.ofPattern("hh:mm a")));
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT Monto FROM MovimientoCajaTB WHERE IdCaja = ? AND TipoMovimiento = 1");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT Monto FROM MovimientoCajaTB WHERE IdCaja = ? AND TipoMovimiento = 1");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double apertura = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                apertura += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Monto"), 2));
+                                apertura += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Monto"), 2));
                             }
                             cajaTB.setContado(apertura);
                         }
 
-                        ArrayList<Double> arrayList = new ArrayList();
+                        ArrayList<Double> arrayList = new ArrayList<>();
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS VentaEfectivo FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 2 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase.close();
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS VentaEfectivo FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 2 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ventaEfectivo = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ventaEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("VentaEfectivo"), 2));
+                                ventaEfectivo += Double.parseDouble(
+                                        Tools.roundingValue(setMovimientoBase.getDouble("VentaEfectivo"), 2));
                             }
                             arrayList.add(ventaEfectivo);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS VentaTarjeta FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 3 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS VentaTarjeta FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 3 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ventaTarjeta = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ventaTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("VentaTarjeta"), 2));
+                                ventaTarjeta += Double.parseDouble(
+                                        Tools.roundingValue(setMovimientoBase.getDouble("VentaTarjeta"), 2));
                             }
                             arrayList.add(ventaTarjeta);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Deposito FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 6 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Deposito FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 6 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ventaDeposito = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ventaDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Deposito"), 2));
+                                ventaDeposito += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Deposito"), 2));
                             }
                             arrayList.add(ventaDeposito);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 4 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 4 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ingresoEfectivo = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ingresoEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
+                                ingresoEfectivo += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
                             }
                             arrayList.add(ingresoEfectivo);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 7 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 7 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ingresoTarjeta = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ingresoTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
+                                ingresoTarjeta += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
                             }
                             arrayList.add(ingresoTarjeta);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 8 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 8 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ingresoDeposito = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                ingresoDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
+                                ingresoDeposito += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
                             }
                             arrayList.add(ingresoDeposito);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 5 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 5 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double salidaEfectivo = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                salidaEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
+                                salidaEfectivo += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
                             }
                             arrayList.add(salidaEfectivo);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 9 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 9 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double salidaTarjeta = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                salidaTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
+                                salidaTarjeta += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
                             }
                             arrayList.add(salidaTarjeta);
                         }
 
-                        statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 10 AND v.IdNotaCredito IS NULL");
+                        statementMovimientoBase = dbf.getConnection().prepareStatement(
+                                "SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 10 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double salidaDeposito = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                             while (setMovimientoBase.next()) {
-                                salidaDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
+                                salidaDeposito += Double
+                                        .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
                             }
                             arrayList.add(salidaDeposito);
                         }
@@ -454,7 +516,7 @@ public class CajaADO {
             dbf.dbConnect();
             Object[] objects = new Object[3];
 
-            ArrayList<Double> arrayTotales = new ArrayList();
+            ArrayList<Double> arrayTotales = new ArrayList<>();
             ArrayList<MovimientoCajaTB> arratyLista = new ArrayList<>();
 
             statementValidar = dbf.getConnection().prepareStatement("{call Sp_Obtener_Caja_Aperturada_By_Id(?)}");
@@ -463,16 +525,23 @@ public class CajaADO {
             if (resultSet.next()) {
                 CajaTB cajaTB = new CajaTB();
                 cajaTB.setIdCaja(resultSet.getString("IdCaja"));
-                cajaTB.setFechaApertura(resultSet.getDate("FechaApertura").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                cajaTB.setHoraApertura(resultSet.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
-                cajaTB.setFechaCierre(resultSet.getDate("FechaCierre").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                cajaTB.setHoraCierre(resultSet.getTime("HoraCierre").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
+                cajaTB.setFechaApertura(resultSet.getDate("FechaApertura").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                cajaTB.setHoraApertura(
+                        resultSet.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
+                cajaTB.setFechaCierre(resultSet.getDate("FechaCierre").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                cajaTB.setHoraCierre(
+                        resultSet.getTime("HoraCierre").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
                 cajaTB.setContado(resultSet.getDouble("Contado"));
                 cajaTB.setCalculado(resultSet.getDouble("Calculado"));
                 cajaTB.setDiferencia(resultSet.getDouble("Diferencia"));
-                cajaTB.setEmpleadoTB(new EmpleadoTB(resultSet.getString("NumeroDocumento"), resultSet.getString("Apellidos"), resultSet.getString("Nombres"), resultSet.getString("Celular"), resultSet.getString("Direccion")));
+                cajaTB.setEmpleadoTB(new EmpleadoTB(resultSet.getString("NumeroDocumento"),
+                        resultSet.getString("Apellidos"), resultSet.getString("Nombres"),
+                        resultSet.getString("Celular"), resultSet.getString("Direccion")));
 
-                statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT Monto FROM MovimientoCajaTB WHERE IdCaja = ? AND TipoMovimiento = 1");
+                statementMovimientoBase = dbf.getConnection()
+                        .prepareStatement("SELECT Monto FROM MovimientoCajaTB WHERE IdCaja = ? AND TipoMovimiento = 1");
                 statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                 double apertura = 0;
                 try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
@@ -481,108 +550,130 @@ public class CajaADO {
                     }
                     arrayTotales.add(apertura);
                 }
-                // 
-                statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS VentaEfectivo FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 2 AND v.IdNotaCredito is null");
+                //
+                statementMovimientoBase.close();
+                statementMovimientoBase = dbf.getConnection().prepareStatement(
+                        "SELECT m.Monto AS VentaEfectivo FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND m.TipoMovimiento = 2 AND v.IdNotaCredito is null");
                 statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                 double ventaEfectivo = 0;
                 try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                     while (setMovimientoBase.next()) {
-                        ventaEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("VentaEfectivo"), 2));
+                        ventaEfectivo += Double
+                                .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("VentaEfectivo"), 2));
                     }
                     arrayTotales.add(ventaEfectivo);
                 }
 
-                statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS VentaTarjeta FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 3 AND v.IdNotaCredito is null");
+                statementMovimientoBase = dbf.getConnection().prepareStatement(
+                        "SELECT m.Monto AS VentaTarjeta FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 3 AND v.IdNotaCredito is null");
                 statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                 double ventaTarjeta = 0;
                 try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                     while (setMovimientoBase.next()) {
-                        ventaTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("VentaTarjeta"), 2));
+                        ventaTarjeta += Double
+                                .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("VentaTarjeta"), 2));
                     }
                     arrayTotales.add(ventaTarjeta);
                 }
 
-                statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Ingresos  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 6 AND v.IdNotaCredito is null");
+                statementMovimientoBase = dbf.getConnection().prepareStatement(
+                        "SELECT m.Monto AS Ingresos  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 6 AND v.IdNotaCredito is null");
                 statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                 double ventaDeposito = 0;
                 try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                     while (setMovimientoBase.next()) {
-                        ventaDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
+                        ventaDeposito += Double
+                                .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
                     }
                     arrayTotales.add(ventaDeposito);
                 }
 
-                // 
-                statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Ingresos  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 4 AND v.IdNotaCredito is null");
+                //
+                statementMovimientoBase = dbf.getConnection().prepareStatement(
+                        "SELECT m.Monto AS Ingresos  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 4 AND v.IdNotaCredito is null");
                 statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                 double ingresoEfectivo = 0;
                 try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                     while (setMovimientoBase.next()) {
-                        ingresoEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
+                        ingresoEfectivo += Double
+                                .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
                     }
                     arrayTotales.add(ingresoEfectivo);
                 }
 
-                statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Ingresos  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 7 AND v.IdNotaCredito is null");
+                statementMovimientoBase = dbf.getConnection().prepareStatement(
+                        "SELECT m.Monto AS Ingresos  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 7 AND v.IdNotaCredito is null");
                 statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                 double ingresoTarjeta = 0;
                 try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                     while (setMovimientoBase.next()) {
-                        ingresoTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
+                        ingresoTarjeta += Double
+                                .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
                     }
                     arrayTotales.add(ingresoTarjeta);
                 }
 
-                statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Ingresos  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 8 AND v.IdNotaCredito is null");
+                statementMovimientoBase = dbf.getConnection().prepareStatement(
+                        "SELECT m.Monto AS Ingresos  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 8 AND v.IdNotaCredito is null");
                 statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                 double ingresoDeposito = 0;
                 try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                     while (setMovimientoBase.next()) {
-                        ingresoDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
+                        ingresoDeposito += Double
+                                .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Ingresos"), 2));
                     }
                     arrayTotales.add(ingresoDeposito);
                 }
 
-                // 
-                statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Salidas  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 5 AND v.IdNotaCredito is null");
+                //
+                statementMovimientoBase = dbf.getConnection().prepareStatement(
+                        "SELECT m.Monto AS Salidas  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 5 AND v.IdNotaCredito is null");
                 statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                 double salidaEfectivo = 0;
                 try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                     while (setMovimientoBase.next()) {
-                        salidaEfectivo += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
+                        salidaEfectivo += Double
+                                .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
                     }
                     arrayTotales.add(salidaEfectivo);
                 }
 
-                statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Salidas  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 9 AND v.IdNotaCredito is null");
+                statementMovimientoBase = dbf.getConnection().prepareStatement(
+                        "SELECT m.Monto AS Salidas  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 9 AND v.IdNotaCredito is null");
                 statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                 double salidaTarjeta = 0;
                 try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                     while (setMovimientoBase.next()) {
-                        salidaTarjeta += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
+                        salidaTarjeta += Double
+                                .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
                     }
                     arrayTotales.add(salidaTarjeta);
                 }
 
-                statementMovimientoBase = dbf.getConnection().prepareStatement("SELECT m.Monto AS Salidas  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 10 AND v.IdNotaCredito is null");
+                statementMovimientoBase = dbf.getConnection().prepareStatement(
+                        "SELECT m.Monto AS Salidas  FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE IdCaja = ? AND TipoMovimiento = 10 AND v.IdNotaCredito is null");
                 statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                 double salidaDeposito = 0;
                 try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
                     while (setMovimientoBase.next()) {
-                        salidaDeposito += Double.parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
+                        salidaDeposito += Double
+                                .parseDouble(Tools.roundingValue(setMovimientoBase.getDouble("Salidas"), 2));
                     }
                     arrayTotales.add(salidaDeposito);
                 }
 
-                // 
-                statementMovimiento = dbf.getConnection().prepareStatement("SELECT m.FechaMovimiento,m.HoraMovimiento,m.Comentario,m.TipoMovimiento,m.Monto FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND v.IdNotaCredito IS NULL");
+                //
+                statementMovimiento = dbf.getConnection().prepareStatement(
+                        "SELECT m.FechaMovimiento,m.HoraMovimiento,m.Comentario,m.TipoMovimiento,m.Monto FROM MovimientoCajaTB AS m LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta WHERE m.IdCaja = ? AND v.IdNotaCredito IS NULL");
                 statementMovimiento.setString(1, idCaja);
                 try (ResultSet resultSetMovimiento = statementMovimiento.executeQuery()) {
                     while (resultSetMovimiento.next()) {
                         MovimientoCajaTB movimientoCajaTB = new MovimientoCajaTB();
                         movimientoCajaTB.setId(resultSetMovimiento.getRow());
-                        movimientoCajaTB.setFechaMovimiento(resultSetMovimiento.getDate("FechaMovimiento").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                        movimientoCajaTB.setHoraMovimiento(resultSetMovimiento.getTime("HoraMovimiento").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
+                        movimientoCajaTB.setFechaMovimiento(resultSetMovimiento.getDate("FechaMovimiento").toLocalDate()
+                                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                        movimientoCajaTB.setHoraMovimiento(resultSetMovimiento.getTime("HoraMovimiento").toLocalTime()
+                                .format(DateTimeFormatter.ofPattern("hh:mm a")));
                         movimientoCajaTB.setComentario(resultSetMovimiento.getString("Comentario"));
                         movimientoCajaTB.setTipoMovimiento(resultSetMovimiento.getShort("TipoMovimiento"));
                         movimientoCajaTB.setMonto(resultSetMovimiento.getDouble("Monto"));
@@ -624,7 +715,8 @@ public class CajaADO {
 
     }
 
-    public static String CerrarAperturaCaja(String idCaja, BancoHistorialTB bancoHistorialEfectivo, BancoHistorialTB bancoHistorialTarjeta, double contado, double calculado) {
+    public static String CerrarAperturaCaja(String idCaja, BancoHistorialTB bancoHistorialEfectivo,
+            BancoHistorialTB bancoHistorialTarjeta, double contado, double calculado) {
         DBUtil dbf = new DBUtil();
         String cajaTB = "";
         PreparedStatement statementCaja = null;
@@ -637,7 +729,8 @@ public class CajaADO {
         try {
             dbf.dbConnect();
             dbf.getConnection().setAutoCommit(false);
-            statementCaja = dbf.getConnection().prepareStatement("UPDATE CajaTB SET FechaCierre = ?,HoraCierre = ?,Contado = ?,Calculado = ?,Diferencia = ?,Estado=? WHERE IdCaja = ?");
+            statementCaja = dbf.getConnection().prepareStatement(
+                    "UPDATE CajaTB SET FechaCierre = ?,HoraCierre = ?,Contado = ?,Calculado = ?,Diferencia = ?,Estado=? WHERE IdCaja = ?");
             statementCaja.setString(1, Tools.getDate());
             statementCaja.setString(2, Tools.getTime("HH:mm:ss"));
             statementCaja.setDouble(3, contado);
@@ -647,8 +740,10 @@ public class CajaADO {
             statementCaja.setString(7, idCaja);
             statementCaja.addBatch();
 
-            statementBancoEfectivo = dbf.getConnection().prepareStatement("UPDATE Banco SET SaldoInicial = SaldoInicial + ? WHERE IdBanco = ?");
-            statementHistorialBancoEfectivo = dbf.getConnection().prepareStatement("INSERT INTO BancoHistorialTB(IdBanco,IdEmpleado,IdProcedencia,Descripcion,Fecha,Hora,Entrada,Salida)VALUES(?,?,?,?,?,?,?,?)");
+            statementBancoEfectivo = dbf.getConnection()
+                    .prepareStatement("UPDATE Banco SET SaldoInicial = SaldoInicial + ? WHERE IdBanco = ?");
+            statementHistorialBancoEfectivo = dbf.getConnection().prepareStatement(
+                    "INSERT INTO BancoHistorialTB(IdBanco,IdEmpleado,IdProcedencia,Descripcion,Fecha,Hora,Entrada,Salida)VALUES(?,?,?,?,?,?,?,?)");
 
             if (bancoHistorialEfectivo != null) {
                 statementBancoEfectivo.setDouble(1, bancoHistorialEfectivo.getEntrada());
@@ -666,8 +761,10 @@ public class CajaADO {
                 statementHistorialBancoEfectivo.addBatch();
             }
 
-            statementBancoTarjeta = dbf.getConnection().prepareStatement("UPDATE Banco SET SaldoInicial = SaldoInicial + ? WHERE IdBanco = ?");
-            statementHistorialBancoTarjeta = dbf.getConnection().prepareStatement("INSERT INTO BancoHistorialTB(IdBanco,IdEmpleado,IdProcedencia,Descripcion,Fecha,Hora,Entrada,Salida)VALUES(?,?,?,?,?,?,?,?)");
+            statementBancoTarjeta = dbf.getConnection()
+                    .prepareStatement("UPDATE Banco SET SaldoInicial = SaldoInicial + ? WHERE IdBanco = ?");
+            statementHistorialBancoTarjeta = dbf.getConnection().prepareStatement(
+                    "INSERT INTO BancoHistorialTB(IdBanco,IdEmpleado,IdProcedencia,Descripcion,Fecha,Hora,Entrada,Salida)VALUES(?,?,?,?,?,?,?,?)");
 
             if (bancoHistorialTarjeta != null) {
                 statementBancoTarjeta.setDouble(1, bancoHistorialTarjeta.getEntrada());
@@ -755,7 +852,8 @@ public class CajaADO {
                 contado += resultSet.getDouble("Monto");
             }
 
-            statementAjuste = dbf.getConnection().prepareStatement("UPDATE CajaTB SET Contado=?,Calculado=?  WHERE IdCaja = ?");
+            statementAjuste = dbf.getConnection()
+                    .prepareStatement("UPDATE CajaTB SET Contado=?,Calculado=?  WHERE IdCaja = ?");
             statementAjuste.setDouble(1, contado);
             statementAjuste.setDouble(2, contado);
             statementAjuste.setString(3, idCaja);
@@ -804,10 +902,14 @@ public class CajaADO {
             while (result.next()) {
                 CajaTB cajaTB = new CajaTB();
                 cajaTB.setIdCaja(result.getString("IdCaja"));
-                cajaTB.setFechaApertura(result.getDate("FechaApertura").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                cajaTB.setHoraApertura(result.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
-                cajaTB.setFechaCierre(result.getDate("FechaCierre").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                cajaTB.setHoraCierre(result.getTime("HoraCierre").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                cajaTB.setFechaApertura(result.getDate("FechaApertura").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                cajaTB.setHoraApertura(
+                        result.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                cajaTB.setFechaCierre(
+                        result.getDate("FechaCierre").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                cajaTB.setHoraCierre(
+                        result.getTime("HoraCierre").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 cajaTB.setEstado(result.getBoolean("Estado"));
                 cajaTB.setContado(result.getDouble("Contado"));
                 cajaTB.setCalculado(result.getDouble("Calculado"));
@@ -849,10 +951,14 @@ public class CajaADO {
                 CajaTB cajaTB = new CajaTB();
                 cajaTB.setId(result.getRow());
                 cajaTB.setIdCaja(result.getString("IdCaja"));
-                cajaTB.setFechaApertura(result.getDate("FechaApertura").toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
-                cajaTB.setHoraApertura(result.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
-                cajaTB.setFechaCierre(result.getDate("FechaCierre").toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
-                cajaTB.setHoraCierre(result.getTime("HoraCierre").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                cajaTB.setFechaApertura(result.getDate("FechaApertura").toLocalDate()
+                        .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
+                cajaTB.setHoraApertura(
+                        result.getTime("HoraApertura").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                cajaTB.setFechaCierre(result.getDate("FechaCierre").toLocalDate()
+                        .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
+                cajaTB.setHoraCierre(
+                        result.getTime("HoraCierre").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 cajaTB.setEstado(result.getBoolean("Estado"));
                 cajaTB.setContado(result.getDouble("Contado"));
                 cajaTB.setCalculado(result.getDouble("Calculado"));
@@ -878,7 +984,7 @@ public class CajaADO {
     public static String CrudListaCaja(String idListaCaja, String nombre, boolean estado) {
         DBUtil dbf = new DBUtil();
         String result = "";
-       
+
         CallableStatement codigoListaCaja = null;
         PreparedStatement statementValidar = null;
         PreparedStatement statementCaja = null;
@@ -905,7 +1011,8 @@ public class CajaADO {
                 codigoListaCaja.execute();
                 String idCaja = codigoListaCaja.getString(1);
 
-                statementCaja = dbf.getConnection().prepareStatement("INSERT INTO ListaCajaTB(IdListaCaja,Nombre,Estado)VALUES(?,?,?)");
+                statementCaja = dbf.getConnection()
+                        .prepareStatement("INSERT INTO ListaCajaTB(IdListaCaja,Nombre,Estado)VALUES(?,?,?)");
                 statementCaja.setString(1, idCaja);
                 statementCaja.setString(2, nombre);
                 statementCaja.setBoolean(3, estado);
@@ -939,7 +1046,8 @@ public class CajaADO {
         return result;
     }
 
-    public static Object ReporteGeneralMovimientoCaja(String fechaInicio, String fechaFinal, int usuario, String idUusuario) {
+    public static Object ReporteGeneralMovimientoCaja(String fechaInicio, String fechaFinal, int usuario,
+            String idUusuario) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementMovimiento = null;
         ResultSet resultSet = null;
@@ -947,7 +1055,8 @@ public class CajaADO {
             dbf.dbConnect();
             ArrayList<IngresoTB> ingresoTBs = new ArrayList<>();
 
-            statementMovimiento = dbf.getConnection().prepareStatement("{call Sp_Reporte_General_Movimiento_Caja(?,?,?,?)}");
+            statementMovimiento = dbf.getConnection()
+                    .prepareStatement("{call Sp_Reporte_General_Movimiento_Caja(?,?,?,?)}");
             statementMovimiento.setString(1, fechaInicio);
             statementMovimiento.setString(2, fechaFinal);
             statementMovimiento.setInt(3, usuario);

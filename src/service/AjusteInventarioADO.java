@@ -191,6 +191,7 @@ public class AjusteInventarioADO {
             String fechaFinal, int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatementCount = null;
         ResultSet rsEmps = null;
         try {
             dbf.dbConnect();
@@ -251,13 +252,14 @@ public class AjusteInventarioADO {
             }
             objects[0] = empList;
 
-            preparedStatement = dbf.getConnection()
+            rsEmps.close();
+            preparedStatementCount = dbf.getConnection()
                     .prepareStatement("{CALL Sp_Listar_Movimiento_Inventario_Count(?,?,?,?)}");
-            preparedStatement.setInt(1, opcion);
-            preparedStatement.setInt(2, movimiento);
-            preparedStatement.setString(3, fechaInicial);
-            preparedStatement.setString(4, fechaFinal);
-            rsEmps = preparedStatement.executeQuery();
+            preparedStatementCount.setInt(1, opcion);
+            preparedStatementCount.setInt(2, movimiento);
+            preparedStatementCount.setString(3, fechaInicial);
+            preparedStatementCount.setString(4, fechaFinal);
+            rsEmps = preparedStatementCount.executeQuery();
             Integer integer = 0;
             if (rsEmps.next()) {
                 integer = rsEmps.getInt("Total");
@@ -271,6 +273,9 @@ public class AjusteInventarioADO {
             try {
                 if (preparedStatement != null) {
                     preparedStatement.close();
+                }
+                if (preparedStatementCount != null) {
+                    preparedStatementCount.close();
                 }
                 if (rsEmps != null) {
                     rsEmps.close();
@@ -372,64 +377,64 @@ public class AjusteInventarioADO {
             if (statementValidar.executeQuery().next()) {
                 dbf.getConnection().rollback();
                 return "inserted";
-            } else {
-                statementValidar = dbf.getConnection().prepareStatement(
-                        "SELECT * FROM MovimientoInventarioTB WHERE IdMovimientoInventario = ? AND CodigoVerificacion <> ?");
-                statementValidar.setString(1, inventarioTB.getIdMovimientoInventario());
-                statementValidar.setString(2, inventarioTB.getCodigoVerificacion());
-                if (statementValidar.executeQuery().next()) {
-                    dbf.getConnection().rollback();
-                    return "nocde";
-                } else {
-
-                    statementMovimiento = dbf.getConnection().prepareStatement(
-                            "UPDATE MovimientoInventarioTB SET Estado = 1 WHERE IdMovimientoInventario = ?");
-                    statementMovimiento.setString(1, inventarioTB.getIdMovimientoInventario());
-                    statementMovimiento.addBatch();
-
-                    suministro_update = inventarioTB.isTipoAjuste()
-                            ? dbf.getConnection().prepareStatement(
-                                    "UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?")
-                            : dbf.getConnection().prepareStatement(
-                                    "UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
-
-                    suministro_kardex = dbf.getConnection().prepareStatement("INSERT INTO "
-                            + "KardexSuministroTB("
-                            + "IdSuministro,"
-                            + "Fecha,"
-                            + "Hora,"
-                            + "Tipo,"
-                            + "Movimiento,"
-                            + "Detalle,"
-                            + "Cantidad, "
-                            + "Costo, "
-                            + "Total) "
-                            + "VALUES(?,?,?,?,?,?,?,?,?)");
-
-                    for (MovimientoInventarioDetalleTB detalleTB : inventarioTB.getMovimientoInventarioDetalleTBs()) {
-                        suministro_update.setDouble(1, detalleTB.getCantidad());
-                        suministro_update.setString(2, detalleTB.getIdSuministro());
-                        suministro_update.addBatch();
-
-                        suministro_kardex.setString(1, detalleTB.getIdSuministro());
-                        suministro_kardex.setString(2, Tools.getDate());
-                        suministro_kardex.setString(3, Tools.getTime());
-                        suministro_kardex.setShort(4, inventarioTB.isTipoAjuste() ? (short) 1 : (short) 2);
-                        suministro_kardex.setInt(5, inventarioTB.getTipoMovimiento());
-                        suministro_kardex.setString(6, inventarioTB.getObservacion());
-                        suministro_kardex.setDouble(7, detalleTB.getCantidad());
-                        suministro_kardex.setDouble(8, detalleTB.getCosto());
-                        suministro_kardex.setDouble(9, detalleTB.getCantidad() * detalleTB.getCosto());
-                        suministro_kardex.addBatch();
-                    }
-
-                    statementMovimiento.executeBatch();
-                    suministro_update.executeBatch();
-                    suministro_kardex.executeBatch();
-                    dbf.getConnection().commit();
-                    return "updated";
-                }
             }
+
+            statementValidar.close();
+            statementValidar = dbf.getConnection().prepareStatement(
+                    "SELECT * FROM MovimientoInventarioTB WHERE IdMovimientoInventario = ? AND CodigoVerificacion <> ?");
+            statementValidar.setString(1, inventarioTB.getIdMovimientoInventario());
+            statementValidar.setString(2, inventarioTB.getCodigoVerificacion());
+            if (statementValidar.executeQuery().next()) {
+                dbf.getConnection().rollback();
+                return "nocde";
+            }
+
+            statementMovimiento = dbf.getConnection().prepareStatement(
+                    "UPDATE MovimientoInventarioTB SET Estado = 1 WHERE IdMovimientoInventario = ?");
+            statementMovimiento.setString(1, inventarioTB.getIdMovimientoInventario());
+            statementMovimiento.addBatch();
+
+            suministro_update = inventarioTB.isTipoAjuste()
+                    ? dbf.getConnection().prepareStatement(
+                            "UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?")
+                    : dbf.getConnection().prepareStatement(
+                            "UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
+
+            suministro_kardex = dbf.getConnection().prepareStatement("INSERT INTO "
+                    + "KardexSuministroTB("
+                    + "IdSuministro,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "Tipo,"
+                    + "Movimiento,"
+                    + "Detalle,"
+                    + "Cantidad, "
+                    + "Costo, "
+                    + "Total) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?)");
+
+            for (MovimientoInventarioDetalleTB detalleTB : inventarioTB.getMovimientoInventarioDetalleTBs()) {
+                suministro_update.setDouble(1, detalleTB.getCantidad());
+                suministro_update.setString(2, detalleTB.getIdSuministro());
+                suministro_update.addBatch();
+
+                suministro_kardex.setString(1, detalleTB.getIdSuministro());
+                suministro_kardex.setString(2, Tools.getDate());
+                suministro_kardex.setString(3, Tools.getTime());
+                suministro_kardex.setShort(4, inventarioTB.isTipoAjuste() ? (short) 1 : (short) 2);
+                suministro_kardex.setInt(5, inventarioTB.getTipoMovimiento());
+                suministro_kardex.setString(6, inventarioTB.getObservacion());
+                suministro_kardex.setDouble(7, detalleTB.getCantidad());
+                suministro_kardex.setDouble(8, detalleTB.getCosto());
+                suministro_kardex.setDouble(9, detalleTB.getCantidad() * detalleTB.getCosto());
+                suministro_kardex.addBatch();
+            }
+
+            statementMovimiento.executeBatch();
+            suministro_update.executeBatch();
+            suministro_kardex.executeBatch();
+            dbf.getConnection().commit();
+            return "updated";
         } catch (SQLException | ClassNotFoundException ex) {
             try {
                 dbf.getConnection().rollback();
