@@ -36,7 +36,7 @@ public class FxTicketClonarController implements Initializable {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         Object object = TicketADO.ListTipoTicket();
         if (object instanceof ArrayList) {
-            cbTpo.getItems().addAll((ArrayList) object);
+            cbTpo.getItems().addAll((ArrayList<TicketTB>) object);
         }
     }
 

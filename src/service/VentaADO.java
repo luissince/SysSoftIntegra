@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Random;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -2862,7 +2861,6 @@ public class VentaADO {
                 clienteTB.setEmail(resultSetVenta.getString("Email"));
                 clienteTB.setDireccion(resultSetVenta.getString("Direccion"));
                 clienteTB.setIdMotivoTraslado(resultSetVenta.getInt("IdMotivoTraslado"));
-                clienteTB.setIdModalidadTraslado(resultSetVenta.getInt("IdModalidadTraslado"));
 
                 UbigeoTB ubigeoTB = new UbigeoTB();
                 ubigeoTB.setIdUbigeo(resultSetVenta.getInt("IdUbigeo"));
@@ -3205,7 +3203,7 @@ public class VentaADO {
                     .prepareStatement("UPDATE VentaTB SET Estado = ?, Observaciones = ? WHERE IdVenta = ?");
             statementVenta.setInt(1, 3);
             statementVenta.setString(2,
-                    Session.USER_NAME.toUpperCase() + " ANULÓ LA VENTA POR EL MOTIVO -> " + motivo.toUpperCase());
+                    Session.USER_NAME.toUpperCase() + "ANULÓ LA VENTA POR EL MOTIVO -> " + motivo.toUpperCase());
             statementVenta.setString(3, idVenta);
             statementVenta.addBatch();
             statementVenta.executeBatch();

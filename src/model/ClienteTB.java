@@ -23,13 +23,11 @@ public class ClienteTB {
     private ImageView imagePredeterminado;
     private String idAuxiliar;
     private boolean tipoSelect;
-    private int idModalidadTraslado;
     private int idMotivoTraslado;
     private int IdUbigeo;
 
     private UbigeoTB ubigeoTB;
-    private ConductorTB conductorTB;
-   
+
     public ClienteTB() {
 
     }
@@ -51,7 +49,8 @@ public class ClienteTB {
         this.direccion = direccion;
     }
 
-    public ClienteTB(String idCliente, String numeroDocumento, String informacion, String celular, String email, String direccion) {
+    public ClienteTB(String idCliente, String numeroDocumento, String informacion, String celular, String email,
+            String direccion) {
         this.idCliente = idCliente;
         this.numeroDocumento = numeroDocumento;
         this.informacion = informacion;
@@ -60,7 +59,8 @@ public class ClienteTB {
         this.direccion = direccion;
     }
 
-    public ClienteTB(String idCliente, int tipoDocumento, String numeroDocumento, String informacion, String celular, String email, String direccion) {
+    public ClienteTB(String idCliente, int tipoDocumento, String numeroDocumento, String informacion, String celular,
+            String email, String direccion) {
         this.idCliente = idCliente;
         this.tipoDocumento = tipoDocumento;
         this.numeroDocumento = numeroDocumento;
@@ -70,7 +70,8 @@ public class ClienteTB {
         this.direccion = direccion;
     }
 
-    public ClienteTB(String idCliente, int tipoDocumento, String numeroDocumento, String informacion, String telefono, String celular, String email, String direccion) {
+    public ClienteTB(String idCliente, int tipoDocumento, String numeroDocumento, String informacion, String telefono,
+            String celular, String email, String direccion) {
         this.idCliente = idCliente;
         this.tipoDocumento = tipoDocumento;
         this.numeroDocumento = numeroDocumento;
@@ -225,14 +226,6 @@ public class ClienteTB {
         this.tipoSelect = tipoSelect;
     }
 
-     public int getIdModalidadTraslado() {
-        return idModalidadTraslado;
-    }
-
-    public void setIdModalidadTraslado(int idModalidadTraslado) {
-        this.idModalidadTraslado = idModalidadTraslado;
-    }
-
     public int getIdMotivoTraslado() {
         return idMotivoTraslado;
     }
@@ -257,14 +250,6 @@ public class ClienteTB {
         this.ubigeoTB = ubigeoTB;
     }
 
-    public ConductorTB getConductorTB() {
-        return conductorTB;
-    }
-
-    public void setConductorTB(ConductorTB conductorTB) {
-        this.conductorTB = conductorTB;
-    }
-    
     @Override
     public String toString() {
         if (tipoSelect) {

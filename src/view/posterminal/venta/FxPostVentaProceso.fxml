@@ -339,15 +339,27 @@
                                           </AnchorPane>
                                           <HBox alignment="CENTER">
                                              <children>
-                                                <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefWidth="400.0" styleClass="labelRoboto13" text="El proceso de pago adelantado consiste en registrar el dinero sin modificar la cantidad de los productos agregados en el detalle de venta." textFill="#020203" wrapText="true" HBox.hgrow="ALWAYS">
-                                                   <graphic>
-                                                      <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../../image/information.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                   </graphic>
-                                                </Label>
+                                                <VBox HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                                                         <children>
+                                                            <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                                               <children>
+                                                                  <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefWidth="400.0" styleClass="labelRoboto13" text="El proceso de pago adelantado consiste en registrar el dinero sin modificar la cantidad de los productos agregados en el detalle de venta." textFill="#020203" wrapText="true">
+                                                                     <graphic>
+                                                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                           <image>
+                                                                              <Image url="@../../image/information.png" />
+                                                                           </image>
+                                                                        </ImageView>
+                                                                     </graphic>
+                                                                  </Label>
+                                                               </children>
+                                                            </VBox>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
                                              </children>
                                              <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
