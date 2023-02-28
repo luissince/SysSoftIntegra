@@ -51,7 +51,8 @@ public class TicketCaja {
 
     private final AnchorPane hbPie;
 
-    public TicketCaja(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie) {
+    public TicketCaja(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera,
+            AnchorPane hbPie) {
         this.node = node;
         this.billPrintable = billPrintable;
         this.hbEncabezado = hbEncabezado;
@@ -60,13 +61,16 @@ public class TicketCaja {
     }
 
     public void imprimir(String idCaja) {
-        if (!Session.ESTADO_IMPRESORA_CORTE_CAJA && Tools.isText(Session.NOMBRE_IMPRESORA_CORTE_CAJA) && Tools.isText(Session.FORMATO_IMPRESORA_CORTE_CAJA)) {
-            Tools.AlertMessageWarning(node, "Corte de Caja", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+        if (!Session.ESTADO_IMPRESORA_CORTE_CAJA && Tools.isText(Session.NOMBRE_IMPRESORA_CORTE_CAJA)
+                && Tools.isText(Session.FORMATO_IMPRESORA_CORTE_CAJA)) {
+            Tools.AlertMessageWarning(node, "Corte de Caja",
+                    "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
             return;
         }
         if (Session.FORMATO_IMPRESORA_CORTE_CAJA.equalsIgnoreCase("ticket")) {
             if (Session.TICKET_CORTE_CAJA_ID == 0 && Session.TICKET_CORTE_CAJA_RUTA.equalsIgnoreCase("")) {
-                Tools.AlertMessageWarning(node, "Corte de Caja", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
+                Tools.AlertMessageWarning(node, "Corte de Caja",
+                        "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
             } else {
                 executeProcessPrinterCorteCaja(
                         idCaja,
@@ -74,17 +78,18 @@ public class TicketCaja {
                         Session.TICKET_CORTE_CAJA_ID,
                         Session.TICKET_CORTE_CAJA_RUTA,
                         Session.NOMBRE_IMPRESORA_CORTE_CAJA,
-                        Session.CORTAPAPEL_IMPRESORA_CORTE_CAJA
-                );
+                        Session.CORTAPAPEL_IMPRESORA_CORTE_CAJA);
             }
         } else if (Session.FORMATO_IMPRESORA_CORTE_CAJA.equalsIgnoreCase("a4")) {
 
         } else {
-            Tools.AlertMessageWarning(node, "Corte de Caja", "Error al validar el formato de impresión configure en la sección configuración/impresora.");
+            Tools.AlertMessageWarning(node, "Corte de Caja",
+                    "Error al validar el formato de impresión configure en la sección configuración/impresora.");
         }
     }
 
-    private void executeProcessPrinterCorteCaja(String idCaja, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) {
+    private void executeProcessPrinterCorteCaja(String idCaja, String desing, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -100,11 +105,14 @@ public class TicketCaja {
                         Object object[] = (Object[]) arrayList;
                         CajaTB cajaTB = (CajaTB) object[0];
                         if (desing.equalsIgnoreCase("withdesing")) {
-                            return printTicketWithDesingCorteCaja(cajaTB, (ArrayList<Double>) object[1], ticketId, ticketRuta, nombreImpresora, cortaPapel);
+                            return printTicketWithDesingCorteCaja(cajaTB, (ArrayList<Double>) object[1], ticketId,
+                                    ticketRuta, nombreImpresora, cortaPapel);
                         } else {
                             return "empty";
-//                                billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
-//                                return printTicketNoDesingCorteCaja(cajaTB, (ArrayList<Double>) object[1], nombreImpresora, cortaPapel);
+                            // billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado,
+                            // hbDetalleCabecera, hbPie);
+                            // return printTicketNoDesingCorteCaja(cajaTB, (ArrayList<Double>) object[1],
+                            // nombreImpresora, cortaPapel);
                         }
                     } catch (PrinterException | IOException | PrintException ex) {
                         return "Error en imprimir: " + ex.getLocalizedMessage();
@@ -126,7 +134,8 @@ public class TicketCaja {
             } else if (result.equalsIgnoreCase("error_name")) {
                 Tools.showAlertNotification("/view/image/warning_large.png",
                         "Envío de impresión",
-                        Tools.newLineString("Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
+                        Tools.newLineString(
+                                "Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else if (result.equalsIgnoreCase("empty")) {
@@ -146,7 +155,8 @@ public class TicketCaja {
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Envío de impresión",
-                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -164,7 +174,9 @@ public class TicketCaja {
         }
     }
 
-    private String printTicketWithDesingCorteCaja(CajaTB cajaTB, ArrayList<Double> arrayList, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
+    private String printTicketWithDesingCorteCaja(CajaTB cajaTB, ArrayList<Double> arrayList, int ticketId,
+            String ticketRuta, String nombreImpresora, boolean cortaPapel)
+            throws PrinterException, PrintException, IOException {
         billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
 
         double montoInicial = arrayList.get(0);
@@ -184,52 +196,104 @@ public class TicketCaja {
         for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
             HBox box = ((HBox) hbEncabezado.getChildren().get(i));
             billPrintable.hbEncebezado(box,
-                    "",
-                    "CORTE DE CAJA",
-                    cajaTB.getIdCaja(),
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    cajaTB.getFechaApertura(),
-                    cajaTB.getHoraApertura(),
-                    cajaTB.getFechaCierre(),
-                    cajaTB.getHoraCierre(),
-                    Tools.roundingValue(cajaTB.getCalculado(), 2),
-                    Tools.roundingValue(cajaTB.getContado(), 2),
-                    Tools.roundingValue(cajaTB.getDiferencia(), 2),
-                    cajaTB.getEmpleadoTB().getNumeroDocumento(),
-                    cajaTB.getEmpleadoTB().getApellidos(),
-                    cajaTB.getEmpleadoTB().getCelular(),
-                    cajaTB.getEmpleadoTB().getDireccion(),
-                    "",
-                    "",
-                    "",
-                    "",
-                    Tools.roundingValue(montoInicial, 2),
-                    Tools.roundingValue(ventaEfectivo, 2),
-                    Tools.roundingValue(ventaTarjeta, 2),
-                    Tools.roundingValue(ventaDeposito, 2),
-                    Tools.roundingValue(ingresoEfectivo, 2),
-                    Tools.roundingValue(salidaEfectivo, 2),
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "", // tipoVenta
+                    "CORTE DE CAJA", // nombre_impresion_comprobante
+                    cajaTB.getIdCaja(), // numeracion_serie_comprobante
+                    "", // nummero_documento_cliente
+                    "", // informacion_cliente
+                    "", // celular_cliente
+                    "", // direccion_cliente
+                    "", // codigoVenta
+                    "", // importe_total_letras
+                    cajaTB.getFechaApertura(), // fechaInicioOperacion
+                    cajaTB.getHoraApertura(), // horaInicioOperacion
+                    cajaTB.getFechaCierre(), // fechaTerminoOperaciona
+                    cajaTB.getHoraCierre(), // horaTerminoOperacion
+                    Tools.roundingValue(cajaTB.getCalculado(), 2), // calculado
+                    Tools.roundingValue(cajaTB.getContado(), 2), // contado
+                    Tools.roundingValue(cajaTB.getDiferencia(), 2), // diferencia
+                    cajaTB.getEmpleadoTB().getNumeroDocumento(), // empleadoNumeroDocumento
+                    cajaTB.getEmpleadoTB().getApellidos(), // empleadoInformacion
+                    cajaTB.getEmpleadoTB().getCelular(), // empleadoCelular
+                    cajaTB.getEmpleadoTB().getDireccion(), // empleadoDireccion
+                    "0", // montoTotal
+                    "0", // montoPagado
+                    "0", // montoDiferencial
+                    "", // obsevacion_descripción
+                    Tools.roundingValue(montoInicial, 2), // monto_inicial_caja
+                    Tools.roundingValue(ventaEfectivo, 2), // monto_efectivo_caja
+                    Tools.roundingValue(ventaTarjeta, 2), // monto_tarjeta_caja
+                    Tools.roundingValue(ventaDeposito, 2), // monto_deposito_caja
+                    Tools.roundingValue(ingresoEfectivo, 2), // monto_ingreso_caja
+                    Tools.roundingValue(salidaEfectivo, 2), // monto_egreso_caja
+                    "", // nombre_impresion_comprobante_guia
+                    "", // numeracion_serie_comprobante_guia
+                    "", // direccion_partida_guia
+                    "", // ubigeo_partida_guia
+                    "", // direccion_llegada_guia
+                    "", // ubigeo_llegada_guia
+                    "", // movito_traslado_guia
+                    "", // comprobante_anulado_nombre
+                    "", // comprobante_anulado_serie
+                    "", // comprobante_anulado_numeracion
+                    "", // nota_credito_motivo_anulacion
+                    "", // modalidad_traslado_guia
+                    "", // fecha_traslado_guia
+                    "", // peso_cargar_guia
+                    "", // numero_placa_vehiculo_guia
+                    "", // numero_documento_conductor_guia
+                    "", // informacion_conductor_guia
+                    "", // licencia_conductor_guia
+                    "", // comprobante_referencia_guia
+                    ""// serie_numeracion_referencia_guia
             );
+            // billPrintable.hbEncebezado(box,
+            // "",
+            // "CORTE DE CAJA",
+            // cajaTB.getIdCaja(),
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // cajaTB.getFechaApertura(),
+            // cajaTB.getHoraApertura(),
+            // cajaTB.getFechaCierre(),
+            // cajaTB.getHoraCierre(),
+            // Tools.roundingValue(cajaTB.getCalculado(), 2),
+            // Tools.roundingValue(cajaTB.getContado(), 2),
+            // Tools.roundingValue(cajaTB.getDiferencia(), 2),
+            // cajaTB.getEmpleadoTB().getNumeroDocumento(),
+            // cajaTB.getEmpleadoTB().getApellidos(),
+            // cajaTB.getEmpleadoTB().getCelular(),
+            // cajaTB.getEmpleadoTB().getDireccion(),
+            // "",
+            // "",
+            // "",
+            // "",
+            // Tools.roundingValue(montoInicial, 2),
+            // Tools.roundingValue(ventaEfectivo, 2),
+            // Tools.roundingValue(ventaTarjeta, 2),
+            // Tools.roundingValue(ventaDeposito, 2),
+            // Tools.roundingValue(ingresoEfectivo, 2),
+            // Tools.roundingValue(salidaEfectivo, 2),
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // ""
+            // );
         }
 
         AnchorPane hbDetalle = new AnchorPane();
@@ -305,29 +369,35 @@ public class TicketCaja {
                             movimientoCajaTB.setComentario(mc.getComentario());
                             movimientoCajaTB.setConcepto(
                                     mc.getTipoMovimiento() == 1 ? "MONTO INICIAL"
-                                    : mc.getTipoMovimiento() == 2 ? "VENTA EN EFECTIVO"
-                                    : mc.getTipoMovimiento() == 3 ? "VENTA CON TARJETA"
-                                    : mc.getTipoMovimiento() == 4 ? "INGRESO EN EFECTIVO"
-                                    : mc.getTipoMovimiento() == 5 ? "SALIDA EN EFECTIVO"
-                                    : mc.getTipoMovimiento() == 6 ? "VENTA CON DEPOSITO"
-                                    : mc.getTipoMovimiento() == 7 ? "INGRESO CON TARJETA"
-                                    : mc.getTipoMovimiento() == 8 ? "INGRESO CON DEPOSITO"
-                                    : mc.getTipoMovimiento() == 9 ? "SALIDA CON TARJETA"
-                                    : "SALIDA CON DEPOSITO");
+                                            : mc.getTipoMovimiento() == 2 ? "VENTA EN EFECTIVO"
+                                                    : mc.getTipoMovimiento() == 3 ? "VENTA CON TARJETA"
+                                                            : mc.getTipoMovimiento() == 4 ? "INGRESO EN EFECTIVO"
+                                                                    : mc.getTipoMovimiento() == 5 ? "SALIDA EN EFECTIVO"
+                                                                            : mc.getTipoMovimiento() == 6
+                                                                                    ? "VENTA CON DEPOSITO"
+                                                                                    : mc.getTipoMovimiento() == 7
+                                                                                            ? "INGRESO CON TARJETA"
+                                                                                            : mc.getTipoMovimiento() == 8
+                                                                                                    ? "INGRESO CON DEPOSITO"
+                                                                                                    : mc.getTipoMovimiento() == 9
+                                                                                                            ? "SALIDA CON TARJETA"
+                                                                                                            : "SALIDA CON DEPOSITO");
                             movimientoCajaTB.setEntrada(
                                     mc.getTipoMovimiento() == 1
-                                    || mc.getTipoMovimiento() == 2
-                                    || mc.getTipoMovimiento() == 3
-                                    || mc.getTipoMovimiento() == 4
-                                    || mc.getTipoMovimiento() == 6
-                                    || mc.getTipoMovimiento() == 7
-                                    || mc.getTipoMovimiento() == 8
-                                    ? mc.getMonto() : 0);
+                                            || mc.getTipoMovimiento() == 2
+                                            || mc.getTipoMovimiento() == 3
+                                            || mc.getTipoMovimiento() == 4
+                                            || mc.getTipoMovimiento() == 6
+                                            || mc.getTipoMovimiento() == 7
+                                            || mc.getTipoMovimiento() == 8
+                                                    ? mc.getMonto()
+                                                    : 0);
                             movimientoCajaTB.setSalida(
                                     mc.getTipoMovimiento() == 5
-                                    || mc.getTipoMovimiento() == 9
-                                    || mc.getTipoMovimiento() == 10
-                                    ? mc.getMonto() : 0);
+                                            || mc.getTipoMovimiento() == 9
+                                            || mc.getTipoMovimiento() == 10
+                                                    ? mc.getMonto()
+                                                    : 0);
                             return movimientoCajaTB;
                         }).forEachOrdered(movimientoCajaTB -> {
                             newList.add(movimientoCajaTB);
@@ -370,20 +440,29 @@ public class TicketCaja {
                         map.put("FINDETURNO", cajaTB.getFechaCierre());
                         map.put("HORAFIN", cajaTB.getHoraCierre());
                         map.put("CONTADO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(cajaTB.getContado(), 2));
-                        map.put("CALCULADO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(cajaTB.getCalculado(), 2));
-                        map.put("DIFERENCIA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(cajaTB.getDiferencia(), 2));
-                        map.put("CAJEROASISTENTE", cajaTB.getEmpleadoTB().getNombres() + " " + cajaTB.getEmpleadoTB().getApellidos());
+                        map.put("CALCULADO",
+                                Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(cajaTB.getCalculado(), 2));
+                        map.put("DIFERENCIA",
+                                Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(cajaTB.getDiferencia(), 2));
+                        map.put("CAJEROASISTENTE",
+                                cajaTB.getEmpleadoTB().getNombres() + " " + cajaTB.getEmpleadoTB().getApellidos());
 
-                        map.put("INGRESOEFECTIVO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(montoInicial + ventaEfectivo + ingresoEfectivo, 2));
-                        map.put("SALIDAEFECTIVO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
+                        map.put("INGRESOEFECTIVO", Session.MONEDA_SIMBOLO + " "
+                                + Tools.roundingValue(montoInicial + ventaEfectivo + ingresoEfectivo, 2));
+                        map.put("SALIDAEFECTIVO",
+                                Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaEfectivo, 2));
 
-                        map.put("INGRESOTARJETA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaTarjeta + ingresoTarjeta, 2));
+                        map.put("INGRESOTARJETA",
+                                Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaTarjeta + ingresoTarjeta, 2));
                         map.put("SALIDATARJETA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaTarjeta, 2));
 
-                        map.put("INGRESODEPOSITO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaDeposito + ingresoDeposito, 2));
-                        map.put("SALIDADEPOSITO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
+                        map.put("INGRESODEPOSITO",
+                                Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(ventaDeposito + ingresoDeposito, 2));
+                        map.put("SALIDADEPOSITO",
+                                Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(salidaDeposito, 2));
 
-                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(newList));
+                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map,
+                                new JRBeanCollectionDataSource(newList));
 
                         return jasperPrint;
                     } else {
@@ -421,7 +500,7 @@ public class TicketCaja {
                     URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                     Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
+                    // Controlller here
                     FxReportViewController controller = fXMLLoader.getController();
                     controller.setJasperPrint((JasperPrint) result);
                     controller.show();
@@ -452,72 +531,74 @@ public class TicketCaja {
         }
     }
 
-//    private String printTicketNoDesingCorteCaja(CajaTB cajaTB, ArrayList<Double> movimientoCajaTBs, String nombreImpresora, boolean cortaPapel) {
-//        ArrayList<HBox> object = new ArrayList<>();
-//        int rows = 0;
-//        int lines = 0;
-//        for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
-//            object.add((HBox) hbEncabezado.getChildren().get(i));
-//            HBox box = ((HBox) hbEncabezado.getChildren().get(i));
-//            rows++;
-//            lines += billPrintable.hbEncebezado(box,
-//                    "CORTE DE CAJA",
-//                    cajaTB.getIdCaja(),
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    cajaTB.getFechaApertura(),
-//                    cajaTB.getHoraApertura(),
-//                    cajaTB.getFechaCierre(),
-//                    cajaTB.getHoraCierre(),
-//                    Tools.roundingValue(cajaTB.getCalculado(), 2),
-//                    Tools.roundingValue(cajaTB.getContado(), 2),
-//                    Tools.roundingValue(cajaTB.getDiferencia(), 2),
-//                    cajaTB.getEmpleadoTB().getNumeroDocumento(),
-//                    cajaTB.getEmpleadoTB().getApellidos(),
-//                    cajaTB.getEmpleadoTB().getCelular(),
-//                    cajaTB.getEmpleadoTB().getDireccion(),
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    Tools.roundingValue(movimientoCajaTBs.get(0), 2),
-//                    Tools.roundingValue(movimientoCajaTBs.get(1), 2),
-//                    Tools.roundingValue(movimientoCajaTBs.get(2), 2),
-//                    Tools.roundingValue(movimientoCajaTBs.get(3), 2),
-//                    Tools.roundingValue(movimientoCajaTBs.get(4), 2)
-//            );
-//        }
-//
-//        for (int i = 0; i < hbPie.getChildren().size(); i++) {
-//            object.add((HBox) hbPie.getChildren().get(i));
-//            HBox box = ((HBox) hbPie.getChildren().get(i));
-//            rows++;
-//            lines += billPrintable.hbPie(box,
-//                    "M",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "0.00",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "");
-//        }
-//        return billPrintable.modelTicket(rows + lines + 1 + 10, lines, object, nombreImpresora, cortaPapel);
-//    }
+    // private String printTicketNoDesingCorteCaja(CajaTB cajaTB, ArrayList<Double>
+    // movimientoCajaTBs, String nombreImpresora, boolean cortaPapel) {
+    // ArrayList<HBox> object = new ArrayList<>();
+    // int rows = 0;
+    // int lines = 0;
+    // for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
+    // object.add((HBox) hbEncabezado.getChildren().get(i));
+    // HBox box = ((HBox) hbEncabezado.getChildren().get(i));
+    // rows++;
+    // lines += billPrintable.hbEncebezado(box,
+    // "CORTE DE CAJA",
+    // cajaTB.getIdCaja(),
+    // "",
+    // "",
+    // "",
+    // "",
+    // "",
+    // "",
+    // cajaTB.getFechaApertura(),
+    // cajaTB.getHoraApertura(),
+    // cajaTB.getFechaCierre(),
+    // cajaTB.getHoraCierre(),
+    // Tools.roundingValue(cajaTB.getCalculado(), 2),
+    // Tools.roundingValue(cajaTB.getContado(), 2),
+    // Tools.roundingValue(cajaTB.getDiferencia(), 2),
+    // cajaTB.getEmpleadoTB().getNumeroDocumento(),
+    // cajaTB.getEmpleadoTB().getApellidos(),
+    // cajaTB.getEmpleadoTB().getCelular(),
+    // cajaTB.getEmpleadoTB().getDireccion(),
+    // "",
+    // "",
+    // "",
+    // "",
+    // Tools.roundingValue(movimientoCajaTBs.get(0), 2),
+    // Tools.roundingValue(movimientoCajaTBs.get(1), 2),
+    // Tools.roundingValue(movimientoCajaTBs.get(2), 2),
+    // Tools.roundingValue(movimientoCajaTBs.get(3), 2),
+    // Tools.roundingValue(movimientoCajaTBs.get(4), 2)
+    // );
+    // }
+    //
+    // for (int i = 0; i < hbPie.getChildren().size(); i++) {
+    // object.add((HBox) hbPie.getChildren().get(i));
+    // HBox box = ((HBox) hbPie.getChildren().get(i));
+    // rows++;
+    // lines += billPrintable.hbPie(box,
+    // "M",
+    // "0.00",
+    // "0.00",
+    // "0.00",
+    // "0.00",
+    // "0.00",
+    // "0.00",
+    // "0.00",
+    // "0.00",
+    // "0.00",
+    // "",
+    // "",
+    // "",
+    // "",
+    // "",
+    // "",
+    // "",
+    // "",
+    // "",
+    // "");
+    // }
+    // return billPrintable.modelTicket(rows + lines + 1 + 10, lines, object,
+    // nombreImpresora, cortaPapel);
+    // }
 }

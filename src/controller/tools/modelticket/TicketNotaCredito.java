@@ -66,7 +66,8 @@ public class TicketNotaCredito {
 
     private String fileName;
 
-    public TicketNotaCredito(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
+    public TicketNotaCredito(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado,
+            AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
         this.billPrintable = billPrintable;
         this.hbEncabezado = hbEncabezado;
@@ -76,14 +77,17 @@ public class TicketNotaCredito {
     }
 
     public void imprimir(String idNotaCredito) {
-        if (!Session.ESTADO_IMPRESORA_NOTA_CREDITO && Tools.isText(Session.NOMBRE_IMPRESORA_NOTA_CREDITO) && Tools.isText(Session.FORMATO_IMPRESORA_NOTA_CREDITO)) {
-            Tools.AlertMessageWarning(node, "Venta", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+        if (!Session.ESTADO_IMPRESORA_NOTA_CREDITO && Tools.isText(Session.NOMBRE_IMPRESORA_NOTA_CREDITO)
+                && Tools.isText(Session.FORMATO_IMPRESORA_NOTA_CREDITO)) {
+            Tools.AlertMessageWarning(node, "Venta",
+                    "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
             return;
         }
 
         if (Session.FORMATO_IMPRESORA_NOTA_CREDITO.equalsIgnoreCase("ticket")) {
             if (Session.TICKET_NOTA_CREDITO_ID == 0 && Tools.isText(Session.TICKET_NOTA_CREDITO_RUTA)) {
-                Tools.AlertMessageWarning(node, "Venta", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
+                Tools.AlertMessageWarning(node, "Venta",
+                        "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
             } else {
                 executeProcessPrinterNotaCredito(
                         idNotaCredito,
@@ -94,13 +98,16 @@ public class TicketNotaCredito {
                         Session.CORTAPAPEL_IMPRESORA_NOTA_CREDITO);
             }
         } else if (Session.FORMATO_IMPRESORA_NOTA_CREDITO.equalsIgnoreCase("a4")) {
-//            executeProcessPrinterVenta(idNotaCredito, Session.NOMBRE_IMPRESORA_VENTA, Session.CORTAPAPEL_IMPRESORA_VENTA, Session.FORMATO_IMPRESORA_VENTA);
+            // executeProcessPrinterVenta(idNotaCredito, Session.NOMBRE_IMPRESORA_VENTA,
+            // Session.CORTAPAPEL_IMPRESORA_VENTA, Session.FORMATO_IMPRESORA_VENTA);
         } else {
-            Tools.AlertMessageWarning(node, "Venta", "Error al validar el formato de impresión, configure en la sección configuración/impresora.");
+            Tools.AlertMessageWarning(node, "Venta",
+                    "Error al validar el formato de impresión, configure en la sección configuración/impresora.");
         }
     }
 
-    private void executeProcessPrinterNotaCredito(String idNotaCredito, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) {
+    private void executeProcessPrinterNotaCredito(String idNotaCredito, String desing, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -115,7 +122,8 @@ public class TicketNotaCredito {
                     try {
                         NotaCreditoTB notaCreditoTB = (NotaCreditoTB) object;
                         if (desing.equalsIgnoreCase("withdesing")) {
-                            return printTicketWithDesingCotizacion(notaCreditoTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
+                            return printTicketWithDesingCotizacion(notaCreditoTB, ticketId, ticketRuta, nombreImpresora,
+                                    cortaPapel);
                         } else {
                             return "empty";
                         }
@@ -139,7 +147,8 @@ public class TicketNotaCredito {
             } else if (result.equalsIgnoreCase("error_name")) {
                 Tools.showAlertNotification("/view/image/warning_large.png",
                         "Envío de impresión",
-                        Tools.newLineString("Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
+                        Tools.newLineString(
+                                "Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else if (result.equalsIgnoreCase("no_config")) {
@@ -166,7 +175,8 @@ public class TicketNotaCredito {
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Envío de impresión",
-                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -185,61 +195,118 @@ public class TicketNotaCredito {
         }
     }
 
-    private String printTicketWithDesingCotizacion(NotaCreditoTB notaCreditoTB, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
+    private String printTicketWithDesingCotizacion(NotaCreditoTB notaCreditoTB, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
         billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
 
         for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
             HBox box = ((HBox) hbEncabezado.getChildren().get(i));
             billPrintable.hbEncebezado(box,
-                    "",
-                    notaCreditoTB.getNombreComprobante(),
-                    notaCreditoTB.getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getNumeracion()),
-                    notaCreditoTB.getClienteTB().getNumeroDocumento(),
-                    notaCreditoTB.getClienteTB().getInformacion(),
-                    notaCreditoTB.getClienteTB().getCelular(),
-                    notaCreditoTB.getClienteTB().getDireccion(),
-                    "CODIGO PROCESO",
-                    "IMPORTE EN LETRAS",
-                    notaCreditoTB.getFechaRegistro(),
-                    notaCreditoTB.getHoraRegistro(),
-                    notaCreditoTB.getFechaRegistro(),
-                    notaCreditoTB.getHoraRegistro(),
-                    "0",
-                    "0",
-                    "0",
-                    "-",
-                    notaCreditoTB.getEmpleadoTB().getApellidos() + " " + notaCreditoTB.getEmpleadoTB().getNombres(),
-                    "-",
-                    "-",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    notaCreditoTB.getVentaTB().getComprobanteName(),
-                    notaCreditoTB.getVentaTB().getSerie(),
-                    notaCreditoTB.getVentaTB().getNumeracion(),
-                    notaCreditoTB.getNombreMotivo());
+                    "", // tipoVenta
+                    notaCreditoTB.getNombreComprobante(), // nombre_impresion_comprobante
+                    notaCreditoTB.getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getNumeracion()), // numeracion_serie_comprobante
+                    notaCreditoTB.getClienteTB().getNumeroDocumento(), // nummero_documento_cliente
+                    notaCreditoTB.getClienteTB().getInformacion(), // informacion_cliente
+                    notaCreditoTB.getClienteTB().getCelular(), // celular_cliente
+                    notaCreditoTB.getClienteTB().getDireccion(), // direccion_cliente
+                    "CODIGO PROCESO", // codigoVenta
+                    "IMPORTE EN LETRAS", // importe_total_letras
+                    notaCreditoTB.getFechaRegistro(), // fechaInicioOperacion
+                    notaCreditoTB.getHoraRegistro(), // horaInicioOperacion
+                    notaCreditoTB.getFechaRegistro(), // fechaTerminoOperaciona
+                    notaCreditoTB.getHoraRegistro(), // horaTerminoOperacion
+                    "0", // calculado
+                    "0", // contado
+                    "0", // diferencia
+                    "-", // empleadoNumeroDocumento
+                    notaCreditoTB.getEmpleadoTB().getApellidos() + " " + notaCreditoTB.getEmpleadoTB().getNombres(), // empleadoInformacion
+                    "-", // empleadoCelular
+                    "-", // empleadoDireccion
+                    "0", // montoTotal
+                    "0", // montoPagado
+                    "0", // montoDiferencial
+                    "", // obsevacion_descripción
+                    "0", // monto_inicial_caja
+                    "0", // monto_efectivo_caja
+                    "0", // monto_tarjeta_caja
+                    "0", // monto_deposito_caja
+                    "0", // monto_ingreso_caja
+                    "0", // monto_egreso_caja
+                    "", // nombre_impresion_comprobante_guia
+                    "", // numeracion_serie_comprobante_guia
+                    "", // direccion_partida_guia
+                    "", // ubigeo_partida_guia
+                    "", // direccion_llegada_guia
+                    "", // ubigeo_llegada_guia
+                    "", // movito_traslado_guia
+                    notaCreditoTB.getVentaTB().getComprobanteName(), // comprobante_anulado_nombre
+                    notaCreditoTB.getVentaTB().getSerie(), // comprobante_anulado_serie
+                    notaCreditoTB.getVentaTB().getNumeracion(), // comprobante_anulado_numeracion
+                    notaCreditoTB.getNombreMotivo(), // nota_credito_motivo_anulacion
+                    "", // modalidad_traslado_guia
+                    "", // fecha_traslado_guia
+                    "", // peso_cargar_guia
+                    "", // numero_placa_vehiculo_guia
+                    "", // numero_documento_conductor_guia
+                    "", // informacion_conductor_guia
+                    "", // licencia_conductor_guia
+                    "", // comprobante_referencia_guia
+                    ""// serie_numeracion_referencia_guia
+            );
+
+            // billPrintable.hbEncebezado(box,
+            // "",
+            // notaCreditoTB.getNombreComprobante(),
+            // notaCreditoTB.getSerie() + "-" +
+            // Tools.formatNumber(notaCreditoTB.getNumeracion()),
+            // notaCreditoTB.getClienteTB().getNumeroDocumento(),
+            // notaCreditoTB.getClienteTB().getInformacion(),
+            // notaCreditoTB.getClienteTB().getCelular(),
+            // notaCreditoTB.getClienteTB().getDireccion(),
+            // "CODIGO PROCESO",
+            // "IMPORTE EN LETRAS",
+            // notaCreditoTB.getFechaRegistro(),
+            // notaCreditoTB.getHoraRegistro(),
+            // notaCreditoTB.getFechaRegistro(),
+            // notaCreditoTB.getHoraRegistro(),
+            // "0",
+            // "0",
+            // "0",
+            // "-",
+            // notaCreditoTB.getEmpleadoTB().getApellidos() + " " +
+            // notaCreditoTB.getEmpleadoTB().getNombres(),
+            // "-",
+            // "-",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // notaCreditoTB.getVentaTB().getComprobanteName(),
+            // notaCreditoTB.getVentaTB().getSerie(),
+            // notaCreditoTB.getVentaTB().getNumeracion(),
+            // notaCreditoTB.getNombreMotivo());
         }
 
         AnchorPane hbDetalle = new AnchorPane();
-        ObservableList<NotaCreditoDetalleTB> arrList = FXCollections.observableArrayList(notaCreditoTB.getNotaCreditoDetalleTBs());
+        ObservableList<NotaCreditoDetalleTB> arrList = FXCollections
+                .observableArrayList(notaCreditoTB.getNotaCreditoDetalleTBs());
         for (int m = 0; m < arrList.size(); m++) {
             for (int i = 0; i < hbDetalleCabecera.getChildren().size(); i++) {
                 HBox hBox = new HBox();
@@ -340,16 +407,19 @@ public class TicketNotaCredito {
                             jsono.put("id", ocdtb.getId());
                             jsono.put("cantidad", Tools.roundingValue(ocdtb.getCantidad(), 2));
                             jsono.put("unidad", ocdtb.getSuministroTB().getUnidadCompraName());
-                            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n" + ocdtb.getSuministroTB().getNombreMarca());
+                            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n"
+                                    + ocdtb.getSuministroTB().getNombreMarca());
                             jsono.put("precio", Tools.roundingValue(ocdtb.getPrecio(), 2));
                             jsono.put("descuento", Tools.roundingValue(ocdtb.getDescuento(), 0));
-                            jsono.put("importe", Tools.roundingValue(ocdtb.getPrecio() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
+                            jsono.put("importe", Tools.roundingValue(
+                                    ocdtb.getPrecio() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
                             array.add(jsono);
 
                             double importeBruto = ocdtb.getPrecio() * ocdtb.getCantidad();
                             double descuento = ocdtb.getDescuento();
                             double subImporteBruto = importeBruto - descuento;
-                            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+                            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(),
+                                    subImporteBruto);
                             double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
                             double importeNeto = subImporteNeto + impuesto;
 
@@ -371,15 +441,17 @@ public class TicketNotaCredito {
                         }
 
                         InputStream dir = getClass().getResourceAsStream("/report/NotaCredito.jasper");
-                        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(new QRCodeWriter().encode("|" + Session.COMPANY_NUMERO_DOCUMENTO + "|"
-                                + notaCreditoTB.getCodigoAlterno() + "|"
-                                + notaCreditoTB.getSerie() + "|"
-                                + notaCreditoTB.getNumeracion() + "|"
-                                + Tools.roundingValue(impuestoTotal, 2) + "|"
-                                + Tools.roundingValue(importeNetoTotal, 2) + "|"
-                                + notaCreditoTB.getFechaRegistro() + "|"
-                                + notaCreditoTB.getClienteTB().getIdAuxiliar() + "|"
-                                + notaCreditoTB.getClienteTB().getNumeroDocumento() + "|", BarcodeFormat.QR_CODE, 800, 800));
+                        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(new QRCodeWriter().encode(
+                                "|" + Session.COMPANY_NUMERO_DOCUMENTO + "|"
+                                        + notaCreditoTB.getCodigoAlterno() + "|"
+                                        + notaCreditoTB.getSerie() + "|"
+                                        + notaCreditoTB.getNumeracion() + "|"
+                                        + Tools.roundingValue(impuestoTotal, 2) + "|"
+                                        + Tools.roundingValue(importeNetoTotal, 2) + "|"
+                                        + notaCreditoTB.getFechaRegistro() + "|"
+                                        + notaCreditoTB.getClienteTB().getIdAuxiliar() + "|"
+                                        + notaCreditoTB.getClienteTB().getNumeroDocumento() + "|",
+                                BarcodeFormat.QR_CODE, 800, 800));
 
                         /*
                         **
@@ -389,12 +461,14 @@ public class TicketNotaCredito {
                         map.put("ICON", imgInputStreamIcon);
                         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
                         map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-                        map.put("TELEFONOCELULAR", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
+                        map.put("TELEFONOCELULAR",
+                                "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
                         map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
 
                         map.put("DOCUMENTOEMPRESA", "R.U.C " + Session.COMPANY_NUMERO_DOCUMENTO);
                         map.put("NOMBREDOCUMENTO", notaCreditoTB.getNombreComprobante());
-                        map.put("NUMERODOCUMENTO", notaCreditoTB.getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getNumeracion()));
+                        map.put("NUMERODOCUMENTO",
+                                notaCreditoTB.getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getNumeracion()));
 
                         map.put("DOCUMENTOCLIENTE", notaCreditoTB.getClienteTB().getTipoDocumentoName() + ":");
                         map.put("NUMERODOCUMENTOCLIENTE", notaCreditoTB.getClienteTB().getNumeroDocumento());
@@ -404,22 +478,32 @@ public class TicketNotaCredito {
                         map.put("EMAILCLIENTE", notaCreditoTB.getClienteTB().getEmail());
 
                         map.put("FECHAEMISION", notaCreditoTB.getFechaRegistro());
-                        map.put("MONEDA", notaCreditoTB.getMonedaTB().getNombre() + "-" + notaCreditoTB.getMonedaTB().getAbreviado());
+                        map.put("MONEDA", notaCreditoTB.getMonedaTB().getNombre() + "-"
+                                + notaCreditoTB.getMonedaTB().getAbreviado());
 
-                        map.put("DOCUMENTO_REFERENCIA", notaCreditoTB.getVentaTB().getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getVentaTB().getNumeracion()));
+                        map.put("DOCUMENTO_REFERENCIA", notaCreditoTB.getVentaTB().getSerie() + "-"
+                                + Tools.formatNumber(notaCreditoTB.getVentaTB().getNumeracion()));
                         map.put("MOTIVO_ANULACION", notaCreditoTB.getNombreMotivo());
 
-                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(0, 2), true, notaCreditoTB.getMonedaTB().getNombre()));
+                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(0, 2), true,
+                                notaCreditoTB.getMonedaTB().getNombre()));
                         map.put("QR_DATA", qrImage);
 
-                        map.put("IMPORTE_BRUTO", notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBrutoTotal, 2));
-                        map.put("DESCUENTO", notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(descuentoTotal, 2));
-                        map.put("SUB_IMPORTE", notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(subImporteNetoTotal, 2));
-                        map.put("IMPUESTO", notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
-                        map.put("IMPORTE_NETO", notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNetoTotal, 2));
+                        map.put("IMPORTE_BRUTO", notaCreditoTB.getMonedaTB().getSimbolo() + " "
+                                + Tools.roundingValue(importeBrutoTotal, 2));
+                        map.put("DESCUENTO", notaCreditoTB.getMonedaTB().getSimbolo() + " "
+                                + Tools.roundingValue(descuentoTotal, 2));
+                        map.put("SUB_IMPORTE", notaCreditoTB.getMonedaTB().getSimbolo() + " "
+                                + Tools.roundingValue(subImporteNetoTotal, 2));
+                        map.put("IMPUESTO",
+                                notaCreditoTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
+                        map.put("IMPORTE_NETO", notaCreditoTB.getMonedaTB().getSimbolo() + " "
+                                + Tools.roundingValue(importeNetoTotal, 2));
 
-                        fileName = notaCreditoTB.getNombreComprobante() + " " + notaCreditoTB.getSerie() + "-" + notaCreditoTB.getNumeracion();
-                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
+                        fileName = notaCreditoTB.getNombreComprobante() + " " + notaCreditoTB.getSerie() + "-"
+                                + notaCreditoTB.getNumeracion();
+                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map,
+                                new JsonDataSource(jsonDataStream));
                         return jasperPrint;
                     } else {
                         return (String) object;
@@ -450,7 +534,7 @@ public class TicketNotaCredito {
                     URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                     Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
+                    // Controlller here
                     FxReportViewController controller = fXMLLoader.getController();
                     controller.setFileName(fileName);
                     controller.setJasperPrint((JasperPrint) object);

@@ -12,7 +12,6 @@ import controller.operaciones.ordencompra.FxOrdenCompraRealizadasController;
 import controller.operaciones.venta.FxVentaRealizadasController;
 import controller.tools.FilesRouters;
 import controller.tools.Session;
-import controller.tools.Tools;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -61,12 +60,12 @@ public class FxConsultasController implements Initializable {
     @FXML
     private VBox btnPedidos;
     /*
-    Objectos de la ventana principal y venta que agrega al os hijos
+     * Objectos de la ventana principal y venta que agrega al os hijos
      */
     private FxPrincipalController fxPrincipalController;
 
     /*
-    Controller ventas realizadas
+     * Controller ventas realizadas
      */
     private FXMLLoader fXMLVentaRealizadas;
 
@@ -75,7 +74,7 @@ public class FxConsultasController implements Initializable {
     private FxVentaRealizadasController ventaRealizadasController;
 
     /*
-    Controller compras realizadas
+     * Controller compras realizadas
      */
     private FXMLLoader fXMLComprasRealizadas;
 
@@ -84,7 +83,7 @@ public class FxConsultasController implements Initializable {
     private FxComprasRealizadasController controllerComprasRealizadas;
 
     /*
-    Controller cotizaciones realizadas
+     * Controller cotizaciones realizadas
      */
     private FXMLLoader fXMLCotizaciones;
 
@@ -93,7 +92,7 @@ public class FxConsultasController implements Initializable {
     private FxCotizacionRealizadasController controllerCotizaciones;
 
     /*
-    Controller guia remision realizadas
+     * Controller guia remision realizadas
      */
     private FXMLLoader fXMLGuiaRemision;
 
@@ -102,7 +101,7 @@ public class FxConsultasController implements Initializable {
     private FxGuiaRemisionRealizadasController controllerGuiaRemision;
 
     /*
-    Controller caja consultas
+     * Controller caja consultas
      */
     private FXMLLoader fXMLCajaConsultas;
 
@@ -111,7 +110,7 @@ public class FxConsultasController implements Initializable {
     private FxCajaConsultasController controlleCajaConsultas;
 
     /*
-    Controller cuentas por pagar
+     * Controller cuentas por pagar
      */
     private FXMLLoader fXMLCuentasPorCobrar;
 
@@ -120,7 +119,7 @@ public class FxConsultasController implements Initializable {
     private FxCuentasPorCobrarController controlleCuentasPorCobrar;
 
     /*
-    Controller cuentas por pagar
+     * Controller cuentas por pagar
      */
     private FXMLLoader fXMLCuentasPorPagar;
 
@@ -129,7 +128,7 @@ public class FxConsultasController implements Initializable {
     private FxCuentasPorPagarController controlleCuentasPorPagar;
 
     /*
-    Controller banco consultas
+     * Controller banco consultas
      */
     private FXMLLoader fXMLBancos;
 
@@ -138,7 +137,7 @@ public class FxConsultasController implements Initializable {
     private FxBancosController bancosController;
 
     /*
-    Controller notacredito consultas
+     * Controller notacredito consultas
      */
     private FXMLLoader fXMLNotaCredito;
 
@@ -147,7 +146,7 @@ public class FxConsultasController implements Initializable {
     private FxNotaCreditoRealizadasController notaCreditoController;
 
     /*
-    Controller orden de compra
+     * Controller orden de compra
      */
     private FXMLLoader fXMLOrdenCompra;
 
@@ -208,7 +207,8 @@ public class FxConsultasController implements Initializable {
         if (subMenusTBs.get(0).getIdSubMenu() != 0 && !subMenusTBs.get(0).isEstado()) {
             hbOperacionesUno.getChildren().remove(btnVentas);
         } else {
-            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL, subMenusTBs.get(0).getIdSubMenu());
+            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL,
+                    subMenusTBs.get(0).getIdSubMenu());
             ventaRealizadasController.loadPrivilegios(privilegioTBs);
         }
 
@@ -279,6 +279,9 @@ public class FxConsultasController implements Initializable {
         AnchorPane.setRightAnchor(nodeGuiaRemision, 0d);
         AnchorPane.setBottomAnchor(nodeGuiaRemision, 0d);
         fxPrincipalController.getVbContent().getChildren().add(nodeGuiaRemision);
+        if (controllerGuiaRemision.getTvList().getItems().isEmpty()) {
+            controllerGuiaRemision.loadInit();
+        }
     }
 
     private void openWindowPurchasesMade() {

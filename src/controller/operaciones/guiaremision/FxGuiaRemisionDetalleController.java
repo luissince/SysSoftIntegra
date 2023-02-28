@@ -117,26 +117,32 @@ public class FxGuiaRemisionDetalleController implements Initializable {
                 lblCorreoElectronico.setText(guiaRemisionTB.getClienteTB().getEmail());
                 lblDireccion.setText(guiaRemisionTB.getClienteTB().getDireccion());
 
-                // lblMotivoTraslado.setText(guiaRemisionTB.getMotivoTrasladoDescripcion());
-                // lblModalidadTraslado.setText(guiaRemisionTB.getModalidadTrasladDescripcion());
-                // lblPesoBultos.setText(Tools.roundingValue(guiaRemisionTB.getPesoBruto(), 2));
-                // lblNumeroBultos.setText(Tools.roundingValue(guiaRemisionTB.getNumeroBultos(),
-                // 0));
-                // lblConducto.setText(guiaRemisionTB.getNumeroDocumentoConductor() + " - " +
-                // guiaRemisionTB.getNombresConductor());
-                // lblTelefono.setText(guiaRemisionTB.getTelefonoConducto());
-                // lblNumeroPlaca.setText(guiaRemisionTB.getNumeroPlaca());
-                // lblMarcaVehiculo.setText(guiaRemisionTB.getMarcaVehiculo());
-                // lblDireccionPartida.setText(guiaRemisionTB.getDireccionPartida());
-                // lblDireccionLlegada.setText(guiaRemisionTB.getDireccionLlegada());
-                // lblTipoComprobante.setText(guiaRemisionTB.getComprobanteAsociado());
-                // lblSerieNumeracion.setText(guiaRemisionTB.getSerieFactura() + "-" +
-                // guiaRemisionTB.getNumeracionFactura());
-                // fillVentasDetalleTable(guiaRemisionTB.getListGuiaRemisionDetalle());
-                lblLoad.setVisible(false);
+                lblMotivoTraslado.setText(guiaRemisionTB.getDetalleMotivoTrasladoTB().getNombre());
+                lblModalidadTraslado.setText(guiaRemisionTB.getModalidadTrasladoTB().getNombre());
 
+                lblPesoBultos.setText(
+                        guiaRemisionTB.getPesoCarga() + " " + guiaRemisionTB.getDetallePesoCargaTB().getIdAuxiliar());
+
+                if (guiaRemisionTB.getConductorTB() != null) {
+                    lblConducto.setText(guiaRemisionTB.getConductorTB().getInformacion());
+                    lblNumeroLicencia.setText(guiaRemisionTB.getConductorTB().getLicenciaConducir());
+                }
+
+                if (guiaRemisionTB.getVehiculoTB() != null) {
+                    lblNumeroPlaca.setText(guiaRemisionTB.getVehiculoTB().getNumeroPlaca());
+                }
+
+                lblDireccionPartida.setText(guiaRemisionTB.getDireccionPartida());
+                lblDireccionLlegada.setText(guiaRemisionTB.getDireccionLlegada());
+
+                lblTipoComprobante.setText(guiaRemisionTB.getVentaTB().getTipoDocumentoTB().getNombre());
+                lblSerieNumeracion.setText(
+                        guiaRemisionTB.getVentaTB().getSerie() + "-"
+                                + Tools.formatNumber(guiaRemisionTB.getVentaTB().getNumeracion()));
+
+                fillGuiaDetalleTable(guiaRemisionTB.getGuiaRemisionDetalle());
+                lblLoad.setVisible(false);
             } else {
-                System.out.println((String) object);
                 btnReporte.setDisable(true);
                 btnTicket.setDisable(false);
                 lblLoad.setVisible(false);
@@ -154,7 +160,7 @@ public class FxGuiaRemisionDetalleController implements Initializable {
         }
     }
 
-    private void fillVentasDetalleTable(ObservableList<GuiaRemisionDetalleTB> empList) {
+    private void fillGuiaDetalleTable(ObservableList<GuiaRemisionDetalleTB> empList) {
         for (int i = 0; i < empList.size(); i++) {
             gpList.add(addElementGridPane("l1" + (i + 1), "" + (i + 1), Pos.CENTER), 0, (i + 1));
             gpList.add(addElementGridPane("l2" + (i + 1), empList.get(i).getDescripcion(), Pos.CENTER_LEFT), 1,

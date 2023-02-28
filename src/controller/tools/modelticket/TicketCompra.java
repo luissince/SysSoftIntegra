@@ -60,7 +60,8 @@ public class TicketCompra {
 
     private String fileName;
 
-    public TicketCompra(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
+    public TicketCompra(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera,
+            AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
         this.billPrintable = billPrintable;
         this.hbEncabezado = hbEncabezado;
@@ -70,28 +71,32 @@ public class TicketCompra {
     }
 
     public void imprimir(String idCompra) {
-        if (!Session.ESTADO_IMPRESORA_COMPRA && Tools.isText(Session.NOMBRE_IMPRESORA_COMPRA) && Tools.isText(Session.FORMATO_IMPRESORA_COMPRA)) {
-            Tools.AlertMessageWarning(node, "Orden de Compra", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+        if (!Session.ESTADO_IMPRESORA_COMPRA && Tools.isText(Session.NOMBRE_IMPRESORA_COMPRA)
+                && Tools.isText(Session.FORMATO_IMPRESORA_COMPRA)) {
+            Tools.AlertMessageWarning(node, "Orden de Compra",
+                    "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
             return;
         }
         if (Session.FORMATO_IMPRESORA_COMPRA.equalsIgnoreCase("ticket")) {
             if (Session.TICKET_COMPRA_ID == 0 && Session.TICKET_COMPRA_RUTA.equalsIgnoreCase("")) {
-                Tools.AlertMessageWarning(node, "Orden de Compra", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
+                Tools.AlertMessageWarning(node, "Orden de Compra",
+                        "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
             } else {
                 executeProcessCompraTicket(idCompra,
                         Session.DESING_IMPRESORA_COMPRA,
                         Session.TICKET_COMPRA_ID,
                         Session.TICKET_COMPRA_RUTA,
                         Session.NOMBRE_IMPRESORA_COMPRA,
-                        Session.CORTAPAPEL_IMPRESORA_COMPRA
-                );
+                        Session.CORTAPAPEL_IMPRESORA_COMPRA);
             }
         } else {
-            Tools.AlertMessageWarning(node, "Orden de Compra", "Error al validar el formato de impresión configure en la sección configuración/impresora.");
+            Tools.AlertMessageWarning(node, "Orden de Compra",
+                    "Error al validar el formato de impresión configure en la sección configuración/impresora.");
         }
     }
 
-    private void executeProcessCompraTicket(String idCompra, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) {
+    private void executeProcessCompraTicket(String idCompra, String desing, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -106,7 +111,8 @@ public class TicketCompra {
                     try {
                         CompraTB compraTB = (CompraTB) object;
                         if (desing.equalsIgnoreCase("withdesing")) {
-                            return printTicketWithDesingCompra(compraTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
+                            return printTicketWithDesingCompra(compraTB, ticketId, ticketRuta, nombreImpresora,
+                                    cortaPapel);
                         } else {
                             return "empty";
                         }
@@ -130,7 +136,8 @@ public class TicketCompra {
             } else if (result.equalsIgnoreCase("error_name")) {
                 Tools.showAlertNotification("/view/image/warning_large.png",
                         "Envío de impresión",
-                        Tools.newLineString("Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
+                        Tools.newLineString(
+                                "Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else if (result.equalsIgnoreCase("empty")) {
@@ -150,7 +157,8 @@ public class TicketCompra {
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Envío de impresión",
-                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -168,57 +176,110 @@ public class TicketCompra {
         }
     }
 
-    private String printTicketWithDesingCompra(CompraTB compraTB, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
+    private String printTicketWithDesingCompra(CompraTB compraTB, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
         billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
 
         for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
             HBox box = ((HBox) hbEncabezado.getChildren().get(i));
             billPrintable.hbEncebezado(box,
-                    compraTB.getTipoName(),
-                    compraTB.getComprobante(),
-                    compraTB.getSerie() + "-" + compraTB.getNumeracion(),
-                    compraTB.getProveedorTB().getNumeroDocumento(),
-                    compraTB.getProveedorTB().getRazonSocial(),
-                    compraTB.getProveedorTB().getCelular(),
-                    compraTB.getProveedorTB().getRazonSocial(),
-                    "CODIGO PROCESO",
-                    "IMPORTE EN LETRAS",
-                    compraTB.getFechaCompra(),
-                    compraTB.getHoraCompra(),
-                    compraTB.getFechaVencimiento(),
-                    compraTB.getHoraVencimiento(),
-                    "0",
-                    "0",
-                    "0",
-                    "-",
-                    "-",
-                    "-",
-                    "-",
-                    "0",
-                    "0",
-                    "0",
-                    compraTB.getNotas(),
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "");
+                    compraTB.getTipoName(), // tipoVenta
+                    compraTB.getComprobante(), // nombre_impresion_comprobante
+                    compraTB.getSerie() + "-" + compraTB.getNumeracion(), // numeracion_serie_comprobante
+                    compraTB.getProveedorTB().getNumeroDocumento(), // nummero_documento_cliente
+                    compraTB.getProveedorTB().getRazonSocial(), // informacion_cliente
+                    compraTB.getProveedorTB().getCelular(), // celular_cliente
+                    compraTB.getProveedorTB().getRazonSocial(), // direccion_cliente
+                    "CODIGO PROCESO", // codigoVenta
+                    "IMPORTE EN LETRAS", // importe_total_letras
+                    compraTB.getFechaCompra(), // fechaInicioOperacion
+                    compraTB.getHoraCompra(), // horaInicioOperacion
+                    compraTB.getFechaVencimiento(), // fechaTerminoOperaciona
+                    compraTB.getHoraVencimiento(), // horaTerminoOperacion
+                    "0", // calculado
+                    "0", // contado
+                    "0", // diferencia
+                    "-", // empleadoNumeroDocumento
+                    "-", // empleadoInformacion
+                    "-", // empleadoCelular
+                    "-", // empleadoDireccion
+                    "0", // montoTotal
+                    "0", // montoPagado
+                    "0", // montoDiferencial
+                    compraTB.getNotas(), // obsevacion_descripción
+                    "0", // monto_inicial_caja
+                    "0", // monto_efectivo_caja
+                    "0", // monto_tarjeta_caja
+                    "0", // monto_deposito_caja
+                    "0", // monto_ingreso_caja
+                    "0", // monto_egreso_caja
+                    "", // nombre_impresion_comprobante_guia
+                    "", // numeracion_serie_comprobante_guia
+                    "", // direccion_partida_guia
+                    "", // ubigeo_partida_guia
+                    "", // direccion_llegada_guia
+                    "", // ubigeo_llegada_guia
+                    "", // movito_traslado_guia
+                    "", // comprobante_anulado_nombre
+                    "", // comprobante_anulado_serie
+                    "", // comprobante_anulado_numeracion
+                    "", // nota_credito_motivo_anulacion
+                    "", // modalidad_traslado_guia
+                    "", // fecha_traslado_guia
+                    "", // peso_cargar_guia
+                    "", // numero_placa_vehiculo_guia
+                    "", // numero_documento_conductor_guia
+                    "", // informacion_conductor_guia
+                    "", // licencia_conductor_guia
+                    "", // comprobante_referencia_guia
+                    ""// serie_numeracion_referencia_guia
+            );
+            // billPrintable.hbEncebezado(box,
+            // compraTB.getTipoName(),
+            // compraTB.getComprobante(),
+            // compraTB.getSerie() + "-" + compraTB.getNumeracion(),
+            // compraTB.getProveedorTB().getNumeroDocumento(),
+            // compraTB.getProveedorTB().getRazonSocial(),
+            // compraTB.getProveedorTB().getCelular(),
+            // compraTB.getProveedorTB().getRazonSocial(),
+            // "CODIGO PROCESO",
+            // "IMPORTE EN LETRAS",
+            // compraTB.getFechaCompra(),
+            // compraTB.getHoraCompra(),
+            // compraTB.getFechaVencimiento(),
+            // compraTB.getHoraVencimiento(),
+            // "0",
+            // "0",
+            // "0",
+            // "-",
+            // "-",
+            // "-",
+            // "-",
+            // "0",
+            // "0",
+            // "0",
+            // compraTB.getNotas(),
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "");
         }
 
         AnchorPane hbDetalle = new AnchorPane();
@@ -313,7 +374,8 @@ public class TicketCompra {
             jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n" + ocdtb.getSuministroTB().getNombreMarca());
             jsono.put("costo", Tools.roundingValue(ocdtb.getPrecioCompra(), 2));
             jsono.put("descuento", Tools.roundingValue(ocdtb.getDescuento(), 0));
-            jsono.put("importe", Tools.roundingValue(ocdtb.getPrecioCompra() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
+            jsono.put("importe",
+                    Tools.roundingValue(ocdtb.getPrecioCompra() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
             array.add(jsono);
 
             double importeBruto = ocdtb.getPrecioCompra() * ocdtb.getCantidad();
@@ -345,7 +407,8 @@ public class TicketCompra {
         map.put("ICON", icon);
         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
         map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-        map.put("TELEFONOCELULAR", Tools.textShow("TEL.: ", Session.COMPANY_TELEFONO) + " " + Tools.textShow("CEL.: ", Session.COMPANY_CELULAR));
+        map.put("TELEFONOCELULAR", Tools.textShow("TEL.: ", Session.COMPANY_TELEFONO) + " "
+                + Tools.textShow("CEL.: ", Session.COMPANY_CELULAR));
         map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL.toUpperCase()));
         map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
         map.put("PAGINAWEB", Tools.textShow("", Session.COMPANY_PAGINAWEB));
@@ -355,12 +418,15 @@ public class TicketCompra {
         map.put("DOCUMENTOPROVEEDOR", compraTB.getProveedorTB().getNumeroDocumento());
         map.put("DATOSPROVEEDOR", compraTB.getProveedorTB().getRazonSocial());
         map.put("DIRECCIONPROVEEDOR", Tools.textShow("", compraTB.getProveedorTB().getDireccion()));
-        map.put("PROVEEDORTELEFONOS", Tools.textShow("TEL.: ", compraTB.getProveedorTB().getTelefono()) + " " + Tools.textShow("CEL.: ", compraTB.getProveedorTB().getCelular()));
+        map.put("PROVEEDORTELEFONOS", Tools.textShow("TEL.: ", compraTB.getProveedorTB().getTelefono()) + " "
+                + Tools.textShow("CEL.: ", compraTB.getProveedorTB().getCelular()));
         map.put("PROVEEDOREMAIL", Tools.textShow("", compraTB.getProveedorTB().getEmail()));
-        map.put("COMPROBANTE", compraTB.getComprobante() + "\n" + compraTB.getSerie().toUpperCase() + "-" + compraTB.getNumeracion());
+        map.put("COMPROBANTE",
+                compraTB.getComprobante() + "\n" + compraTB.getSerie().toUpperCase() + "-" + compraTB.getNumeracion());
 
         map.put("NOTAS", compraTB.getNotas());
-        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, compraTB.getMonedaTB().getNombre()));
+        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true,
+                compraTB.getMonedaTB().getNombre()));
 
         map.put("VALOR_VENTA", compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBrutoTotal, 2));
         map.put("DESCUENTO", compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(descuentoTotal, 2));
@@ -368,7 +434,8 @@ public class TicketCompra {
         map.put("IMPUESTO_TOTAL", compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
         map.put("IMPORTE_TOTAL", compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNetoTotal, 2));
 
-        fileName = "COMPRA " + compraTB.getComprobante() + " " + compraTB.getSerie().toUpperCase() + "-" + compraTB.getNumeracion();
+        fileName = "COMPRA " + compraTB.getComprobante() + " " + compraTB.getSerie().toUpperCase() + "-"
+                + compraTB.getNumeracion();
         JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
         return jasperPrint;
     }
@@ -421,7 +488,7 @@ public class TicketCompra {
                     URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                     Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
+                    // Controlller here
                     FxReportViewController controller = fXMLLoader.getController();
                     controller.setFileName(fileName);
                     controller.setJasperPrint((JasperPrint) result);

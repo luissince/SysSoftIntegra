@@ -368,6 +368,10 @@ public class FxGuiaRemisionRealizadasController implements Initializable {
         return hbWindow;
     }
 
+    public TableView<GuiaRemisionTB> getTvList() {
+        return tvList;
+    }
+
     public void setContent(FxPrincipalController fxPrincipalController) {
         this.fxPrincipalController = fxPrincipalController;
     }

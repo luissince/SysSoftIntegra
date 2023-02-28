@@ -59,7 +59,8 @@ public class TicketPreVenta {
 
     private ObservableList<SuministroTB> tvList;
 
-    public TicketPreVenta(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
+    public TicketPreVenta(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera,
+            AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
         this.billPrintable = billPrintable;
         this.hbEncabezado = hbEncabezado;
@@ -94,21 +95,26 @@ public class TicketPreVenta {
     }
 
     public void imprimir() {
-        if (!Session.ESTADO_IMPRESORA_PRE_VENTA && Tools.isText(Session.NOMBRE_IMPRESORA_PRE_VENTA) && Tools.isText(Session.FORMATO_IMPRESORA_PRE_VENTA)) {
-            Tools.AlertMessageWarning(node, "Venta", "No esta configurado la ruta de impresión, ve a la sección configuración/impresora.");
+        if (!Session.ESTADO_IMPRESORA_PRE_VENTA && Tools.isText(Session.NOMBRE_IMPRESORA_PRE_VENTA)
+                && Tools.isText(Session.FORMATO_IMPRESORA_PRE_VENTA)) {
+            Tools.AlertMessageWarning(node, "Venta",
+                    "No esta configurado la ruta de impresión, ve a la sección configuración/impresora.");
             return;
         }
 
         if (Session.FORMATO_IMPRESORA_PRE_VENTA.equalsIgnoreCase("ticket")) {
             if (Session.TICKET_PRE_VENTA_ID == 0 && Tools.isText(Session.TICKET_PRE_VENTA_RUTA)) {
-                Tools.AlertMessageWarning(node, "Venta", "No hay un diseño predeterminado para la impresión, configure su ticket en la sección configuración/tickets.");
+                Tools.AlertMessageWarning(node, "Venta",
+                        "No hay un diseño predeterminado para la impresión, configure su ticket en la sección configuración/tickets.");
             } else {
-                executeProcessPrinterPreVenta(Session.NOMBRE_IMPRESORA_PRE_VENTA, Session.CORTAPAPEL_IMPRESORA_PRE_VENTA);
+                executeProcessPrinterPreVenta(Session.NOMBRE_IMPRESORA_PRE_VENTA,
+                        Session.CORTAPAPEL_IMPRESORA_PRE_VENTA);
             }
         } else if (Session.FORMATO_IMPRESORA_PRE_VENTA.equalsIgnoreCase("a4")) {
-//            executeProcessPrinterPreVenta(Session.NOMBRE_IMPRESORA_PRE_VENTA);
+            // executeProcessPrinterPreVenta(Session.NOMBRE_IMPRESORA_PRE_VENTA);
         } else {
-            Tools.AlertMessageWarning(node, "Venta", "Error al validar el formato de impresión, configure en la sección configuración/impresora.");
+            Tools.AlertMessageWarning(node, "Venta",
+                    "Error al validar el formato de impresión, configure en la sección configuración/impresora.");
         }
     }
 
@@ -125,56 +131,109 @@ public class TicketPreVenta {
 
                 try {
                     if (Session.DESING_IMPRESORA_PRE_VENTA.equalsIgnoreCase("withdesing")) {
-                        billPrintable.loadEstructuraTicket(Session.TICKET_PRE_VENTA_ID, Session.TICKET_PRE_VENTA_RUTA, hbEncabezado, hbDetalleCabecera, hbPie);
+                        billPrintable.loadEstructuraTicket(Session.TICKET_PRE_VENTA_ID, Session.TICKET_PRE_VENTA_RUTA,
+                                hbEncabezado, hbDetalleCabecera, hbPie);
 
                         for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
                             HBox box = ((HBox) hbEncabezado.getChildren().get(i));
                             billPrintable.hbEncebezado(box,
-                                    "",
-                                    "NOTA DE VENTA",
-                                    "---",
-                                    numeroDocumento.toUpperCase(),
-                                    informacionCliente.toUpperCase(),
-                                    celularCliente.toUpperCase(),
-                                    direccionCliente.toUpperCase(),
-                                    "00000000",
-                                    Tools.getDate(),
-                                    Tools.getTime(),
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "0",
-                                    "0",
-                                    "0",
-                                    "0",
-                                    "0",
-                                    "0",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "");
+                                    "", // tipoVenta
+                                    "NOTA DE VENTA", // nombre_impresion_comprobante
+                                    "---", // numeracion_serie_comprobante
+                                    numeroDocumento.toUpperCase(), // nummero_documento_cliente
+                                    informacionCliente.toUpperCase(), // informacion_cliente
+                                    celularCliente.toUpperCase(), // celular_cliente
+                                    direccionCliente.toUpperCase(), // direccion_cliente
+                                    "00000000", // codigoVenta
+                                    "IMPORTE EN LETRAS", // importe_total_letras
+                                    Tools.getDate(), // fechaInicioOperacion
+                                    Tools.getTime(), // horaInicioOperacion
+                                    "", // fechaTerminoOperaciona
+                                    "", // horaTerminoOperacion
+                                    "0", // calculado
+                                    "0", // contado
+                                    "0", // diferencia
+                                    "-", // empleadoNumeroDocumento
+                                    "-", // empleadoInformacion
+                                    "-", // empleadoCelular
+                                    "-", // empleadoDireccion
+                                    "0", // montoTotal
+                                    "0", // montoPagado
+                                    "0", // montoDiferencial
+                                    "", // obsevacion_descripción
+                                    "0", // monto_inicial_caja
+                                    "0", // monto_efectivo_caja
+                                    "0", // monto_tarjeta_caja
+                                    "0", // monto_deposito_caja
+                                    "0", // monto_ingreso_caja
+                                    "0", // monto_egreso_caja
+                                    "", // nombre_impresion_comprobante_guia
+                                    "", // numeracion_serie_comprobante_guia
+                                    "", // direccion_partida_guia
+                                    "", // ubigeo_partida_guia
+                                    "", // direccion_llegada_guia
+                                    "", // ubigeo_llegada_guia
+                                    "", // movito_traslado_guia
+                                    "", // comprobante_anulado_nombre
+                                    "", // comprobante_anulado_serie
+                                    "", // comprobante_anulado_numeracion
+                                    "", // nota_credito_motivo_anulacion
+                                    "", // modalidad_traslado_guia
+                                    "", // fecha_traslado_guia
+                                    "", // peso_cargar_guia
+                                    "", // numero_placa_vehiculo_guia
+                                    "", // numero_documento_conductor_guia
+                                    "", // informacion_conductor_guia
+                                    "", // licencia_conductor_guia
+                                    "", // comprobante_referencia_guia
+                                    ""// serie_numeracion_referencia_guia
+                            );
+                            // billPrintable.hbEncebezado(box,
+                            // "",
+                            // "NOTA DE VENTA",
+                            // "---",
+                            // numeroDocumento.toUpperCase(),
+                            // informacionCliente.toUpperCase(),
+                            // celularCliente.toUpperCase(),
+                            // direccionCliente.toUpperCase(),
+                            // "00000000",
+                            // Tools.getDate(),
+                            // Tools.getTime(),
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "0",
+                            // "0",
+                            // "0",
+                            // "0",
+                            // "0",
+                            // "0",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "");
                         }
 
                         AnchorPane hbDetalle = new AnchorPane();
@@ -212,7 +271,8 @@ public class TicketPreVenta {
                         }
 
                         billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
-                        PrintService printService = billPrintable.findPrintService(printerName, PrinterJob.lookupPrintServices());
+                        PrintService printService = billPrintable.findPrintService(printerName,
+                                PrinterJob.lookupPrintServices());
                         if (printService == null) {
                             return "error_name";
                         } else {
@@ -230,7 +290,8 @@ public class TicketPreVenta {
                             return "completed";
                         }
                     } else {
-                        billPrintable.loadEstructuraTicket(Session.TICKET_PRE_VENTA_ID, Session.TICKET_PRE_VENTA_RUTA, hbEncabezado, hbDetalleCabecera, hbPie);
+                        billPrintable.loadEstructuraTicket(Session.TICKET_PRE_VENTA_ID, Session.TICKET_PRE_VENTA_RUTA,
+                                hbEncabezado, hbDetalleCabecera, hbPie);
                         ArrayList<HBox> object = new ArrayList<>();
                         int rows = 0;
                         int lines = 0;
@@ -239,51 +300,103 @@ public class TicketPreVenta {
                             HBox box = ((HBox) hbEncabezado.getChildren().get(i));
                             rows++;
                             lines += billPrintable.hbEncebezado(box,
-                                    "",
-                                    "NOTA DE VENTA",
-                                    "---",
-                                    numeroDocumento.toUpperCase(),
-                                    informacionCliente.toUpperCase(),
-                                    celularCliente.toUpperCase(),
-                                    direccionCliente.toUpperCase(),
-                                    "00000000",
-                                    Tools.getDate(),
-                                    Tools.getTime(),
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "0",
-                                    "0",
-                                    "0",
-                                    "0",
-                                    "0",
-                                    "0",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "");
+                                    "", // tipoVenta
+                                    "NOTA DE VENTA", // nombre_impresion_comprobante
+                                    "---", // numeracion_serie_comprobante
+                                    numeroDocumento.toUpperCase(), // nummero_documento_cliente
+                                    informacionCliente.toUpperCase(), // informacion_cliente
+                                    celularCliente.toUpperCase(), // celular_cliente
+                                    direccionCliente.toUpperCase(), // direccion_cliente
+                                    "00000000", // codigoVenta
+                                    "IMPORTE EN LETRAS", // importe_total_letras
+                                    Tools.getDate(), // fechaInicioOperacion
+                                    Tools.getTime(), // horaInicioOperacion
+                                    "", // fechaTerminoOperaciona
+                                    "", // horaTerminoOperacion
+                                    "0", // calculado
+                                    "0", // contado
+                                    "0", // diferencia
+                                    "-", // empleadoNumeroDocumento
+                                    "-", // empleadoInformacion
+                                    "-", // empleadoCelular
+                                    "-", // empleadoDireccion
+                                    "0", // montoTotal
+                                    "0", // montoPagado
+                                    "0", // montoDiferencial
+                                    "", // obsevacion_descripción
+                                    "0", // monto_inicial_caja
+                                    "0", // monto_efectivo_caja
+                                    "0", // monto_tarjeta_caja
+                                    "0", // monto_deposito_caja
+                                    "0", // monto_ingreso_caja
+                                    "0", // monto_egreso_caja
+                                    "", // nombre_impresion_comprobante_guia
+                                    "", // numeracion_serie_comprobante_guia
+                                    "", // direccion_partida_guia
+                                    "", // ubigeo_partida_guia
+                                    "", // direccion_llegada_guia
+                                    "", // ubigeo_llegada_guia
+                                    "", // movito_traslado_guia
+                                    "", // comprobante_anulado_nombre
+                                    "", // comprobante_anulado_serie
+                                    "", // comprobante_anulado_numeracion
+                                    "", // nota_credito_motivo_anulacion
+                                    "", // modalidad_traslado_guia
+                                    "", // fecha_traslado_guia
+                                    "", // peso_cargar_guia
+                                    "", // numero_placa_vehiculo_guia
+                                    "", // numero_documento_conductor_guia
+                                    "", // informacion_conductor_guia
+                                    "", // licencia_conductor_guia
+                                    "", // comprobante_referencia_guia
+                                    ""// serie_numeracion_referencia_guia
+                            );
+                            // lines += billPrintable.hbEncebezado(box,
+                            // "",
+                            // "NOTA DE VENTA",
+                            // "---",
+                            // numeroDocumento.toUpperCase(),
+                            // informacionCliente.toUpperCase(),
+                            // celularCliente.toUpperCase(),
+                            // direccionCliente.toUpperCase(),
+                            // "00000000",
+                            // Tools.getDate(),
+                            // Tools.getTime(),
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "0",
+                            // "0",
+                            // "0",
+                            // "0",
+                            // "0",
+                            // "0",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "",
+                            // "");
                         }
 
                         for (int m = 0; m < tvList.size(); m++) {
@@ -340,7 +453,8 @@ public class TicketPreVenta {
             } else if (result.equalsIgnoreCase("error_name")) {
                 Tools.showAlertNotification("/view/image/warning_large.png",
                         "Envío de impresión",
-                        Tools.newLineString("Error en encontrar la impresora " + printerName + " por problemas de puerto, driver o configuración."),
+                        Tools.newLineString("Error en encontrar la impresora " + printerName
+                                + " por problemas de puerto, driver o configuración."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else if (result.equalsIgnoreCase("no_config")) {
@@ -367,7 +481,8 @@ public class TicketPreVenta {
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Envío de impresión",
-                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });

@@ -367,269 +367,275 @@ public class FxTicketController implements Initializable {
 
             if (valideteUno > 0) {
                 Tools.AlertMessageWarning(vbWindow, "Ticket", "Hay una fila en la cabecera sin contenido");
-            } else if (valideteDos > 0) {
+                return;
+            }
+
+            if (valideteDos > 0) {
                 Tools.AlertMessageWarning(vbWindow, "Ticket", "Hay una fila en el detalle sin contenido");
-            } else if (valideteTree > 0) {
+                return;
+            }
+
+            if (valideteTree > 0) {
                 Tools.AlertMessageWarning(vbWindow, "Ticket", "Hay una fila en el pie sin contenido");
-            } else {
-                if (!apEncabezado.getChildren().isEmpty() && !apDetalleCabecera.getChildren().isEmpty()
-                        && !apPie.getChildren().isEmpty()) {
-                    JSONObject sampleObject = new JSONObject();
-                    sampleObject.put("column", sheetWidth);
-                    JSONObject cabecera = new JSONObject();
-                    for (int i = 0; i < apEncabezado.getChildren().size(); i++) {
-                        HBox hBox = (HBox) apEncabezado.getChildren().get(i);
-                        JSONObject cb = new JSONObject();
-                        if (hBox.getChildren().size() > 1) {
-                            JSONArray kids = new JSONArray();
-                            for (int v = 0; v < hBox.getChildren().size(); v++) {
-                                TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(v);
-                                JSONObject cbkid = new JSONObject();
-                                cbkid.put("value", field.getText());
-                                cbkid.put("width", field.getColumnWidth());
-                                cbkid.put("align", field.getAlignment().toString());
-                                cbkid.put("multiline", field.isMultilineas());
-                                cbkid.put("lines", field.getLines());
-                                cbkid.put("editable", field.isEditable());
-                                cbkid.put("variable", field.getVariable());
-                                cbkid.put("font", field.getFontName());
-                                cbkid.put("size", field.getFontSize());
-                                kids.add(cbkid);
-                            }
-                            cb.put("list", kids);
-                        } else {
-                            Object object = hBox.getChildren().get(0);
-                            if (object instanceof TextFieldTicket) {
-                                TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(0);
-                                JSONObject cbkid = new JSONObject();
-                                cbkid.put("value", field.getText());
-                                cbkid.put("width", field.getColumnWidth());
-                                cbkid.put("align", field.getAlignment().toString());
-                                cbkid.put("multiline", field.isMultilineas());
-                                cbkid.put("lines", field.getLines());
-                                cbkid.put("editable", field.isEditable());
-                                cbkid.put("variable", field.getVariable());
-                                cbkid.put("font", field.getFontName());
-                                cbkid.put("size", field.getFontSize());
-                                cb.put("text", cbkid);
-                            } else if (object instanceof ImageViewTicket) {
-                                ImageViewTicket viewTicket = (ImageViewTicket) hBox.getChildren().get(0);
-                                JSONObject cbkid = new JSONObject();
-                                cbkid.put("value", viewTicket.getId());
-                                cbkid.put("width", viewTicket.getColumnWidth());
-                                cbkid.put("align", hBox.getAlignment().toString());
-                                cbkid.put("variable", "");
-                                cbkid.put("fitwidth", viewTicket.getFitWidth());
-                                cbkid.put("fitheight", viewTicket.getFitHeight());
-                                cbkid.put("type", viewTicket.getType());
-                                cb.put("image", cbkid);
-                            }
+                return;
+            }
 
+            if (!apEncabezado.getChildren().isEmpty() && !apDetalleCabecera.getChildren().isEmpty()
+                    && !apPie.getChildren().isEmpty()) {
+                JSONObject sampleObject = new JSONObject();
+                sampleObject.put("column", sheetWidth);
+                JSONObject cabecera = new JSONObject();
+                for (int i = 0; i < apEncabezado.getChildren().size(); i++) {
+                    HBox hBox = (HBox) apEncabezado.getChildren().get(i);
+                    JSONObject cb = new JSONObject();
+                    if (hBox.getChildren().size() > 1) {
+                        JSONArray kids = new JSONArray();
+                        for (int v = 0; v < hBox.getChildren().size(); v++) {
+                            TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(v);
+                            JSONObject cbkid = new JSONObject();
+                            cbkid.put("value", field.getText());
+                            cbkid.put("width", field.getColumnWidth());
+                            cbkid.put("align", field.getAlignment().toString());
+                            cbkid.put("multiline", field.isMultilineas());
+                            cbkid.put("lines", field.getLines());
+                            cbkid.put("editable", field.isEditable());
+                            cbkid.put("variable", field.getVariable());
+                            cbkid.put("font", field.getFontName());
+                            cbkid.put("size", field.getFontSize());
+                            kids.add(cbkid);
                         }
-                        cabecera.put("cb_" + (i + 1), cb);
-                    }
-
-                    JSONObject detalle = new JSONObject();
-                    for (int i = 0; i < apDetalleCabecera.getChildren().size(); i++) {
-                        HBox hBox = (HBox) apDetalleCabecera.getChildren().get(i);
-                        JSONObject cb = new JSONObject();
-                        if (hBox.getChildren().size() > 1) {
-                            JSONArray kids = new JSONArray();
-                            for (int v = 0; v < hBox.getChildren().size(); v++) {
-                                TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(v);
-                                JSONObject cbkid = new JSONObject();
-                                cbkid.put("value", field.getText());
-                                cbkid.put("width", field.getColumnWidth());
-                                cbkid.put("align", field.getAlignment().toString());
-                                cbkid.put("multiline", field.isMultilineas());
-                                cbkid.put("lines", field.getLines());
-                                cbkid.put("editable", field.isEditable());
-                                cbkid.put("variable", field.getVariable());
-                                cbkid.put("font", field.getFontName());
-                                cbkid.put("size", field.getFontSize());
-                                kids.add(cbkid);
-                            }
-                            cb.put("list", kids);
-                        } else {
-                            Object object = hBox.getChildren().get(0);
-                            if (object instanceof TextFieldTicket) {
-                                TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(0);
-                                JSONObject cbkid = new JSONObject();
-                                cbkid.put("value", field.getText());
-                                cbkid.put("width", field.getColumnWidth());
-                                cbkid.put("align", field.getAlignment().toString());
-                                cbkid.put("multiline", field.isMultilineas());
-                                cbkid.put("lines", field.getLines());
-                                cbkid.put("editable", field.isEditable());
-                                cbkid.put("variable", field.getVariable());
-                                cbkid.put("font", field.getFontName());
-                                cbkid.put("size", field.getFontSize());
-                                cb.put("text", cbkid);
-                            } else if (object instanceof ImageViewTicket) {
-                                ImageViewTicket viewTicket = (ImageViewTicket) hBox.getChildren().get(0);
-                                JSONObject cbkid = new JSONObject();
-                                cbkid.put("value", viewTicket.getId());
-                                cbkid.put("width", viewTicket.getColumnWidth());
-                                cbkid.put("align", hBox.getAlignment().toString());
-                                cbkid.put("variable", "");
-                                cbkid.put("fitwidth", viewTicket.getFitWidth());
-                                cbkid.put("fitheight", viewTicket.getFitHeight());
-                                cbkid.put("type", viewTicket.getType());
-                                cb.put("image", cbkid);
-                            }
-                        }
-                        detalle.put("dr_" + (i + 1), cb);
-                    }
-
-                    JSONObject pie = new JSONObject();
-                    for (int i = 0; i < apPie.getChildren().size(); i++) {
-                        HBox hBox = (HBox) apPie.getChildren().get(i);
-                        JSONObject cb = new JSONObject();
-                        if (hBox.getChildren().size() > 1) {
-                            JSONArray kids = new JSONArray();
-                            for (int v = 0; v < hBox.getChildren().size(); v++) {
-                                TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(v);
-                                JSONObject cbkid = new JSONObject();
-                                cbkid.put("value", field.getText());
-                                cbkid.put("width", field.getColumnWidth());
-                                cbkid.put("align", field.getAlignment().toString());
-                                cbkid.put("multiline", field.isMultilineas());
-                                cbkid.put("lines", field.getLines());
-                                cbkid.put("editable", field.isEditable());
-                                cbkid.put("variable", field.getVariable());
-                                cbkid.put("font", field.getFontName());
-                                cbkid.put("size", field.getFontSize());
-                                kids.add(cbkid);
-                            }
-                            cb.put("list", kids);
-                        } else {
-                            Object object = hBox.getChildren().get(0);
-                            if (object instanceof TextFieldTicket) {
-                                TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(0);
-                                JSONObject cbkid = new JSONObject();
-                                cbkid.put("value", field.getText());
-                                cbkid.put("width", field.getColumnWidth());
-                                cbkid.put("align", field.getAlignment().toString());
-                                cbkid.put("multiline", field.isMultilineas());
-                                cbkid.put("lines", field.getLines());
-                                cbkid.put("editable", field.isEditable());
-                                cbkid.put("variable", field.getVariable());
-                                cbkid.put("font", field.getFontName());
-                                cbkid.put("size", field.getFontSize());
-                                cb.put("text", cbkid);
-                            } else if (object instanceof ImageViewTicket) {
-                                ImageViewTicket viewTicket = (ImageViewTicket) hBox.getChildren().get(0);
-                                JSONObject cbkid = new JSONObject();
-                                cbkid.put("value", viewTicket.getId());
-                                cbkid.put("width", viewTicket.getColumnWidth());
-                                cbkid.put("align", hBox.getAlignment().toString());
-                                cbkid.put("variable", "");
-                                cbkid.put("fitwidth", viewTicket.getFitWidth());
-                                cbkid.put("fitheight", viewTicket.getFitHeight());
-                                cbkid.put("type", viewTicket.getType());
-                                cb.put("image", cbkid);
-                            }
-                        }
-                        pie.put("cp_" + (i + 1), cb);
-                    }
-
-                    sampleObject.put("cabecera", cabecera);
-                    sampleObject.put("detalle", detalle);
-                    sampleObject.put("pie", pie);
-
-                    Files.write(Paths.get("./archivos/ticketventa.json"), sampleObject.toJSONString().getBytes());
-                    TicketTB ticketTB = new TicketTB();
-                    ticketTB.setId(idTicket);
-                    ticketTB.setNombreTicket(lblNombre.getText().trim().toUpperCase());
-                    ticketTB.setRuta(sampleObject.toJSONString());
-                    ticketTB.setTipo(tipoTicket);
-                    ticketTB.setPredeterminado(cbPredeterminado.isSelected());
-                    ticketTB.setApCabecera(apEncabezado);
-                    ticketTB.setApDetalle(apDetalleCabecera);
-                    ticketTB.setApPie(apPie);
-
-                    String result = TicketADO.CrudTicket(ticketTB);
-                    if (result.equalsIgnoreCase("duplicate")) {
-                        Tools.AlertMessageWarning(vbWindow, "Ticket",
-                                "El nombre del formato ya existe, intente con otro.");
-                    } else if (result.equalsIgnoreCase("updated")) {
-                        Tools.AlertMessageInformation(vbWindow, "Ticket", "Se actualizo correctamente el formato.");
-                        if (cbPredeterminado.isSelected()) {
-                            switch (tipoTicket) {
-                                case 1:
-                                    Session.TICKET_VENTA_ID = idTicket;
-                                    Session.TICKET_VENTA_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 2:
-                                    Session.TICKET_COMPRA_ID = idTicket;
-                                    Session.TICKET_COMPRA_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 5:
-                                    Session.TICKET_CORTE_CAJA_ID = idTicket;
-                                    Session.TICKET_CORTE_CAJA_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 7:
-                                    Session.TICKET_PRE_VENTA_ID = idTicket;
-                                    Session.TICKET_PRE_VENTA_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 8:
-                                    Session.TICKET_COTIZACION_ID = idTicket;
-                                    Session.TICKET_COTIZACION_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 9:
-                                    Session.TICKET_CUENTA_POR_COBRAR_ID = idTicket;
-                                    Session.TICKET_CUENTA_POR_COBRAR_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 10:
-                                    Session.TICKET_CUENTA_POR_PAGAR_ID = idTicket;
-                                    Session.TICKET_CUENTA_POR_PAGAR_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 11:
-                                    Session.TICKET_GUIA_REMISION_ID = idTicket;
-                                    Session.TICKET_GUIA_REMISION_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 12:
-                                    Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = idTicket;
-                                    Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 13:
-                                    Session.TICKET_PEDIDO_ID = idTicket;
-                                    Session.TICKET_PEDIDO_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 14:
-                                    Session.TICKET_ORDEN_COMPRA_ID = idTicket;
-                                    Session.TICKET_ORDEN_COMPRA_RUTA = sampleObject.toJSONString();
-                                    break;
-                                case 15:
-                                    Session.TICKET_NOTA_CREDITO_ID = idTicket;
-                                    Session.TICKET_NOTA_CREDITO_RUTA = sampleObject.toJSONString();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        clearPane();
-                    } else if (result.equalsIgnoreCase("registered")) {
-                        Tools.AlertMessageInformation(vbWindow, "Ticket",
-                                "Se guardo correctamente el formato, recuerda siempre poner en predeterminado el ticket, si lo va utilizar frecuentemente.");
-                        clearPane();
+                        cb.put("list", kids);
                     } else {
-                        Tools.AlertMessageError(vbWindow, "Ticket", result);
+                        Object object = hBox.getChildren().get(0);
+                        if (object instanceof TextFieldTicket) {
+                            TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(0);
+                            JSONObject cbkid = new JSONObject();
+                            cbkid.put("value", field.getText());
+                            cbkid.put("width", field.getColumnWidth());
+                            cbkid.put("align", field.getAlignment().toString());
+                            cbkid.put("multiline", field.isMultilineas());
+                            cbkid.put("lines", field.getLines());
+                            cbkid.put("editable", field.isEditable());
+                            cbkid.put("variable", field.getVariable());
+                            cbkid.put("font", field.getFontName());
+                            cbkid.put("size", field.getFontSize());
+                            cb.put("text", cbkid);
+                        } else if (object instanceof ImageViewTicket) {
+                            ImageViewTicket viewTicket = (ImageViewTicket) hBox.getChildren().get(0);
+                            JSONObject cbkid = new JSONObject();
+                            cbkid.put("value", viewTicket.getId());
+                            cbkid.put("width", viewTicket.getColumnWidth());
+                            cbkid.put("align", hBox.getAlignment().toString());
+                            cbkid.put("variable", "");
+                            cbkid.put("fitwidth", viewTicket.getFitWidth());
+                            cbkid.put("fitheight", viewTicket.getFitHeight());
+                            cbkid.put("type", viewTicket.getType());
+                            cb.put("image", cbkid);
+                        }
+
                     }
+                    cabecera.put("cb_" + (i + 1), cb);
+                }
+
+                JSONObject detalle = new JSONObject();
+                for (int i = 0; i < apDetalleCabecera.getChildren().size(); i++) {
+                    HBox hBox = (HBox) apDetalleCabecera.getChildren().get(i);
+                    JSONObject cb = new JSONObject();
+                    if (hBox.getChildren().size() > 1) {
+                        JSONArray kids = new JSONArray();
+                        for (int v = 0; v < hBox.getChildren().size(); v++) {
+                            TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(v);
+                            JSONObject cbkid = new JSONObject();
+                            cbkid.put("value", field.getText());
+                            cbkid.put("width", field.getColumnWidth());
+                            cbkid.put("align", field.getAlignment().toString());
+                            cbkid.put("multiline", field.isMultilineas());
+                            cbkid.put("lines", field.getLines());
+                            cbkid.put("editable", field.isEditable());
+                            cbkid.put("variable", field.getVariable());
+                            cbkid.put("font", field.getFontName());
+                            cbkid.put("size", field.getFontSize());
+                            kids.add(cbkid);
+                        }
+                        cb.put("list", kids);
+                    } else {
+                        Object object = hBox.getChildren().get(0);
+                        if (object instanceof TextFieldTicket) {
+                            TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(0);
+                            JSONObject cbkid = new JSONObject();
+                            cbkid.put("value", field.getText());
+                            cbkid.put("width", field.getColumnWidth());
+                            cbkid.put("align", field.getAlignment().toString());
+                            cbkid.put("multiline", field.isMultilineas());
+                            cbkid.put("lines", field.getLines());
+                            cbkid.put("editable", field.isEditable());
+                            cbkid.put("variable", field.getVariable());
+                            cbkid.put("font", field.getFontName());
+                            cbkid.put("size", field.getFontSize());
+                            cb.put("text", cbkid);
+                        } else if (object instanceof ImageViewTicket) {
+                            ImageViewTicket viewTicket = (ImageViewTicket) hBox.getChildren().get(0);
+                            JSONObject cbkid = new JSONObject();
+                            cbkid.put("value", viewTicket.getId());
+                            cbkid.put("width", viewTicket.getColumnWidth());
+                            cbkid.put("align", hBox.getAlignment().toString());
+                            cbkid.put("variable", "");
+                            cbkid.put("fitwidth", viewTicket.getFitWidth());
+                            cbkid.put("fitheight", viewTicket.getFitHeight());
+                            cbkid.put("type", viewTicket.getType());
+                            cb.put("image", cbkid);
+                        }
+                    }
+                    detalle.put("dr_" + (i + 1), cb);
+                }
+
+                JSONObject pie = new JSONObject();
+                for (int i = 0; i < apPie.getChildren().size(); i++) {
+                    HBox hBox = (HBox) apPie.getChildren().get(i);
+                    JSONObject cb = new JSONObject();
+                    if (hBox.getChildren().size() > 1) {
+                        JSONArray kids = new JSONArray();
+                        for (int v = 0; v < hBox.getChildren().size(); v++) {
+                            TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(v);
+                            JSONObject cbkid = new JSONObject();
+                            cbkid.put("value", field.getText());
+                            cbkid.put("width", field.getColumnWidth());
+                            cbkid.put("align", field.getAlignment().toString());
+                            cbkid.put("multiline", field.isMultilineas());
+                            cbkid.put("lines", field.getLines());
+                            cbkid.put("editable", field.isEditable());
+                            cbkid.put("variable", field.getVariable());
+                            cbkid.put("font", field.getFontName());
+                            cbkid.put("size", field.getFontSize());
+                            kids.add(cbkid);
+                        }
+                        cb.put("list", kids);
+                    } else {
+                        Object object = hBox.getChildren().get(0);
+                        if (object instanceof TextFieldTicket) {
+                            TextFieldTicket field = (TextFieldTicket) hBox.getChildren().get(0);
+                            JSONObject cbkid = new JSONObject();
+                            cbkid.put("value", field.getText());
+                            cbkid.put("width", field.getColumnWidth());
+                            cbkid.put("align", field.getAlignment().toString());
+                            cbkid.put("multiline", field.isMultilineas());
+                            cbkid.put("lines", field.getLines());
+                            cbkid.put("editable", field.isEditable());
+                            cbkid.put("variable", field.getVariable());
+                            cbkid.put("font", field.getFontName());
+                            cbkid.put("size", field.getFontSize());
+                            cb.put("text", cbkid);
+                        } else if (object instanceof ImageViewTicket) {
+                            ImageViewTicket viewTicket = (ImageViewTicket) hBox.getChildren().get(0);
+                            JSONObject cbkid = new JSONObject();
+                            cbkid.put("value", viewTicket.getId());
+                            cbkid.put("width", viewTicket.getColumnWidth());
+                            cbkid.put("align", hBox.getAlignment().toString());
+                            cbkid.put("variable", "");
+                            cbkid.put("fitwidth", viewTicket.getFitWidth());
+                            cbkid.put("fitheight", viewTicket.getFitHeight());
+                            cbkid.put("type", viewTicket.getType());
+                            cb.put("image", cbkid);
+                        }
+                    }
+                    pie.put("cp_" + (i + 1), cb);
+                }
+
+                sampleObject.put("cabecera", cabecera);
+                sampleObject.put("detalle", detalle);
+                sampleObject.put("pie", pie);
+
+                Files.write(Paths.get("./archivos/ticketventa.json"), sampleObject.toJSONString().getBytes());
+                TicketTB ticketTB = new TicketTB();
+                ticketTB.setId(idTicket);
+                ticketTB.setNombreTicket(lblNombre.getText().trim().toUpperCase());
+                ticketTB.setRuta(sampleObject.toJSONString());
+                ticketTB.setTipo(tipoTicket);
+                ticketTB.setPredeterminado(cbPredeterminado.isSelected());
+                ticketTB.setApCabecera(apEncabezado);
+                ticketTB.setApDetalle(apDetalleCabecera);
+                ticketTB.setApPie(apPie);
+
+                String result = TicketADO.CrudTicket(ticketTB);
+                if (result.equalsIgnoreCase("duplicate")) {
+                    Tools.AlertMessageWarning(vbWindow, "Ticket",
+                            "El nombre del formato ya existe, intente con otro.");
+                } else if (result.equalsIgnoreCase("updated")) {
+                    Tools.AlertMessageInformation(vbWindow, "Ticket", "Se actualizo correctamente el formato.");
+                    if (cbPredeterminado.isSelected()) {
+                        switch (tipoTicket) {
+                            case 1:
+                                Session.TICKET_VENTA_ID = idTicket;
+                                Session.TICKET_VENTA_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 2:
+                                Session.TICKET_COMPRA_ID = idTicket;
+                                Session.TICKET_COMPRA_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 5:
+                                Session.TICKET_CORTE_CAJA_ID = idTicket;
+                                Session.TICKET_CORTE_CAJA_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 7:
+                                Session.TICKET_PRE_VENTA_ID = idTicket;
+                                Session.TICKET_PRE_VENTA_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 8:
+                                Session.TICKET_COTIZACION_ID = idTicket;
+                                Session.TICKET_COTIZACION_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 9:
+                                Session.TICKET_CUENTA_POR_COBRAR_ID = idTicket;
+                                Session.TICKET_CUENTA_POR_COBRAR_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 10:
+                                Session.TICKET_CUENTA_POR_PAGAR_ID = idTicket;
+                                Session.TICKET_CUENTA_POR_PAGAR_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 11:
+                                Session.TICKET_GUIA_REMISION_ID = idTicket;
+                                Session.TICKET_GUIA_REMISION_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 12:
+                                Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID = idTicket;
+                                Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 13:
+                                Session.TICKET_PEDIDO_ID = idTicket;
+                                Session.TICKET_PEDIDO_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 14:
+                                Session.TICKET_ORDEN_COMPRA_ID = idTicket;
+                                Session.TICKET_ORDEN_COMPRA_RUTA = sampleObject.toJSONString();
+                                break;
+                            case 15:
+                                Session.TICKET_NOTA_CREDITO_ID = idTicket;
+                                Session.TICKET_NOTA_CREDITO_RUTA = sampleObject.toJSONString();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    clearPane();
+                } else if (result.equalsIgnoreCase("registered")) {
+                    Tools.AlertMessageInformation(vbWindow, "Ticket",
+                            "Se guardo correctamente el formato, recuerda siempre poner en predeterminado el ticket, si lo va utilizar frecuentemente.");
+                    clearPane();
                 } else {
-                    if (apEncabezado.getChildren().isEmpty()) {
-                        Tools.AlertMessageWarning(vbWindow, "Ticket", "El encabezado está vacío.");
-                    } else if (apDetalleCabecera.getChildren().isEmpty()) {
-                        Tools.AlertMessageWarning(vbWindow, "Ticket", "El detalle cabecera está vacío.");
-                    } else if (apPie.getChildren().isEmpty()) {
-                        Tools.AlertMessageWarning(vbWindow, "Ticket", "El pie está vacío.");
-                    }
+                    Tools.AlertMessageError(vbWindow, "Ticket", result);
+                }
+            } else {
+                if (apEncabezado.getChildren().isEmpty()) {
+                    Tools.AlertMessageWarning(vbWindow, "Ticket", "El encabezado está vacío.");
+                } else if (apDetalleCabecera.getChildren().isEmpty()) {
+                    Tools.AlertMessageWarning(vbWindow, "Ticket", "El detalle cabecera está vacío.");
+                } else if (apPie.getChildren().isEmpty()) {
+                    Tools.AlertMessageWarning(vbWindow, "Ticket", "El pie está vacío.");
                 }
             }
+
         } catch (IOException ex) {
             Tools.AlertMessageError(vbWindow, "Ticket", "No se pudo guardar la hoja con problemas de formato.");
-            System.out.println(ex.getLocalizedMessage());
-            System.out.println(ex);
         }
     }
 

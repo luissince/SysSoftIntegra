@@ -63,7 +63,8 @@ public class TicketCotizacion {
 
     private String fileName;
 
-    public TicketCotizacion(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
+    public TicketCotizacion(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado,
+            AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
         this.billPrintable = billPrintable;
         this.hbEncabezado = hbEncabezado;
@@ -73,13 +74,16 @@ public class TicketCotizacion {
     }
 
     public void imprimir(String idCotizacion) {
-        if (!Session.ESTADO_IMPRESORA_COTIZACION && Tools.isText(Session.NOMBRE_IMPRESORA_COTIZACION) && Tools.isText(Session.FORMATO_IMPRESORA_COTIZACION)) {
-            Tools.AlertMessageWarning(node, "Cotización", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+        if (!Session.ESTADO_IMPRESORA_COTIZACION && Tools.isText(Session.NOMBRE_IMPRESORA_COTIZACION)
+                && Tools.isText(Session.FORMATO_IMPRESORA_COTIZACION)) {
+            Tools.AlertMessageWarning(node, "Cotización",
+                    "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
             return;
         }
         if (Session.FORMATO_IMPRESORA_COTIZACION.equalsIgnoreCase("ticket")) {
             if (Session.TICKET_COTIZACION_ID == 0 && Session.TICKET_COTIZACION_RUTA.equalsIgnoreCase("")) {
-                Tools.AlertMessageWarning(node, "Cotización", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
+                Tools.AlertMessageWarning(node, "Cotización",
+                        "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
             } else {
                 executeProcessCotizacionTicket(
                         idCotizacion,
@@ -87,15 +91,16 @@ public class TicketCotizacion {
                         Session.TICKET_COTIZACION_ID,
                         Session.TICKET_COTIZACION_RUTA,
                         Session.NOMBRE_IMPRESORA_COTIZACION,
-                        Session.CORTAPAPEL_IMPRESORA_COTIZACION
-                );
+                        Session.CORTAPAPEL_IMPRESORA_COTIZACION);
             }
         } else {
-            Tools.AlertMessageWarning(node, "Cotización", "Error al validar el formato de impresión configure en la sección configuración/impresora.");
+            Tools.AlertMessageWarning(node, "Cotización",
+                    "Error al validar el formato de impresión configure en la sección configuración/impresora.");
         }
     }
 
-    private void executeProcessCotizacionTicket(String idCotizacion, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) {
+    private void executeProcessCotizacionTicket(String idCotizacion, String desing, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -110,7 +115,8 @@ public class TicketCotizacion {
                     try {
                         CotizacionTB cotizacionTB = (CotizacionTB) object;
                         if (desing.equalsIgnoreCase("withdesing")) {
-                            return printTicketWithDesingCotizacion(cotizacionTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
+                            return printTicketWithDesingCotizacion(cotizacionTB, ticketId, ticketRuta, nombreImpresora,
+                                    cortaPapel);
                         } else {
                             return "empty";
                         }
@@ -134,7 +140,8 @@ public class TicketCotizacion {
             } else if (result.equalsIgnoreCase("error_name")) {
                 Tools.showAlertNotification("/view/image/warning_large.png",
                         "Envío de impresión",
-                        Tools.newLineString("Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
+                        Tools.newLineString(
+                                "Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else if (result.equalsIgnoreCase("empty")) {
@@ -154,7 +161,8 @@ public class TicketCotizacion {
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Envío de impresión",
-                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -172,61 +180,116 @@ public class TicketCotizacion {
         }
     }
 
-    private String printTicketWithDesingCotizacion(CotizacionTB cotizacionTB, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
+    private String printTicketWithDesingCotizacion(CotizacionTB cotizacionTB, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
         billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
 
         for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
             HBox box = ((HBox) hbEncabezado.getChildren().get(i));
             billPrintable.hbEncebezado(box,
-                    "",
-                    "COTIZACIÓN",
-                    "N° - " + Tools.formatNumber(cotizacionTB.getIdCotizacion()),
-                    cotizacionTB.getClienteTB().getNumeroDocumento(),
-                    cotizacionTB.getClienteTB().getInformacion(),
-                    cotizacionTB.getClienteTB().getCelular(),
-                    cotizacionTB.getClienteTB().getDireccion(),
-                    "CODIGO PROCESO",
-                    "IMPORTE EN LETRAS",
-                    cotizacionTB.getFechaCotizacion(),
-                    cotizacionTB.getHoraCotizacion(),
-                    cotizacionTB.getFechaCotizacion(),
-                    cotizacionTB.getHoraCotizacion(),
-                    "0",
-                    "0",
-                    "0",
-                    "-",
-                    cotizacionTB.getEmpleadoTB().getApellidos() + " " + cotizacionTB.getEmpleadoTB().getNombres(),
-                    "-",
-                    "-",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "");
+                    "", // tipoVenta
+                    "COTIZACIÓN", // nombre_impresion_comprobante
+                    "N° - " + Tools.formatNumber(cotizacionTB.getIdCotizacion()), // numeracion_serie_comprobante
+                    cotizacionTB.getClienteTB().getNumeroDocumento(), // nummero_documento_cliente
+                    cotizacionTB.getClienteTB().getInformacion(), // informacion_cliente
+                    cotizacionTB.getClienteTB().getCelular(), // celular_cliente
+                    cotizacionTB.getClienteTB().getDireccion(), // direccion_cliente
+                    "CODIGO PROCESO", // codigoVenta
+                    "IMPORTE EN LETRAS", // importe_total_letras
+                    cotizacionTB.getFechaCotizacion(), // fechaInicioOperacion
+                    cotizacionTB.getHoraCotizacion(), // horaInicioOperacion
+                    cotizacionTB.getFechaCotizacion(), // fechaTerminoOperaciona
+                    cotizacionTB.getHoraCotizacion(), // horaTerminoOperacion
+                    "0", // calculado
+                    "0", // contado
+                    "0", // diferencia
+                    "-", // empleadoNumeroDocumento
+                    cotizacionTB.getEmpleadoTB().getApellidos() + "-" + cotizacionTB.getEmpleadoTB().getNombres(), // empleadoInformacion
+                    "-", // empleadoCelular
+                    "-", // empleadoDireccion
+                    "0", // montoTotal
+                    "0", // montoPagado
+                    "0", // montoDiferencial
+                    "-", // obsevacion_descripción
+                    "0", // monto_inicial_caja
+                    "0", // monto_efectivo_caja
+                    "0", // monto_tarjeta_caja
+                    "0", // monto_deposito_caja
+                    "0", // monto_ingreso_caja
+                    "0", // monto_egreso_caja
+                    "", // nombre_impresion_comprobante_guia
+                    "", // numeracion_serie_comprobante_guia
+                    "", // direccion_partida_guia
+                    "", // ubigeo_partida_guia
+                    "", // direccion_llegada_guia
+                    "", // ubigeo_llegada_guia
+                    "", // movito_traslado_guia
+                    "", // comprobante_anulado_nombre
+                    "", // comprobante_anulado_serie
+                    "", // comprobante_anulado_numeracion
+                    "", // nota_credito_motivo_anulacion
+                    "", // modalidad_traslado_guia
+                    "", // fecha_traslado_guia
+                    "", // peso_cargar_guia
+                    "", // numero_placa_vehiculo_guia
+                    "", // numero_documento_conductor_guia
+                    "", // informacion_conductor_guia
+                    "", // licencia_conductor_guia
+                    "", // comprobante_referencia_guia
+                    ""// serie_numeracion_referencia_guia
+            );
+            // billPrintable.hbEncebezado(box,
+            // "",
+            // "COTIZACIÓN",
+            // "N° - " + Tools.formatNumber(cotizacionTB.getIdCotizacion()),
+            // cotizacionTB.getClienteTB().getNumeroDocumento(),
+            // cotizacionTB.getClienteTB().getInformacion(),
+            // cotizacionTB.getClienteTB().getCelular(),
+            // cotizacionTB.getClienteTB().getDireccion(),
+            // "CODIGO PROCESO",
+            // "IMPORTE EN LETRAS",
+            // cotizacionTB.getFechaCotizacion(),
+            // cotizacionTB.getHoraCotizacion(),
+            // cotizacionTB.getFechaCotizacion(),
+            // cotizacionTB.getHoraCotizacion(),
+            // "0",
+            // "0",
+            // "0",
+            // "-",
+            // cotizacionTB.getEmpleadoTB().getApellidos() + " " +
+            // cotizacionTB.getEmpleadoTB().getNombres(),
+            // "-",
+            // "-",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "");
         }
 
         AnchorPane hbDetalle = new AnchorPane();
-        ObservableList<CotizacionDetalleTB> arrList = FXCollections.observableArrayList(cotizacionTB.getCotizacionDetalleTBs());
+        ObservableList<CotizacionDetalleTB> arrList = FXCollections
+                .observableArrayList(cotizacionTB.getCotizacionDetalleTBs());
         for (int m = 0; m < arrList.size(); m++) {
             for (int i = 0; i < hbDetalleCabecera.getChildren().size(); i++) {
                 HBox hBox = new HBox();
@@ -328,16 +391,19 @@ public class TicketCotizacion {
                             jsono.put("id", ocdtb.getId());
                             jsono.put("cantidad", Tools.roundingValue(ocdtb.getCantidad(), 2));
                             jsono.put("unidad", ocdtb.getSuministroTB().getUnidadCompraName());
-                            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n" + ocdtb.getSuministroTB().getNombreMarca());
+                            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n"
+                                    + ocdtb.getSuministroTB().getNombreMarca());
                             jsono.put("precio", Tools.roundingValue(ocdtb.getPrecio(), 2));
                             jsono.put("descuento", Tools.roundingValue(ocdtb.getDescuento(), 0));
-                            jsono.put("importe", Tools.roundingValue(ocdtb.getPrecio() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
+                            jsono.put("importe", Tools.roundingValue(
+                                    ocdtb.getPrecio() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
                             array.add(jsono);
 
                             double importeBruto = ocdtb.getPrecio() * ocdtb.getCantidad();
                             double descuento = ocdtb.getDescuento();
                             double subImporteBruto = importeBruto - descuento;
-                            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+                            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(),
+                                    subImporteBruto);
                             double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
                             double importeNeto = subImporteNeto + impuesto;
 
@@ -362,13 +428,15 @@ public class TicketCotizacion {
                         map.put("ICON", imgInputStreamIcon);
                         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
                         map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-                        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
+                        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO)
+                                + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
                         map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL));
                         map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
 
                         map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
                         map.put("NOMBREDOCUMENTO", "COTIZACIÓN");
-                        map.put("NUMERODOCUMENTO", Tools.textShow("N° - ", Tools.formatNumber(cotizacionTB.getIdCotizacion())));
+                        map.put("NUMERODOCUMENTO",
+                                Tools.textShow("N° - ", Tools.formatNumber(cotizacionTB.getIdCotizacion())));
 
                         map.put("DATOSCLIENTE", cotizacionTB.getClienteTB().getInformacion());
                         map.put("DOCUMENTOCLIENTE", "");
@@ -381,7 +449,8 @@ public class TicketCotizacion {
                         map.put("MONEDA", cotizacionTB.getMonedaTB().getNombre());
 
                         map.put("SIMBOLO", cotizacionTB.getMonedaTB().getSimbolo());
-                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, cotizacionTB.getMonedaTB().getNombre()));
+                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true,
+                                cotizacionTB.getMonedaTB().getNombre()));
 
                         map.put("VALOR_VENTA", Tools.roundingValue(importeBrutoTotal, 2));
                         map.put("DESCUENTO", Tools.roundingValue(descuentoTotal, 2));
@@ -394,7 +463,8 @@ public class TicketCotizacion {
 
                         fileName = "COTIZACIÓN N° - " + Tools.formatNumber(cotizacionTB.getIdCotizacion());
 
-                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
+                        JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map,
+                                new JsonDataSource(jsonDataStream));
                         return jasperPrint;
                     } catch (JRException | UnsupportedEncodingException ex) {
                         return ex.getLocalizedMessage();
@@ -434,7 +504,7 @@ public class TicketCotizacion {
                     URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                     Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
+                    // Controlller here
                     FxReportViewController controller = fXMLLoader.getController();
                     controller.setFileName(fileName);
                     controller.setJasperPrint((JasperPrint) object);

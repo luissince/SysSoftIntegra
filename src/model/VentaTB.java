@@ -8,95 +8,95 @@ import javafx.scene.layout.HBox;
 public class VentaTB {
 
     private int id;
-    
+
     private String idVenta;
-    
+
     private String idCliente;
-    
+
     private String vendedor;
-    
+
     private int idComprobante;
-    
+
     private int idMoneda;
-    
+
     private String comprobanteName;
-    
+
     private String serie;
-    
+
     private String numeracion;
-    
+
     private String fechaVenta;
-    
+
     private String horaVenta;
-    
+
     private String fechaVencimiento;
-    
+
     private String horaVencimiento;
-        
+
     private double total;
-    
+
     private int tipo;
-    
+
     private String tipoName;
-    
+
     private int estado;
-    
+
     private String estadoName;
-    
+
     private Label estadoLabel;
-    
+
     private String formaName;
-    
+
     private String observaciones;
-    
+
     private double efectivo;
-    
+
     private double vuelto;
-    
+
     private double tarjeta;
-    
+
     private double deposito;
-    
+
     private int tipoCredito;
-    
+
     private String codigo;
-    
+
     private String numeroOperacion;
-    
+
     private boolean tipopago;
-    
+
     private String codigoAlterno;
-    
+
     private ClienteTB clienteTB;
-    
+
     private MonedaTB monedaTB;
-    
+
     private EmpleadoTB empleadoTB;
-    
+
     private NotaCreditoTB notaCreditoTB;
-    
+
     private ArrayList<SuministroTB> suministroTBs;
-    
+
     private HBox hbOpciones;
-    
+
     private Button btnImprimir;
-    
+
     private Button btnAgregar;
-    
+
     private Button btnSumar;
-    
+
     private ArrayList<VentaCreditoTB> ventaCreditoTBs;
-        
+
     private double montoTotal;
-    
+
     private double montoCobrado;
-    
+
     private double montoRestante;
-    
+
     private int procedencia;
-    
+
     private EmpresaTB empresaTB;
-    
+
     private String idCotizacion;
 
     private TipoDocumentoTB tipoDocumentoTB;
@@ -221,7 +221,7 @@ public class VentaTB {
     public void setTotal(double total) {
         this.total = total;
     }
-    
+
     public int getTipo() {
         return tipo;
     }
@@ -476,7 +476,7 @@ public class VentaTB {
 
     public void setIdCotizacion(String idCotizacion) {
         this.idCotizacion = idCotizacion;
-    }   
+    }
 
     public TipoDocumentoTB getTipoDocumentoTB() {
         return tipoDocumentoTB;
@@ -485,11 +485,24 @@ public class VentaTB {
     public void setTipoDocumentoTB(TipoDocumentoTB tipoDocumentoTB) {
         this.tipoDocumentoTB = tipoDocumentoTB;
     }
-     
+
     @Override
     public String toString() {
-        return "VentaTB{" + "id=" + id + ", idVenta=" + idVenta + ", idCliente=" + idCliente + ", vendedor=" + vendedor + ", idComprobante=" + idComprobante + ", idMoneda=" + idMoneda + ", comprobanteName=" + comprobanteName + ", serie=" + serie + ", numeracion=" + numeracion + ", fechaVenta=" + fechaVenta + ", horaVenta=" + horaVenta + ", fechaVencimiento=" + fechaVencimiento + ", horaVencimiento=" + horaVencimiento + ", total=" + total + ", tipo=" + tipo + ", tipoName=" + tipoName + ", estado=" + estado + ", estadoName=" + estadoName + ", estadoLabel=" + estadoLabel + ", formaName=" + formaName + ", observaciones=" + observaciones + ", efectivo=" + efectivo + ", vuelto=" + vuelto + ", tarjeta=" + tarjeta + ", deposito=" + deposito + ", tipoCredito=" + tipoCredito + ", codigo=" + codigo + ", numeroOperacion=" + numeroOperacion + ", tipopago=" + tipopago + ", codigoAlterno=" + codigoAlterno + ", clienteTB=" + clienteTB + ", monedaTB=" + monedaTB + ", empleadoTB=" + empleadoTB + ", notaCreditoTB=" + notaCreditoTB + ", suministroTBs=" + suministroTBs + ", hbOpciones=" + hbOpciones + ", btnImprimir=" + btnImprimir + ", btnAgregar=" + btnAgregar + ", btnSumar=" + btnSumar + ", ventaCreditoTBs=" + ventaCreditoTBs + ", montoTotal=" + montoTotal + ", montoCobrado=" + montoCobrado + ", montoRestante=" + montoRestante + ", procedencia=" + procedencia + ", empresaTB=" + empresaTB + ", idCotizacion=" + idCotizacion + '}';
+        return "VentaTB{" + "id=" + id + ", idVenta=" + idVenta + ", idCliente=" + idCliente + ", vendedor=" + vendedor
+                + ", idComprobante=" + idComprobante + ", idMoneda=" + idMoneda + ", comprobanteName=" + comprobanteName
+                + ", serie=" + serie + ", numeracion=" + numeracion + ", fechaVenta=" + fechaVenta + ", horaVenta="
+                + horaVenta + ", fechaVencimiento=" + fechaVencimiento + ", horaVencimiento=" + horaVencimiento
+                + ", total=" + total + ", tipo=" + tipo + ", tipoName=" + tipoName + ", estado=" + estado
+                + ", estadoName=" + estadoName + ", estadoLabel=" + estadoLabel + ", formaName=" + formaName
+                + ", observaciones=" + observaciones + ", efectivo=" + efectivo + ", vuelto=" + vuelto + ", tarjeta="
+                + tarjeta + ", deposito=" + deposito + ", tipoCredito=" + tipoCredito + ", codigo=" + codigo
+                + ", numeroOperacion=" + numeroOperacion + ", tipopago=" + tipopago + ", codigoAlterno=" + codigoAlterno
+                + ", clienteTB=" + clienteTB + ", monedaTB=" + monedaTB + ", empleadoTB=" + empleadoTB
+                + ", notaCreditoTB=" + notaCreditoTB + ", suministroTBs=" + suministroTBs + ", hbOpciones=" + hbOpciones
+                + ", btnImprimir=" + btnImprimir + ", btnAgregar=" + btnAgregar + ", btnSumar=" + btnSumar
+                + ", ventaCreditoTBs=" + ventaCreditoTBs + ", montoTotal=" + montoTotal + ", montoCobrado="
+                + montoCobrado + ", montoRestante=" + montoRestante + ", procedencia=" + procedencia + ", empresaTB="
+                + empresaTB + ", idCotizacion=" + idCotizacion + '}';
     }
-
 
 }

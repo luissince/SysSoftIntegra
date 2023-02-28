@@ -20,8 +20,6 @@ public class ClienteADO {
 
     public static String CrudCliente(ClienteTB clienteTB) {
         DBUtil dbf = new DBUtil();
-        String result = "";
-
         CallableStatement codigoCliente = null;
         PreparedStatement preparedCliente = null;
         PreparedStatement preparedValidation = null;
@@ -31,165 +29,86 @@ public class ClienteADO {
         try {
             dbf.dbConnect();
             dbf.getConnection().setAutoCommit(false);
+
             preparedValidation = dbf.getConnection()
                     .prepareStatement("SELECT IdCliente FROM ClienteTB WHERE IdCliente = ?");
             preparedValidation.setString(1, clienteTB.getIdCliente());
+
             if (preparedValidation.executeQuery().next()) {
+
+                preparedValidation.close();
                 preparedValidation = dbf.getConnection().prepareStatement(
                         "SELECT NumeroDocumento FROM ClienteTB WHERE IdCliente <> ? AND NumeroDocumento = ?");
                 preparedValidation.setString(1, clienteTB.getIdCliente());
                 preparedValidation.setString(2, clienteTB.getNumeroDocumento());
+
                 if (preparedValidation.executeQuery().next()) {
                     dbf.getConnection().rollback();
-                    result = "duplicate";
-                } else {
-
-                    preparedCliente = dbf.getConnection().prepareStatement("UPDATE ClienteTB SET\n"
-                            + "TipoDocumento=?,\n"
-                            + "NumeroDocumento=?,\n"
-                            + "Informacion=UPPER(?),\n"
-                            + "Telefono=?,\n"
-                            + "Celular=?,\n"
-                            + "Email=?,\n"
-                            + "Direccion=?,\n"
-                            + "Representante=?,\n"
-                            + "Estado=?,\n"
-                            + "IdMotivoTraslado=?,\n"
-                            + "IdModalidadTraslado=?,\n"
-                            + "IdUbigeo=?\n"
-                            + "WHERE IdCliente = ?");
-
-                    preparedCliente.setInt(1, clienteTB.getTipoDocumento());
-                    preparedCliente.setString(2, clienteTB.getNumeroDocumento());
-                    preparedCliente.setString(3, clienteTB.getInformacion());
-                    preparedCliente.setString(4, clienteTB.getTelefono());
-                    preparedCliente.setString(5, clienteTB.getCelular());
-                    preparedCliente.setString(6, clienteTB.getEmail());
-                    preparedCliente.setString(7, clienteTB.getDireccion());
-                    preparedCliente.setString(8, clienteTB.getRepresentante());
-                    preparedCliente.setInt(9, clienteTB.getEstado());
-                    preparedCliente.setInt(10, clienteTB.getIdMotivoTraslado());
-                    preparedCliente.setInt(11, clienteTB.getIdModalidadTraslado());
-                    preparedCliente.setInt(12, clienteTB.getIdUbigeo());
-                    preparedCliente.setString(13, clienteTB.getIdCliente());
-                    preparedCliente.addBatch();
-
-                    preparedValidation = dbf.getConnection()
-                            .prepareStatement("SELECT * FROM Conductor WHERE IdCliente = ?");
-                    preparedValidation.setString(1, clienteTB.getIdCliente());
-                    if (preparedValidation.executeQuery().next()) {
-                        ConductorTB conductorTB = clienteTB.getConductorTB();
-
-                        preparedConductor = dbf.getConnection().prepareStatement("UPDATE Conductor SET\n"
-                                + "IdTipoDocumento = ?,\n"
-                                + "NumeroDocumento = ?,\n"
-                                + "Informacion = ?,\n"
-                                + "Celular = ?,\n"
-                                + "PlacaVehiculo = ?,\n"
-                                + "MarcaVehiculo = ?\n"
-                                + "WHERE IdConductor = ?");
-                        preparedConductor.setInt(1, conductorTB.getIdTipoDocumento());
-                        preparedConductor.setString(2, conductorTB.getNumeroDocumento());
-                        preparedConductor.setString(3, conductorTB.getInformacion());
-                        preparedConductor.setString(4, conductorTB.getCelular());
-                        // preparedConductor.setString(5, conductorTB.getPlacaVehiculo());
-                        preparedConductor.setString(6, conductorTB.getLicenciaConducir());
-                        preparedConductor.setString(7, conductorTB.getIdConductor());
-                        preparedConductor.addBatch();
-                    } else {
-                        codigoConductor = dbf.getConnection()
-                                .prepareCall("{? = call Fc_Conductor_Codigo_Alfanumerico()}");
-                        codigoConductor.registerOutParameter(1, java.sql.Types.VARCHAR);
-                        codigoConductor.execute();
-                        String idConductor = codigoConductor.getString(1);
-
-                        ConductorTB conductorTB = clienteTB.getConductorTB();
-
-                        preparedConductor = dbf.getConnection().prepareStatement("INSERT INTO Conductor("
-                                + "IdConductor,\n"
-                                + "IdCliente,\n"
-                                + "IdTipoDocumento,\n"
-                                + "NumeroDocumento,\n"
-                                + "Informacion,\n"
-                                + "Celular,\n"
-                                + "PlacaVehiculo,\n"
-                                + "MarcaVehiculo,\n"
-                                + "Fecha,\n"
-                                + "Hora,\n"
-                                + "IdUsuario)\n"
-                                + "VALUES(?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?)");
-                        if (!"".equals(conductorTB.getNumeroDocumento())
-                                && !"".equals(conductorTB.getInformacion())) {
-                            preparedConductor.setString(1, idConductor);
-                            preparedConductor.setString(2, clienteTB.getIdCliente());
-                            preparedConductor.setInt(3, conductorTB.getIdTipoDocumento());
-                            preparedConductor.setString(4, conductorTB.getNumeroDocumento());
-                            preparedConductor.setString(5, conductorTB.getInformacion());
-                            preparedConductor.setString(6, conductorTB.getCelular());
-                            // preparedConductor.setString(7, conductorTB.getPlacaVehiculo());
-                            preparedConductor.setString(8, conductorTB.getLicenciaConducir());
-                            preparedConductor.setString(9, conductorTB.getIdUsuario());
-                            preparedConductor.addBatch();
-                        }
-
-                    }
-
-                    preparedCliente.executeBatch();
-                    preparedConductor.executeBatch();
-                    dbf.getConnection().commit();
-                    result = "updated";
+                    return "duplicate";
                 }
-            } else {
+
+                preparedCliente = dbf.getConnection().prepareStatement("UPDATE ClienteTB SET\n"
+                        + "TipoDocumento=?,\n"
+                        + "NumeroDocumento=?,\n"
+                        + "Informacion=UPPER(?),\n"
+                        + "Telefono=?,\n"
+                        + "Celular=?,\n"
+                        + "Email=?,\n"
+                        + "Direccion=?,\n"
+                        + "Representante=?,\n"
+                        + "Estado=?,\n"
+                        + "IdMotivoTraslado=?,\n"
+                        + "IdModalidadTraslado=?,\n"
+                        + "IdUbigeo=?\n"
+                        + "WHERE IdCliente = ?");
+
+                preparedCliente.setInt(1, clienteTB.getTipoDocumento());
+                preparedCliente.setString(2, clienteTB.getNumeroDocumento());
+                preparedCliente.setString(3, clienteTB.getInformacion());
+                preparedCliente.setString(4, clienteTB.getTelefono());
+                preparedCliente.setString(5, clienteTB.getCelular());
+                preparedCliente.setString(6, clienteTB.getEmail());
+                preparedCliente.setString(7, clienteTB.getDireccion());
+                preparedCliente.setString(8, clienteTB.getRepresentante());
+                preparedCliente.setInt(9, clienteTB.getEstado());
+                preparedCliente.setInt(10, clienteTB.getIdMotivoTraslado());
+                preparedCliente.setInt(11, clienteTB.getIdModalidadTraslado());
+                preparedCliente.setInt(12, clienteTB.getIdUbigeo());
+                preparedCliente.setString(13, clienteTB.getIdCliente());
+                preparedCliente.addBatch();
+
+                preparedValidation.close();
                 preparedValidation = dbf.getConnection()
-                        .prepareStatement("select NumeroDocumento from ClienteTB where NumeroDocumento = ?");
-                preparedValidation.setString(1, clienteTB.getNumeroDocumento());
+                        .prepareStatement("SELECT * FROM Conductor WHERE IdCliente = ?");
+                preparedValidation.setString(1, clienteTB.getIdCliente());
+
                 if (preparedValidation.executeQuery().next()) {
-                    dbf.getConnection().rollback();
-                    result = "duplicate";
+                    ConductorTB conductorTB = clienteTB.getConductorTB();
+
+                    preparedConductor = dbf.getConnection().prepareStatement("UPDATE Conductor SET\n"
+                            + "IdTipoDocumento = ?,\n"
+                            + "NumeroDocumento = ?,\n"
+                            + "Informacion = ?,\n"
+                            + "Celular = ?,\n"
+                            + "PlacaVehiculo = ?,\n"
+                            + "MarcaVehiculo = ?\n"
+                            + "WHERE IdConductor = ?");
+                    preparedConductor.setInt(1, conductorTB.getIdTipoDocumento());
+                    preparedConductor.setString(2, conductorTB.getNumeroDocumento());
+                    preparedConductor.setString(3, conductorTB.getInformacion());
+                    preparedConductor.setString(4, conductorTB.getCelular());
+                    // preparedConductor.setString(5, conductorTB.getPlacaVehiculo());
+                    preparedConductor.setString(6, conductorTB.getLicenciaConducir());
+                    preparedConductor.setString(7, conductorTB.getIdConductor());
+                    preparedConductor.addBatch();
                 } else {
-                    codigoCliente = dbf.getConnection().prepareCall("{? = call Fc_Cliente_Codigo_Alfanumerico()}");
-                    codigoCliente.registerOutParameter(1, java.sql.Types.VARCHAR);
-                    codigoCliente.execute();
-                    String idCliente = codigoCliente.getString(1);
-
-                    preparedCliente = dbf.getConnection().prepareStatement("INSERT INTO ClienteTB(\n"
-                            + "IdCliente,\n"
-                            + "TipoDocumento,\n"
-                            + "NumeroDocumento,\n"
-                            + "Informacion,\n"
-                            + "Telefono,\n"
-                            + "Celular,\n"
-                            + "Email,\n"
-                            + "Direccion,\n"
-                            + "Representante,\n"
-                            + "Estado,\n"
-                            + "Predeterminado,\n"
-                            + "Sistema,\n"
-                            + "IdMotivoTraslado,\n"
-                            + "IdModalidadTraslado,\n"
-                            + "IdUbigeo)"
-                            + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-                    preparedCliente.setString(1, idCliente);
-                    preparedCliente.setInt(2, clienteTB.getTipoDocumento());
-                    preparedCliente.setString(3, clienteTB.getNumeroDocumento());
-                    preparedCliente.setString(4, clienteTB.getInformacion());
-                    preparedCliente.setString(5, clienteTB.getTelefono());
-                    preparedCliente.setString(6, clienteTB.getCelular());
-                    preparedCliente.setString(7, clienteTB.getEmail());
-                    preparedCliente.setString(8, clienteTB.getDireccion());
-                    preparedCliente.setString(9, clienteTB.getRepresentante());
-                    preparedCliente.setInt(10, clienteTB.getEstado());
-                    preparedCliente.setBoolean(11, clienteTB.isPredeterminado());
-                    preparedCliente.setBoolean(12, clienteTB.isSistema());
-                    preparedCliente.setInt(13, clienteTB.getIdMotivoTraslado());
-                    preparedCliente.setInt(14, clienteTB.getIdModalidadTraslado());
-                    preparedCliente.setInt(15, clienteTB.getIdUbigeo());
-                    preparedCliente.addBatch();
-
-                    codigoConductor = dbf.getConnection().prepareCall("{? = call Fc_Conductor_Codigo_Alfanumerico()}");
+                    codigoConductor = dbf.getConnection()
+                            .prepareCall("{? = call Fc_Conductor_Codigo_Alfanumerico()}");
                     codigoConductor.registerOutParameter(1, java.sql.Types.VARCHAR);
                     codigoConductor.execute();
                     String idConductor = codigoConductor.getString(1);
+
+                    ConductorTB conductorTB = clienteTB.getConductorTB();
 
                     preparedConductor = dbf.getConnection().prepareStatement("INSERT INTO Conductor("
                             + "IdConductor,\n"
@@ -202,14 +121,12 @@ public class ClienteADO {
                             + "MarcaVehiculo,\n"
                             + "Fecha,\n"
                             + "Hora,\n"
-                            + "IdUsuario )"
-                            + "  VALUES( ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  GETDATE(),  GETDATE(), ?)");
-
-                    ConductorTB conductorTB = clienteTB.getConductorTB();
+                            + "IdUsuario)\n"
+                            + "VALUES(?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?)");
                     if (!"".equals(conductorTB.getNumeroDocumento())
                             && !"".equals(conductorTB.getInformacion())) {
                         preparedConductor.setString(1, idConductor);
-                        preparedConductor.setString(2, idCliente);
+                        preparedConductor.setString(2, clienteTB.getIdCliente());
                         preparedConductor.setInt(3, conductorTB.getIdTipoDocumento());
                         preparedConductor.setString(4, conductorTB.getNumeroDocumento());
                         preparedConductor.setString(5, conductorTB.getInformacion());
@@ -220,18 +137,107 @@ public class ClienteADO {
                         preparedConductor.addBatch();
                     }
 
-                    preparedCliente.executeBatch();
-                    preparedConductor.executeBatch();
-                    dbf.getConnection().commit();
-                    result = "registered";
                 }
+
+                preparedCliente.executeBatch();
+                preparedConductor.executeBatch();
+                dbf.getConnection().commit();
+                return "updated";
+            } else {
+                preparedValidation.close();
+                preparedValidation = dbf.getConnection()
+                        .prepareStatement("select NumeroDocumento from ClienteTB where NumeroDocumento = ?");
+                preparedValidation.setString(1, clienteTB.getNumeroDocumento());
+
+                if (preparedValidation.executeQuery().next()) {
+                    dbf.getConnection().rollback();
+                    return "duplicate";
+                }
+
+                codigoCliente = dbf.getConnection().prepareCall("{? = call Fc_Cliente_Codigo_Alfanumerico()}");
+                codigoCliente.registerOutParameter(1, java.sql.Types.VARCHAR);
+                codigoCliente.execute();
+                String idCliente = codigoCliente.getString(1);
+
+                preparedCliente = dbf.getConnection().prepareStatement("INSERT INTO ClienteTB(\n"
+                        + "IdCliente,\n"
+                        + "TipoDocumento,\n"
+                        + "NumeroDocumento,\n"
+                        + "Informacion,\n"
+                        + "Telefono,\n"
+                        + "Celular,\n"
+                        + "Email,\n"
+                        + "Direccion,\n"
+                        + "Representante,\n"
+                        + "Estado,\n"
+                        + "Predeterminado,\n"
+                        + "Sistema,\n"
+                        + "IdMotivoTraslado,\n"
+                        + "IdModalidadTraslado,\n"
+                        + "IdUbigeo)"
+                        + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                preparedCliente.setString(1, idCliente);
+                preparedCliente.setInt(2, clienteTB.getTipoDocumento());
+                preparedCliente.setString(3, clienteTB.getNumeroDocumento());
+                preparedCliente.setString(4, clienteTB.getInformacion());
+                preparedCliente.setString(5, clienteTB.getTelefono());
+                preparedCliente.setString(6, clienteTB.getCelular());
+                preparedCliente.setString(7, clienteTB.getEmail());
+                preparedCliente.setString(8, clienteTB.getDireccion());
+                preparedCliente.setString(9, clienteTB.getRepresentante());
+                preparedCliente.setInt(10, clienteTB.getEstado());
+                preparedCliente.setBoolean(11, clienteTB.isPredeterminado());
+                preparedCliente.setBoolean(12, clienteTB.isSistema());
+                preparedCliente.setInt(13, clienteTB.getIdMotivoTraslado());
+                preparedCliente.setInt(14, clienteTB.getIdModalidadTraslado());
+                preparedCliente.setInt(15, clienteTB.getIdUbigeo());
+                preparedCliente.addBatch();
+
+                codigoConductor = dbf.getConnection().prepareCall("{? = call Fc_Conductor_Codigo_Alfanumerico()}");
+                codigoConductor.registerOutParameter(1, java.sql.Types.VARCHAR);
+                codigoConductor.execute();
+                String idConductor = codigoConductor.getString(1);
+
+                preparedConductor = dbf.getConnection().prepareStatement("INSERT INTO Conductor("
+                        + "IdConductor,\n"
+                        + "IdCliente,\n"
+                        + "IdTipoDocumento,\n"
+                        + "NumeroDocumento,\n"
+                        + "Informacion,\n"
+                        + "Celular,\n"
+                        + "PlacaVehiculo,\n"
+                        + "MarcaVehiculo,\n"
+                        + "Fecha,\n"
+                        + "Hora,\n"
+                        + "IdUsuario )"
+                        + "  VALUES( ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  GETDATE(),  GETDATE(), ?)");
+
+                ConductorTB conductorTB = clienteTB.getConductorTB();
+                if (!"".equals(conductorTB.getNumeroDocumento())
+                        && !"".equals(conductorTB.getInformacion())) {
+                    preparedConductor.setString(1, idConductor);
+                    preparedConductor.setString(2, idCliente);
+                    preparedConductor.setInt(3, conductorTB.getIdTipoDocumento());
+                    preparedConductor.setString(4, conductorTB.getNumeroDocumento());
+                    preparedConductor.setString(5, conductorTB.getInformacion());
+                    preparedConductor.setString(6, conductorTB.getCelular());
+                    // preparedConductor.setString(7, conductorTB.getPlacaVehiculo());
+                    preparedConductor.setString(8, conductorTB.getLicenciaConducir());
+                    preparedConductor.setString(9, conductorTB.getIdUsuario());
+                    preparedConductor.addBatch();
+                }
+
+                preparedCliente.executeBatch();
+                preparedConductor.executeBatch();
+                dbf.getConnection().commit();
+                return "registered";
             }
         } catch (SQLException | ClassNotFoundException ex) {
             try {
                 dbf.getConnection().rollback();
             } catch (SQLException exr) {
             }
-            result = ex.getLocalizedMessage();
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (codigoCliente != null) {
@@ -251,11 +257,9 @@ public class ClienteADO {
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
-                result = ex.getLocalizedMessage();
+                return ex.getLocalizedMessage();
             }
         }
-
-        return result;
     }
 
     // public static String CrudConductor(ConductorTB conductorTB) {
@@ -305,6 +309,7 @@ public class ClienteADO {
     public static Object ListCliente(String buscar, int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatementCount = null;
         ResultSet rsEmps = null;
         try {
             dbf.dbConnect();
@@ -336,9 +341,10 @@ public class ClienteADO {
                 empList.add(clienteTB);
             }
 
-            preparedStatement = dbf.getConnection().prepareStatement("{CALL Sp_Listar_Clientes_Count(?)}");
-            preparedStatement.setString(1, buscar);
-            rsEmps = preparedStatement.executeQuery();
+            rsEmps.close();
+            preparedStatementCount = dbf.getConnection().prepareStatement("{CALL Sp_Listar_Clientes_Count(?)}");
+            preparedStatementCount.setString(1, buscar);
+            rsEmps = preparedStatementCount.executeQuery();
             Integer cantidadTotal = 0;
             if (rsEmps.next()) {
                 cantidadTotal = rsEmps.getInt("Total");
@@ -355,6 +361,9 @@ public class ClienteADO {
             try {
                 if (preparedStatement != null) {
                     preparedStatement.close();
+                }
+                if (preparedStatementCount != null) {
+                    preparedStatementCount.close();
                 }
                 if (rsEmps != null) {
                     rsEmps.close();
@@ -602,33 +611,36 @@ public class ClienteADO {
             dbf.getConnection().setAutoCommit(false);
             statementValidate = dbf.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE Cliente = ?");
             statementValidate.setString(1, idCliente);
+
             if (statementValidate.executeQuery().next()) {
                 dbf.getConnection().rollback();
                 return "venta";
-            } else {
-                statementValidate = dbf.getConnection()
-                        .prepareStatement("SELECT * FROM ClienteTB WHERE IdCliente = ? AND Sistema = 1");
-                statementValidate.setString(1, idCliente);
-                if (statementValidate.executeQuery().next()) {
-                    dbf.getConnection().rollback();
-                    return "sistema";
-                } else {
-                    statementCliente = dbf.getConnection()
-                            .prepareStatement("DELETE FROM ClienteTB WHERE IdCliente = ?");
-                    statementCliente.setString(1, idCliente);
-                    statementCliente.addBatch();
-
-                    statementConductor = dbf.getConnection()
-                            .prepareStatement("DELETE FROM Conductor WHERE IdCliente = ?");
-                    statementConductor.setString(1, idCliente);
-                    statementConductor.addBatch();
-
-                    statementCliente.executeBatch();
-                    statementConductor.executeBatch();
-                    dbf.getConnection().commit();
-                    return "deleted";
-                }
             }
+
+            statementValidate.close();
+            statementValidate = dbf.getConnection()
+                    .prepareStatement("SELECT * FROM ClienteTB WHERE IdCliente = ? AND Sistema = 1");
+            statementValidate.setString(1, idCliente);
+
+            if (statementValidate.executeQuery().next()) {
+                dbf.getConnection().rollback();
+                return "sistema";
+            }
+
+            statementCliente = dbf.getConnection()
+                    .prepareStatement("DELETE FROM ClienteTB WHERE IdCliente = ?");
+            statementCliente.setString(1, idCliente);
+            statementCliente.addBatch();
+
+            statementConductor = dbf.getConnection()
+                    .prepareStatement("DELETE FROM Conductor WHERE IdCliente = ?");
+            statementConductor.setString(1, idCliente);
+            statementConductor.addBatch();
+
+            statementCliente.executeBatch();
+            statementConductor.executeBatch();
+            dbf.getConnection().commit();
+            return "deleted";
         } catch (SQLException | ClassNotFoundException ex) {
             try {
                 dbf.getConnection().rollback();
@@ -649,7 +661,7 @@ public class ClienteADO {
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
-
+                return ex.getMessage();
             }
         }
     }

@@ -126,8 +126,8 @@
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Modalidad Traslado:" textFill="#020203" GridPane.rowIndex="5" />
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Peso(KGM o TNE):" textFill="#020203" GridPane.rowIndex="6" />
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Conducto:" textFill="#020203" GridPane.columnIndex="2" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Número de Placa:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Númeo de Licencia:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Número de Placa:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Número de Licencia:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Dirección de Partida:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Dirección de Llegada:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Comprobante Asociado:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="5" />
@@ -135,14 +135,14 @@
                                     <Text fx:id="lblModalidadTraslado" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                     <Text fx:id="lblPesoBultos" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                     <Text fx:id="lblConducto" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" />
-                                    <Text fx:id="lblNumeroPlaca" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                    <Text fx:id="lblNumeroLicencia" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                    <Text fx:id="lblNumeroLicencia" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                     <Text fx:id="lblDireccionPartida" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                                     <Text fx:id="lblDireccionLlegada" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                                     <Text fx:id="lblTipoComprobante" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" GridPane.rowIndex="5" />
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Dirección:" textFill="#020203" GridPane.rowIndex="3" />
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Serie y Numeración:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                                     <Text fx:id="lblSerieNumeracion" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+                                    <Text fx:id="lblNumeroPlaca" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                  </children>
                               </GridPane>
                            </children>

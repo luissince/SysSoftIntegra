@@ -2,6 +2,7 @@ package model;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
+import service.ModalidadTrasladoTB;
 
 public class GuiaRemisionTB {
 
@@ -34,14 +35,17 @@ public class GuiaRemisionTB {
     private String xmlGenerado;
     private String numeroTicketSunat;
     private TipoDocumentoTB tipoDocumentoTB;
-    private ObservableList<GuiaRemisionDetalleTB> listGuiaRemisionDetalle;
+    private ObservableList<GuiaRemisionDetalleTB> guiaRemisionDetalle;
     private ClienteTB clienteTB;
     private EmpleadoTB empleadoTB;
     private UbigeoTB ubigeoPartidaTB;
     private UbigeoTB ubigeoLlegadaTB;
+    private ModalidadTrasladoTB modalidadTrasladoTB;
     private DetalleTB detalleMotivoTrasladoTB;
-    private DetalleTB detalleModalidadTrasladoTB;
+    private DetalleTB detallePesoCargaTB;
     private VentaTB ventaTB;
+    private ConductorTB conductorTB;
+    private VehiculoTB vehiculoTB;
     private Label estadoLabel;
 
     public GuiaRemisionTB() {
@@ -279,12 +283,12 @@ public class GuiaRemisionTB {
         this.tipoDocumentoTB = tipoDocumentoTB;
     }
 
-    public ObservableList<GuiaRemisionDetalleTB> getListGuiaRemisionDetalle() {
-        return listGuiaRemisionDetalle;
+    public ObservableList<GuiaRemisionDetalleTB> getGuiaRemisionDetalle() {
+        return guiaRemisionDetalle;
     }
 
-    public void setListGuiaRemisionDetalle(ObservableList<GuiaRemisionDetalleTB> listGuiaRemisionDetalle) {
-        this.listGuiaRemisionDetalle = listGuiaRemisionDetalle;
+    public void setGuiaRemisionDetalle(ObservableList<GuiaRemisionDetalleTB> guiaRemisionDetalle) {
+        this.guiaRemisionDetalle = guiaRemisionDetalle;
     }
 
     public ClienteTB getClienteTB() {
@@ -327,14 +331,6 @@ public class GuiaRemisionTB {
         this.detalleMotivoTrasladoTB = detalleMotivoTrasladoTB;
     }
 
-    public DetalleTB getDetalleModalidadTrasladoTB() {
-        return detalleModalidadTrasladoTB;
-    }
-
-    public void setDetalleModalidadTrasladoTB(DetalleTB detalleModalidadTrasladoTB) {
-        this.detalleModalidadTrasladoTB = detalleModalidadTrasladoTB;
-    }
-
     public VentaTB getVentaTB() {
         return ventaTB;
     }
@@ -349,6 +345,38 @@ public class GuiaRemisionTB {
 
     public void setEstadoLabel(Label estadoLabel) {
         this.estadoLabel = estadoLabel;
+    }
+
+    public ModalidadTrasladoTB getModalidadTrasladoTB() {
+        return modalidadTrasladoTB;
+    }
+
+    public void setModalidadTrasladoTB(ModalidadTrasladoTB modalidadTrasladoTB) {
+        this.modalidadTrasladoTB = modalidadTrasladoTB;
+    }
+
+    public ConductorTB getConductorTB() {
+        return conductorTB;
+    }
+
+    public void setConductorTB(ConductorTB conductorTB) {
+        this.conductorTB = conductorTB;
+    }
+
+    public VehiculoTB getVehiculoTB() {
+        return vehiculoTB;
+    }
+
+    public void setVehiculoTB(VehiculoTB vehiculoTB) {
+        this.vehiculoTB = vehiculoTB;
+    }
+
+    public DetalleTB getDetallePesoCargaTB() {
+        return detallePesoCargaTB;
+    }
+
+    public void setDetallePesoCargaTB(DetalleTB detallePesoCargaTB) {
+        this.detallePesoCargaTB = detallePesoCargaTB;
     }
 
 }

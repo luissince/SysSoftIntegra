@@ -42,7 +42,8 @@ public class TrasladoADO {
             statementCodigoTraslado.execute();
             String idTraslado = statementCodigoTraslado.getString(1);
 
-            statementCorrelativo = dbf.getConnection().prepareStatement("SELECT MAX(Correlativo) AS Correlativo FROM TrasladoTB");
+            statementCorrelativo = dbf.getConnection()
+                    .prepareStatement("SELECT MAX(Correlativo) AS Correlativo FROM TrasladoTB");
             ResultSet resultSet = statementCorrelativo.executeQuery();
             int correlativo = 1;
             if (resultSet.next()) {
@@ -214,14 +215,16 @@ public class TrasladoADO {
             statementCodigoTraslado.execute();
             String idTraslado = statementCodigoTraslado.getString(1);
 
-            statementCorrelativo = dbf.getConnection().prepareStatement("SELECT MAX(Correlativo) AS Correlativo FROM TrasladoTB");
+            statementCorrelativo = dbf.getConnection()
+                    .prepareStatement("SELECT MAX(Correlativo) AS Correlativo FROM TrasladoTB");
             ResultSet resultSet = statementCorrelativo.executeQuery();
             int correlativo = 1;
             if (resultSet.next()) {
                 correlativo = resultSet.getInt("Correlativo") + 1;
             }
 
-            statementNumeracion = dbf.getConnection().prepareStatement("SELECT MAX(Numeracion) AS Numeracion FROM TrasladoTB");
+            statementNumeracion = dbf.getConnection()
+                    .prepareStatement("SELECT MAX(Numeracion) AS Numeracion FROM TrasladoTB");
             int numeracion = 0;
             if (trasladoTB.isUsarNumeracion()) {
                 resultSet = statementNumeracion.executeQuery();
@@ -266,7 +269,8 @@ public class TrasladoADO {
             statementTraslado.setString(15, trasladoTB.getIdEmpleado());
             statementTraslado.addBatch();
 
-            statementTrasladoDetalle = dbf.getConnection().prepareStatement("INSERT INTO TrasladoHistorialTB(IdTraslado,IdSuministro,Cantidad,Peso) VALUES(?,?,?,?)");
+            statementTrasladoDetalle = dbf.getConnection().prepareStatement(
+                    "INSERT INTO TrasladoHistorialTB(IdTraslado,IdSuministro,Cantidad,Peso) VALUES(?,?,?,?)");
             for (SuministroTB sm : suministroTB) {
                 statementTrasladoDetalle.setString(1, idTraslado);
                 statementTrasladoDetalle.setString(2, sm.getIdSuministro());
@@ -313,9 +317,11 @@ public class TrasladoADO {
         }
     }
 
-    public static Object ListarTraslados(int opcion, String fechaInicial, String fechaFinal, int posicionPagina, int filasPorPagina) {
+    public static Object ListarTraslados(int opcion, String fechaInicial, String fechaFinal, int posicionPagina,
+            int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatementCount = null;
         ResultSet rsEmps = null;
 
         try {
@@ -334,12 +340,15 @@ public class TrasladoADO {
                 TrasladoTB trasladoTB = new TrasladoTB();
                 trasladoTB.setId(rsEmps.getRow() + posicionPagina);
                 trasladoTB.setIdTraslado(rsEmps.getString("IdTraslado"));
-                trasladoTB.setFecha(rsEmps.getDate("Fecha").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                trasladoTB.setHora(rsEmps.getTime("Hora").toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
+                trasladoTB.setFecha(
+                        rsEmps.getDate("Fecha").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                trasladoTB.setHora(
+                        rsEmps.getTime("Hora").toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
                 trasladoTB.setObservacion(rsEmps.getString("Observacion"));
                 trasladoTB.setEstado(rsEmps.getInt("Estado"));
                 trasladoTB.setTipo(rsEmps.getInt("Tipo"));
-                trasladoTB.setEmpleadoTB(new EmpleadoTB(rsEmps.getString("IdUsuario"), rsEmps.getString("Apellidos"), rsEmps.getString("Nombres")));
+                trasladoTB.setEmpleadoTB(new EmpleadoTB(rsEmps.getString("IdUsuario"), rsEmps.getString("Apellidos"),
+                        rsEmps.getString("Nombres")));
                 trasladoTB.setCorrelativo(rsEmps.getInt("Correlativo"));
                 trasladoTB.setNumeracion(rsEmps.getInt("Numeracion"));
 
@@ -370,11 +379,12 @@ public class TrasladoADO {
                 empList.add(trasladoTB);
             }
 
-            preparedStatement = dbf.getConnection().prepareStatement("{call Sp_Listar_Traslado_Count(?,?,?)}");
-            preparedStatement.setInt(1, opcion);
-            preparedStatement.setString(2, fechaInicial);
-            preparedStatement.setString(3, fechaFinal);
-            rsEmps = preparedStatement.executeQuery();
+            rsEmps.close();
+            preparedStatementCount = dbf.getConnection().prepareStatement("{call Sp_Listar_Traslado_Count(?,?,?)}");
+            preparedStatementCount.setInt(1, opcion);
+            preparedStatementCount.setString(2, fechaInicial);
+            preparedStatementCount.setString(3, fechaFinal);
+            rsEmps = preparedStatementCount.executeQuery();
             Integer cantidadTotal = 0;
             if (rsEmps.next()) {
                 cantidadTotal = rsEmps.getInt("Total");
@@ -393,6 +403,9 @@ public class TrasladoADO {
                 if (preparedStatement != null) {
                     preparedStatement.close();
                 }
+                if (preparedStatementCount != null) {
+                    preparedStatementCount.close();
+                }
                 if (rsEmps != null) {
                     rsEmps.close();
                 }
@@ -407,6 +420,7 @@ public class TrasladoADO {
     public static Object ObtenerTrasladoById(String idTraslado) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatementHistorial = null;
         ResultSet rsEmps = null;
 
         try {
@@ -417,10 +431,14 @@ public class TrasladoADO {
             if (rsEmps.next()) {
                 TrasladoTB trasladoTB = new TrasladoTB();
                 trasladoTB.setIdTraslado(rsEmps.getString("IdTraslado"));
-                trasladoTB.setFecha(rsEmps.getDate("Fecha").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                trasladoTB.setHora(rsEmps.getTime("Hora").toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
-                trasladoTB.setFechaTraslado(rsEmps.getDate("FechaTraslado").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                trasladoTB.setHoraTraslado(rsEmps.getTime("HoraTraslado").toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
+                trasladoTB.setFecha(
+                        rsEmps.getDate("Fecha").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                trasladoTB.setHora(
+                        rsEmps.getTime("Hora").toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
+                trasladoTB.setFechaTraslado(rsEmps.getDate("FechaTraslado").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                trasladoTB.setHoraTraslado(
+                        rsEmps.getTime("HoraTraslado").toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
                 trasladoTB.setPuntoPartida(rsEmps.getString("PuntoPartida"));
                 trasladoTB.setPuntoLlegada(rsEmps.getString("PuntoLlegada"));
                 trasladoTB.setTipo(rsEmps.getInt("Tipo"));
@@ -433,9 +451,11 @@ public class TrasladoADO {
                 empleadoTB.setNombres(rsEmps.getString("Nombres"));
                 trasladoTB.setEmpleadoTB(empleadoTB);
 
-                preparedStatement = dbf.getConnection().prepareStatement("{CALL Sp_Obtener_Traslado_Historial_ById(?)}");
-                preparedStatement.setString(1, idTraslado);
-                rsEmps = preparedStatement.executeQuery();
+                rsEmps.close();
+                preparedStatementHistorial = dbf.getConnection()
+                        .prepareStatement("{CALL Sp_Obtener_Traslado_Historial_ById(?)}");
+                preparedStatementHistorial.setString(1, idTraslado);
+                rsEmps = preparedStatementHistorial.executeQuery();
                 ArrayList<TrasladoHistorialTB> historialTBs = new ArrayList<>();
                 while (rsEmps.next()) {
                     TrasladoHistorialTB historialTB = new TrasladoHistorialTB();
@@ -469,6 +489,9 @@ public class TrasladoADO {
             try {
                 if (preparedStatement != null) {
                     preparedStatement.close();
+                }
+                if (preparedStatementHistorial != null) {
+                    preparedStatementHistorial.close();
                 }
                 if (rsEmps != null) {
                     rsEmps.close();
@@ -557,11 +580,12 @@ public class TrasladoADO {
         ResultSet resultSet = null;
         PreparedStatement preparedSuministro = null;
         ResultSet rsEmps = null;
-        ArrayList<SuministroTB> suministroTBs = new ArrayList();
+        ArrayList<SuministroTB> suministroTBs = new ArrayList<>();
         try {
             dbf.dbConnect();
 
-            preparedDetalle = dbf.getConnection().prepareStatement("SELECT IdArticulo,Cantidad FROM DetalleVentaTB WHERE IdVenta = ?");
+            preparedDetalle = dbf.getConnection()
+                    .prepareStatement("SELECT IdArticulo,Cantidad FROM DetalleVentaTB WHERE IdVenta = ?");
             preparedDetalle.setString(1, idVenta);
             resultSet = preparedDetalle.executeQuery();
             while (resultSet.next()) {

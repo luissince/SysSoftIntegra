@@ -294,26 +294,21 @@ public class FxPrincipalController implements Initializable {
     public void initInicioController() {
         Stage stage = (Stage) spWindow.getScene().getWindow();
         stage.setOnCloseRequest(c -> {
-            try {
-                openFondoModal();
-                short option = Tools.AlertMessageConfirmation(spWindow, "SysSoft Integra",
-                        "¿Está seguro de cerrar la aplicación?");
-                if (option == 1) {
-                    System.exit(0);
-                    Platform.exit();
-                } else {
-                    closeFondoModal();
-                    c.consume();
-                }
-            } catch (Exception ex) {
-                System.out.println("Close window:" + ex.getLocalizedMessage());
+            openFondoModal();
+            short option = Tools.AlertMessageConfirmation(spWindow, "SysSoft Integra",
+                    "¿Está seguro de cerrar la aplicación?");
+            if (option == 1) {
+                System.exit(0);
+                Platform.exit();
+            } else {
+                closeFondoModal();
+                c.consume();
             }
         });
 
         width_siderbar = vbSiderBar.getPrefWidth();
 
         setNode(fxBienvenida);
-
     }
 
     public void initUserSession(String value) {

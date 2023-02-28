@@ -115,10 +115,6 @@ public class BillPrintable implements Printable {
      * @param ubigeo_partida_guia
      * @param direccion_llegada_guia
      * @param ubigeo_llegada_guia
-     * @param numero_documento_trasportista_guia
-     * @param informacion_trasportista_guia
-     * @param marca_vehiculo_guia
-     * @param numero_placa_vehiculo_guia
      * @param movito_traslado_guia
      * @param comprobante_anulado_nombre
      * @param comprobante_anulado_serie
@@ -163,20 +159,33 @@ public class BillPrintable implements Printable {
             String ubigeo_partida_guia,
             String direccion_llegada_guia,
             String ubigeo_llegada_guia,
-            String numero_documento_trasportista_guia,
-            String informacion_trasportista_guia,
-            String marca_vehiculo_guia,
-            String numero_placa_vehiculo_guia,
             String movito_traslado_guia,
             String comprobante_anulado_nombre,
             String comprobante_anulado_serie,
             String comprobante_anulado_numeracion,
-            String nota_credito_motivo_anulacion) {
+            String nota_credito_motivo_anulacion,
+            String modalidad_traslado_guia,
+            String fecha_traslado_guia,
+            String peso_cargar_guia,
+            String numero_placa_vehiculo_guia,
+            String numero_documento_conductor_guia,
+            String informacion_conductor_guia,
+            String licencia_conductor_guia,
+            String comprobante_referencia_guia,
+            String serie_numeracion_referencia_guia) {
         int lines = 0;
         for (int j = 0; j < box.getChildren().size(); j++) {
             if (box.getChildren().get(j) instanceof TextFieldTicket) {
                 TextFieldTicket fieldTicket = ((TextFieldTicket) box.getChildren().get(j));
-                if (fieldTicket.getVariable().equalsIgnoreCase("repeempresa")) {
+                if (fieldTicket.getVariable().equalsIgnoreCase("razoempresa")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_RAZON_SOCIAL));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("nomcomempresa")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_NOMBRE_COMERCIAL));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("rucempresa")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_NUMERO_DOCUMENTO));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("direcempresa")) {
+                    fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_DOMICILIO));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("repeempresa")) {
                     fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_REPRESENTANTE));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("telempresa")) {
                     fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_TELEFONO));
@@ -186,14 +195,6 @@ public class BillPrintable implements Printable {
                     fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_PAGINAWEB));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("emailempresa")) {
                     fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_EMAIL));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("direcempresa")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_DOMICILIO));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("rucempresa")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_NUMERO_DOCUMENTO));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("razoempresa")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_RAZON_SOCIAL));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("nomcomempresa")) {
-                    fieldTicket.setText(Tools.AddText2Guines(Session.COMPANY_NOMBRE_COMERCIAL));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("fchactual")) {
                     fieldTicket.setText(Tools.AddText2Guines(Tools.getDate("dd/MM/yyyy")));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("horactual")) {
@@ -204,8 +205,6 @@ public class BillPrintable implements Printable {
                     fieldTicket.setText(Tools.AddText2Guines(numeracion_serie_comprobante));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("tipofomaventa")) {
                     fieldTicket.setText(Tools.AddText2Guines(tipoVenta));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("codigo")) {
-                    fieldTicket.setText(Tools.AddText2Guines(codigoVenta));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("numcliente")) {
                     fieldTicket.setText(Tools.AddText2Guines(nummero_documento_cliente));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("infocliente")) {
@@ -214,8 +213,16 @@ public class BillPrintable implements Printable {
                     fieldTicket.setText(Tools.AddText2Guines(celular_cliente));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("direcliente")) {
                     fieldTicket.setText(Tools.AddText2Guines(direccion_cliente));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("codigo")) {
+                    fieldTicket.setText(Tools.AddText2Guines(codigoVenta));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("importetotalletras")) {
                     fieldTicket.setText(Tools.AddText2Guines(importe_total_letras));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("montotal")) {
+                    fieldTicket.setText(Tools.AddText2Guines(montoTotal));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("montopagacobra")) {
+                    fieldTicket.setText(Tools.AddText2Guines(montoPagado));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("montorestanten")) {
+                    fieldTicket.setText(Tools.AddText2Guines(montoDiferencial));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("finiciooperacion")) {
                     fieldTicket.setText(Tools.AddText2Guines(fechaInicioOperacion));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("hiniciooperacion")) {
@@ -230,22 +237,6 @@ public class BillPrintable implements Printable {
                     fieldTicket.setText(Tools.AddText2Guines(contado));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("diferencia")) {
                     fieldTicket.setText(Tools.AddText2Guines(diferencia));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("numempleado")) {
-                    fieldTicket.setText(Tools.AddText2Guines(empleadoNumeroDocumento));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("infoempleado")) {
-                    fieldTicket.setText(Tools.AddText2Guines(empleadoInformacion));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("celempleado")) {
-                    fieldTicket.setText(Tools.AddText2Guines(empleadoCelular));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("direcempleado")) {
-                    fieldTicket.setText(Tools.AddText2Guines(empleadoDireccion));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("montotal")) {
-                    fieldTicket.setText(Tools.AddText2Guines(montoTotal));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("montopagacobra")) {
-                    fieldTicket.setText(Tools.AddText2Guines(montoPagado));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("montorestanten")) {
-                    fieldTicket.setText(Tools.AddText2Guines(montoDiferencial));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("observacion")) {
-                    fieldTicket.setText(Tools.AddText2Guines(obsevacion_descripción));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("aperturacaja")) {
                     fieldTicket.setText(Tools.AddText2Guines(monto_inicial_caja));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("ventasefectivocaja")) {
@@ -258,6 +249,30 @@ public class BillPrintable implements Printable {
                     fieldTicket.setText(Tools.AddText2Guines(monto_ingreso_caja));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("egresosefectivocaja")) {
                     fieldTicket.setText(Tools.AddText2Guines(monto_egreso_caja));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("modalidadtrasguia")) {
+                    fieldTicket.setText(Tools.AddText2Guines(modalidad_traslado_guia));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("motivotrasguia")) {
+                    fieldTicket.setText(Tools.AddText2Guines(movito_traslado_guia));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("fechatraslguia")) {
+                    fieldTicket.setText(Tools.AddText2Guines(fecha_traslado_guia));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("pesocargaguia")) {
+                    fieldTicket.setText(Tools.AddText2Guines(peso_cargar_guia));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("numplacaguia")) {
+                    fieldTicket.setText(Tools.AddText2Guines(numero_placa_vehiculo_guia));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("numdocconguia")) {
+                    fieldTicket.setText(Tools.AddText2Guines(numero_documento_conductor_guia));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("inforconguia")) {
+                    fieldTicket.setText(Tools.AddText2Guines(informacion_conductor_guia));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("licconduconguia")) {
+                    fieldTicket.setText(Tools.AddText2Guines(licencia_conductor_guia));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("numempleado")) {
+                    fieldTicket.setText(Tools.AddText2Guines(empleadoNumeroDocumento));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("infoempleado")) {
+                    fieldTicket.setText(Tools.AddText2Guines(empleadoInformacion));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("celempleado")) {
+                    fieldTicket.setText(Tools.AddText2Guines(empleadoCelular));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("direcempleado")) {
+                    fieldTicket.setText(Tools.AddText2Guines(empleadoDireccion));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("docuasociaguia")) {
                     fieldTicket.setText(Tools.AddText2Guines(nombre_impresion_comprobante_guia));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("numeroasocuguia")) {
@@ -270,16 +285,8 @@ public class BillPrintable implements Printable {
                     fieldTicket.setText(Tools.AddText2Guines(direccion_llegada_guia));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("ubigelleguia")) {
                     fieldTicket.setText(Tools.AddText2Guines(ubigeo_llegada_guia));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("documetrasguia")) {
-                    fieldTicket.setText(Tools.AddText2Guines(numero_documento_trasportista_guia));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("infotrasguia")) {
-                    fieldTicket.setText(Tools.AddText2Guines(informacion_trasportista_guia));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("marcavehiguia")) {
-                    fieldTicket.setText(Tools.AddText2Guines(marca_vehiculo_guia));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("numeroplacaguia")) {
-                    fieldTicket.setText(Tools.AddText2Guines(numero_placa_vehiculo_guia));
-                } else if (fieldTicket.getVariable().equalsIgnoreCase("motivotrasguia")) {
-                    fieldTicket.setText(Tools.AddText2Guines(movito_traslado_guia));
+                } else if (fieldTicket.getVariable().equalsIgnoreCase("observacion")) {
+                    fieldTicket.setText(Tools.AddText2Guines(obsevacion_descripción));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("nomcompronulanc")) {
                     fieldTicket.setText(Tools.AddText2Guines(comprobante_anulado_nombre));
                 } else if (fieldTicket.getVariable().equalsIgnoreCase("sericomproanulanc")) {

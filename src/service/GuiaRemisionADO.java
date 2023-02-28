@@ -15,6 +15,8 @@ import model.DetalleTB;
 import model.GuiaRemisionDetalleTB;
 import model.GuiaRemisionTB;
 import model.TipoDocumentoTB;
+import model.UbigeoTB;
+import model.VehiculoTB;
 import model.VentaTB;
 
 public class GuiaRemisionADO {
@@ -100,7 +102,7 @@ public class GuiaRemisionADO {
                     + ",Cantidad"
                     + ",Peso)"
                     + "VALUES(?,?,?,?,?,?,?)");
-            ObservableList<GuiaRemisionDetalleTB> list = guiaRemisionTB.getListGuiaRemisionDetalle();
+            ObservableList<GuiaRemisionDetalleTB> list = guiaRemisionTB.getGuiaRemisionDetalle();
             for (GuiaRemisionDetalleTB guiad : list) {
                 statementGuiaRemisionDetalle.setString(1, idGuiaRemision);
                 statementGuiaRemisionDetalle.setString(2, guiad.getIdSuministro());
@@ -280,14 +282,18 @@ public class GuiaRemisionADO {
                 guiaRemisionTB.setHoraTraslado(
                         result.getTime("HoraTraslado").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
 
+                ModalidadTrasladoTB modalidadTrasladoTB = new ModalidadTrasladoTB();
+                modalidadTrasladoTB.setNombre(result.getString("ModalidadTraslado"));
+                guiaRemisionTB.setModalidadTrasladoTB(modalidadTrasladoTB);
+
                 DetalleTB detalleMotivoTraslado = new DetalleTB();
                 detalleMotivoTraslado.setNombre(result.getString("MotivoTraslado").toUpperCase());
                 guiaRemisionTB.setDetalleMotivoTrasladoTB(detalleMotivoTraslado);
 
-                DetalleTB detalleModalidadTraslado = new DetalleTB();
-                detalleModalidadTraslado.setNombre(result.getString("ModalidadTraslado").toUpperCase());
-                guiaRemisionTB.setDetalleModalidadTrasladoTB(detalleModalidadTraslado);
                 guiaRemisionTB.setPesoCarga(result.getDouble("PesoCarga"));
+                DetalleTB detallePeso = new DetalleTB();
+                detallePeso.setIdAuxiliar(result.getString("CodigoPeso"));
+                guiaRemisionTB.setDetallePesoCargaTB(detallePeso);
 
                 ClienteTB clienteTB = new ClienteTB();
                 clienteTB.setNumeroDocumento(result.getString("NumeroDocumento"));
@@ -297,73 +303,70 @@ public class GuiaRemisionADO {
                 clienteTB.setDireccion(result.getString("Direccion"));
                 guiaRemisionTB.setClienteTB(clienteTB);
 
-                ConductorTB conductorTB = new ConductorTB();
-                conductorTB.setNumeroDocumento(result.getString("NumeroDocumento"));
-                conductorTB.setInformacion(result.getString("Informacion"));
-                conductorTB.setCelular(result.getString("Celular"));
-                conductorTB.setLicenciaConducir(result.getString("LicenciaConducir"));
+                if (result.getString("NumeroDocumentoCo") != null) {
+                    ConductorTB conductorTB = new ConductorTB();
+                    conductorTB.setNumeroDocumento(result.getString("NumeroDocumentoCo"));
+                    conductorTB.setInformacion(result.getString("InformacionCo"));
+                    conductorTB.setCelular(result.getString("CelularCo"));
+                    conductorTB.setLicenciaConducir(result.getString("LicenciaConducir"));
+                    guiaRemisionTB.setConductorTB(conductorTB);
+                } else {
+                    ConductorTB conductorTB = new ConductorTB();
+                    conductorTB.setNumeroDocumento("");
+                    conductorTB.setInformacion("");
+                    conductorTB.setCelular("");
+                    conductorTB.setLicenciaConducir("");
+                    guiaRemisionTB.setConductorTB(conductorTB);
+                }
 
-                // EmpleadoTB empleadoTB = new EmpleadoTB();
-                // empleadoTB.setNumeroDocumento(result.getString("NumeroDocumento"));
-                // empleadoTB.setApellidos(result.getString("Apellidos"));
-                // empleadoTB.setNombres(result.getString("Nombres"));
-                // empleadoTB.setCelular(result.getString("Celular"));
-                // empleadoTB.setDireccion(result.getString("Direccion"));
-                // guiaRemisionTB.setEmpleadoTB(empleadoTB);
+                if (result.getString("NumeroPlaca") != null) {
+                    VehiculoTB vehiculoTB = new VehiculoTB();
+                    vehiculoTB.setNumeroPlaca(result.getString("NumeroPlaca"));
+                    guiaRemisionTB.setVehiculoTB(vehiculoTB);
+                } else {
+                    VehiculoTB vehiculoTB = new VehiculoTB();
+                    vehiculoTB.setNumeroPlaca("");
+                    guiaRemisionTB.setVehiculoTB(vehiculoTB);
+                }
 
-                // guiaRemisionTB.setFechaTraslado(result.getDate("FechaTraslado").toLocalDate()
-                // .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                // guiaRemisionTB.setHoraTraslado(
-                // result.getTime("HoraTraslado").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss
-                // a")));
+                guiaRemisionTB.setDireccionPartida(result.getString("DireccionPartida").toUpperCase());
+                UbigeoTB ubigeoPartida = new UbigeoTB();
+                ubigeoPartida.setDepartamento(result.getString("DepartamentoPartida"));
+                ubigeoPartida.setProvincia(result.getString("ProvinciaPartida"));
+                ubigeoPartida.setDistrito(result.getString("DistritoPartida"));
+                guiaRemisionTB.setUbigeoPartidaTB(ubigeoPartida);
 
-                // guiaRemisionTB.setNumeroDocumentoConductor(result.getString("NumeroDocumentoConductor").toUpperCase());
-                // guiaRemisionTB.setNombresConductor(result.getString("NombresConductor").toUpperCase());
-                // guiaRemisionTB.setTelefonoConducto(result.getString("TelefonoConducto").toUpperCase());
-                // guiaRemisionTB.setNumeroPlaca(result.getString("NumeroPlaca").toUpperCase());
-                // guiaRemisionTB.setMarcaVehiculo(result.getString("MarcaVehiculo").toUpperCase());
+                guiaRemisionTB.setDireccionLlegada(result.getString("DireccionLlegada").toUpperCase());
+                UbigeoTB ubigeoDetalle = new UbigeoTB();
+                ubigeoDetalle.setDepartamento(result.getString("DepartamentoLlegada"));
+                ubigeoDetalle.setProvincia(result.getString("ProvinciaLlegada"));
+                ubigeoDetalle.setDistrito(result.getString("DistritoLlegada"));
+                guiaRemisionTB.setUbigeoLlegadaTB(ubigeoDetalle);
 
-                // guiaRemisionTB.setIdUbigeoPartida(result.getInt("IdUbigeoPartida"));
-                // guiaRemisionTB.setDireccionPartida(result.getString("DireccionPartida").toUpperCase());
-
-                // guiaRemisionTB.setIdUbigeoLlegada(result.getInt("IdUbigeoLlegada"));
-                // guiaRemisionTB.setDireccionLlegada(result.getString("DireccionLlegada").toUpperCase());
-
-                // guiaRemisionTB.setSerieFactura(result.getString("SerieFactura").toUpperCase());
-                // guiaRemisionTB.setNumeracionFactura(result.getString("NumeracionFactura").toUpperCase());
-
-                // UbigeoTB ubigeoPartidaTB = new UbigeoTB();
-                // ubigeoPartidaTB.setIdUbigeo(result.getInt("IdUbigeoPartida"));
-                // ubigeoPartidaTB.setUbigeo(result.getString("CodigoUbigeoPartida"));
-                // ubigeoPartidaTB.setDepartamento(result.getString("DepartamentoPartida"));
-                // ubigeoPartidaTB.setProvincia(result.getString("ProvinciaPartida"));
-                // ubigeoPartidaTB.setDistrito(result.getString("DistritoPartida"));
-                // guiaRemisionTB.setUbigeoPartidaTB(ubigeoPartidaTB);
-
-                // UbigeoTB ubigeoLlegadaTB = new UbigeoTB();
-                // ubigeoLlegadaTB.setIdUbigeo(result.getInt("IdUbigeoPartida"));
-                // ubigeoLlegadaTB.setUbigeo(result.getString("CodigoUbigeoPartida"));
-                // ubigeoLlegadaTB.setDepartamento(result.getString("DepartamentoPartida"));
-                // ubigeoLlegadaTB.setProvincia(result.getString("ProvinciaPartida"));
-                // ubigeoLlegadaTB.setDistrito(result.getString("DistritoPartida"));
-                // guiaRemisionTB.setUbigeoLlegadaTB(ubigeoPartidaTB);
+                VentaTB ventaTB = new VentaTB();
+                TipoDocumentoTB tipoDocumentoVenta = new TipoDocumentoTB();
+                tipoDocumentoVenta.setNombre(result.getString("ComprobanteFactura"));
+                ventaTB.setTipoDocumentoTB(tipoDocumentoVenta);
+                ventaTB.setSerie(result.getString("SerieFactura"));
+                ventaTB.setNumeracion(result.getString("NumeracionFactura"));
+                guiaRemisionTB.setVentaTB(ventaTB);
 
                 statementGuiaRemisionDetalle = dbf.getConnection()
-                        .prepareStatement("SELECT * FROM GuiaRemisionDetalleTB WHERE IdGuiaRemision = ?");
+                        .prepareStatement("{CALL Sp_Obtener_GuiaRemision_Detalle_ById(?)}");
                 statementGuiaRemisionDetalle.setString(1, idGuiaRemision);
                 result = statementGuiaRemisionDetalle.executeQuery();
                 ObservableList<GuiaRemisionDetalleTB> observableList = FXCollections.observableArrayList();
                 while (result.next()) {
                     GuiaRemisionDetalleTB guiaRemisionDetalleTB = new GuiaRemisionDetalleTB();
                     guiaRemisionDetalleTB.setId(result.getRow());
-                    guiaRemisionDetalleTB.setCodigo(result.getString("Codigo"));
-                    guiaRemisionDetalleTB.setDescripcion(result.getString("Descripcion"));
+                    guiaRemisionDetalleTB.setCodigo(result.getString("Clave"));
+                    guiaRemisionDetalleTB.setDescripcion(result.getString("NombreMarca"));
                     guiaRemisionDetalleTB.setUnidad(result.getString("Unidad"));
                     guiaRemisionDetalleTB.setCantidad(result.getDouble("Cantidad"));
                     guiaRemisionDetalleTB.setPeso(result.getDouble("Peso"));
                     observableList.add(guiaRemisionDetalleTB);
                 }
-                guiaRemisionTB.setListGuiaRemisionDetalle(observableList);
+                guiaRemisionTB.setGuiaRemisionDetalle(observableList);
                 return guiaRemisionTB;
             } else {
                 throw new Exception("No se pudo obtener los datos para generar la guía de remisión.");

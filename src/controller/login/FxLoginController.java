@@ -117,11 +117,9 @@ public class FxLoginController implements Initializable {
                     stage.centerOnScreen();
                     stage.setMaximized(true);
                     stage.setOnShowing(s -> {
-                        System.out.println("setOnShowing");
 
                     });
                     stage.setOnShown(s -> {
-                        System.out.println("setOnShown");
                         controller.initLoadMenus();
                         controller.initInicioController();
                         controller.initUserSession((Session.USER_PUESTO.substring(0, 1).toUpperCase()

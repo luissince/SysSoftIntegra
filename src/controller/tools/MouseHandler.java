@@ -17,7 +17,7 @@ public class MouseHandler {
     public MouseHandler(SelectionModel selectionModel) {
         this.selectionModel = selectionModel;
     }
-    
+
     private class DragContext {
 
         double x;
@@ -31,7 +31,6 @@ public class MouseHandler {
 
         node.setOnMousePressed(mouseEvent -> {
 
-            // TODO: add shift & ctrl check to add/remove nodes to selection
             selectionModel.clear();
 
             // add to selection model, create drag handles

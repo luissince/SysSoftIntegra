@@ -783,7 +783,7 @@ public class FxGuiaRemisionController implements Initializable {
             /**
              * Detalle de guía de remisión
              */
-            guiaRemisionTB.setListGuiaRemisionDetalle(tvList.getItems());
+            guiaRemisionTB.setGuiaRemisionDetalle(tvList.getItems());
 
             String[] result = GuiaRemisionADO.InsertarGuiaRemision(guiaRemisionTB).split("/");
             if (result[0].equalsIgnoreCase("register")) {

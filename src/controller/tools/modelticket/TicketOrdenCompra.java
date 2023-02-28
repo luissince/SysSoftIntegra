@@ -64,7 +64,8 @@ public class TicketOrdenCompra {
 
     private final String filePath = "./report/OrdendeCompra.jasper";
 
-    public TicketOrdenCompra(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
+    public TicketOrdenCompra(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado,
+            AnchorPane hbDetalleCabecera, AnchorPane hbPie, ConvertMonedaCadena monedaCadena) {
         this.node = node;
         this.billPrintable = billPrintable;
         this.hbEncabezado = hbEncabezado;
@@ -74,28 +75,32 @@ public class TicketOrdenCompra {
     }
 
     public void imprimir(String idOrdenCompra) {
-        if (!Session.ESTADO_IMPRESORA_ORDEN_COMPRA && Tools.isText(Session.NOMBRE_IMPRESORA_ORDEN_COMPRA) && Tools.isText(Session.FORMATO_IMPRESORA_ORDEN_COMPRA)) {
-            Tools.AlertMessageWarning(node, "Orden de Compra", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+        if (!Session.ESTADO_IMPRESORA_ORDEN_COMPRA && Tools.isText(Session.NOMBRE_IMPRESORA_ORDEN_COMPRA)
+                && Tools.isText(Session.FORMATO_IMPRESORA_ORDEN_COMPRA)) {
+            Tools.AlertMessageWarning(node, "Orden de Compra",
+                    "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
             return;
         }
         if (Session.FORMATO_IMPRESORA_ORDEN_COMPRA.equalsIgnoreCase("ticket")) {
             if (Session.TICKET_ORDEN_COMPRA_ID == 0 && Session.TICKET_ORDEN_COMPRA_RUTA.equalsIgnoreCase("")) {
-                Tools.AlertMessageWarning(node, "Orden de Compra", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
+                Tools.AlertMessageWarning(node, "Orden de Compra",
+                        "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
             } else {
                 executeProcessOrdenCompraTicket(idOrdenCompra,
                         Session.DESING_IMPRESORA_ORDEN_COMPRA,
                         Session.TICKET_ORDEN_COMPRA_ID,
                         Session.TICKET_ORDEN_COMPRA_RUTA,
                         Session.NOMBRE_IMPRESORA_ORDEN_COMPRA,
-                        Session.CORTAPAPEL_IMPRESORA_ORDEN_COMPRA
-                );
+                        Session.CORTAPAPEL_IMPRESORA_ORDEN_COMPRA);
             }
         } else {
-            Tools.AlertMessageWarning(node, "Orden de Compra", "Error al validar el formato de impresión configure en la sección configuración/impresora.");
+            Tools.AlertMessageWarning(node, "Orden de Compra",
+                    "Error al validar el formato de impresión configure en la sección configuración/impresora.");
         }
     }
 
-    private void executeProcessOrdenCompraTicket(String idOrdenCompra, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) {
+    private void executeProcessOrdenCompraTicket(String idOrdenCompra, String desing, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -110,7 +115,8 @@ public class TicketOrdenCompra {
                     try {
                         OrdenCompraTB ordenCompraTB = (OrdenCompraTB) object;
                         if (desing.equalsIgnoreCase("withdesing")) {
-                            return printTicketWithDesingOrdenCompra(ordenCompraTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
+                            return printTicketWithDesingOrdenCompra(ordenCompraTB, ticketId, ticketRuta,
+                                    nombreImpresora, cortaPapel);
                         } else {
                             return "empty";
                         }
@@ -134,7 +140,8 @@ public class TicketOrdenCompra {
             } else if (result.equalsIgnoreCase("error_name")) {
                 Tools.showAlertNotification("/view/image/warning_large.png",
                         "Envío de impresión",
-                        Tools.newLineString("Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
+                        Tools.newLineString(
+                                "Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else if (result.equalsIgnoreCase("empty")) {
@@ -154,7 +161,8 @@ public class TicketOrdenCompra {
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Envío de impresión",
-                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -172,57 +180,112 @@ public class TicketOrdenCompra {
         }
     }
 
-    private String printTicketWithDesingOrdenCompra(OrdenCompraTB ordenCompraTB, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
+    private String printTicketWithDesingOrdenCompra(OrdenCompraTB ordenCompraTB, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
         billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
 
         for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
             HBox box = ((HBox) hbEncabezado.getChildren().get(i));
             billPrintable.hbEncebezado(box,
-                    "",
-                    "ORDEN DE COMPRA",
-                    "N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion()),
-                    ordenCompraTB.getProveedorTB().getNumeroDocumento(),
-                    ordenCompraTB.getProveedorTB().getRazonSocial(),
-                    ordenCompraTB.getProveedorTB().getCelular(),
-                    ordenCompraTB.getProveedorTB().getRazonSocial(),
-                    "CODIGO PROCESO",
-                    "IMPORTE EN LETRAS",
-                    ordenCompraTB.getFechaRegistro(),
-                    ordenCompraTB.getHoraVencimiento(),
-                    ordenCompraTB.getFechaVencimiento(),
-                    ordenCompraTB.getHoraVencimiento(),
-                    "0",
-                    "0",
-                    "0",
-                    "-",
-                    ordenCompraTB.getEmpleadoTB().getApellidos() + " " + ordenCompraTB.getEmpleadoTB().getNombres(),
-                    "-",
-                    "-",
-                    "0",
-                    "0",
-                    "0",
-                    ordenCompraTB.getObservacion(),
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "");
+                    "", // tipoVenta
+                    "ORDEN DE COMPRA", // nombre_impresion_comprobante
+                    "N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion()), // numeracion_serie_comprobante
+                    ordenCompraTB.getProveedorTB().getNumeroDocumento(), // nummero_documento_cliente
+                    ordenCompraTB.getProveedorTB().getRazonSocial(), // informacion_cliente
+                    ordenCompraTB.getProveedorTB().getCelular(), // celular_cliente
+                    ordenCompraTB.getProveedorTB().getRazonSocial(), // direccion_cliente
+                    "CODIGO PROCESO", // codigoVenta
+                    "IMPORTE EN LETRAS", // importe_total_letras
+                    ordenCompraTB.getFechaRegistro(), // fechaInicioOperacion
+                    ordenCompraTB.getHoraVencimiento(), // horaInicioOperacion
+                    ordenCompraTB.getFechaRegistro(), // fechaTerminoOperaciona
+                    ordenCompraTB.getHoraVencimiento(), // horaTerminoOperacion
+                    "0", // calculado
+                    "0", // contado
+                    "0", // diferencia
+                    "-", // empleadoNumeroDocumento
+                    ordenCompraTB.getEmpleadoTB().getApellidos() + " " + ordenCompraTB.getEmpleadoTB().getNombres(), // empleadoInformacion
+                    "-", // empleadoCelular
+                    "-", // empleadoDireccion
+                    "0", // montoTotal
+                    "0", // montoPagado
+                    "0", // montoDiferencial
+                    "", // obsevacion_descripción
+                    "0", // monto_inicial_caja
+                    "0", // monto_efectivo_caja
+                    "0", // monto_tarjeta_caja
+                    "0", // monto_deposito_caja
+                    "0", // monto_ingreso_caja
+                    "0", // monto_egreso_caja
+                    "", // nombre_impresion_comprobante_guia
+                    "", // numeracion_serie_comprobante_guia
+                    "", // direccion_partida_guia
+                    "", // ubigeo_partida_guia
+                    "", // direccion_llegada_guia
+                    "", // ubigeo_llegada_guia
+                    "", // movito_traslado_guia
+                    "", // comprobante_anulado_nombre
+                    "", // comprobante_anulado_serie
+                    "", // comprobante_anulado_numeracion
+                    "", // nota_credito_motivo_anulacion
+                    "", // modalidad_traslado_guia
+                    "", // fecha_traslado_guia
+                    "", // peso_cargar_guia
+                    "", // numero_placa_vehiculo_guia
+                    "", // numero_documento_conductor_guia
+                    "", // informacion_conductor_guia
+                    "", // licencia_conductor_guia
+                    "", // comprobante_referencia_guia
+                    ""// serie_numeracion_referencia_guia
+            );
+
+            // billPrintable.hbEncebezado(box,
+            // "",
+            // "ORDEN DE COMPRA",
+            // "N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion()),
+            // ordenCompraTB.getProveedorTB().getNumeroDocumento(),
+            // ordenCompraTB.getProveedorTB().getRazonSocial(),
+            // ordenCompraTB.getProveedorTB().getCelular(),
+            // ordenCompraTB.getProveedorTB().getRazonSocial(),
+            // "CODIGO PROCESO",
+            // "IMPORTE EN LETRAS",
+            // ordenCompraTB.getFechaRegistro(),
+            // ordenCompraTB.getHoraVencimiento(),
+            // ordenCompraTB.getFechaVencimiento(),
+            // ordenCompraTB.getHoraVencimiento(),
+            // "0",
+            // "0",
+            // "0",
+            // "-",
+            // ordenCompraTB.getEmpleadoTB().getApellidos() + " " +
+            // ordenCompraTB.getEmpleadoTB().getNombres(),
+            // "-",
+            // "-",
+            // "0",
+            // "0",
+            // "0",
+            // ordenCompraTB.getObservacion(),
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "");
         }
 
         AnchorPane hbDetalle = new AnchorPane();
@@ -331,16 +394,19 @@ public class TicketOrdenCompra {
                             jsono.put("id", ocdtb.getId());
                             jsono.put("cantidad", Tools.roundingValue(ocdtb.getCantidad(), 2));
                             jsono.put("unidad", ocdtb.getSuministroTB().getUnidadCompraName());
-                            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n" + ocdtb.getSuministroTB().getNombreMarca());
+                            jsono.put("producto", ocdtb.getSuministroTB().getClave() + "\n"
+                                    + ocdtb.getSuministroTB().getNombreMarca());
                             jsono.put("costo", Tools.roundingValue(ocdtb.getCosto(), 2));
                             jsono.put("descuento", Tools.roundingValue(ocdtb.getDescuento(), 0));
-                            jsono.put("importe", Tools.roundingValue(ocdtb.getCosto() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
+                            jsono.put("importe", Tools
+                                    .roundingValue(ocdtb.getCosto() * (ocdtb.getCantidad() - ocdtb.getDescuento()), 2));
                             array.add(jsono);
 
                             double importeBruto = ocdtb.getCosto() * ocdtb.getCantidad();
                             double descuento = ocdtb.getDescuento();
                             double subImporteBruto = importeBruto - descuento;
-                            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(), subImporteBruto);
+                            double subImporteNeto = Tools.calculateTaxBruto(ocdtb.getImpuestoTB().getValor(),
+                                    subImporteBruto);
                             double impuesto = Tools.calculateTax(ocdtb.getImpuestoTB().getValor(), subImporteNeto);
                             double importeNeto = subImporteNeto + impuesto;
 
@@ -359,7 +425,7 @@ public class TicketOrdenCompra {
                         if (Session.COMPANY_IMAGE != null) {
                             imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
                         }
-                     
+
                         InputStream dir = new FileInputStream(archivoc.getPath());
 
                         Map map = new HashMap();
@@ -367,7 +433,8 @@ public class TicketOrdenCompra {
                         map.put("ICON", imgInputStreamIcon);
                         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
                         map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-                        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
+                        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO)
+                                + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
                         map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
                         map.put("PAGINAWEB", Session.COMPANY_PAGINAWEB);
 
@@ -383,14 +450,20 @@ public class TicketOrdenCompra {
                         map.put("PROVEEDORCELULAR", ordenCompraTB.getProveedorTB().getCelular());
                         map.put("PROVEEDORDIRECCION", ordenCompraTB.getProveedorTB().getDireccion());
 
-                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true, ordenCompraTB.getMonedaTB().getNombre()));
+                        map.put("VALORSOLES", monedaCadena.Convertir(Tools.roundingValue(importeNetoTotal, 2), true,
+                                ordenCompraTB.getMonedaTB().getNombre()));
                         map.put("OBSERVACION", ordenCompraTB.getObservacion());
 
-                        map.put("IMPORTEBRUTO", ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBrutoTotal, 2));
-                        map.put("DESCUENTOTOTAL", ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(descuentoTotal, 2));
-                        map.put("SUBIMPORTE", ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(subImporteNetoTotal, 2));
-                        map.put("IMPUESTO", ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
-                        map.put("IMPORTENETO", ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNetoTotal, 2));
+                        map.put("IMPORTEBRUTO", ordenCompraTB.getMonedaTB().getSimbolo() + " "
+                                + Tools.roundingValue(importeBrutoTotal, 2));
+                        map.put("DESCUENTOTOTAL", ordenCompraTB.getMonedaTB().getSimbolo() + " "
+                                + Tools.roundingValue(descuentoTotal, 2));
+                        map.put("SUBIMPORTE", ordenCompraTB.getMonedaTB().getSimbolo() + " "
+                                + Tools.roundingValue(subImporteNetoTotal, 2));
+                        map.put("IMPUESTO",
+                                ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
+                        map.put("IMPORTENETO", ordenCompraTB.getMonedaTB().getSimbolo() + " "
+                                + Tools.roundingValue(importeNetoTotal, 2));
 
                         fileName = "ORDEN DE COMRA N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion());
                         return JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
@@ -425,7 +498,7 @@ public class TicketOrdenCompra {
                     URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                     Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
+                    // Controlller here
                     FxReportViewController controller = fXMLLoader.getController();
                     controller.setFileName(fileName);
                     controller.setJasperPrint((JasperPrint) object);

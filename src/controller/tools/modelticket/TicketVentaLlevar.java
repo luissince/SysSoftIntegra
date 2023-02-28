@@ -52,7 +52,8 @@ public class TicketVentaLlevar {
 
     private String fileName;
 
-    public TicketVentaLlevar(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado, AnchorPane hbDetalleCabecera, AnchorPane hbPie) {
+    public TicketVentaLlevar(Node node, BillPrintable billPrintable, AnchorPane hbEncabezado,
+            AnchorPane hbDetalleCabecera, AnchorPane hbPie) {
         this.node = node;
         this.billPrintable = billPrintable;
         this.hbEncabezado = hbEncabezado;
@@ -61,13 +62,18 @@ public class TicketVentaLlevar {
     }
 
     public void imprimir(String idVenta, String idSuministro) {
-        if (!Session.ESTADO_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS && Tools.isText(Session.NOMBRE_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS) && Tools.isText(Session.FORMATO_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS)) {
-            Tools.AlertMessageWarning(node, "Salida del Producto", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+        if (!Session.ESTADO_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS
+                && Tools.isText(Session.NOMBRE_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS)
+                && Tools.isText(Session.FORMATO_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS)) {
+            Tools.AlertMessageWarning(node, "Salida del Producto",
+                    "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
             return;
         }
         if (Session.FORMATO_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS.equalsIgnoreCase("ticket")) {
-            if (Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID == 0 && Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA.equalsIgnoreCase("")) {
-                Tools.AlertMessageWarning(node, "Salida del Producto", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
+            if (Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID == 0
+                    && Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA.equalsIgnoreCase("")) {
+                Tools.AlertMessageWarning(node, "Salida del Producto",
+                        "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
             } else {
                 executeProcessHistorialSalidaProducto(
                         idVenta,
@@ -76,15 +82,16 @@ public class TicketVentaLlevar {
                         Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_ID,
                         Session.TICKET_HISTORIAL_SALIDA_PRODUCTOS_RUTA,
                         Session.NOMBRE_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS,
-                        Session.CORTAPAPEL_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS
-                );
+                        Session.CORTAPAPEL_IMPRESORA_HISTORIA_SALIDA_PRODUCTOS);
             }
         } else {
-            Tools.AlertMessageWarning(node, "Salida del Producto", "Error al validar el formato de impresión configure en la sección configuración/impresora.");
+            Tools.AlertMessageWarning(node, "Salida del Producto",
+                    "Error al validar el formato de impresión configure en la sección configuración/impresora.");
         }
     }
 
-    private void executeProcessHistorialSalidaProducto(String idVenta, String idSuministro, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) {
+    private void executeProcessHistorialSalidaProducto(String idVenta, String idSuministro, String desing, int ticketId,
+            String ticketRuta, String nombreImpresora, boolean cortaPapel) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -104,10 +111,13 @@ public class TicketVentaLlevar {
                             DetalleVentaTB detalleVentaTB = (DetalleVentaTB) objects[1];
                             ArrayList<HistorialSuministroSalidaTB> suministroSalidas = (ArrayList<HistorialSuministroSalidaTB>) objects[2];
                             if (desing.equalsIgnoreCase("withdesing")) {
-                                return printTicketWithDesingHistorialSalidaProducto(ventaTB, detalleVentaTB, suministroSalidas, ticketId, ticketRuta, nombreImpresora, cortaPapel);
+                                return printTicketWithDesingHistorialSalidaProducto(ventaTB, detalleVentaTB,
+                                        suministroSalidas, ticketId, ticketRuta, nombreImpresora, cortaPapel);
                             } else {
-                                billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
-                                return printTicketNoDesingHistorialSalidaProducto(ventaTB, detalleVentaTB, suministroSalidas, nombreImpresora, cortaPapel);
+                                billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado,
+                                        hbDetalleCabecera, hbPie);
+                                return printTicketNoDesingHistorialSalidaProducto(ventaTB, detalleVentaTB,
+                                        suministroSalidas, nombreImpresora, cortaPapel);
                             }
                         } catch (PrinterException | IOException | PrintException ex) {
                             return "Error en imprimir: " + ex.getLocalizedMessage();
@@ -132,7 +142,8 @@ public class TicketVentaLlevar {
             } else if (result.equalsIgnoreCase("error_name")) {
                 Tools.showAlertNotification("/view/image/warning_large.png",
                         "Envío de impresión",
-                        Tools.newLineString("Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
+                        Tools.newLineString(
+                                "Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else if (result.equalsIgnoreCase("empty")) {
@@ -152,7 +163,8 @@ public class TicketVentaLlevar {
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Envío de impresión",
-                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -170,61 +182,117 @@ public class TicketVentaLlevar {
         }
     }
 
-    private String printTicketWithDesingHistorialSalidaProducto(VentaTB ventaTB, DetalleVentaTB detalleVentaTB, ArrayList<HistorialSuministroSalidaTB> suministroSalidas, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
+    private String printTicketWithDesingHistorialSalidaProducto(VentaTB ventaTB, DetalleVentaTB detalleVentaTB,
+            ArrayList<HistorialSuministroSalidaTB> suministroSalidas, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
         billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
 
         double cantidadActual = 0;
-        cantidadActual = suministroSalidas.stream().map((hs) -> hs.getCantidad()).reduce(cantidadActual, (accumulator, _item) -> accumulator + _item);
+        cantidadActual = suministroSalidas.stream().map((hs) -> hs.getCantidad()).reduce(cantidadActual,
+                (accumulator, _item) -> accumulator + _item);
 
         for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
             HBox box = ((HBox) hbEncabezado.getChildren().get(i));
             billPrintable.hbEncebezado(box,
-                    "",
-                    "HISTORIAL DE SALIDA",
-                    ventaTB.getSerie() + "-" + ventaTB.getNumeracion(),
-                    ventaTB.getClienteTB().getNumeroDocumento(),
-                    ventaTB.getClienteTB().getInformacion(),
-                    ventaTB.getClienteTB().getCelular(),
-                    ventaTB.getClienteTB().getDireccion(),
-                    "",
-                    "",
-                    ventaTB.getFechaVenta(),
-                    ventaTB.getHoraVenta(),
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    Tools.roundingValue(detalleVentaTB.getCantidad(), 2),
-                    Tools.roundingValue(cantidadActual, 2),
-                    Tools.roundingValue(detalleVentaTB.getCantidad() - cantidadActual, 2),
-                    detalleVentaTB.getSuministroTB().getNombreMarca(),
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "", // tipoVenta
+                    "HISTORIAL DE SALIDA", // nombre_impresion_comprobante
+                    ventaTB.getSerie() + "-" + Tools.formatNumber(ventaTB.getNumeracion()), // numeracion_serie_comprobante
+                    ventaTB.getClienteTB().getNumeroDocumento(), // nummero_documento_cliente
+                    ventaTB.getClienteTB().getInformacion(), // informacion_cliente
+                    ventaTB.getClienteTB().getCelular(), // celular_cliente
+                    ventaTB.getClienteTB().getDireccion(), // direccion_cliente
+                    "", // codigoVenta
+                    "", // importe_total_letras
+                    ventaTB.getFechaVenta(), // fechaInicioOperacion
+                    ventaTB.getHoraVenta(), // horaInicioOperacion
+                    "", // fechaTerminoOperaciona
+                    "", // horaTerminoOperacion
+                    "0", // calculado
+                    "0", // contado
+                    "0", // diferencia
+                    "-", // empleadoNumeroDocumento
+                    "-", // empleadoInformacion
+                    "-", // empleadoCelular
+                    "-", // empleadoDireccion
+                    Tools.roundingValue(detalleVentaTB.getCantidad(), 2), // montoTotal
+                    Tools.roundingValue(cantidadActual, 2), // montoPagado
+                    Tools.roundingValue(detalleVentaTB.getCantidad() - cantidadActual, 2), // montoDiferencial
+                    detalleVentaTB.getSuministroTB().getNombreMarca(), // obsevacion_descripción
+                    "0", // monto_inicial_caja
+                    "0", // monto_efectivo_caja
+                    "0", // monto_tarjeta_caja
+                    "0", // monto_deposito_caja
+                    "0", // monto_ingreso_caja
+                    "0", // monto_egreso_caja
+                    "", // nombre_impresion_comprobante_guia
+                    "", // numeracion_serie_comprobante_guia
+                    "", // direccion_partida_guia
+                    "", // ubigeo_partida_guia
+                    "", // direccion_llegada_guia
+                    "", // ubigeo_llegada_guia
+                    "", // movito_traslado_guia
+                    "", // comprobante_anulado_nombre
+                    "", // comprobante_anulado_serie
+                    "", // comprobante_anulado_numeracion
+                    "", // nota_credito_motivo_anulacion
+                    "", // modalidad_traslado_guia
+                    "", // fecha_traslado_guia
+                    "", // peso_cargar_guia
+                    "", // numero_placa_vehiculo_guia
+                    "", // numero_documento_conductor_guia
+                    "", // informacion_conductor_guia
+                    "", // licencia_conductor_guia
+                    "", // comprobante_referencia_guia
+                    ""// serie_numeracion_referencia_guia
             );
+
+            // billPrintable.hbEncebezado(box,
+            // "",
+            // "HISTORIAL DE SALIDA",
+            // ventaTB.getSerie() + "-" + ventaTB.getNumeracion(),
+            // ventaTB.getClienteTB().getNumeroDocumento(),
+            // ventaTB.getClienteTB().getInformacion(),
+            // ventaTB.getClienteTB().getCelular(),
+            // ventaTB.getClienteTB().getDireccion(),
+            // "",
+            // "",
+            // ventaTB.getFechaVenta(),
+            // ventaTB.getHoraVenta(),
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // Tools.roundingValue(detalleVentaTB.getCantidad(), 2),
+            // Tools.roundingValue(cantidadActual, 2),
+            // Tools.roundingValue(detalleVentaTB.getCantidad() - cantidadActual, 2),
+            // detalleVentaTB.getSuministroTB().getNombreMarca(),
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // ""
+            // );
         }
 
         AnchorPane hbDetalle = new AnchorPane();
@@ -264,7 +332,8 @@ public class TicketVentaLlevar {
         }
 
         billPrintable.generateTicketPrint(hbEncabezado, hbDetalle, hbPie);
-        DocPrintJob job = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices()).createPrintJob();
+        DocPrintJob job = billPrintable.findPrintService(nombreImpresora, PrinterJob.lookupPrintServices())
+                .createPrintJob();
         if (job != null) {
             PrinterJob pj = PrinterJob.getPrinterJob();
             pj.setPrintService(job.getPrintService());
@@ -282,11 +351,13 @@ public class TicketVentaLlevar {
         }
     }
 
-    private String printTicketNoDesingHistorialSalidaProducto(VentaTB ventaTB, DetalleVentaTB detalleVentaTB, ArrayList<HistorialSuministroSalidaTB> suministroSalidas, String nombreImpresora, boolean cortaPapel) {
+    private String printTicketNoDesingHistorialSalidaProducto(VentaTB ventaTB, DetalleVentaTB detalleVentaTB,
+            ArrayList<HistorialSuministroSalidaTB> suministroSalidas, String nombreImpresora, boolean cortaPapel) {
         ArrayList<HBox> object = new ArrayList<>();
 
         double cantidadActual = 0;
-        cantidadActual = suministroSalidas.stream().map((hs) -> hs.getCantidad()).reduce(cantidadActual, (accumulator, _item) -> accumulator + _item);
+        cantidadActual = suministroSalidas.stream().map((hs) -> hs.getCantidad()).reduce(cantidadActual,
+                (accumulator, _item) -> accumulator + _item);
 
         int rows = 0;
         int lines = 0;
@@ -295,52 +366,104 @@ public class TicketVentaLlevar {
             HBox box = ((HBox) hbEncabezado.getChildren().get(i));
             rows++;
             lines += billPrintable.hbEncebezado(box,
-                    "",
-                    "HISTORIAL DE SALIDA",
-                    ventaTB.getSerie() + "-" + ventaTB.getNumeracion(),
-                    ventaTB.getClienteTB().getNumeroDocumento(),
-                    ventaTB.getClienteTB().getInformacion(),
-                    ventaTB.getClienteTB().getCelular(),
-                    ventaTB.getClienteTB().getDireccion(),
-                    "",
-                    "",
-                    ventaTB.getFechaVenta(),
-                    ventaTB.getHoraVenta(),
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    Tools.roundingValue(detalleVentaTB.getCantidad(), 2),
-                    Tools.roundingValue(cantidadActual, 2),
-                    Tools.roundingValue(detalleVentaTB.getCantidad() - cantidadActual, 2),
-                    detalleVentaTB.getSuministroTB().getNombreMarca(),
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    "", // tipoVenta
+                    "HISTORIAL DE SALIDA", // nombre_impresion_comprobante
+                    ventaTB.getSerie() + "-" + Tools.formatNumber(ventaTB.getNumeracion()), // numeracion_serie_comprobante
+                    ventaTB.getClienteTB().getNumeroDocumento(), // nummero_documento_cliente
+                    ventaTB.getClienteTB().getInformacion(), // informacion_cliente
+                    ventaTB.getClienteTB().getCelular(), // celular_cliente
+                    ventaTB.getClienteTB().getDireccion(), // direccion_cliente
+                    "", // codigoVenta
+                    "", // importe_total_letras
+                    ventaTB.getFechaVenta(), // fechaInicioOperacion
+                    ventaTB.getHoraVenta(), // horaInicioOperacion
+                    "", // fechaTerminoOperaciona
+                    "", // horaTerminoOperacion
+                    "0", // calculado
+                    "0", // contado
+                    "0", // diferencia
+                    "-", // empleadoNumeroDocumento
+                    "-", // empleadoInformacion
+                    "-", // empleadoCelular
+                    "-", // empleadoDireccion
+                    Tools.roundingValue(detalleVentaTB.getCantidad(), 2), // montoTotal
+                    Tools.roundingValue(cantidadActual, 2), // montoPagado
+                    Tools.roundingValue(detalleVentaTB.getCantidad() - cantidadActual, 2), // montoDiferencial
+                    detalleVentaTB.getSuministroTB().getNombreMarca(), // obsevacion_descripción
+                    "0", // monto_inicial_caja
+                    "0", // monto_efectivo_caja
+                    "0", // monto_tarjeta_caja
+                    "0", // monto_deposito_caja
+                    "0", // monto_ingreso_caja
+                    "0", // monto_egreso_caja
+                    "", // nombre_impresion_comprobante_guia
+                    "", // numeracion_serie_comprobante_guia
+                    "", // direccion_partida_guia
+                    "", // ubigeo_partida_guia
+                    "", // direccion_llegada_guia
+                    "", // ubigeo_llegada_guia
+                    "", // movito_traslado_guia
+                    "", // comprobante_anulado_nombre
+                    "", // comprobante_anulado_serie
+                    "", // comprobante_anulado_numeracion
+                    "", // nota_credito_motivo_anulacion
+                    "", // modalidad_traslado_guia
+                    "", // fecha_traslado_guia
+                    "", // peso_cargar_guia
+                    "", // numero_placa_vehiculo_guia
+                    "", // numero_documento_conductor_guia
+                    "", // informacion_conductor_guia
+                    "", // licencia_conductor_guia
+                    "", // comprobante_referencia_guia
+                    ""// serie_numeracion_referencia_guia
             );
+            // lines += billPrintable.hbEncebezado(box,
+            // "",
+            // "HISTORIAL DE SALIDA",
+            // ventaTB.getSerie() + "-" + ventaTB.getNumeracion(),
+            // ventaTB.getClienteTB().getNumeroDocumento(),
+            // ventaTB.getClienteTB().getInformacion(),
+            // ventaTB.getClienteTB().getCelular(),
+            // ventaTB.getClienteTB().getDireccion(),
+            // "",
+            // "",
+            // ventaTB.getFechaVenta(),
+            // ventaTB.getHoraVenta(),
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // Tools.roundingValue(detalleVentaTB.getCantidad(), 2),
+            // Tools.roundingValue(cantidadActual, 2),
+            // Tools.roundingValue(detalleVentaTB.getCantidad() - cantidadActual, 2),
+            // detalleVentaTB.getSuministroTB().getNombreMarca(),
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // ""
+            // );
         }
 
         ArrayList<HistorialSuministroSalidaTB> arrList = suministroSalidas;
@@ -402,7 +525,8 @@ public class TicketVentaLlevar {
                         ArrayList<HistorialSuministroSalidaTB> suministroSalidas = (ArrayList<HistorialSuministroSalidaTB>) objects[2];
 
                         double cantidad = 0;
-                        cantidad = suministroSalidas.stream().map(sd -> sd.getCantidad()).reduce(cantidad, (accumulator, _item) -> accumulator + _item);
+                        cantidad = suministroSalidas.stream().map(sd -> sd.getCantidad()).reduce(cantidad,
+                                (accumulator, _item) -> accumulator + _item);
 
                         InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
 
@@ -416,7 +540,8 @@ public class TicketVentaLlevar {
                         map.put("LOGO", imgInputStream);
                         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
                         map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-                        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO) + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
+                        map.put("TELEFONOCELULAR", Tools.textShow("TELÉFONO: ", Session.COMPANY_TELEFONO)
+                                + Tools.textShow(" CELULAR: ", Session.COMPANY_CELULAR));
                         map.put("EMAIL", Tools.textShow("EMAIL: ", Session.COMPANY_EMAIL));
                         map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C ", Session.COMPANY_NUMERO_DOCUMENTO));
 
@@ -431,7 +556,8 @@ public class TicketVentaLlevar {
 
                         fileName = "HISTORIAL DE MOVIMIENTOS DE " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion();
 
-                        return JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(suministroSalidas));
+                        return JasperFillManager.fillReport(dir, map,
+                                new JRBeanCollectionDataSource(suministroSalidas));
                     } catch (JRException ex) {
                         return "Error en imprimir: " + ex.getLocalizedMessage();
                     }
@@ -461,7 +587,7 @@ public class TicketVentaLlevar {
                     URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                     Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
+                    // Controlller here
                     FxReportViewController controller = fXMLLoader.getController();
                     controller.setFileName(fileName);
                     controller.setJasperPrint((JasperPrint) object);

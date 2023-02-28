@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Random;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -2468,6 +2469,8 @@ public class VentaADO {
             int comprobante, int estado, String usuario, int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatementCount = null;
+        PreparedStatement preparedStatementSuma = null;
         ResultSet rsEmps = null;
 
         try {
@@ -2549,28 +2552,28 @@ public class VentaADO {
                 empList.add(ventaTB);
             }
 
-            preparedStatement = dbf.getConnection()
+            preparedStatementCount = dbf.getConnection()
                     .prepareStatement("{call Sp_Listar_Pos_Ventas_Count(?,?,?,?,?,?,?)}");
-            preparedStatement.setShort(1, opcion);
-            preparedStatement.setString(2, value);
-            preparedStatement.setString(3, fechaInicial);
-            preparedStatement.setString(4, fechaFinal);
-            preparedStatement.setInt(5, comprobante);
-            preparedStatement.setInt(6, estado);
-            preparedStatement.setString(7, usuario);
+            preparedStatementCount.setShort(1, opcion);
+            preparedStatementCount.setString(2, value);
+            preparedStatementCount.setString(3, fechaInicial);
+            preparedStatementCount.setString(4, fechaFinal);
+            preparedStatementCount.setInt(5, comprobante);
+            preparedStatementCount.setInt(6, estado);
+            preparedStatementCount.setString(7, usuario);
             rsEmps.close();
-            rsEmps = preparedStatement.executeQuery();
+            rsEmps = preparedStatementCount.executeQuery();
             Integer cantidadTotal = 0;
             if (rsEmps.next()) {
                 cantidadTotal = rsEmps.getInt("Total");
             }
 
-            preparedStatement = dbf.getConnection().prepareStatement("{call Sp_Sumar_Ventas_Realizadas(?,?,?,?)}");
-            preparedStatement.setString(1, fechaInicial);
-            preparedStatement.setString(2, fechaFinal);
-            preparedStatement.setString(3, usuario);
-            preparedStatement.setInt(4, 2);
-            rsEmps = preparedStatement.executeQuery();
+            preparedStatementSuma = dbf.getConnection().prepareStatement("{call Sp_Sumar_Ventas_Realizadas(?,?,?,?)}");
+            preparedStatementSuma.setString(1, fechaInicial);
+            preparedStatementSuma.setString(2, fechaFinal);
+            preparedStatementSuma.setString(3, usuario);
+            preparedStatementSuma.setInt(4, 2);
+            rsEmps = preparedStatementSuma.executeQuery();
             double montoTotal = 0;
             if (rsEmps.next()) {
                 montoTotal = rsEmps.getDouble("Monto");
@@ -2589,6 +2592,12 @@ public class VentaADO {
             try {
                 if (preparedStatement != null) {
                     preparedStatement.close();
+                }
+                if (preparedStatementCount != null) {
+                    preparedStatementCount.close();
+                }
+                if (preparedStatementSuma != null) {
+                    preparedStatementSuma.close();
                 }
                 if (rsEmps != null) {
                     rsEmps.close();
@@ -3450,9 +3459,11 @@ public class VentaADO {
         DBUtil dbf = new DBUtil();
 
         PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatementCount = null;
         ResultSet resultSet = null;
         try {
             dbf.dbConnect();
+
             Object[] objects = new Object[2];
             preparedStatement = dbf.getConnection().prepareCall("{call Sp_Listar_Ventas_Credito(?,?,?,?,?,?,?)}");
             preparedStatement.setInt(1, opcion);
@@ -3515,15 +3526,15 @@ public class VentaADO {
 
             objects[0] = arrayList;
 
-            preparedStatement.close();
-            preparedStatement = dbf.getConnection().prepareCall("{call Sp_Listar_Ventas_Credito_Count(?,?,?,?,?)}");
-            preparedStatement.setInt(1, opcion);
-            preparedStatement.setString(2, buscar);
-            preparedStatement.setBoolean(3, mostrar);
-            preparedStatement.setString(4, fechaInicial);
-            preparedStatement.setString(5, fechaFinal);
-
-            resultSet = preparedStatement.executeQuery();
+            resultSet.close();
+            preparedStatementCount = dbf.getConnection()
+                    .prepareCall("{call Sp_Listar_Ventas_Credito_Count(?,?,?,?,?)}");
+            preparedStatementCount.setInt(1, opcion);
+            preparedStatementCount.setString(2, buscar);
+            preparedStatementCount.setBoolean(3, mostrar);
+            preparedStatementCount.setString(4, fechaInicial);
+            preparedStatementCount.setString(5, fechaFinal);
+            resultSet = preparedStatementCount.executeQuery();
             Integer integer = 0;
             if (resultSet.next()) {
                 integer = resultSet.getInt("Total");
@@ -3537,6 +3548,9 @@ public class VentaADO {
             try {
                 if (preparedStatement != null) {
                     preparedStatement.close();
+                }
+                if (preparedStatementCount != null) {
+                    preparedStatementCount.close();
                 }
                 if (resultSet != null) {
                     resultSet.close();
@@ -3587,6 +3601,7 @@ public class VentaADO {
                 monedaTB.setSimbolo(resultSet.getString("Simbolo"));
                 ventaTB.setMonedaTB(monedaTB);
 
+                resultSet.close();
                 preparedStatement.close();
                 preparedStatement = dbf.getConnection().prepareCall("{call Sp_Listar_Detalle_Venta_Credito(?)}");
                 preparedStatement.setString(1, idVenta);
@@ -4189,6 +4204,7 @@ public class VentaADO {
                     }
                 } else {
 
+                    resultSet.close();
                     statementHistorial = dbf.getConnection().prepareStatement(
                             "SELECT Cantidad FROM HistorialSuministroLlevar WHERE IdVenta = ? AND IdSuministro = ?");
                     statementHistorial.setString(1, idVenta);
@@ -4370,6 +4386,7 @@ public class VentaADO {
                 clienteTB.setDireccion(resultSet.getString("Direccion"));
                 ventaTB.setClienteTB(clienteTB);
 
+                resultSet.close();
                 statementVenta.close();
                 statementVenta = dbf.getConnection().prepareStatement(
                         "SELECT s.Clave,s.NombreMarca,d.Cantidad,d.Bonificacion FROM DetalleVentaTB AS d INNER JOIN SuministroTB AS s ON s.IdSuministro = d.IdArticulo WHERE d.IdVenta = ? AND d.IdArticulo = ?");
@@ -4468,6 +4485,7 @@ public class VentaADO {
                 array.add(jsono);
             }
 
+            resultSet.close();
             statementFactura.close();
             statementFactura = dbf.getConnection().prepareStatement("SELECT \n"
                     + "nc.Serie,\n"

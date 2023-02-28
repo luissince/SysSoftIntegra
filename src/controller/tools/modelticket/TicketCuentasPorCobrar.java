@@ -67,13 +67,17 @@ public class TicketCuentasPorCobrar {
     }
 
     public void imprimir(String idVenta) {
-        if (!Session.ESTADO_IMPRESORA_CUENTA_POR_COBRAR && Tools.isText(Session.NOMBRE_IMPRESORA_CUENTA_POR_COBRAR) && Tools.isText(Session.FORMATO_IMPRESORA_CUENTA_POR_COBRAR)) {
-            Tools.AlertMessageWarning(node, "Abono", "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
+        if (!Session.ESTADO_IMPRESORA_CUENTA_POR_COBRAR && Tools.isText(Session.NOMBRE_IMPRESORA_CUENTA_POR_COBRAR)
+                && Tools.isText(Session.FORMATO_IMPRESORA_CUENTA_POR_COBRAR)) {
+            Tools.AlertMessageWarning(node, "Abono",
+                    "No esta configurado la ruta de impresión ve a la sección configuración/impresora.");
             return;
         }
         if (Session.FORMATO_IMPRESORA_CUENTA_POR_COBRAR.equalsIgnoreCase("ticket")) {
-            if (Session.TICKET_CUENTA_POR_COBRAR_ID == 0 && Session.TICKET_CUENTA_POR_COBRAR_RUTA.equalsIgnoreCase("")) {
-                Tools.AlertMessageWarning(node, "Abono", "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
+            if (Session.TICKET_CUENTA_POR_COBRAR_ID == 0
+                    && Session.TICKET_CUENTA_POR_COBRAR_RUTA.equalsIgnoreCase("")) {
+                Tools.AlertMessageWarning(node, "Abono",
+                        "No hay un diseño predeterminado para la impresión configure su ticket en la sección configuración/tickets.");
             } else {
                 executeProcessPrinterCuentaPorCobrar(
                         idVenta,
@@ -81,15 +85,16 @@ public class TicketCuentasPorCobrar {
                         Session.TICKET_CUENTA_POR_COBRAR_ID,
                         Session.TICKET_CUENTA_POR_COBRAR_RUTA,
                         Session.NOMBRE_IMPRESORA_CUENTA_POR_COBRAR,
-                        Session.CORTAPAPEL_IMPRESORA_CUENTA_POR_COBRAR
-                );
+                        Session.CORTAPAPEL_IMPRESORA_CUENTA_POR_COBRAR);
             }
         } else {
-            Tools.AlertMessageWarning(node, "Abono", "Error al validar el formato de impresión configure en la sección configuración/impresora.");
+            Tools.AlertMessageWarning(node, "Abono",
+                    "Error al validar el formato de impresión configure en la sección configuración/impresora.");
         }
     }
 
-    private void executeProcessPrinterCuentaPorCobrar(String idVenta, String desing, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) {
+    private void executeProcessPrinterCuentaPorCobrar(String idVenta, String desing, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -104,7 +109,8 @@ public class TicketCuentasPorCobrar {
                     VentaTB ventaTB = (VentaTB) object;
                     try {
                         if (desing.equalsIgnoreCase("withdesing")) {
-                            return printTicketWithDesingCuentaCobrar(ventaTB, ticketId, ticketRuta, nombreImpresora, cortaPapel);
+                            return printTicketWithDesingCuentaCobrar(ventaTB, ticketId, ticketRuta, nombreImpresora,
+                                    cortaPapel);
                         } else {
                             return "empty";
                         }
@@ -128,7 +134,8 @@ public class TicketCuentasPorCobrar {
             } else if (result.equalsIgnoreCase("error_name")) {
                 Tools.showAlertNotification("/view/image/warning_large.png",
                         "Envío de impresión",
-                        Tools.newLineString("Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
+                        Tools.newLineString(
+                                "Error en encontrar el nombre de la impresión por problemas de puerto o driver."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else if (result.equalsIgnoreCase("empty")) {
@@ -148,7 +155,8 @@ public class TicketCuentasPorCobrar {
         task.setOnFailed(w -> {
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Envío de impresión",
-                    Tools.newLineString("Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el proceso de envío, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -166,57 +174,111 @@ public class TicketCuentasPorCobrar {
         }
     }
 
-    private String printTicketWithDesingCuentaCobrar(VentaTB ventaTB, int ticketId, String ticketRuta, String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
+    private String printTicketWithDesingCuentaCobrar(VentaTB ventaTB, int ticketId, String ticketRuta,
+            String nombreImpresora, boolean cortaPapel) throws PrinterException, PrintException, IOException {
         billPrintable.loadEstructuraTicket(ticketId, ticketRuta, hbEncabezado, hbDetalleCabecera, hbPie);
 
         for (int i = 0; i < hbEncabezado.getChildren().size(); i++) {
             HBox box = ((HBox) hbEncabezado.getChildren().get(i));
             billPrintable.hbEncebezado(box,
-                    "",
-                    "ABONO",
-                    "VC",
-                    ventaTB.getClienteTB().getNumeroDocumento(),
-                    ventaTB.getClienteTB().getInformacion(),
-                    ventaTB.getClienteTB().getCelular(),
-                    ventaTB.getClienteTB().getDireccion(),
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    Tools.roundingValue(ventaTB.getMontoTotal(), 2),
-                    Tools.roundingValue(ventaTB.getMontoCobrado(), 2),
-                    Tools.roundingValue(ventaTB.getMontoRestante(), 2),
-                    "",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "0",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "");
+                    "", // tipoVenta
+                    "ABONO", // nombre_impresion_comprobante
+                    "VC", // numeracion_serie_comprobante
+                    ventaTB.getClienteTB().getNumeroDocumento(), // nummero_documento_cliente
+                    ventaTB.getClienteTB().getInformacion(), // informacion_cliente
+                    ventaTB.getClienteTB().getCelular(), // celular_cliente
+                    ventaTB.getClienteTB().getDireccion(), // direccion_cliente
+                    "", // codigoVenta
+                    "", // importe_total_letras
+                    "", // fechaInicioOperacion
+                    "", // horaInicioOperacion
+                    "", // fechaTerminoOperaciona
+                    "", // horaTerminoOperacion
+                    "0", // calculado
+                    "0", // contado
+                    "0", // diferencia
+                    "-", // empleadoNumeroDocumento
+                    "-", // empleadoInformacion
+                    "-", // empleadoCelular
+                    "-", // empleadoDireccion
+                    Tools.roundingValue(ventaTB.getMontoTotal(), 2), // montoTotal
+                    Tools.roundingValue(ventaTB.getMontoCobrado(), 2), // montoPagado
+                    Tools.roundingValue(ventaTB.getMontoRestante(), 2), // montoDiferencial
+                    "", // obsevacion_descripción
+                    "0", // monto_inicial_caja
+                    "0", // monto_efectivo_caja
+                    "0", // monto_tarjeta_caja
+                    "0", // monto_deposito_caja
+                    "0", // monto_ingreso_caja
+                    "0", // monto_egreso_caja
+                    "", // nombre_impresion_comprobante_guia
+                    "", // numeracion_serie_comprobante_guia
+                    "", // direccion_partida_guia
+                    "", // ubigeo_partida_guia
+                    "", // direccion_llegada_guia
+                    "", // ubigeo_llegada_guia
+                    "", // movito_traslado_guia
+                    "", // comprobante_anulado_nombre
+                    "", // comprobante_anulado_serie
+                    "", // comprobante_anulado_numeracion
+                    "", // nota_credito_motivo_anulacion
+                    "", // modalidad_traslado_guia
+                    "", // fecha_traslado_guia
+                    "", // peso_cargar_guia
+                    "", // numero_placa_vehiculo_guia
+                    "", // numero_documento_conductor_guia
+                    "", // informacion_conductor_guia
+                    "", // licencia_conductor_guia
+                    "", // comprobante_referencia_guia
+                    ""// serie_numeracion_referencia_guia
+            );
+
+            // billPrintable.hbEncebezado(box,
+            // "",
+            // "ABONO",
+            // "VC",
+            // ventaTB.getClienteTB().getNumeroDocumento(),
+            // ventaTB.getClienteTB().getInformacion(),
+            // ventaTB.getClienteTB().getCelular(),
+            // ventaTB.getClienteTB().getDireccion(),
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // Tools.roundingValue(ventaTB.getMontoTotal(), 2),
+            // Tools.roundingValue(ventaTB.getMontoCobrado(), 2),
+            // Tools.roundingValue(ventaTB.getMontoRestante(), 2),
+            // "",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "0",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "");
         }
 
         AnchorPane hbDetalle = new AnchorPane();
@@ -288,9 +350,9 @@ public class TicketCuentasPorCobrar {
                 Object object = VentaADO.Listar_Ventas_Detalle_Credito_ById(idVenta);
                 if (object instanceof VentaTB) {
                     VentaTB ventaTB = (VentaTB) object;
-                    
-                    if(ventaTB.getVentaCreditoTBs().isEmpty()){
-                       return "No hay cobros para mostrar"; 
+
+                    if (ventaTB.getVentaCreditoTBs().isEmpty()) {
+                        return "No hay cobros para mostrar";
                     }
 
                     JSONArray array = new JSONArray();
@@ -332,7 +394,8 @@ public class TicketCuentasPorCobrar {
                     map.put("MONTO_COBRADO", Tools.roundingValue(ventaTB.getMontoCobrado(), 2));
                     map.put("MONTO_RESTANTE", Tools.roundingValue(ventaTB.getMontoRestante(), 2));
 
-                    JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map,
+                            new JsonDataSource(jsonDataStream));
 
                     return jasperPrint;
                 } else {
@@ -389,7 +452,7 @@ public class TicketCuentasPorCobrar {
         URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
         FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
         Parent parent = fXMLLoader.load(url.openStream());
-        //Controlller here
+        // Controlller here
         FxReportViewController controller = fXMLLoader.getController();
         controller.setJasperPrint(jasperPrint);
         controller.show();
