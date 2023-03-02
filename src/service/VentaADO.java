@@ -1137,7 +1137,7 @@ public class VentaADO {
             int dig5 = rd.nextInt(90000) + 10000;
 
             int countValidate = 0;
-            ArrayList<String> arrayResult = new ArrayList<String>();
+            ArrayList<String> arrayResult = new ArrayList<>();
             ventaVerificar = dbf.getConnection()
                     .prepareStatement("SELECT Cantidad FROM SuministroTB WHERE IdSuministro = ?");
             for (int i = 0; i < ventaTB.getSuministroTBs().size(); i++) {
