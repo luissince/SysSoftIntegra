@@ -33,7 +33,6 @@ import javafx.stage.StageStyle;
 import model.CajaTB;
 import model.PrivilegioTB;
 import service.CajaADO;
-import service.DBUtil;
 
 public class FxCajaController implements Initializable {
 

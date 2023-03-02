@@ -213,7 +213,7 @@ public class SuministroADO {
                         preparedSuministro.setString(24, suministroTB.getClaveSat());
                         preparedSuministro.setBoolean(25, suministroTB.isTipoPrecio());
                         preparedSuministro.setString(26, suministroTB.getDescripcion());
-
+                         
                         preparedSuministro.addBatch();
                         preparedSuministro.executeBatch();
 

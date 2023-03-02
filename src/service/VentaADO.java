@@ -3079,8 +3079,9 @@ public class VentaADO {
                     + "Cantidad, "
                     + "Costo, "
                     + "Total,"
-                    + "IdAlmacen) "
-                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                    + "IdAlmacen,"
+                    + "IdEmpleado) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 
             if (resultSet.getInt("Estado") != 4) {
                 for (SuministroTB stb : arrList) {
@@ -3114,6 +3115,7 @@ public class VentaADO {
                     statementKardex.setDouble(8, stb.getCostoCompra());
                     statementKardex.setDouble(9, cantidadTotal * stb.getCostoCompra());
                     statementKardex.setInt(10, 0);
+                    statementKardex.setString(11, Session.USER_ID);
                     statementKardex.addBatch();
                 }
             }
@@ -3223,8 +3225,9 @@ public class VentaADO {
                     + "Cantidad, "
                     + "Costo, "
                     + "Total,"
-                    + "IdAlmacen) "
-                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                    + "IdAlmacen,"
+                    + "IdEmpleado) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 
             if (resultSet.getInt("Estado") != 4) {
                 for (SuministroTB stb : arrList) {
@@ -3258,6 +3261,7 @@ public class VentaADO {
                     statementKardex.setDouble(8, stb.getCostoCompra());
                     statementKardex.setDouble(9, cantidadTotal * stb.getCostoCompra());
                     statementKardex.setInt(10, 0);
+                    statementKardex.setString(11, Session.USER_ID);
                     statementKardex.addBatch();
                 }
             }
@@ -4147,8 +4151,9 @@ public class VentaADO {
                                 + "Cantidad,"
                                 + "Costo, "
                                 + "Total,"
-                                + "IdAlmacen) "
-                                + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                                + "IdAlmacen,"
+                                + "IdEmpleado) "
+                                + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
                         statementKardex.setString(1, idSuministro);
                         statementKardex.setString(2, Tools.getDate());
                         statementKardex.setString(3, Tools.getTime());
@@ -4159,6 +4164,7 @@ public class VentaADO {
                         statementKardex.setDouble(8, costo);
                         statementKardex.setDouble(9, cantidadTotal * costo);
                         statementKardex.setInt(10, 0);
+                        statementKardex.setString(11, Session.USER_ID);
                         statementKardex.addBatch();
 
                         statementHistorial.close();
@@ -4270,8 +4276,9 @@ public class VentaADO {
                             + "Cantidad,"
                             + "Costo, "
                             + "Total,"
-                            + "IdAlmacen) "
-                            + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                            + "IdAlmacen,"
+                            + "IdEmpleado) "
+                            + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
                     statementKardex.setString(1, idSuministro);
                     statementKardex.setString(2, Tools.getDate());
                     statementKardex.setString(3, Tools.getTime());
@@ -4282,6 +4289,7 @@ public class VentaADO {
                     statementKardex.setDouble(8, costo);
                     statementKardex.setDouble(9, cantidad * costo);
                     statementKardex.setInt(10, 0);
+                    statementKardex.setString(11, Session.USER_ID);
                     statementKardex.addBatch();
 
                     statementHistorial.close();

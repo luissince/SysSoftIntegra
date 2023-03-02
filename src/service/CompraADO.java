@@ -1,5 +1,6 @@
 package service;
 
+import controller.tools.Session;
 import controller.tools.Tools;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -34,7 +35,8 @@ import model.SuministroTB;
 
 public class CompraADO {
 
-    public static String Compra_Contado(IngresoTB ingresoTB, MovimientoCajaTB movimientoCajaTB, CompraTB compraTB, TableView<DetalleCompraTB> tableView, ObservableList<LoteTB> loteTBs) {
+    public static String Compra_Contado(IngresoTB ingresoTB, MovimientoCajaTB movimientoCajaTB, CompraTB compraTB,
+            TableView<DetalleCompraTB> tableView, ObservableList<LoteTB> loteTBs) {
         DBUtil dbf = new DBUtil();
         CallableStatement codigo_compra = null;
         PreparedStatement compra = null;
@@ -46,16 +48,15 @@ public class CompraADO {
         PreparedStatement suministro_costo = null;
         PreparedStatement suministro_precio = null;
         PreparedStatement suministro_kardex = null;
-        //PreparedStatement lote_compra = null;
+        // PreparedStatement lote_compra = null;
         PreparedStatement moviento_caja = null;
         PreparedStatement ingreso = null;
-//        PreparedStatement preparedBanco = null;
-//        PreparedStatement preparedBancoHistorial = null;
+        // PreparedStatement preparedBanco = null;
+        // PreparedStatement preparedBancoHistorial = null;
 
-     
         try {
             dbf.dbConnect();
-            dbf. getConnection().setAutoCommit(false);
+            dbf.getConnection().setAutoCommit(false);
 
             codigo_compra = dbf.getConnection().prepareCall("{? = call Fc_Compra_Codigo_Alfanumerico()}");
             codigo_compra.registerOutParameter(1, java.sql.Types.VARCHAR);
@@ -85,7 +86,7 @@ public class CompraADO {
                     + "IdAlmacen) "
                     + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
-            detalle_compra =dbf. getConnection().prepareStatement("INSERT INTO "
+            detalle_compra = dbf.getConnection().prepareStatement("INSERT INTO "
                     + "DetalleCompraTB("
                     + "IdCompra,"
                     + "IdArticulo,"
@@ -99,17 +100,23 @@ public class CompraADO {
                     + "Descripcion)"
                     + "VALUES(?,?,?,?,?,?,?,?,?,?)");
 
-            suministro_precios_remover = dbf.getConnection().prepareStatement("DELETE FROM PreciosTB WHERE IdSuministro = ?");
+            suministro_precios_remover = dbf.getConnection()
+                    .prepareStatement("DELETE FROM PreciosTB WHERE IdSuministro = ?");
 
-            suministro_precios_insertar = dbf.getConnection().prepareStatement("INSERT INTO PreciosTB(IdArticulo, IdSuministro, Nombre, Valor, Factor,Estado) VALUES(?,?,?,?,?,?)");
+            suministro_precios_insertar = dbf.getConnection().prepareStatement(
+                    "INSERT INTO PreciosTB(IdArticulo, IdSuministro, Nombre, Valor, Factor,Estado) VALUES(?,?,?,?,?,?)");
 
-            suministro_costo = dbf.getConnection().prepareStatement("UPDATE SuministroTB SET PrecioCompra = ? WHERE IdSuministro = ?");
+            suministro_costo = dbf.getConnection()
+                    .prepareStatement("UPDATE SuministroTB SET PrecioCompra = ? WHERE IdSuministro = ?");
 
-            suministro_cantidad = dbf.getConnection().prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?");
+            suministro_cantidad = dbf.getConnection()
+                    .prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?");
 
-            suministro_precio = dbf.getConnection().prepareStatement("UPDATE SuministroTB SET Impuesto=?, PrecioVentaGeneral=?, TipoPrecio=? WHERE IdSuministro = ?");
+            suministro_precio = dbf.getConnection().prepareStatement(
+                    "UPDATE SuministroTB SET Impuesto=?, PrecioVentaGeneral=?, TipoPrecio=? WHERE IdSuministro = ?");
 
-            suministro_almacen_actualizar = dbf.getConnection().prepareStatement("UPDATE CantidadTB SET Cantidad = Cantidad + ? WHERE IdAlmacen = ? AND IdSuministro = ?");
+            suministro_almacen_actualizar = dbf.getConnection().prepareStatement(
+                    "UPDATE CantidadTB SET Cantidad = Cantidad + ? WHERE IdAlmacen = ? AND IdSuministro = ?");
 
             suministro_kardex = dbf.getConnection().prepareStatement("INSERT INTO "
                     + "KardexSuministroTB("
@@ -125,33 +132,38 @@ public class CompraADO {
                     + "IdAlmacen) "
                     + "VALUES(?,?,?,?,?,?,?,?,?,?)");
 
-            /*         lote_compra = getConnection().prepareStatement("INSERT INTO "
-                        + "LoteTB("
-                        + "NumeroLote,"
-                        + "FechaCaducidad,"
-                        + "ExistenciaInicial,"
-                        + "ExistenciaActual,"
-                        + "IdArticulo,"
-                        + "IdCompra) "
-                        + "VALUES(?,?,?,?,?,?)");*/
-//                preparedBanco = DBUtil.getConnection().prepareStatement("UPDATE Banco SET SaldoInicial = SaldoInicial - ? WHERE IdBanco = ?");
-//                preparedBancoHistorial = DBUtil.getConnection().prepareStatement("INSERT INTO BancoHistorialTB(IdBanco,IdEmpleado,IdProcedencia,Descripcion,Fecha,Hora,Entrada,Salida)VALUES(?,?,?,?,?,?,?,?)");
-//                if (bancoHistorialTB != null) {
-//                    preparedBanco.setDouble(1, bancoHistorialTB.getSalida());
-//                    preparedBanco.setString(2, bancoHistorialTB.getIdBanco());
-//                    preparedBanco.addBatch();
-//
-//                    preparedBancoHistorial.setString(1, bancoHistorialTB.getIdBanco());
-//                    preparedBancoHistorial.setString(2, bancoHistorialTB.getIdEmpleado());
-//                    preparedBancoHistorial.setString(3, "");
-//                    preparedBancoHistorial.setString(4, bancoHistorialTB.getDescripcion());
-//                    preparedBancoHistorial.setString(5, bancoHistorialTB.getFecha());
-//                    preparedBancoHistorial.setString(6, bancoHistorialTB.getHora());
-//                    preparedBancoHistorial.setDouble(7, 0);
-//                    preparedBancoHistorial.setDouble(8, bancoHistorialTB.getSalida());
-//                    preparedBancoHistorial.addBatch();
-//                }
-            ingreso = dbf.getConnection().prepareStatement("INSERT INTO IngresoTB(IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)VALUES(?,?,?,?,?,?,?,?)");
+            /*
+             * lote_compra = getConnection().prepareStatement("INSERT INTO "
+             * + "LoteTB("
+             * + "NumeroLote,"
+             * + "FechaCaducidad,"
+             * + "ExistenciaInicial,"
+             * + "ExistenciaActual,"
+             * + "IdArticulo,"
+             * + "IdCompra) "
+             * + "VALUES(?,?,?,?,?,?)");
+             */
+            // preparedBanco = DBUtil.getConnection().prepareStatement("UPDATE Banco SET
+            // SaldoInicial = SaldoInicial - ? WHERE IdBanco = ?");
+            // preparedBancoHistorial = DBUtil.getConnection().prepareStatement("INSERT INTO
+            // BancoHistorialTB(IdBanco,IdEmpleado,IdProcedencia,Descripcion,Fecha,Hora,Entrada,Salida)VALUES(?,?,?,?,?,?,?,?)");
+            // if (bancoHistorialTB != null) {
+            // preparedBanco.setDouble(1, bancoHistorialTB.getSalida());
+            // preparedBanco.setString(2, bancoHistorialTB.getIdBanco());
+            // preparedBanco.addBatch();
+            //
+            // preparedBancoHistorial.setString(1, bancoHistorialTB.getIdBanco());
+            // preparedBancoHistorial.setString(2, bancoHistorialTB.getIdEmpleado());
+            // preparedBancoHistorial.setString(3, "");
+            // preparedBancoHistorial.setString(4, bancoHistorialTB.getDescripcion());
+            // preparedBancoHistorial.setString(5, bancoHistorialTB.getFecha());
+            // preparedBancoHistorial.setString(6, bancoHistorialTB.getHora());
+            // preparedBancoHistorial.setDouble(7, 0);
+            // preparedBancoHistorial.setDouble(8, bancoHistorialTB.getSalida());
+            // preparedBancoHistorial.addBatch();
+            // }
+            ingreso = dbf.getConnection().prepareStatement(
+                    "INSERT INTO IngresoTB(IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)VALUES(?,?,?,?,?,?,?,?)");
             if (ingresoTB != null) {
                 ingreso.setString(1, id_compra);
                 ingreso.setString(2, ingresoTB.getIdUsuario());
@@ -164,7 +176,8 @@ public class CompraADO {
                 ingreso.addBatch();
             }
 
-            moviento_caja = dbf.getConnection().prepareStatement("INSERT INTO MovimientoCajaTB(IdCaja,FechaMovimiento,HoraMovimiento,Comentario,TipoMovimiento,Monto,IdProcedencia)VALUES(?,?,?,?,?,?,?)");
+            moviento_caja = dbf.getConnection().prepareStatement(
+                    "INSERT INTO MovimientoCajaTB(IdCaja,FechaMovimiento,HoraMovimiento,Comentario,TipoMovimiento,Monto,IdProcedencia)VALUES(?,?,?,?,?,?,?)");
             if (movimientoCajaTB != null) {
                 moviento_caja.setString(1, movimientoCajaTB.getIdCaja());
                 moviento_caja.setString(2, movimientoCajaTB.getFechaMovimiento());
@@ -216,7 +229,7 @@ public class CompraADO {
                     suministro_costo.setString(2, dc.getIdSuministro());
                     suministro_costo.addBatch();
                 }
-                //---------------------------------------------------------------------                    
+                // ---------------------------------------------------------------------
                 if (compraTB.getIdAlmacen() == 0) {
                     suministro_cantidad.setDouble(1, dc.getCantidad());
                     suministro_cantidad.setString(2, dc.getIdSuministro());
@@ -227,7 +240,8 @@ public class CompraADO {
                     suministro_kardex.setString(3, Tools.getTime());
                     suministro_kardex.setShort(4, (short) 1);
                     suministro_kardex.setInt(5, 2);
-                    suministro_kardex.setString(6, "COMPRA CON SERIE Y NUMERACIÓN: " + compraTB.getSerie().toUpperCase() + "-" + compraTB.getNumeracion().toUpperCase());
+                    suministro_kardex.setString(6, "COMPRA CON SERIE Y NUMERACIÓN: " + compraTB.getSerie().toUpperCase()
+                            + "-" + compraTB.getNumeracion().toUpperCase());
                     suministro_kardex.setDouble(7, dc.getCantidad());
                     suministro_kardex.setDouble(8, dc.getPrecioCompra());
                     suministro_kardex.setDouble(9, dc.getCantidad() * dc.getPrecioCompra());
@@ -244,7 +258,8 @@ public class CompraADO {
                     suministro_kardex.setString(3, Tools.getTime());
                     suministro_kardex.setShort(4, (short) 1);
                     suministro_kardex.setInt(5, 2);
-                    suministro_kardex.setString(6, "COMPRA CON SERIE Y NUMERACIÓN: " + compraTB.getSerie().toUpperCase() + "-" + compraTB.getNumeracion().toUpperCase());
+                    suministro_kardex.setString(6, "COMPRA CON SERIE Y NUMERACIÓN: " + compraTB.getSerie().toUpperCase()
+                            + "-" + compraTB.getNumeracion().toUpperCase());
                     suministro_kardex.setDouble(7, dc.getCantidad());
                     suministro_kardex.setDouble(8, dc.getPrecioCompra());
                     suministro_kardex.setDouble(9, dc.getCantidad() * dc.getPrecioCompra());
@@ -275,15 +290,17 @@ public class CompraADO {
 
             }
 
-//            for (int i = 0; i < loteTBs.size(); i++) {
-//                lote_compra.setString(1, loteTBs.get(i).getNumeroLote().equalsIgnoreCase("") ? id_compra + loteTBs.get(i).getIdArticulo() : loteTBs.get(i).getNumeroLote());
-//                lote_compra.setDate(2, Date.valueOf(loteTBs.get(i).getFechaCaducidad()));
-//                lote_compra.setDouble(3, loteTBs.get(i).getExistenciaInicial());
-//                lote_compra.setDouble(4, loteTBs.get(i).getExistenciaActual());
-//                lote_compra.setString(5, loteTBs.get(i).getIdArticulo());
-//                lote_compra.setString(6, id_compra);
-//                lote_compra.addBatch();
-//            }
+            // for (int i = 0; i < loteTBs.size(); i++) {
+            // lote_compra.setString(1, loteTBs.get(i).getNumeroLote().equalsIgnoreCase("")
+            // ? id_compra + loteTBs.get(i).getIdArticulo() :
+            // loteTBs.get(i).getNumeroLote());
+            // lote_compra.setDate(2, Date.valueOf(loteTBs.get(i).getFechaCaducidad()));
+            // lote_compra.setDouble(3, loteTBs.get(i).getExistenciaInicial());
+            // lote_compra.setDouble(4, loteTBs.get(i).getExistenciaActual());
+            // lote_compra.setString(5, loteTBs.get(i).getIdArticulo());
+            // lote_compra.setString(6, id_compra);
+            // lote_compra.addBatch();
+            // }
             ingreso.executeBatch();
             moviento_caja.executeBatch();
             compra.executeBatch();
@@ -295,8 +312,8 @@ public class CompraADO {
             suministro_precios_remover.executeBatch();
             suministro_precios_insertar.executeBatch();
             suministro_almacen_actualizar.executeBatch();
-//                preparedBanco.executeBatch();
-//                preparedBancoHistorial.executeBatch();
+            // preparedBanco.executeBatch();
+            // preparedBancoHistorial.executeBatch();
             // lote_compra.executeBatch();
             dbf.getConnection().commit();
             return "register";
@@ -324,12 +341,12 @@ public class CompraADO {
                 if (suministro_costo != null) {
                     suministro_costo.close();
                 }
-//                    if (preparedBanco != null) {
-//                        preparedBanco.close();
-//                    }
-//                    if (preparedBancoHistorial != null) {
-//                        preparedBancoHistorial.close();
-//                    }
+                // if (preparedBanco != null) {
+                // preparedBanco.close();
+                // }
+                // if (preparedBancoHistorial != null) {
+                // preparedBancoHistorial.close();
+                // }
                 if (suministro_cantidad != null) {
                     suministro_cantidad.close();
                 }
@@ -351,10 +368,12 @@ public class CompraADO {
                 if (moviento_caja != null) {
                     moviento_caja.close();
                 }
-                /*if (lote_compra != null) {
-                        lote_compra.close();
-                    }*/
-                    dbf.dbDisconnect();
+                /*
+                 * if (lote_compra != null) {
+                 * lote_compra.close();
+                 * }
+                 */
+                dbf.dbDisconnect();
             } catch (SQLException ex) {
                 return ex.getLocalizedMessage();
             }
@@ -452,8 +471,9 @@ public class CompraADO {
                     + "Cantidad, "
                     + "Costo, "
                     + "Total,"
-                    + "IdAlmacen) "
-                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                    + "IdAlmacen,"
+                    + "IdEmpleado) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 
             // lote_compra = getConnection().prepareStatement("INSERT INTO "
             // + "LoteTB("
@@ -521,6 +541,7 @@ public class CompraADO {
                     suministro_kardex.setDouble(8, dc.getPrecioCompra());
                     suministro_kardex.setDouble(9, dc.getCantidad() * dc.getPrecioCompra());
                     suministro_kardex.setInt(10, compraTB.getIdAlmacen());
+                    suministro_kardex.setString(11, Session.USER_ID);
                     suministro_kardex.addBatch();
                 } else {
                     suministro_almacen_actualizar.setDouble(1, dc.getCantidad());

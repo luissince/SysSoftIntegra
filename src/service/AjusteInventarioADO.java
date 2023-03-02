@@ -1,5 +1,6 @@
 package service;
 
+import controller.tools.Session;
 import controller.tools.Tools;
 
 import java.sql.CallableStatement;
@@ -42,17 +43,17 @@ public class AjusteInventarioADO {
             String idMovimiento = codigoMovimiento.getString(1);
 
             statementMovimiento = dbf.getConnection().prepareStatement("INSERT INTO "
-                    + "MovimientoInventarioTB("
-                    + "IdMovimientoInventario,"
-                    + "Fecha,"
-                    + "Hora,"
-                    + "TipoAjuste,"
-                    + "TipoMovimiento,"
-                    + "Observacion,"
-                    + "Suministro,"
-                    + "Estado,"
-                    + "CodigoVerificacion,"
-                    + "IdAlmacen)"
+                    + "MovimientoInventarioTB( "
+                    + "IdMovimientoInventario, "
+                    + "Fecha, "
+                    + "Hora, "
+                    + "TipoAjuste, "
+                    + "TipoMovimiento, "
+                    + "Observacion, "
+                    + "Suministro, "
+                    + "Estado, "
+                    + "CodigoVerificacion, "
+                    + "IdAlmacen) "
                     + "VALUES(?,?,?,?,?,?,?,?,?,?)");
             statementMovimiento.setString(1, idMovimiento);
             statementMovimiento.setString(2, inventarioTB.getFecha());
@@ -78,26 +79,27 @@ public class AjusteInventarioADO {
                             : "UPDATE CantidadTB SET Cantidad = Cantidad - ? WHERE IdAlmacen = ? AND IdSuministro = ?");
 
             suministroKardex = dbf.getConnection().prepareStatement("INSERT INTO "
-                    + "KardexSuministroTB("
-                    + "IdSuministro,"
-                    + "Fecha,"
-                    + "Hora,"
-                    + "Tipo,"
-                    + "Movimiento,"
-                    + "Detalle,"
+                    + "KardexSuministroTB( "
+                    + "IdSuministro, "
+                    + "Fecha, "
+                    + "Hora, "
+                    + "Tipo, "
+                    + "Movimiento, "
+                    + "Detalle, "
                     + "Cantidad, "
                     + "Costo, "
-                    + "Total,"
-                    + "IdAlmacen) "
-                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                    + "Total, "
+                    + "IdAlmacen, "
+                    + "IdEmpleado) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 
             statementMovimientoDetalle = dbf.getConnection().prepareStatement("INSERT INTO "
-                    + "MovimientoInventarioDetalleTB("
-                    + "IdMovimientoInventario,"
-                    + "IdSuministro,"
-                    + "Cantidad,"
-                    + "Costo,"
-                    + "Precio)"
+                    + "MovimientoInventarioDetalleTB( "
+                    + "IdMovimientoInventario, "
+                    + "IdSuministro, "
+                    + "Cantidad, "
+                    + "Costo, "
+                    + "Precio) "
                     + "VALUES(?,?,?,?,?)");
 
             for (SuministroTB suministroTB : inventarioTB.getSuministroTBs()) {
@@ -124,6 +126,7 @@ public class AjusteInventarioADO {
                         suministroKardex.setDouble(8, suministroTB.getCostoCompra());
                         suministroKardex.setDouble(9, suministroTB.getMovimiento() * suministroTB.getCostoCompra());
                         suministroKardex.setInt(10, inventarioTB.getIdAlmacen());
+                        suministroKardex.setString(11, Session.USER_ID);
                         suministroKardex.addBatch();
                     } else {
                         suministroUpdateAlmacen.setDouble(1, suministroTB.getMovimiento());
@@ -141,6 +144,7 @@ public class AjusteInventarioADO {
                         suministroKardex.setDouble(8, suministroTB.getCostoCompra());
                         suministroKardex.setDouble(9, suministroTB.getMovimiento() * suministroTB.getCostoCompra());
                         suministroKardex.setInt(10, inventarioTB.getIdAlmacen());
+                        suministroKardex.setString(11, Session.USER_ID);
                         suministroKardex.addBatch();
                     }
                 }

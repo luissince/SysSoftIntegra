@@ -687,6 +687,6 @@ public class SuministroTB {
     @Override
     public String toString() {
         return nombreMarca;
-    }
+    }    
 
 }

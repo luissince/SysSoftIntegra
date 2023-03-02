@@ -155,50 +155,6 @@ public class ClienteADO {
         }
     }
 
-    // public static String CrudConductor(ConductorTB conductorTB) {
-    //
-    // preparedValidation = dbf.getConnection().prepareStatement("select
-    // NumeroDocumento from \nConductorTB where NumeroDocumento = ?");
-    // preparedValidation.setString(1, conductorTB.getNumeroDocumento());
-    //
-    // codigoConductor = dbf.getConnection().prepareCall("{? = call
-    // Fc_Conductor_Codigo_Alfanumerico()}");
-    // codigoConductor.registerOutParameter(1, java.sql.Types.VARCHAR);
-    // codigoConductor.execute();
-    // String idConductor = codigoConductor.getString(1);
-    //
-    // preparedConductor = dbf.getConnection().prepareStatement("INSERT INTO
-    // Conductor("
-    // + "IdConductor,\n"
-    // + "IdCliente,\n"
-    // + "IdTipoDocumento,\n"
-    // + "NumDocumentoConducto,\n"
-    // + "Informacion,\n"
-    // + "Celular,\n"
-    // + "PlacaVehiculo,\n"
-    // + "MarcaVehiculo,\n"
-    // + "Fecha,\n"
-    // + "Hora,\n"
-    // + "IdUsuario )"
-    // + " VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
-    //
-    // preparedConductor.setString(1, idConductor);
-    // preparedConductor.setString(2,idCliente);
-    // preparedConductor.setInt(3, conductorTB.getIdTipoDocumento());
-    // preparedConductor.setString(4, conductorTB.getNumDocumentoConducto());
-    // preparedConductor.setString(5, conductorTB.getInformacion());
-    // preparedConductor.setString(6, conductorTB.getCelular());
-    // preparedConductor.setString(7, conductorTB.getPlacaVehiculo());
-    // preparedConductor.setString(8, conductorTB.getMarcaVehiculo());
-    // preparedConductor.setString(9, conductorTB.getFecha());
-    // preparedConductor.setInt(10, conductorTB.getHora());
-    // preparedConductor.setBoolean(11, conductorTB.getIdUsuario());
-    //
-    // preparedConductor.addBatch();
-    //
-    //
-    //
-    // }
     public static Object ListCliente(String buscar, int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
@@ -483,7 +439,6 @@ public class ClienteADO {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementValidate = null;
         PreparedStatement statementCliente = null;
-        PreparedStatement statementConductor = null;
 
         try {
             dbf.dbConnect();
@@ -511,13 +466,8 @@ public class ClienteADO {
             statementCliente.setString(1, idCliente);
             statementCliente.addBatch();
 
-            statementConductor = dbf.getConnection()
-                    .prepareStatement("DELETE FROM Conductor WHERE IdCliente = ?");
-            statementConductor.setString(1, idCliente);
-            statementConductor.addBatch();
 
             statementCliente.executeBatch();
-            statementConductor.executeBatch();
             dbf.getConnection().commit();
             return "deleted";
         } catch (SQLException | ClassNotFoundException ex) {
@@ -534,9 +484,6 @@ public class ClienteADO {
                 }
                 if (statementCliente != null) {
                     statementCliente.close();
-                }
-                if (statementConductor != null) {
-                    statementConductor.close();
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {

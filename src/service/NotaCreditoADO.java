@@ -36,15 +36,18 @@ public class NotaCreditoADO {
 
             Object[] objects = new Object[7];
 
-            statementNotaCredito = dbf.getConnection().prepareStatement("SELECT IdTipoDocumento,Nombre FROM TipoDocumentoTB WHERE NotaCredito = 1 AND Estado = 1");
+            statementNotaCredito = dbf.getConnection().prepareStatement(
+                    "SELECT IdTipoDocumento,Nombre FROM TipoDocumentoTB WHERE NotaCredito = 1 AND Estado = 1");
             ArrayList<TipoDocumentoTB> arrayNotaCredito = new ArrayList<>();
             try (ResultSet resultSet = statementNotaCredito.executeQuery()) {
                 while (resultSet.next()) {
-                    arrayNotaCredito.add(new TipoDocumentoTB(resultSet.getInt("IdTipoDocumento"), resultSet.getString("Nombre")));
+                    arrayNotaCredito.add(
+                            new TipoDocumentoTB(resultSet.getInt("IdTipoDocumento"), resultSet.getString("Nombre")));
                 }
             }
 
-            statementNotaCredito = dbf.getConnection().prepareStatement("SELECT IdMoneda,Nombre,Predeterminado FROM MonedaTB");
+            statementNotaCredito = dbf.getConnection()
+                    .prepareStatement("SELECT IdMoneda,Nombre,Predeterminado FROM MonedaTB");
             ArrayList<MonedaTB> arrayMoneda = new ArrayList<>();
             try (ResultSet resultSet = statementNotaCredito.executeQuery()) {
                 while (resultSet.next()) {
@@ -52,23 +55,28 @@ public class NotaCreditoADO {
                 }
             }
 
-            statementNotaCredito = dbf.getConnection().prepareStatement("SELECT IdTipoDocumento,Nombre FROM TipoDocumentoTB");
+            statementNotaCredito = dbf.getConnection()
+                    .prepareStatement("SELECT IdTipoDocumento,Nombre FROM TipoDocumentoTB");
             ArrayList<TipoDocumentoTB> arrayTipoComprobante = new ArrayList<>();
             try (ResultSet resultSet = statementNotaCredito.executeQuery()) {
                 while (resultSet.next()) {
-                    arrayTipoComprobante.add(new TipoDocumentoTB(resultSet.getInt("IdTipoDocumento"), resultSet.getString("Nombre")));
+                    arrayTipoComprobante.add(
+                            new TipoDocumentoTB(resultSet.getInt("IdTipoDocumento"), resultSet.getString("Nombre")));
                 }
             }
 
-            statementNotaCredito = dbf.getConnection().prepareStatement("SELECT IdDetalle,Nombre FROM DetalleTB WHERE IdMantenimiento = '0019'");
+            statementNotaCredito = dbf.getConnection()
+                    .prepareStatement("SELECT IdDetalle,Nombre FROM DetalleTB WHERE IdMantenimiento = '0019'");
             ArrayList<DetalleTB> arrayMotivoAnulacion = new ArrayList<>();
             try (ResultSet resultSet = statementNotaCredito.executeQuery()) {
                 while (resultSet.next()) {
-                    arrayMotivoAnulacion.add(new DetalleTB(resultSet.getInt("IdDetalle"), resultSet.getString("Nombre")));
+                    arrayMotivoAnulacion
+                            .add(new DetalleTB(resultSet.getInt("IdDetalle"), resultSet.getString("Nombre")));
                 }
             }
 
-            statementNotaCredito = dbf.getConnection().prepareStatement("SELECT IdDetalle,Nombre FROM DetalleTB WHERE IdMantenimiento = '0003'");
+            statementNotaCredito = dbf.getConnection()
+                    .prepareStatement("SELECT IdDetalle,Nombre FROM DetalleTB WHERE IdMantenimiento = '0003'");
             ArrayList<DetalleTB> arrayTipoDocumento = new ArrayList<>();
             try (ResultSet resultSet = statementNotaCredito.executeQuery()) {
                 while (resultSet.next()) {
@@ -171,8 +179,8 @@ public class NotaCreditoADO {
                     button.setAlignment(Pos.CENTER);
                     button.setPrefWidth(Control.USE_COMPUTED_SIZE);
                     button.setPrefHeight(Control.USE_COMPUTED_SIZE);
-//                    button.setMaxWidth(Double.MAX_VALUE);
-//                    button.setMaxHeight(Double.MAX_VALUE);
+                    // button.setMaxWidth(Double.MAX_VALUE);
+                    // button.setMaxHeight(Double.MAX_VALUE);
                     ImageView imageView = new ImageView(new Image("/view/image/remove-gray.png"));
                     imageView.setFitWidth(20);
                     imageView.setFitHeight(20);
@@ -191,7 +199,7 @@ public class NotaCreditoADO {
             objects[6] = arrayDetalleVenta;
 
             return objects;
-        } catch (SQLException | NullPointerException  | ClassNotFoundException ex) {
+        } catch (SQLException | NullPointerException | ClassNotFoundException ex) {
             return ex.getLocalizedMessage();
         } finally {
             try {
@@ -205,7 +213,8 @@ public class NotaCreditoADO {
         }
     }
 
-    public static Object ListarNotasCredito(int opcion, String buscar, String fechaInico, String fechaFinal, int posicionPagina, int filasPorPagina) {
+    public static Object ListarNotasCredito(int opcion, String buscar, String fechaInico, String fechaFinal,
+            int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementNotaCredito = null;
         ResultSet resultSet = null;
@@ -226,8 +235,10 @@ public class NotaCreditoADO {
                 notaCreditoTB.setId(resultSet.getRow() + posicionPagina);
                 notaCreditoTB.setIdVenta(resultSet.getString("IdVenta"));
                 notaCreditoTB.setIdNotaCredito(resultSet.getString("IdNotaCredito"));
-                notaCreditoTB.setFechaRegistro(resultSet.getDate("FechaRegistro").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                notaCreditoTB.setHoraRegistro(resultSet.getTime("HoraRegistro").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                notaCreditoTB.setFechaRegistro(resultSet.getDate("FechaRegistro").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                notaCreditoTB.setHoraRegistro(resultSet.getTime("HoraRegistro").toLocalTime()
+                        .format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 notaCreditoTB.setNombreComprobante(resultSet.getString("NotaCreditoComprobante"));
                 notaCreditoTB.setSerie(resultSet.getString("SerieNotaCredito"));
                 notaCreditoTB.setNumeracion(resultSet.getString("NumeracioNotaCredito"));
@@ -265,7 +276,7 @@ public class NotaCreditoADO {
             objects[0] = notaCreditoTBs;
             objects[1] = cantidadTotal;
             return objects;
-        } catch (SQLException  | ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             return ex.getLocalizedMessage();
         } finally {
             try {
@@ -298,8 +309,10 @@ public class NotaCreditoADO {
                 notaCreditoTB.setIdVenta(resultSet.getString("IdVenta"));
                 notaCreditoTB.setCodigoAlterno(resultSet.getString("CodigoAlterno"));
                 notaCreditoTB.setIdNotaCredito(resultSet.getString("IdNotaCredito"));
-                notaCreditoTB.setFechaRegistro(resultSet.getDate("FechaRegistro").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                notaCreditoTB.setHoraRegistro(resultSet.getTime("HoraRegistro").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                notaCreditoTB.setFechaRegistro(resultSet.getDate("FechaRegistro").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                notaCreditoTB.setHoraRegistro(resultSet.getTime("HoraRegistro").toLocalTime()
+                        .format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 notaCreditoTB.setNombreComprobante(resultSet.getString("NotaCreditoComprobante"));
                 notaCreditoTB.setSerie(resultSet.getString("SerieNotaCredito"));
                 notaCreditoTB.setNumeracion(resultSet.getString("NumeracioNotaCredito"));
@@ -321,7 +334,7 @@ public class NotaCreditoADO {
                 clienteTB.setEmail(resultSet.getString("Email"));
                 clienteTB.setDireccion(resultSet.getString("Direccion"));
                 notaCreditoTB.setClienteTB(clienteTB);
-                
+
                 EmpleadoTB empleadoTB = new EmpleadoTB();
                 empleadoTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
                 empleadoTB.setApellidos(resultSet.getString("Apellidos"));
@@ -337,7 +350,8 @@ public class NotaCreditoADO {
                 ventaTB.setNumeracion(resultSet.getString("NumeracionVenta"));
                 notaCreditoTB.setVentaTB(ventaTB);
 
-                statementNotaCredito = dbf.getConnection().prepareStatement("{CALL Sp_Obtener_NotaCredito_Detalle_ById(?)}");
+                statementNotaCredito = dbf.getConnection()
+                        .prepareStatement("{CALL Sp_Obtener_NotaCredito_Detalle_ById(?)}");
                 statementNotaCredito.setString(1, idNotaCredito);
                 resultSet = statementNotaCredito.executeQuery();
                 ArrayList<NotaCreditoDetalleTB> creditoDetalleTBs = new ArrayList<>();
@@ -367,7 +381,7 @@ public class NotaCreditoADO {
             } else {
                 return "No se pudo cargar correctamente los datos, intente nuevamente.";
             }
-        } catch (SQLException  | ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             return ex.getLocalizedMessage();
         } finally {
             try {
@@ -404,12 +418,14 @@ public class NotaCreditoADO {
                 dbf.getConnection().rollback();
                 return "nota";
             } else {
-                statementCodigoNotaCredito = dbf.getConnection().prepareCall("{? = call Fc_NotaCredito_Codigo_Alfanumerico()}");
+                statementCodigoNotaCredito = dbf.getConnection()
+                        .prepareCall("{? = call Fc_NotaCredito_Codigo_Alfanumerico()}");
                 statementCodigoNotaCredito.registerOutParameter(1, java.sql.Types.VARCHAR);
                 statementCodigoNotaCredito.execute();
                 String idNotaCredito = statementCodigoNotaCredito.getString(1);
 
-                statementCodigoSerieNumeracion = dbf.getConnection().prepareCall("{? = call Fc_Serie_Numero_NotaCredito(?)}");
+                statementCodigoSerieNumeracion = dbf.getConnection()
+                        .prepareCall("{? = call Fc_Serie_Numero_NotaCredito(?)}");
                 statementCodigoSerieNumeracion.registerOutParameter(1, java.sql.Types.VARCHAR);
                 statementCodigoSerieNumeracion.setInt(2, notaCreditoTB.getIdComprobante());
                 statementCodigoSerieNumeracion.execute();
@@ -468,8 +484,9 @@ public class NotaCreditoADO {
                         + "Cantidad, "
                         + "Costo, "
                         + "Total,"
-                        + "IdAlmacen) "
-                        + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                        + "IdAlmacen,"
+                        + "IdEmpleado) "
+                        + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 
                 for (NotaCreditoDetalleTB detalleTB : notaCreditoTB.getNotaCreditoDetalleTBs()) {
                     statementDetalle.setString(1, idNotaCredito);
@@ -481,15 +498,18 @@ public class NotaCreditoADO {
                     statementDetalle.setDouble(7, detalleTB.getImpuestoTB().getValor());
                     statementDetalle.addBatch();
 
-                    if (detalleTB.getSuministroTB().isInventario() && detalleTB.getSuministroTB().getValorInventario() == 1) {
+                    if (detalleTB.getSuministroTB().isInventario()
+                            && detalleTB.getSuministroTB().getValorInventario() == 1) {
                         statementSuministro.setDouble(1, detalleTB.getCantidad());
                         statementSuministro.setString(2, detalleTB.getIdSuministro());
                         statementSuministro.addBatch();
-                    } else if (detalleTB.getSuministroTB().isInventario() && detalleTB.getSuministroTB().getValorInventario() == 2) {
+                    } else if (detalleTB.getSuministroTB().isInventario()
+                            && detalleTB.getSuministroTB().getValorInventario() == 2) {
                         statementSuministro.setDouble(1, detalleTB.getCantidad());
                         statementSuministro.setString(2, detalleTB.getIdSuministro());
                         statementSuministro.addBatch();
-                    } else if (detalleTB.getSuministroTB().isInventario() && detalleTB.getSuministroTB().getValorInventario() == 3) {
+                    } else if (detalleTB.getSuministroTB().isInventario()
+                            && detalleTB.getSuministroTB().getValorInventario() == 3) {
                         statementSuministro.setDouble(1, detalleTB.getCantidad());
                         statementSuministro.setString(2, detalleTB.getIdSuministro());
                         statementSuministro.addBatch();
@@ -498,8 +518,8 @@ public class NotaCreditoADO {
                     double cantidadTotal = detalleTB.getSuministroTB().getValorInventario() == 1
                             ? detalleTB.getCantidad()
                             : detalleTB.getSuministroTB().getValorInventario() == 2
-                            ? detalleTB.getCantidad()
-                            : detalleTB.getCantidad();
+                                    ? detalleTB.getCantidad()
+                                    : detalleTB.getCantidad();
 
                     statementKardex.setString(1, detalleTB.getIdSuministro());
                     statementKardex.setString(2, Tools.getDate());
@@ -511,10 +531,12 @@ public class NotaCreditoADO {
                     statementKardex.setDouble(8, detalleTB.getSuministroTB().getCostoCompra());
                     statementKardex.setDouble(9, cantidadTotal * detalleTB.getSuministroTB().getCostoCompra());
                     statementKardex.setInt(10, 0);
+                    statementKardex.setString(11, notaCreditoTB.getIdVendedor());
                     statementKardex.addBatch();
                 }
 
-                statementIngreso = dbf.getConnection().prepareStatement("DELETE FROM IngresoTB WHERE IdProcedencia = ?");
+                statementIngreso = dbf.getConnection()
+                        .prepareStatement("DELETE FROM IngresoTB WHERE IdProcedencia = ?");
                 if (procedencia == 1) {
                     statementIngreso.setString(1, notaCreditoTB.getIdVenta());
                     statementIngreso.addBatch();
@@ -529,7 +551,7 @@ public class NotaCreditoADO {
                 dbf.getConnection().commit();
                 return "registrado";
             }
-        } catch (SQLException  | ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             try {
                 dbf.getConnection().rollback();
             } catch (SQLException e) {
@@ -577,7 +599,8 @@ public class NotaCreditoADO {
         try {
             dbf.dbConnect();
             ArrayList<NotaCreditoTB> creditoTBs = new ArrayList<>();
-            statementNotaCredito = dbf.getConnection().prepareStatement("{CALL Sp_Reporte_General_NotaCredito(?,?,?,?)}");
+            statementNotaCredito = dbf.getConnection()
+                    .prepareStatement("{CALL Sp_Reporte_General_NotaCredito(?,?,?,?)}");
             statementNotaCredito.setString(1, fechaInicio);
             statementNotaCredito.setString(2, fechaFinal);
             statementNotaCredito.setInt(3, cliente);
@@ -586,16 +609,19 @@ public class NotaCreditoADO {
             while (resultSet.next()) {
                 NotaCreditoTB notaCreditoTB = new NotaCreditoTB();
                 notaCreditoTB.setId(resultSet.getRow());
-                notaCreditoTB.setIdCliente(resultSet.getString("NumeroDocumento") + "\n" + resultSet.getString("Informacion"));
-                notaCreditoTB.setClienteTB(new ClienteTB(resultSet.getString("NumeroDocumento"), resultSet.getString("Informacion")));
-                notaCreditoTB.setFechaRegistro(resultSet.getDate("FechaRegistro").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")));
+                notaCreditoTB.setIdCliente(
+                        resultSet.getString("NumeroDocumento") + "\n" + resultSet.getString("Informacion"));
+                notaCreditoTB.setClienteTB(
+                        new ClienteTB(resultSet.getString("NumeroDocumento"), resultSet.getString("Informacion")));
+                notaCreditoTB.setFechaRegistro(resultSet.getDate("FechaRegistro").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/YYYY")));
                 notaCreditoTB.setSerie(resultSet.getString("Serie"));
                 notaCreditoTB.setNumeracion(resultSet.getString("Numeracion"));
                 notaCreditoTB.setImporteNeto(resultSet.getDouble("Total"));
                 creditoTBs.add(notaCreditoTB);
             }
             return creditoTBs;
-        } catch (SQLException  | ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             return ex.getLocalizedMessage();
         } finally {
             try {
