@@ -33,7 +33,8 @@ public class GlobalADO {
 
             dbf.dbConnect();
             // ventas contado
-            preparedGlobal = dbf.getConnection().prepareStatement("SELECT ISNULL(sum(dv.Cantidad*(dv.PrecioVenta-dv.Descuento)),0) AS Total FROM VentaTB as v INNER JOIN DetalleVentaTB as dv on dv.IdVenta = v.IdVenta LEFT JOIN NotaCreditoTB as nc on nc.IdVenta = v.IdVenta WHERE v.FechaVenta between ? AND ? AND v.Tipo = 1 AND v.Estado <> 3 AND nc.IdNotaCredito IS NULL");
+            preparedGlobal = dbf.getConnection().prepareStatement(
+                    "SELECT ISNULL(sum(dv.Cantidad*(dv.PrecioVenta-dv.Descuento)),0) AS Total FROM VentaTB as v INNER JOIN DetalleVentaTB as dv on dv.IdVenta = v.IdVenta LEFT JOIN NotaCreditoTB as nc on nc.IdVenta = v.IdVenta WHERE v.FechaVenta between ? AND ? AND v.Tipo = 1 AND v.Estado <> 3 AND nc.IdNotaCredito IS NULL");
             preparedGlobal.setString(1, fechaInicial);
             preparedGlobal.setString(2, fechaFinal);
             resultSet = preparedGlobal.executeQuery();
@@ -44,7 +45,8 @@ public class GlobalADO {
             list.add(ventasContado);
 
             // ventas credito
-            preparedGlobal = dbf.getConnection().prepareStatement("select COUNT(*) as VentaTB from VentaTB where Tipo = 2 and Estado = 2 and FechaVenta between ? and ? ");
+            preparedGlobal = dbf.getConnection().prepareStatement(
+                    "select COUNT(*) as VentaTB from VentaTB where Tipo = 2 and Estado = 2 and FechaVenta between ? and ? ");
             preparedGlobal.setString(1, fechaInicial);
             preparedGlobal.setString(2, fechaFinal);
             resultSet = preparedGlobal.executeQuery();
@@ -54,7 +56,7 @@ public class GlobalADO {
             }
             list.add(ventasCredito);
 
-            // ventas anuladas                
+            // ventas anuladas
             double ventasAnuladas = 0;
             list.add(ventasAnuladas);
 
@@ -81,7 +83,8 @@ public class GlobalADO {
             list.add(utilidad);
 
             // compras al contado
-            preparedGlobal = dbf.getConnection().prepareStatement("SELECT SUM(d.Importe) AS Total FROM CompraTB as c inner join DetalleCompraTB as d on d.IdCompra = c.IdCompra where c.FechaCompra between ? and ? and c.EstadoCompra = 1");
+            preparedGlobal = dbf.getConnection().prepareStatement(
+                    "SELECT SUM(d.Importe) AS Total FROM CompraTB as c inner join DetalleCompraTB as d on d.IdCompra = c.IdCompra where c.FechaCompra between ? and ? and c.EstadoCompra = 1");
             preparedGlobal.setString(1, fechaInicial);
             preparedGlobal.setString(2, fechaFinal);
             resultSet = preparedGlobal.executeQuery();
@@ -91,8 +94,9 @@ public class GlobalADO {
             }
             list.add(totalcontado);
 
-//              compras al credito
-            preparedGlobal = dbf.getConnection().prepareStatement("select COUNT(*) as ComprasPagar from CompraTB where TipoCompra = 2 and EstadoCompra = 2 and c.FechaCompra between ? and ?");
+            // compras al credito
+            preparedGlobal = dbf.getConnection().prepareStatement(
+                    "select COUNT(*) as ComprasPagar from CompraTB where TipoCompra = 2 and EstadoCompra = 2 and c.FechaCompra between ? and ?");
             preparedGlobal.setString(1, fechaInicial);
             preparedGlobal.setString(2, fechaFinal);
             resultSet = preparedGlobal.executeQuery();
@@ -102,14 +106,15 @@ public class GlobalADO {
             }
             list.add(totalcredito);
 
-            // compras anuladas         
+            // compras anuladas
             double comprasAnuladas = 0;
 
             list.add(comprasAnuladas);
 
             // CUENTAS
             double ventas_cobrar = 0;
-            preparedGlobal = dbf.getConnection().prepareStatement("select COUNT(*) as VentasCobrar from VentaTB where Tipo = 2 and Estado = 2");
+            preparedGlobal = dbf.getConnection()
+                    .prepareStatement("select COUNT(*) as VentasCobrar from VentaTB where Tipo = 2 and Estado = 2");
             resultSet = preparedGlobal.executeQuery();
             if (resultSet.next()) {
                 ventas_cobrar = resultSet.getObject("VentasCobrar") == null ? 0 : resultSet.getInt("VentasCobrar");
@@ -117,7 +122,8 @@ public class GlobalADO {
             list.add(ventas_cobrar);
 
             double compras_pagar = 0;
-            preparedGlobal = dbf.getConnection().prepareStatement("select COUNT(*) as ComprasPagar from CompraTB where TipoCompra = 2 and EstadoCompra = 2");
+            preparedGlobal = dbf.getConnection().prepareStatement(
+                    "select COUNT(*) as ComprasPagar from CompraTB where TipoCompra = 2 and EstadoCompra = 2");
             resultSet = preparedGlobal.executeQuery();
             if (resultSet.next()) {
                 compras_pagar = resultSet.getObject("ComprasPagar") == null ? 0 : resultSet.getInt("ComprasPagar");
@@ -126,34 +132,42 @@ public class GlobalADO {
 
             // CANTIDADES
             double cantidad_negativas = 0;
-            preparedGlobal = dbf.getConnection().prepareStatement("select COUNT(*) as 'Productos Negativos' from SuministroTB where Cantidad <= 0");
+            preparedGlobal = dbf.getConnection()
+                    .prepareStatement("select COUNT(*) as 'Productos Negativos' from SuministroTB where Cantidad <= 0");
             resultSet = preparedGlobal.executeQuery();
             if (resultSet.next()) {
-                cantidad_negativas = resultSet.getObject("Productos Negativos") == null ? 0 : resultSet.getDouble("Productos Negativos");
+                cantidad_negativas = resultSet.getObject("Productos Negativos") == null ? 0
+                        : resultSet.getDouble("Productos Negativos");
             }
             list.add(cantidad_negativas);
 
             double cantidad_intermedias = 0;
-            preparedGlobal = dbf.getConnection().prepareStatement("select COUNT(*) as 'Productos Intermedios' from SuministroTB where Cantidad > 0 and Cantidad < StockMinimo");
+            preparedGlobal = dbf.getConnection().prepareStatement(
+                    "select COUNT(*) as 'Productos Intermedios' from SuministroTB where Cantidad > 0 and Cantidad < StockMinimo");
             resultSet = preparedGlobal.executeQuery();
             if (resultSet.next()) {
-                cantidad_intermedias = resultSet.getObject("Productos Intermedios") == null ? 0 : resultSet.getInt("Productos Intermedios");
+                cantidad_intermedias = resultSet.getObject("Productos Intermedios") == null ? 0
+                        : resultSet.getInt("Productos Intermedios");
             }
             list.add(cantidad_intermedias);
 
             double cantidad_necesarias = 0;
-            preparedGlobal = dbf.getConnection().prepareStatement("select COUNT(*) as 'Productos Necesarios' from SuministroTB where Cantidad >= StockMinimo and Cantidad < StockMaximo");
+            preparedGlobal = dbf.getConnection().prepareStatement(
+                    "select COUNT(*) as 'Productos Necesarios' from SuministroTB where Cantidad >= StockMinimo and Cantidad < StockMaximo");
             resultSet = preparedGlobal.executeQuery();
             if (resultSet.next()) {
-                cantidad_necesarias = resultSet.getObject("Productos Necesarios") == null ? 0 : resultSet.getInt("Productos Necesarios");
+                cantidad_necesarias = resultSet.getObject("Productos Necesarios") == null ? 0
+                        : resultSet.getInt("Productos Necesarios");
             }
             list.add(cantidad_necesarias);
 
             double cantidad_excedentes = 0;
-            preparedGlobal = dbf.getConnection().prepareStatement("select COUNT(*) as 'Productos Execedentes' from SuministroTB where Cantidad >= StockMaximo");
+            preparedGlobal = dbf.getConnection().prepareStatement(
+                    "select COUNT(*) as 'Productos Execedentes' from SuministroTB where Cantidad >= StockMaximo");
             resultSet = preparedGlobal.executeQuery();
             if (resultSet.next()) {
-                cantidad_excedentes = resultSet.getObject("Productos Execedentes") == null ? 0 : resultSet.getInt("Productos Execedentes");
+                cantidad_excedentes = resultSet.getObject("Productos Execedentes") == null ? 0
+                        : resultSet.getInt("Productos Execedentes");
             }
             list.add(cantidad_excedentes);
 
@@ -227,64 +241,73 @@ public class GlobalADO {
                 }
             }
 
-            try (PreparedStatement ptCuentasPagar = dbf.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total\n"
-                    + "FROM CompraTB WHERE TipoCompra = 2 AND EstadoCompra = 2")) {
+            try (PreparedStatement ptCuentasPagar = dbf.getConnection()
+                    .prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total\n"
+                            + "FROM CompraTB WHERE TipoCompra = 2 AND EstadoCompra = 2")) {
                 resultLista = ptCuentasPagar.executeQuery();
                 if (resultLista.next()) {
                     compras_pagar = resultLista.getInt("Total");
                 }
             }
 
-            try (PreparedStatement ptProdcuctoTotal = dbf.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM SuministroTB")) {
+            try (PreparedStatement ptProdcuctoTotal = dbf.getConnection()
+                    .prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM SuministroTB")) {
                 resultLista = ptProdcuctoTotal.executeQuery();
                 if (resultLista.next()) {
                     articulos = resultLista.getInt("Total");
                 }
             }
 
-            try (PreparedStatement ptClienteTotal = dbf.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM ClienteTB")) {
+            try (PreparedStatement ptClienteTotal = dbf.getConnection()
+                    .prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM ClienteTB")) {
                 resultLista = ptClienteTotal.executeQuery();
                 if (resultLista.next()) {
                     clientes = resultLista.getInt("Total");
                 }
             }
 
-            try (PreparedStatement ptProveedorTotal = dbf.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM ProveedorTB")) {
+            try (PreparedStatement ptProveedorTotal = dbf.getConnection()
+                    .prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM ProveedorTB")) {
                 resultLista = ptProveedorTotal.executeQuery();
                 if (resultLista.next()) {
                     proveedores = resultLista.getInt("Total");
                 }
             }
 
-            try (PreparedStatement ptTrabajadoresTotal = dbf.getConnection().prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM EmpleadoTB")) {
+            try (PreparedStatement ptTrabajadoresTotal = dbf.getConnection()
+                    .prepareStatement("SELECT ISNULL(COUNT(*),0) AS Total FROM EmpleadoTB")) {
                 resultLista = ptTrabajadoresTotal.executeQuery();
                 if (resultLista.next()) {
                     trabajadores = resultLista.getInt("Total");
                 }
             }
 
-            try (PreparedStatement ptPNegativos = dbf.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad <= 0")) {
+            try (PreparedStatement ptPNegativos = dbf.getConnection()
+                    .prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad <= 0")) {
                 resultLista = ptPNegativos.executeQuery();
                 if (resultLista.next()) {
                     cantidad_negativas = resultLista.getInt("Total");
                 }
             }
 
-            try (PreparedStatement ptPIntermedio = dbf.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad > 0 AND Cantidad < StockMinimo")) {
+            try (PreparedStatement ptPIntermedio = dbf.getConnection().prepareStatement(
+                    "SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad > 0 AND Cantidad < StockMinimo")) {
                 resultLista = ptPIntermedio.executeQuery();
                 if (resultLista.next()) {
                     cantidad_intermedias = resultLista.getInt("Total");
                 }
             }
 
-            try (PreparedStatement ptPNecesario = dbf.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad >= StockMinimo AND Cantidad < StockMaximo")) {
+            try (PreparedStatement ptPNecesario = dbf.getConnection().prepareStatement(
+                    "SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad >= StockMinimo AND Cantidad < StockMaximo")) {
                 resultLista = ptPNecesario.executeQuery();
                 if (resultLista.next()) {
                     cantidad_necesarias = resultLista.getInt("Total");
                 }
             }
 
-            PreparedStatement ptPExcedentes = dbf.getConnection().prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad >= StockMaximo");
+            PreparedStatement ptPExcedentes = dbf.getConnection()
+                    .prepareStatement("SELECT COUNT(*) AS Total FROM SuministroTB WHERE Cantidad >= StockMaximo");
             resultLista = ptPExcedentes.executeQuery();
             if (resultLista.next()) {
                 cantidad_excedentes = resultLista.getInt("Total");
@@ -468,7 +491,7 @@ public class GlobalADO {
             arrayList.add(proveedores);
             arrayList.add(trabajadores);
 
-            //CANTIDAD
+            // CANTIDAD
             arrayList.add(cantidad_negativas);
             arrayList.add(cantidad_intermedias);
             arrayList.add(cantidad_necesarias);
@@ -496,7 +519,9 @@ public class GlobalADO {
         }
     }
 
-    public static String RegistrarInicioPrograma(EmpresaTB empresaTB, MonedaTB monedaTB, EmpleadoTB empleadoTB, ImpuestoTB impuestoTB, TipoDocumentoTB tipoDocumentoTicket, ClienteTB clienteTB, AlmacenTB almacenTB, ProveedorTB proveedorTB) {
+    public static String RegistrarInicioPrograma(EmpresaTB empresaTB, MonedaTB monedaTB, EmpleadoTB empleadoTB,
+            ImpuestoTB impuestoTB, TipoDocumentoTB tipoDocumentoTicket, ClienteTB clienteTB, AlmacenTB almacenTB,
+            ProveedorTB proveedorTB) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementEmpresa = null;
         PreparedStatement statementMoneda = null;
@@ -533,7 +558,10 @@ public class GlobalADO {
                     + "UsuarioSol,"
                     + "ClaveSol,"
                     + "CertificadoRuta,"
-                    + "CertificadoClave)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    + "CertificadoClave,"
+                    + "IdApiSunat,"
+                    + "ClaveApiSunat"
+                    + ")VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             statementEmpresa.setInt(1, empresaTB.getGiroComerial());
             statementEmpresa.setString(2, empresaTB.getNombre());
             statementEmpresa.setString(3, empresaTB.getTelefono());
@@ -553,6 +581,8 @@ public class GlobalADO {
             statementEmpresa.setString(17, empresaTB.getClaveSol());
             statementEmpresa.setString(18, empresaTB.getCertificadoRuta());
             statementEmpresa.setString(19, empresaTB.getCertificadoClave());
+            statementEmpresa.setString(20, empresaTB.getIdApiSunat());
+            statementEmpresa.setString(21, empresaTB.getClaveApiSunat());
             statementEmpresa.addBatch();
 
             statementMoneda = dbf.getConnection().prepareStatement("INSERT INTO MonedaTB("
@@ -576,23 +606,23 @@ public class GlobalADO {
             String idEmpleado = codigoEmpleado.getString(1);
 
             statementEmpleado = dbf.getConnection().prepareStatement("INSERT INTO EmpleadoTB"
-                    + "           (IdEmpleado"
-                    + "           ,TipoDocumento"
-                    + "           ,NumeroDocumento"
-                    + "           ,Apellidos"
-                    + "           ,Nombres"
-                    + "           ,Sexo"
-                    + "           ,FechaNacimiento"
-                    + "           ,Puesto"
-                    + "           ,Rol"
-                    + "           ,Estado"
-                    + "           ,Telefono"
-                    + "           ,Celular"
-                    + "           ,Email"
-                    + "           ,Direccion"
-                    + "           ,Usuario"
-                    + "           ,Clave"
-                    + "           ,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    + "  (IdEmpleado"
+                    + "  ,TipoDocumento"
+                    + "  ,NumeroDocumento"
+                    + "  ,Apellidos"
+                    + "  ,Nombres"
+                    + "  ,Sexo"
+                    + "  ,FechaNacimiento"
+                    + "  ,Puesto"
+                    + "  ,Rol"
+                    + "  ,Estado"
+                    + "  ,Telefono"
+                    + "  ,Celular"
+                    + "  ,Email"
+                    + "  ,Direccion"
+                    + "  ,Usuario"
+                    + "  ,Clave"
+                    + "  ,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             statementEmpleado.setString(1, idEmpleado);
             statementEmpleado.setInt(2, empleadoTB.getTipoDocumento());
@@ -613,7 +643,8 @@ public class GlobalADO {
             statementEmpleado.setBoolean(17, true);
             statementEmpleado.addBatch();
 
-            statementImpuesto = dbf.getConnection().prepareStatement("INSERT INTO ImpuestoTB(Operacion,Nombre,Valor,Codigo,Numeracion,NombreImpuesto,Letra,Categoria,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?)");
+            statementImpuesto = dbf.getConnection().prepareStatement(
+                    "INSERT INTO ImpuestoTB(Operacion,Nombre,Valor,Codigo,Numeracion,NombreImpuesto,Letra,Categoria,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?)");
             statementImpuesto.setInt(1, impuestoTB.getOperacion());
             statementImpuesto.setString(2, impuestoTB.getNombre());
             statementImpuesto.setDouble(3, impuestoTB.getValor());
@@ -626,7 +657,8 @@ public class GlobalADO {
             statementImpuesto.setBoolean(10, impuestoTB.isSistema());
             statementImpuesto.addBatch();
 
-            statementTipoDocumento = dbf.getConnection().prepareStatement("INSERT INTO TipoDocumentoTB(Nombre,Serie,Numeracion,CodigoAlterno,Facturacion,Predeterminado,Sistema,Guia,NotaCredito,Estado,Campo,NumeroCampo,idTicket)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            statementTipoDocumento = dbf.getConnection().prepareStatement(
+                    "INSERT INTO TipoDocumentoTB(Nombre,Serie,Numeracion,CodigoAlterno,Facturacion,Predeterminado,Sistema,Guia,NotaCredito,Estado,Campo,NumeroCampo,idTicket)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
             statementTipoDocumento.setString(1, tipoDocumentoTicket.getNombre());
             statementTipoDocumento.setString(2, tipoDocumentoTicket.getSerie());
             statementTipoDocumento.setInt(3, tipoDocumentoTicket.getNumeracion());
@@ -647,7 +679,8 @@ public class GlobalADO {
             codigoCliente.execute();
             String idCliente = codigoCliente.getString(1);
 
-            statementCliente = dbf.getConnection().prepareStatement("INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+            statementCliente = dbf.getConnection().prepareStatement(
+                    "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema,FechaCreacion,HoraCreacion)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,GETDATE(),GETDATE())");
             statementCliente.setString(1, idCliente);
             statementCliente.setInt(2, clienteTB.getTipoDocumento());
             statementCliente.setString(3, clienteTB.getNumeroDocumento());
@@ -667,7 +700,8 @@ public class GlobalADO {
             codigoAlmacen.execute();
             int idAlmacen = codigoAlmacen.getInt(1);
 
-            statementAlmacen = dbf.getConnection().prepareStatement("INSERT INTO AlmacenTB(IdAlmacen,Nombre,IdUbigeo,Direccion,Fecha,Hora,IdUsuario) VALUES(?,?,?,?,?,?,?)");
+            statementAlmacen = dbf.getConnection().prepareStatement(
+                    "INSERT INTO AlmacenTB(IdAlmacen,Nombre,IdUbigeo,Direccion,Fecha,Hora,IdUsuario) VALUES(?,?,?,?,?,?,?)");
             statementAlmacen.setInt(1, idAlmacen);
             statementAlmacen.setString(2, almacenTB.getNombre());
             statementAlmacen.setInt(3, almacenTB.getIdUbigeo());

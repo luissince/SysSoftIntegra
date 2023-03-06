@@ -145,8 +145,7 @@ public class SuministroADO {
                         codigoSuministro.execute();
                         String idSuministro = codigoSuministro.getString(1);
 
-                        preparedSuministro = dbf.getConnection().prepareStatement("INSERT INTO "
-                                + "SuministroTB"
+                        preparedSuministro = dbf.getConnection().prepareStatement("INSERT INTO SuministroTB "
                                 + "(IdSuministro,"
                                 + "Origen,"
                                 + "Clave,"
@@ -213,7 +212,7 @@ public class SuministroADO {
                         preparedSuministro.setString(24, suministroTB.getClaveSat());
                         preparedSuministro.setBoolean(25, suministroTB.isTipoPrecio());
                         preparedSuministro.setString(26, suministroTB.getDescripcion());
-                         
+
                         preparedSuministro.addBatch();
                         preparedSuministro.executeBatch();
 
@@ -326,8 +325,7 @@ public class SuministroADO {
                     codigoSuministro.execute();
                     String idSuministro = codigoSuministro.getString(1);
 
-                    preparedSuministro = dbf.getConnection().prepareStatement("INSERT INTO "
-                            + "SuministroTB"
+                    preparedSuministro = dbf.getConnection().prepareStatement("INSERT INTO SuministroTB "
                             + "(IdSuministro,"
                             + "Origen,"
                             + "Clave,"
@@ -398,8 +396,7 @@ public class SuministroADO {
                     }
                     preparedPrecios.executeBatch();
 
-                    preparedKardex = dbf.getConnection().prepareStatement("INSERT INTO "
-                            + "KardexSuministroTB("
+                    preparedKardex = dbf.getConnection().prepareStatement("INSERT INTO KardexSuministroTB ("
                             + "IdSuministro,"
                             + "Fecha,"
                             + "Hora,"
@@ -1132,7 +1129,7 @@ public class SuministroADO {
 
     public static String UpdatedInventarioStockMM(int idAlmacen, String idSuministro, String stockMinimo,
             String stockMaximo) {
-                DBUtil dbf = new DBUtil();
+        DBUtil dbf = new DBUtil();
         PreparedStatement preparedUpdatedSuministro = null;
 
         try {
@@ -1266,7 +1263,7 @@ public class SuministroADO {
 
     public static Object GetReporteGeneralInventario(int idInventario, int idUnidad, int idCategoria, int idMarca,
             int idPresentacion, int existencia) {
-                DBUtil dbf = new DBUtil();
+        DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatementSuministros = null;
         ResultSet rsEmps = null;
 
@@ -1324,7 +1321,7 @@ public class SuministroADO {
 
     public static Object ListInventario(String producto, int tipoExistencia, String nameProduct, int opcion,
             int categoria, int marca, int idAlmacen, int posicionPaginacion, int filasPorPagina) {
-                DBUtil dbf = new DBUtil();
+        DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatementSuministros = null;
         PreparedStatement preparedStatementTotales = null;
         ResultSet rsEmps = null;

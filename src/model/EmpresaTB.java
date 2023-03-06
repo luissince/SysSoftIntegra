@@ -23,6 +23,8 @@ public class EmpresaTB {
     private String claveSol;
     private String certificadoRuta;
     private String certificadoClave;
+    private String idApiSunat;
+    private String claveApiSunat;
 
     public EmpresaTB() {
     }
@@ -208,7 +210,21 @@ public class EmpresaTB {
     public void setCertificadoClave(String certificadoClave) {
         this.certificadoClave = certificadoClave;
     }
-    
-    
+
+    public String getIdApiSunat() {
+        return idApiSunat;
+    }
+
+    public void setIdApiSunat(String idApiSunat) {
+        this.idApiSunat = idApiSunat;
+    }
+
+    public String getClaveApiSunat() {
+        return claveApiSunat;
+    }
+
+    public void setClaveApiSunat(String claveApiSunat) {
+        this.claveApiSunat = claveApiSunat;
+    }
 
 }

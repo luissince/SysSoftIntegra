@@ -66,7 +66,7 @@ public final class FilesRouters {
 
     public static final String FX_CONFIGURACION = "/view/menus/FxConfiguracion.fxml";
 
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_TIPO_DOCUMENTO = "/view/configuracion/comprobante/FxTipoDocumento.fxml";
 
     public static final String FX_TIPO_DOCUMENTO_PROCESO = "/view/configuracion/comprobante/FxTipoDocumentoProceso.fxml";
@@ -119,7 +119,7 @@ public final class FilesRouters {
 
     public static final String FX_GUIA_REMISION = "/view/operaciones/guiaremision/FxGuiaRemision.fxml";
 
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_TICKET = "/view/configuracion/tickets/FxTicket.fxml";
 
     public static final String FX_TICKET_BUSQUEDA = "/view/configuracion/tickets/FxTicketBusqueda.fxml";
@@ -132,23 +132,23 @@ public final class FilesRouters {
 
     public static final String FX_TICKET_VARIABLE = "/view/configuracion/tickets/FxTicketVariable.fxml";
 
-    //--------------------------------------------------------------------------------------------------    
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_CLIENTE = "/view/contactos/clientes/FxCliente.fxml";
 
     public static final String FX_CLIENTE_LISTA = "/view/contactos/clientes/FxClienteLista.fxml";
 
     public static final String FX_CLIENTE_PROCESO = "/view/contactos/clientes/FxClienteProceso.fxml";
 
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_PROVEEDORES = "/view/contactos/proveedores/FxProveedor.fxml";
 
     public static final String FX_PROVEEDORES_LISTA = "/view/contactos/proveedores/FxProveedorLista.fxml";
 
     public static final String FX_PROVEEDORES_PROCESO = "/view/contactos/proveedores/FxProveedorProceso.fxml";
 
-    //--------------------------------------------------------------------------------------------------
-    //PROCESO DE COMPRAS
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO DE COMPRAS
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_AMARTIZAR_PAGOS = "/view/consultas/pagar/FxAmortizarPagos.fxml";
 
     public static final String FX_COMPRAS = "/view/operaciones/compras/FxCompras.fxml";
@@ -167,7 +167,7 @@ public final class FilesRouters {
 
     public static final String FX_CUENTAS_POR_PAGAR_VISUALIZAR = "/view/consultas/pagar/FxCuentasPorPagarVisualizar.fxml";
 
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_CAJA = "/view/operaciones/cortecaja/FxCaja.fxml";
 
     public static final String FX_CAJA_BUSQUEDA = "/view/operaciones/cortecaja/FxCajaBusqueda.fxml";
@@ -184,11 +184,11 @@ public final class FilesRouters {
 
     public static final String FX_CUENTAS_POR_PAGAR = "/view/consultas/pagar/FxCuentasPorPagar.fxml";
 
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_IMPRIMIR = "/view/configuracion/impresoras/FxImprimir.fxml";
 
     public static final String FX_LISTA_PRECIOS = "/view/operaciones/venta/FxListaPrecios.fxml";
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
 
     public static final String FX_VENTA = "/view/operaciones/venta/FxVenta.fxml";
 
@@ -226,18 +226,18 @@ public final class FilesRouters {
 
     public static final String FX_CUENTAS_POR_COBRAR_VISUALIZAR = "/view/consultas/pagar/FxCuentasPorCobrarVisualizar.fxml";
 
-    //--------------------------------------------------------------------------------------------------
-    //PROCESO DE ARTICULOS
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO DE ARTICULOS
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_ARTICULO_REPORTES = "/view/inventario/articulo/FxArticuloReportes.fxml";
 
     public static final String FX_CODIGO_BARRAS = "/view/inventario/suministros/FxCodigoBarras.fxml";
 
     public static final String FX_REPORTE_OPCION = "/view/inventario/FxReporteOpcion.fxml";
 
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_INVENTARIO_INICIAL = "/view/inventario/inventarioinicial/FxInventarioInicial.fxml";
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
 
     public static final String FX_LOTE = "/view/inventario/lote/FxLote.fxml";
 
@@ -261,9 +261,9 @@ public final class FilesRouters {
 
     public static final String FX_PRODUCIR_EDITAR = "/view/produccion/producir/FxProducirEditar.fxml";
 
-    //--------------------------------------------------------------------------------------------------
-    //PROCESO DE SUMINISTROS
-    //--------------------------------------------------------------------------------------------------    
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO DE SUMINISTROS
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_SUMINISTROS = "/view/inventario/suministros/FxSuministros.fxml";
 
     public static final String FX_SUMINISTROS_PROCESO = "/view/inventario/suministros/FxSuministrosProceso.fxml";
@@ -276,14 +276,14 @@ public final class FilesRouters {
 
     public static final String FX_SUMINISTROS_KARDEX = "/view/inventario/suministros/FxSuministrosKardex.fxml";
 
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_MOVIMIENTOS = "/view/inventario/movimientos/FxMovimientos.fxml";
 
     public static final String FX_MOVIMIENTOS_DETALLE = "/view/inventario/movimientos/FxMovimientosDetalle.fxml";
 
     public static final String FX_MOVIMIENTOS_PROCESO = "/view/inventario/movimientos/FxMovimientosProceso.fxml";
 
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_REPORTE_VIEW = "/view/reporte/FxReportView.fxml";
 
     public static final String FX_VENTA_REPORTE = "/view/reporte/FxVentaReporte.fxml";
@@ -292,7 +292,7 @@ public final class FilesRouters {
 
     public static final String FX_COMPRA_REPORTE = "/view/reporte/FxCompraReporte.fxml";
 
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_ORDEN_COMPRA = "/view/operaciones/ordencompra/FxOrdenCompra.fxml";
 
     public static final String FX_ORDEN_COMPRA_LISTA = "/view/operaciones/ordencompra/FxOrdenCompraLista.fxml";
@@ -303,7 +303,7 @@ public final class FilesRouters {
 
     public static final String FX_ORDEN_COMPRA_REALZADAS = "/view/operaciones/ordencompra/FxOrdenCompraRealizadas.fxml";
 
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_BANCOS = "/view/banco/FxBancos.fxml";
 
     public static final String FX_BANCO_PROCESO = "/view/banco/FxBancoProceso.fxml";
@@ -316,7 +316,7 @@ public final class FilesRouters {
 
     public static final String FX_BANCO_TRANSFERIR = "/view/banco/FxBancoTranferencia.fxml";
 
-    //---------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------
     public static final String FX_POS_CAJA_NO_REGISTRADA = "/view/posterminal/venta/FxPostCajaNoRegistrada.fxml";
 
     public static final String FX_POS_LISTA_PRECIOS = "/view/posterminal/venta/FxPostListaPrecios.fxml";
@@ -359,9 +359,9 @@ public final class FilesRouters {
 
     public static final String FX_POS_VENTA_VALIDAR_CAJA = "/view/posterminal/venta/FxPostVentaValidarCaja.fxml";
 
-    //--------------------------------------------------------------------------------------------------
-    //PROCESO DE COTIZACIÓN
-    //--------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO DE COTIZACIÓN
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_COTIZACION = "/view/operaciones/cotizacion/FxCotizacion.fxml";
 
     public static final String FX_COTIZACION_LISTA = "/view/operaciones/cotizacion/FxCotizacionLista.fxml";
@@ -371,7 +371,7 @@ public final class FilesRouters {
     public static final String FX_COTIZACION_REALIZADAS = "/view/operaciones/cotizacion/FxCotizacionRealizadas.fxml";
 
     public static final String FX_COTIZACION_PRODUCTO = "/view/operaciones/cotizacion/FxCotizacionProducto.fxml";
-    //---------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------
     public static final String FX_GUIA_REMISION_DETALLE = "/view/operaciones/guiaremision/FxGuiaRemisionDetalle.fxml";
 
     public static final String FX_GUIA_REMISION_REALIZADAS = "/view/operaciones/guiaremision/FxGuiaRemisionRealizadas.fxml";
@@ -430,4 +430,7 @@ public final class FilesRouters {
 
     public static final String FX_INGRESOS_EGRESOS_REPORTE = "/view/reporte/FxIngresosEgresos.fxml";
 
+    public static final String FX_CONDUCTOR_PROCESO = "/view/contactos/conductor/FxConductorProceso.fxml";
+
+    public static final String FX_VEHICLO_PROCESO = "/view/contactos/vehiculo/FxVehiculoProceso.fxml";
 }

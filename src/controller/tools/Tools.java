@@ -19,6 +19,7 @@ import java.util.Formatter;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventType;
 import javafx.geometry.Pos;
@@ -45,6 +46,8 @@ import javax.imageio.ImageIO;
 import org.controlsfx.control.Notifications;
 
 public class Tools {
+    
+    private static final Pattern p = Pattern.compile("[0-9]+");
 
     public static short AlertMessageConfirmation(Node node, String title, String value) {
         return AlertMessage(node.getScene().getWindow(), Alert.AlertType.CONFIRMATION, title, value, true);
@@ -246,31 +249,7 @@ public class Tools {
     }
 
     public static boolean isNumericInteger(String cadena) {
-        if (cadena.trim() == null || cadena.trim().isEmpty()) {
-            return false;
-        }
-        boolean resultado;
-        try {
-            Integer.parseInt(cadena);
-            resultado = true;
-        } catch (NumberFormatException ex) {
-            resultado = false;
-        }
-        return resultado;
-    }
-
-    public static boolean isNumericShort(String cadena) {
-        if (cadena.trim() == null || cadena.trim().isEmpty()) {
-            return false;
-        }
-        boolean resultado;
-        try {
-            Short.parseShort(cadena);
-            resultado = true;
-        } catch (NumberFormatException ex) {
-            resultado = false;
-        }
-        return resultado;
+        return cadena != null && p.matcher(cadena).find();
     }
 
     public static String[] getDataPeople(String data) {

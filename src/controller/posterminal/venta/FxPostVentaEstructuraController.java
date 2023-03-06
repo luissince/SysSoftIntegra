@@ -1320,7 +1320,6 @@ public class FxPostVentaEstructuraController implements Initializable {
     }
 
     public void executeCliente(short opcion, String search) {
-
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);

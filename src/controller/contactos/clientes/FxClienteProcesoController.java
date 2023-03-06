@@ -105,8 +105,8 @@ public class FxClienteProcesoController implements Initializable {
                         && listMotivoTraslado instanceof ObservableList) {
                     // && listUbigeo instanceof ObservableList) {
                     return new Object[] { listTipoDocumento, listMotivoTraslado };// return
-                                                                                  // (ObservableList<DetalleTB>)
-                                                                                  // listTicket;
+                    // (ObservableList<DetalleTB>)
+                    // listTicket;
                 } else {
                     throw new Exception("Se produjo un error, intente nuevamente.");
                 }
@@ -306,7 +306,7 @@ public class FxClienteProcesoController implements Initializable {
         }
     }
 
-    public void aValidityProcess() throws ParseException {
+    public void onEventRegistrar() {
         if (cbDocumentType.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(window, "Cliente", "Seleccione el tipo de documento por favor.");
             cbDocumentType.requestFocus();
@@ -363,13 +363,8 @@ public class FxClienteProcesoController implements Initializable {
                     break;
                 case "duplicate":
                     Tools.AlertMessageWarning(window, "Cliente",
-                            "No se puede haber 2 personas con el mismo documento de identidad.");
+                            "No se puede haber 2 clientes con el mismo documento de identidad.");
                     txtDocumentNumber.requestFocus();
-                    break;
-                case "duplicatename":
-                    Tools.AlertMessageWarning(window, "Cliente",
-                            "No se puede haber 2 personas con la misma información.");
-                    txtInformacion.requestFocus();
                     break;
                 default:
                     Tools.AlertMessageError(window, "Cliente", result);
@@ -540,7 +535,8 @@ public class FxClienteProcesoController implements Initializable {
         }
     }
 
-    private void onKeyTypedNumeroDocumentoConductor(KeyEvent event) {
+    @FXML
+    private void onKeyTypedNumeroDocumento(KeyEvent event) {
         char c = event.getCharacter().charAt(0);
         if ((c < '0' || c > '9') && (c != '\b')) {
             event.consume();
@@ -574,13 +570,13 @@ public class FxClienteProcesoController implements Initializable {
     @FXML
     private void onKeyPressedToRegister(KeyEvent event) throws ParseException {
         if (event.getCode() == KeyCode.ENTER) {
-            aValidityProcess();
+            onEventRegistrar();
         }
     }
 
     @FXML
     private void onActionToRegister(ActionEvent event) throws ParseException {
-        aValidityProcess();
+        onEventRegistrar();
     }
 
     @FXML

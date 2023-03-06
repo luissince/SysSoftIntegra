@@ -436,6 +436,8 @@ public class FxBienvenidaController implements Initializable {
             empresaTB.setClaveSol("");
             empresaTB.setCertificadoRuta("");
             empresaTB.setCertificadoClave("");
+            empresaTB.setIdApiSunat("");
+            empresaTB.setClaveApiSunat("");
 
             MonedaTB monedaTB = new MonedaTB();
             monedaTB.setNombre(txtNombreMoneda.getText());

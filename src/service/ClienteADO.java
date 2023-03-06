@@ -56,7 +56,10 @@ public class ClienteADO {
                         + "Representante=?,\n"
                         + "Estado=?,\n"
                         + "IdMotivoTraslado=?,\n"
-                        + "IdUbigeo=?\n"
+                        + "IdUbigeo=?,\n"
+                        + "FechaModificacion=GETDATE(),\n"
+                        + "HoraModificacion=GETDATE(),\n"
+                        + "IdEmpleado=?\n"
                         + "WHERE IdCliente = ?");
 
                 preparedCliente.setInt(1, clienteTB.getTipoDocumento());
@@ -70,7 +73,8 @@ public class ClienteADO {
                 preparedCliente.setInt(9, clienteTB.getEstado());
                 preparedCliente.setInt(10, clienteTB.getIdMotivoTraslado());
                 preparedCliente.setInt(11, clienteTB.getIdUbigeo());
-                preparedCliente.setString(12, clienteTB.getIdCliente());
+                preparedCliente.setString(12, Session.USER_ID);
+                preparedCliente.setString(13, clienteTB.getIdCliente());
                 preparedCliente.addBatch();
 
                 preparedCliente.executeBatch();
@@ -106,8 +110,11 @@ public class ClienteADO {
                         + "Predeterminado,\n"
                         + "Sistema,\n"
                         + "IdMotivoTraslado,\n"
-                        + "IdUbigeo)"
-                        + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                        + "IdUbigeo,\n"
+                        + "FechaCreacion,\n"
+                        + "HoraCreacion,\n"
+                        + "IdEmpleado)"
+                        + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?)");
                 preparedCliente.setString(1, idCliente);
                 preparedCliente.setInt(2, clienteTB.getTipoDocumento());
                 preparedCliente.setString(3, clienteTB.getNumeroDocumento());
@@ -122,6 +129,7 @@ public class ClienteADO {
                 preparedCliente.setBoolean(12, clienteTB.isSistema());
                 preparedCliente.setInt(13, clienteTB.getIdMotivoTraslado());
                 preparedCliente.setInt(14, clienteTB.getIdUbigeo());
+                preparedCliente.setString(15, Session.USER_ID);
                 preparedCliente.addBatch();
 
                 preparedCliente.executeBatch();
@@ -465,7 +473,6 @@ public class ClienteADO {
                     .prepareStatement("DELETE FROM ClienteTB WHERE IdCliente = ?");
             statementCliente.setString(1, idCliente);
             statementCliente.addBatch();
-
 
             statementCliente.executeBatch();
             dbf.getConnection().commit();

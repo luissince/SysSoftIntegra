@@ -88,7 +88,7 @@
                                                       </Label>
                                                       <HBox VBox.vgrow="ALWAYS">
                                                          <children>
-                                                            <TextField fx:id="txtDocumentNumber" onAction="#onActionToRegister" prefHeight="30.0" prefWidth="188.0" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
+                                                            <TextField fx:id="txtDocumentNumber" onAction="#onActionToRegister" onKeyTyped="#onKeyTypedNumeroDocumento" prefHeight="30.0" prefWidth="188.0" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
                                                             <Button fx:id="btnBuscarSunat" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionSunat" onKeyPressed="#onKeyPressedSunat" prefHeight="30.0" styleClass="buttonLight">
                                                                <graphic>
                                                                   <ImageView fitHeight="20.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">

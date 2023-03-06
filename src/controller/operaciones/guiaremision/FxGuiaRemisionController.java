@@ -2,6 +2,8 @@ package controller.operaciones.guiaremision;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.contactos.clientes.FxClienteProcesoController;
+import controller.contactos.conductor.FxConductorProcesoController;
+import controller.contactos.vehiculo.FxVehiculoProcesoController;
 import controller.inventario.suministros.FxSuministrosListaController;
 import controller.menus.FxPrincipalController;
 import controller.operaciones.venta.FxVentaListaController;
@@ -102,6 +104,10 @@ public class FxGuiaRemisionController implements Initializable {
     @FXML
     private TextField txtNumeracionFactura;
     @FXML
+    private ComboBox<ConductorTB> cbEmpresa;
+    @FXML
+    private Button btnAgregarEmpresa;
+    @FXML
     private TableView<GuiaRemisionDetalleTB> tvList;
     @FXML
     private TableColumn<GuiaRemisionDetalleTB, TextField> tcCodigo;
@@ -150,6 +156,7 @@ public class FxGuiaRemisionController implements Initializable {
         loadCliente();
         loadVehiculo();
         loadConductor();
+        loadEmpresa();
         loadUbigeoPartida();
         loadUbigeoLlegada();
         loadComponents();
@@ -274,7 +281,59 @@ public class FxGuiaRemisionController implements Initializable {
         searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
             searchComboBoxConductor.getComboBox().getItems().clear();
             List<ConductorTB> conductorTBs = ConductorADO.GetSearchComboBoxConductor(
-                    searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().getText().trim());
+                    searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().getText().trim(), 8);
+            searchComboBoxConductor.getComboBox().getItems().addAll(conductorTBs);
+        });
+        searchComboBoxConductor.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
+            if (null == t.getCode()) {
+                searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().selectAll();
+            } else {
+                switch (t.getCode()) {
+                    case ENTER:
+                    case SPACE:
+                    case ESCAPE:
+                        searchComboBoxConductor.getComboBox().hide();
+                        break;
+                    case UP:
+                    case DOWN:
+                    case LEFT:
+                    case RIGHT:
+                        break;
+                    default:
+                        searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().requestFocus();
+                        searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().selectAll();
+                        break;
+                }
+            }
+        });
+        searchComboBoxConductor.getSearchComboBoxSkin().getItemView().getSelectionModel().selectedItemProperty()
+                .addListener((p, o, item) -> {
+                    if (item != null) {
+                        searchComboBoxConductor.getComboBox().getSelectionModel().select(item);
+                        if (searchComboBoxConductor.getSearchComboBoxSkin().isClickSelection()) {
+                            searchComboBoxConductor.getComboBox().hide();
+                        }
+                    }
+                });
+    }
+
+    private void loadEmpresa() {
+        SearchComboBox<ConductorTB> searchComboBoxConductor = new SearchComboBox<>(cbEmpresa, false);
+        searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().setOnKeyPressed(t -> {
+            if (t.getCode() == KeyCode.ENTER) {
+                if (!searchComboBoxConductor.getSearchComboBoxSkin().getItemView().getItems().isEmpty()) {
+                    searchComboBoxConductor.getSearchComboBoxSkin().getItemView().getSelectionModel().select(0);
+                    searchComboBoxConductor.getSearchComboBoxSkin().getItemView().requestFocus();
+                }
+            } else if (t.getCode() == KeyCode.ESCAPE) {
+                searchComboBoxConductor.getComboBox().hide();
+            }
+        });
+        searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().setOnKeyReleased(t -> {
+            searchComboBoxConductor.getComboBox().getItems().clear();
+            List<ConductorTB> conductorTBs = ConductorADO.GetSearchComboBoxConductor(
+                    searchComboBoxConductor.getSearchComboBoxSkin().getSearchBox().getText().trim(), 11);
             searchComboBoxConductor.getComboBox().getItems().addAll(conductorTBs);
         });
         searchComboBoxConductor.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
@@ -427,13 +486,13 @@ public class FxGuiaRemisionController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return new Object[] {
-                        TipoDocumentoADO.GetTipoDocumentoGuiaRemision(),
-                        DetalleADO.GetDetailId("0017"),
-                        DetalleADO.GetDetailId("0018"),
-                        DetalleADO.GetDetailId("0021"),
-                        TipoDocumentoADO.GetDocumentoCombBoxVentas(),
-                        EmpresaADO.GetEmpresa()
+                return new Object[]{
+                    TipoDocumentoADO.GetTipoDocumentoGuiaRemision(),
+                    DetalleADO.GetDetailId("0017"),
+                    DetalleADO.GetDetailId("0018"),
+                    DetalleADO.GetDetailId("0021"),
+                    TipoDocumentoADO.GetDocumentoCombBoxVentas(),
+                    EmpresaADO.GetEmpresa()
                 };
             }
         };
@@ -471,6 +530,7 @@ public class FxGuiaRemisionController implements Initializable {
 
             EmpresaTB empresaTB = (EmpresaTB) result[5];
 
+            txtDireccionPartida.setText(empresaTB.getDomicilio());
             cbUbigeoPartida.getItems().clear();
             if (empresaTB.getUbigeoTB().getIdUbigeo() > 0) {
                 cbUbigeoPartida.getItems().add(empresaTB.getUbigeoTB());
@@ -478,9 +538,8 @@ public class FxGuiaRemisionController implements Initializable {
                     cbUbigeoPartida.getSelectionModel().select(0);
                 }
             }
-            txtDireccionPartida.setText(empresaTB.getDomicilio());
-            cbUbigeoLlegada.getItems().clear();
 
+            cbUbigeoLlegada.getItems().clear();
             tvList.getItems().clear();
 
             lblLoad.setVisible(false);
@@ -629,6 +688,52 @@ public class FxGuiaRemisionController implements Initializable {
         }
     }
 
+    private void openWindowConductor() {
+        try {
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_CONDUCTOR_PROCESO);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            // Controlller here
+            FxConductorProcesoController controller = fXMLLoader.getController();
+            controller.setInitGuiaRemisionController(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Registrar un conductor",
+                    spWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w -> {
+                controller.loadAddConductor();
+            });
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println("openWindowArticulos():" + ex.getLocalizedMessage());
+        }
+    }
+
+    private void openWindowVehiculo() {
+        try {
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_VEHICLO_PROCESO);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            // Controlller here
+            FxVehiculoProcesoController controller = fXMLLoader.getController();
+            controller.setInitGuiaRemisionController(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Registrar un vehículo",
+                    spWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShown(w -> controller.loadAddConductor());
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println("openWindowArticulos():" + ex.getLocalizedMessage());
+        }
+    }
+
     private void onEventGuardar() {
         /**
          * Tipo de guia de remision
@@ -690,6 +795,15 @@ public class FxGuiaRemisionController implements Initializable {
         if (rbPrivado.isSelected() && cbConductor.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el conductor.");
             cbConductor.requestFocus();
+            return;
+        }
+
+        /**
+         * Datos del empresa - conductor
+         */
+        if (rbPublico.isSelected() && cbEmpresa.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el conductor.");
+            cbEmpresa.requestFocus();
             return;
         }
 
@@ -762,9 +876,11 @@ public class FxGuiaRemisionController implements Initializable {
             /**
              * Datos del conductor
              */
-            guiaRemisionTB.setIdConductor(cbConductor.getSelectionModel().getSelectedIndex() >= 0
-                    ? cbConductor.getSelectionModel().getSelectedItem().getIdConductor()
-                    : "");
+            if (rbPublico.isSelected()) {
+                guiaRemisionTB.setIdConductor(cbEmpresa.getSelectionModel().getSelectedItem().getIdConductor());
+            } else {
+                guiaRemisionTB.setIdConductor(cbConductor.getSelectionModel().getSelectedItem().getIdConductor());
+            }
 
             /**
              * Dirección de partida y llegada
@@ -818,27 +934,36 @@ public class FxGuiaRemisionController implements Initializable {
     }
 
     private void reset() {
+        cbDocumentoGuia.getSelectionModel().select(null);
         cbCliente.getItems().clear();
         cbMotivoTraslado.getSelectionModel().select(null);
-        // cbModalidadTraslado.getSelectionModel().select(null);
         Tools.actualDate(Tools.getDate(), dtFechaTraslado);
         cbTipoPesoCarga.getSelectionModel().select(null);
+        cbTipoPesoCarga.getSelectionModel().select(null);
         txtPesoCarga.clear();
-        // cbTipoDocumento.getSelectionModel().select(null);
-        // txtNumeroDocumento.clear();
-        // txtNombreConducto.clear();
-        // txtTelefonoCelular.clear();
-        // txtNumeroPlacaVehiculo.clear();
-        // txtNumeroLicenciaConducir.clear();
-        txtDireccionPartida.clear();
-        txtDireccionPartida.setText(Session.COMPANY_DOMICILIO);
-        cbUbigeoPartida.getSelectionModel().select(null);
+
+        rbPublico.setSelected(true);
+        cbVehiculo.setDisable(true);
+        btnAgregarVehiculo.setDisable(true);
+        cbConductor.setDisable(true);
+        btnAgregarConductor.setDisable(true);
+
+        cbEmpresa.setDisable(false);
+        btnAgregarEmpresa.setDisable(true);
+
+        cbVehiculo.getItems().clear();
+        cbConductor.getItems().clear();
+        cbEmpresa.getItems().clear();
+        
+        
         txtDireccionLlegada.clear();
-        cbUbigeoLlegada.getSelectionModel().select(null);
+        cbUbigeoLlegada.getItems().clear();
+        
         cbTipoComprobante.getSelectionModel().select(null);
         txtSerieFactura.clear();
         txtNumeracionFactura.clear();
         tvList.getItems().clear();
+        idVenta = "";
     }
 
     public void loadVentaById(String idVenta) {
@@ -955,14 +1080,14 @@ public class FxGuiaRemisionController implements Initializable {
     }
 
     @FXML
-    private void onKeyPressedToReload(KeyEvent event) {
+    private void onKeyPressedReload(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             loadComponents();
         }
     }
 
     @FXML
-    private void onActionToReload(ActionEvent event) {
+    private void onActionReload(ActionEvent event) {
         loadComponents();
     }
 
@@ -993,21 +1118,25 @@ public class FxGuiaRemisionController implements Initializable {
     @FXML
     private void onKeyPressedVehiculo(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
+            openWindowVehiculo();
         }
     }
 
     @FXML
     private void onActionVehiculo(ActionEvent event) {
+        openWindowVehiculo();
     }
 
     @FXML
     private void onKeyPressedConductor(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
+            openWindowConductor();
         }
     }
 
     @FXML
     private void onActionConductor(ActionEvent event) {
+        openWindowConductor();
     }
 
     @FXML
@@ -1017,16 +1146,30 @@ public class FxGuiaRemisionController implements Initializable {
             btnAgregarVehiculo.setDisable(true);
             cbConductor.setDisable(true);
             btnAgregarConductor.setDisable(true);
+
+            cbEmpresa.setDisable(false);
+            btnAgregarEmpresa.setDisable(false);
         } else {
             cbVehiculo.setDisable(false);
             btnAgregarVehiculo.setDisable(false);
             cbConductor.setDisable(false);
             btnAgregarConductor.setDisable(false);
+
+            cbEmpresa.setDisable(true);
+            btnAgregarEmpresa.setDisable(true);
         }
     }
 
     public TableView<GuiaRemisionDetalleTB> getTvList() {
         return tvList;
+    }
+
+    public RadioButton getRbPublico() {
+        return rbPublico;
+    }
+
+    public RadioButton getRbPrivado() {
+        return rbPrivado;
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

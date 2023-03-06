@@ -92,7 +92,7 @@ public class VentaADO {
                 resultTransaction.setArrayResult(arrayResult);
             } else {
                 cliente = dbf.getConnection().prepareStatement(
-                        "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+                        "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema,FechaCreacion,HoraCreacion,IdEmpleado) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?)");
                 ventaTB.setIdCliente(ventaTB.getClienteTB().getIdCliente());
                 clienteVerificar = dbf.getConnection()
                         .prepareStatement("SELECT IdCliente FROM ClienteTB WHERE NumeroDocumento = ?");
@@ -103,13 +103,14 @@ public class VentaADO {
                     ventaTB.setIdCliente(resultSet.getString("IdCliente"));
 
                     cliente = dbf.getConnection().prepareStatement(
-                            "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=? WHERE IdCliente = ?");
+                            "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=?,FechaModificacion=GETDATE(),HoraModificacion=GETDATE(),IdEmpleado=? WHERE IdCliente = ?");
                     cliente.setInt(1, ventaTB.getClienteTB().getTipoDocumento());
                     cliente.setString(2, ventaTB.getClienteTB().getInformacion().trim().toUpperCase());
                     cliente.setString(3, ventaTB.getClienteTB().getCelular().trim());
                     cliente.setString(4, ventaTB.getClienteTB().getEmail().trim());
                     cliente.setString(5, ventaTB.getClienteTB().getDireccion().trim());
-                    cliente.setString(6, resultSet.getString("IdCliente"));
+                    cliente.setString(6, Session.USER_ID);
+                    cliente.setString(7, resultSet.getString("IdCliente"));
                     cliente.addBatch();
 
                 } else {
@@ -130,6 +131,7 @@ public class VentaADO {
                     cliente.setInt(10, 1);
                     cliente.setBoolean(11, false);
                     cliente.setBoolean(12, false);
+                    cliente.setString(13, Session.USER_ID);
                     cliente.addBatch();
 
                     ventaTB.setIdCliente(idCliente);
@@ -482,7 +484,7 @@ public class VentaADO {
                 resultTransaction.setArrayResult(arrayResult);
             } else {
                 cliente = dbf.getConnection().prepareStatement(
-                        "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+                        "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema,FechaCreacion,HoraCreacion,IdEmpleado)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?)");
                 ventaTB.setIdCliente(ventaTB.getClienteTB().getIdCliente());
                 clienteVerificar = dbf.getConnection()
                         .prepareStatement("SELECT IdCliente FROM ClienteTB WHERE NumeroDocumento = ?");
@@ -493,13 +495,14 @@ public class VentaADO {
                     ventaTB.setIdCliente(resultSet.getString("IdCliente"));
 
                     cliente = dbf.getConnection().prepareStatement(
-                            "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=? WHERE IdCliente =  ?");
+                            "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=?,FechaModificacion=GETDATE(),HoraModificacion=GETDATE(),IdEmpleado=? WHERE IdCliente =  ?");
                     cliente.setInt(1, ventaTB.getClienteTB().getTipoDocumento());
                     cliente.setString(2, ventaTB.getClienteTB().getInformacion().trim().toUpperCase());
                     cliente.setString(3, ventaTB.getClienteTB().getCelular().trim());
                     cliente.setString(4, ventaTB.getClienteTB().getEmail().trim());
                     cliente.setString(5, ventaTB.getClienteTB().getDireccion().trim());
-                    cliente.setString(6, resultSet.getString("IdCliente"));
+                    cliente.setString(6, Session.USER_ID);
+                    cliente.setString(7, resultSet.getString("IdCliente"));
                     cliente.addBatch();
 
                 } else {
@@ -520,6 +523,7 @@ public class VentaADO {
                     cliente.setInt(10, 1);
                     cliente.setBoolean(11, false);
                     cliente.setBoolean(12, false);
+                    cliente.setString(13, Session.USER_ID);
                     cliente.addBatch();
 
                     ventaTB.setIdCliente(idCliente);
@@ -861,7 +865,7 @@ public class VentaADO {
             int dig5 = rd.nextInt(90000) + 10000;
 
             cliente = dbf.getConnection().prepareStatement(
-                    "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+                    "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema,FechaCreacion,HoraCreacion,IdEmpleado)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?)");
             ventaTB.setIdCliente(ventaTB.getClienteTB().getIdCliente());
             clienteVerificar = dbf.getConnection()
                     .prepareStatement("SELECT IdCliente FROM ClienteTB WHERE NumeroDocumento = ?");
@@ -872,13 +876,14 @@ public class VentaADO {
                 ventaTB.setIdCliente(resultSet.getString("IdCliente"));
 
                 cliente = dbf.getConnection().prepareStatement(
-                        "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=? WHERE IdCliente =  ?");
+                        "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=?,FechaModificacion=GETDATE(),HoraModificacion=GETDATE(),IdEmpleado=? WHERE IdCliente =  ?");
                 cliente.setInt(1, ventaTB.getClienteTB().getTipoDocumento());
                 cliente.setString(2, ventaTB.getClienteTB().getInformacion().trim().toUpperCase());
                 cliente.setString(3, ventaTB.getClienteTB().getCelular().trim());
                 cliente.setString(4, ventaTB.getClienteTB().getEmail().trim());
                 cliente.setString(5, ventaTB.getClienteTB().getDireccion().trim());
-                cliente.setString(6, resultSet.getString("IdCliente"));
+                cliente.setString(6, Session.USER_ID);
+                cliente.setString(7, resultSet.getString("IdCliente"));
                 cliente.addBatch();
 
             } else {
@@ -899,6 +904,7 @@ public class VentaADO {
                 cliente.setInt(10, 1);
                 cliente.setBoolean(11, false);
                 cliente.setBoolean(12, false);
+                cliente.setString(13, Session.USER_ID);
                 cliente.addBatch();
 
                 ventaTB.setIdCliente(idCliente);
@@ -1175,7 +1181,7 @@ public class VentaADO {
                 } else {
 
                     cliente = dbf.getConnection().prepareStatement(
-                            "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+                            "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema,FechaCreacion,HoraCreacion,IdEmpleado)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?)");
                     ventaTB.setIdCliente(ventaTB.getClienteTB().getIdCliente());
                     clienteVerificar = dbf.getConnection()
                             .prepareStatement("SELECT IdCliente FROM ClienteTB WHERE NumeroDocumento = ?");
@@ -1186,13 +1192,14 @@ public class VentaADO {
                         ventaTB.setIdCliente(resultSet.getString("IdCliente"));
 
                         cliente = dbf.getConnection().prepareStatement(
-                                "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=? WHERE IdCliente =  ?");
+                                "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=?,FechaModificacion=GETDATE(),HoraModificacion=GETDATE(),IdEmpleado=? WHERE IdCliente =  ?");
                         cliente.setInt(1, ventaTB.getClienteTB().getTipoDocumento());
                         cliente.setString(2, ventaTB.getClienteTB().getInformacion().trim().toUpperCase());
                         cliente.setString(3, ventaTB.getClienteTB().getCelular().trim());
                         cliente.setString(4, ventaTB.getClienteTB().getEmail().trim());
                         cliente.setString(5, ventaTB.getClienteTB().getDireccion().trim());
-                        cliente.setString(6, resultSet.getString("IdCliente"));
+                        cliente.setString(6, Session.USER_ID);
+                        cliente.setString(7, resultSet.getString("IdCliente"));
                         cliente.addBatch();
 
                     } else {
@@ -1214,6 +1221,7 @@ public class VentaADO {
                         cliente.setInt(10, 1);
                         cliente.setBoolean(11, false);
                         cliente.setBoolean(12, false);
+                        cliente.setString(13, Session.USER_ID);
                         cliente.addBatch();
 
                         ventaTB.setIdCliente(idCliente);
@@ -1563,7 +1571,7 @@ public class VentaADO {
                 } else {
 
                     cliente = dbf.getConnection().prepareStatement(
-                            "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+                            "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema,FechaCreacion,HoraCreacion,IdEmpleado)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?)");
                     ventaTB.setIdCliente(ventaTB.getClienteTB().getIdCliente());
                     clienteVerificar = dbf.getConnection()
                             .prepareStatement("SELECT IdCliente FROM ClienteTB WHERE NumeroDocumento = ?");
@@ -1574,13 +1582,14 @@ public class VentaADO {
                         ventaTB.setIdCliente(resultSet.getString("IdCliente"));
 
                         cliente = dbf.getConnection().prepareStatement(
-                                "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=? WHERE IdCliente =  ?");
+                                "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=?,FechaModificacion=GETDATE(),HoraModificacion=GETDATE(),IdEmpleado=? WHERE IdCliente =  ?");
                         cliente.setInt(1, ventaTB.getClienteTB().getTipoDocumento());
                         cliente.setString(2, ventaTB.getClienteTB().getInformacion().trim().toUpperCase());
                         cliente.setString(3, ventaTB.getClienteTB().getCelular().trim());
                         cliente.setString(4, ventaTB.getClienteTB().getEmail().trim());
                         cliente.setString(5, ventaTB.getClienteTB().getDireccion().trim());
-                        cliente.setString(6, resultSet.getString("IdCliente"));
+                        cliente.setString(6, Session.USER_ID);
+                        cliente.setString(7, resultSet.getString("IdCliente"));
                         cliente.addBatch();
 
                     } else {
@@ -1602,6 +1611,7 @@ public class VentaADO {
                         cliente.setInt(10, 1);
                         cliente.setBoolean(11, false);
                         cliente.setBoolean(12, false);
+                        cliente.setString(13, Session.USER_ID);
                         cliente.addBatch();
 
                         ventaTB.setIdCliente(idCliente);
@@ -1954,7 +1964,7 @@ public class VentaADO {
             } else {
 
                 cliente = dbf.getConnection().prepareStatement(
-                        "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+                        "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema,FechaCreacion,HoraCreacion,IdEmpleado)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?)");
                 ventaTB.setIdCliente(ventaTB.getClienteTB().getIdCliente());
                 clienteVerificar = dbf.getConnection()
                         .prepareStatement("SELECT IdCliente FROM ClienteTB WHERE NumeroDocumento = ?");
@@ -1965,13 +1975,14 @@ public class VentaADO {
                     ventaTB.setIdCliente(resultSet.getString("IdCliente"));
 
                     cliente = dbf.getConnection().prepareStatement(
-                            "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=? WHERE IdCliente =  ?");
+                            "UPDATE ClienteTB SET TipoDocumento=?,Informacion = ?,Celular=?,Email=?,Direccion=?,FechaModificacion=GETDATE(),HoraModificacion=GETDATE(),IdEmpleado=? WHERE IdCliente =  ?");
                     cliente.setInt(1, ventaTB.getClienteTB().getTipoDocumento());
                     cliente.setString(2, ventaTB.getClienteTB().getInformacion().trim().toUpperCase());
                     cliente.setString(3, ventaTB.getClienteTB().getCelular().trim());
                     cliente.setString(4, ventaTB.getClienteTB().getEmail().trim());
                     cliente.setString(5, ventaTB.getClienteTB().getDireccion().trim());
-                    cliente.setString(6, resultSet.getString("IdCliente"));
+                    cliente.setString(6, Session.USER_ID);
+                    cliente.setString(7, resultSet.getString("IdCliente"));
                     cliente.addBatch();
 
                 } else {
@@ -1992,6 +2003,7 @@ public class VentaADO {
                     cliente.setInt(10, 1);
                     cliente.setBoolean(11, false);
                     cliente.setBoolean(12, false);
+                    cliente.setString(13, Session.USER_ID);
                     cliente.addBatch();
 
                     ventaTB.setIdCliente(idCliente);

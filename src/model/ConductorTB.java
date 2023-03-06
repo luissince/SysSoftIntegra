@@ -1,4 +1,3 @@
-
 package model;
 
 public class ConductorTB {
@@ -12,9 +11,12 @@ public class ConductorTB {
     private String telefono;
     private String email;
     private String licenciaConducir;
-    private String fecha;
-    private String hora;
-    private String idUsuario;
+    private String direccion;
+    private String fechaCreacion;
+    private String horaCreacion;
+    private String fechaModicacion;
+    private String horaModificacion;
+    private String idEmpleado;
 
     public ConductorTB() {
     }
@@ -31,8 +33,8 @@ public class ConductorTB {
         return IdConductor;
     }
 
-    public void setIdConductor(String idConductor) {
-        IdConductor = idConductor;
+    public void setIdConductor(String IdConductor) {
+        this.IdConductor = IdConductor;
     }
 
     public int getIdTipoDocumento() {
@@ -91,28 +93,57 @@ public class ConductorTB {
         this.licenciaConducir = licenciaConducir;
     }
 
-    public String getFecha() {
-        return fecha;
+    public String getDireccion() {
+        return direccion;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
-    public String getHora() {
-        return hora;
+    public String getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    public void setHora(String hora) {
-        this.hora = hora;
+    public void setFechaCreacion(String fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
-    public String getIdUsuario() {
-        return idUsuario;
+    public String getHoraCreacion() {
+        return horaCreacion;
     }
 
-    public void setIdUsuario(String idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setHoraCreacion(String horaCreacion) {
+        this.horaCreacion = horaCreacion;
+    }
+
+    public String getFechaModicacion() {
+        return fechaModicacion;
+    }
+
+    public void setFechaModicacion(String fechaModicacion) {
+        this.fechaModicacion = fechaModicacion;
+    }
+
+    public String getHoraModificacion() {
+        return horaModificacion;
+    }
+
+    public void setHoraModificacion(String horaModificacion) {
+        this.horaModificacion = horaModificacion;
+    }
+
+    public String getIdEmpleado() {
+        return idEmpleado;
+    }
+
+    public void setIdEmpleado(String idEmpleado) {
+        this.idEmpleado = idEmpleado;
+    }
+
+    @Override
+    public String toString() {
+        return numeroDocumento + ", " + informacion;
     }
 
 }

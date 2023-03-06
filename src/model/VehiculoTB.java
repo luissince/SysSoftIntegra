@@ -10,15 +10,19 @@ public class VehiculoTB {
 
     private String numeroPlaca;
 
-    private String idEntidadEmisora;
+    private int idEntidadEmisora;
 
     private String numeroAutorizacion;
 
-    private String decha;
+    private String fechaCreaccion;
 
-    private String hora;
+    private String horaCreacion;
 
-    private String idUsuario;
+    private String fechaModificacion;
+
+    private String horaModificacion;
+
+    private String idEmpleado;
 
     public VehiculoTB() {
     }
@@ -55,11 +59,11 @@ public class VehiculoTB {
         this.numeroPlaca = numeroPlaca;
     }
 
-    public String getIdEntidadEmisora() {
+    public int getIdEntidadEmisora() {
         return idEntidadEmisora;
     }
 
-    public void setIdEntidadEmisora(String idEntidadEmisora) {
+    public void setIdEntidadEmisora(int idEntidadEmisora) {
         this.idEntidadEmisora = idEntidadEmisora;
     }
 
@@ -71,28 +75,49 @@ public class VehiculoTB {
         this.numeroAutorizacion = numeroAutorizacion;
     }
 
-    public String getDecha() {
-        return decha;
+    public String getFechaCreaccion() {
+        return fechaCreaccion;
     }
 
-    public void setDecha(String decha) {
-        this.decha = decha;
+    public void setFechaCreaccion(String fechaCreaccion) {
+        this.fechaCreaccion = fechaCreaccion;
     }
 
-    public String getHora() {
-        return hora;
+    public String getHoraCreacion() {
+        return horaCreacion;
     }
 
-    public void setHora(String hora) {
-        this.hora = hora;
+    public void setHoraCreacion(String horaCreacion) {
+        this.horaCreacion = horaCreacion;
     }
 
-    public String getIdUsuario() {
-        return idUsuario;
+    public String getFechaModificacion() {
+        return fechaModificacion;
     }
 
-    public void setIdUsuario(String idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setFechaModificacion(String fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
+    }
+
+    public String getHoraModificacion() {
+        return horaModificacion;
+    }
+
+    public void setHoraModificacion(String horaModificacion) {
+        this.horaModificacion = horaModificacion;
+    }
+
+    public String getIdEmpleado() {
+        return idEmpleado;
+    }
+
+    public void setIdEmpleado(String idEmpleado) {
+        this.idEmpleado = idEmpleado;
+    }
+
+    @Override
+    public String toString() {
+        return marca + ", " + numeroPlaca;
     }
 
 }
