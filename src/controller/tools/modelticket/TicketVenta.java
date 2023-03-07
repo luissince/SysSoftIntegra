@@ -17,6 +17,9 @@ import java.awt.print.Book;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -530,7 +533,8 @@ public class TicketVenta {
         }
     }
 
-    private JasperPrint reportA4(VentaTB ventaTB) throws JRException, WriterException, UnsupportedEncodingException {
+    private JasperPrint reportA4(VentaTB ventaTB)
+            throws JRException, WriterException, UnsupportedEncodingException, FileNotFoundException {
         double importeBrutoTotal = 0;
         double descuentoTotal = 0;
         double subImporteNetoTotal = 0;
@@ -571,7 +575,12 @@ public class TicketVenta {
         if (Session.COMPANY_IMAGE != null) {
             imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
         }
-        InputStream dir = getClass().getResourceAsStream("/report/VentaRealizada.jasper");
+
+        File archivoc = new File("./report/VentaRealizada.jasper");
+        InputStream dir = new FileInputStream(archivoc.getPath());
+
+        // InputStream dir =
+        // getClass().getResourceAsStream("./report/VentaRealizada.jasper");
 
         BufferedImage qrImage = MatrixToImageWriter
                 .toBufferedImage(new QRCodeWriter().encode("|" + Session.COMPANY_NUMERO_DOCUMENTO + "|"
@@ -673,7 +682,11 @@ public class TicketVenta {
                         if (Session.COMPANY_IMAGE != null) {
                             logo = new ByteArrayInputStream(Session.COMPANY_IMAGE);
                         }
-                        InputStream dir = getClass().getResourceAsStream("/report/VentaRealizada.jasper");
+                        File archivoc = new File("./report/VentaRealizada.jasper");
+                        InputStream dir = new FileInputStream(archivoc.getPath());
+
+                        // InputStream dir =
+                        // getClass().getResourceAsStream("./report/VentaRealizada.jasper");
 
                         BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(new QRCodeWriter().encode(
                                 "|" + Session.COMPANY_NUMERO_DOCUMENTO + "|" + ventaTB.getCodigoAlterno() + "|"
@@ -730,7 +743,7 @@ public class TicketVenta {
                                 + ventaTB.getNumeracion();
                         return JasperFillManager.fillReport(dir, map,
                                 new JsonDataSource(jsonDataStream));
-                    } catch (JRException | WriterException | UnsupportedEncodingException ex) {
+                    } catch (JRException | WriterException | UnsupportedEncodingException | FileNotFoundException ex) {
                         return ex.getLocalizedMessage();
                     }
                 } else {

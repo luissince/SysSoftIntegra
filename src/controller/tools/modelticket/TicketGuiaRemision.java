@@ -10,6 +10,9 @@ import java.awt.print.Book;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -301,7 +304,7 @@ public class TicketGuiaRemision {
     }
 
     private JasperPrint reporte4AGuiaRemision(GuiaRemisionTB guiaRemisionTB)
-            throws JRException, UnsupportedEncodingException {
+            throws JRException, UnsupportedEncodingException, FileNotFoundException {
         InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
 
         InputStream imgInputStream = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
@@ -309,7 +312,12 @@ public class TicketGuiaRemision {
         if (Session.COMPANY_IMAGE != null) {
             imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
         }
-        InputStream dir = getClass().getResourceAsStream("/report/GuiadeRemision.jasper");
+
+        File archivoc = new File("./report/GuiadeRemision.jasper");
+        InputStream dir = new FileInputStream(archivoc.getPath());
+
+        // InputStream dir =
+        // getClass().getResourceAsStream("./report/GuiadeRemision.jasper");
 
         Map<String, Object> map = new HashMap<>();
         map.put("LOGO", imgInputStream);

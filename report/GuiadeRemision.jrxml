@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ccffc00e-6a86-4d26-8f65-08d18f6dc3d5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="96"/>
+	<property name="ireport.y" value="192"/>
 	<parameter name="NUMERACION_GUIA_REMISION" class="java.lang.String"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
 	<parameter name="ICON" class="java.io.InputStream"/>
@@ -68,13 +68,13 @@
 				<text><![CDATA[NUMERO DE FACTURA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="333" y="16" width="222" height="20" forecolor="#FFFFFF" backcolor="#FE3152" uuid="5a588367-fb83-4b15-9d2c-24bbffda38e3"/>
+				<reportElement mode="Transparent" x="333" y="16" width="222" height="23" forecolor="#000000" backcolor="#FE3152" uuid="5a588367-fb83-4b15-9d2c-24bbffda38e3"/>
 				<box>
-					<pen lineWidth="0.0" lineColor="#FE3152"/>
-					<topPen lineWidth="0.0" lineColor="#FE3152"/>
-					<leftPen lineWidth="0.0" lineColor="#FE3152"/>
-					<bottomPen lineWidth="0.0" lineColor="#FE3152"/>
-					<rightPen lineWidth="0.0" lineColor="#FE3152"/>
+					<pen lineWidth="0.0" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="13"/>
@@ -85,18 +85,6 @@
 				<reportElement x="5" y="5" width="90" height="85" uuid="e94278a6-6f5d-490e-89e8-14e70035b004"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
-			<rectangle>
-				<reportElement x="333" y="58" width="222" height="5" backcolor="#576767" uuid="793f70b6-87ce-479e-85b0-46cc6188b09a"/>
-				<graphicElement>
-					<pen lineWidth="0.0"/>
-				</graphicElement>
-			</rectangle>
-			<rectangle>
-				<reportElement x="333" y="52" width="222" height="6" backcolor="#B5B5B5" uuid="3bc2bbcf-b7d2-48d1-802f-1ee48315589d"/>
-				<graphicElement>
-					<pen lineWidth="0.0"/>
-				</graphicElement>
-			</rectangle>
 			<textField>
 				<reportElement x="95" y="0" width="238" height="39" uuid="e02e9acb-f8bc-40d0-a316-0a438e6d11d8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -106,13 +94,13 @@
 				<textFieldExpression><![CDATA[$P{NOMBRE_EMPRESA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="333" y="0" width="222" height="16" forecolor="#FFFFFF" backcolor="#FE3152" uuid="e8e9f133-1485-4a84-b659-4b9f49a61442"/>
+				<reportElement mode="Transparent" x="333" y="0" width="222" height="16" forecolor="#000000" backcolor="#FE3152" uuid="e8e9f133-1485-4a84-b659-4b9f49a61442"/>
 				<box>
 					<pen lineWidth="0.0" lineColor="#FE3152"/>
 					<topPen lineWidth="0.0" lineColor="#FE3152"/>
-					<leftPen lineWidth="0.0" lineColor="#FE3152"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#FE3152"/>
-					<rightPen lineWidth="0.0" lineColor="#FE3152"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="11"/>
@@ -347,13 +335,13 @@
 				<textFieldExpression><![CDATA[$P{MOTIVO_TRANSPORTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="333" y="36" width="222" height="16" forecolor="#FFFFFF" backcolor="#FE3152" uuid="c19aec9e-9763-4711-97d8-a793faae8d66"/>
+				<reportElement mode="Transparent" x="333" y="39" width="222" height="24" forecolor="#000000" backcolor="#FE3152" uuid="c19aec9e-9763-4711-97d8-a793faae8d66"/>
 				<box>
 					<pen lineWidth="0.0" lineColor="#FE3152"/>
 					<topPen lineWidth="0.0" lineColor="#FE3152"/>
-					<leftPen lineWidth="0.0" lineColor="#FE3152"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#FE3152"/>
-					<rightPen lineWidth="0.0" lineColor="#FE3152"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="13"/>
@@ -587,13 +575,10 @@
 				</box>
 			</frame>
 			<staticText>
-				<reportElement mode="Opaque" x="263" y="10" width="292" height="38" forecolor="#FFFFFF" backcolor="#FE3152" uuid="a0071ab5-72a4-40ba-9e29-e911abab3a90"/>
+				<reportElement mode="Transparent" x="263" y="10" width="292" height="38" forecolor="#000000" backcolor="#FE3152" uuid="a0071ab5-72a4-40ba-9e29-e911abab3a90"/>
 				<box>
-					<pen lineWidth="1.0" lineColor="#FE3152"/>
-					<topPen lineWidth="1.0" lineColor="#FE3152"/>
-					<leftPen lineWidth="1.0" lineColor="#FE3152"/>
-					<bottomPen lineWidth="1.0" lineColor="#FE3152"/>
-					<rightPen lineWidth="1.0" lineColor="#FE3152"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
