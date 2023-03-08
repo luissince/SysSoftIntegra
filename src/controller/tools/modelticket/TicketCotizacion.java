@@ -11,6 +11,9 @@ import java.awt.print.Book;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -373,7 +376,7 @@ public class TicketCotizacion {
         });
         Task<Object> task = new Task<Object>() {
             @Override
-            public Object call() {
+            public Object call() throws FileNotFoundException {
                 Object object = CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
                 if (object instanceof CotizacionTB) {
                     try {
@@ -421,7 +424,11 @@ public class TicketCotizacion {
                         if (Session.COMPANY_IMAGE != null) {
                             imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
                         }
-                        InputStream dir = getClass().getResourceAsStream("/report/Cotizacion.jasper");
+
+                        File archivoc = new File("./report/Cotizacion.jasper");
+                        InputStream dir = new FileInputStream(archivoc.getPath());
+
+                        // InputStream dir = getClass().getResourceAsStream("/report/Cotizacion.jasper");
 
                         Map map = new HashMap();
                         map.put("LOGO", imgInputStream);
@@ -466,7 +473,7 @@ public class TicketCotizacion {
                         JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map,
                                 new JsonDataSource(jsonDataStream));
                         return jasperPrint;
-                    } catch (JRException | UnsupportedEncodingException ex) {
+                    } catch (JRException | UnsupportedEncodingException | FileNotFoundException ex) {
                         return ex.getLocalizedMessage();
                     }
                 } else {
