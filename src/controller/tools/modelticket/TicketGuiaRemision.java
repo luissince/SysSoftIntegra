@@ -347,9 +347,9 @@ public class TicketGuiaRemision {
                         + guiaRemisionTB.getUbigeoLlegadaTB().getProvincia() + " - "
                         + guiaRemisionTB.getUbigeoLlegadaTB().getDistrito());
 
-        map.put("NOMBRE_COMERCIAL", guiaRemisionTB.getClienteTB().getInformacion());
+        map.put("NOMBRE_COMERCIAL", Session.COMPANY_RAZON_SOCIAL);
 
-        map.put("NOMBRE_CLIENTE", Session.COMPANY_RAZON_SOCIAL);
+        map.put("NOMBRE_CLIENTE",  guiaRemisionTB.getClienteTB().getInformacion());
         map.put("RUC_CLIENTE", guiaRemisionTB.getClienteTB().getNumeroDocumento());
 
         map.put("DATOS_TRANSPORTISTA",
