@@ -93,6 +93,7 @@ public class SuministroTB {
     private AlmacenTB almacenTB;
     private Button btnTraspaso;
     private String mensaje;
+    private boolean uso;
 
     public SuministroTB() {
 
@@ -682,6 +683,14 @@ public class SuministroTB {
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje == null ? "" : mensaje;
+    }
+
+    public boolean isUso() {
+        return uso;
+    }
+
+    public void setUso(boolean uso) {
+        this.uso = uso;
     }
 
     @Override

@@ -49,8 +49,6 @@ public class FxCotizacionListaController implements Initializable {
     @FXML
     private TableColumn<CotizacionTB, String> tcCotizacion;
     @FXML
-    private TableColumn<CotizacionTB, String> tcObservacion;
-    @FXML
     private TableColumn<CotizacionTB, Label> tcEstado;
     @FXML
     private TableColumn<CotizacionTB, String> tcTotal;
@@ -75,12 +73,19 @@ public class FxCotizacionListaController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
+        tcCotizacion.setCellValueFactory(cellData -> Bindings.concat("COTIZACIÓN\nN° - " + Tools.formatNumber(cellData.getValue().getIdCotizacion())));
         tcFechaRegistro.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFechaCotizacion() + "\n" + cellData.getValue().getHoraCotizacion()));
         tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
-        tcCotizacion.setCellValueFactory(cellData -> Bindings.concat("COTIZACIÓN\nN° - " + Tools.formatNumber(cellData.getValue().getIdCotizacion())));
-        tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservaciones()));
+//        tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservaciones()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("lblEstado"));
         tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
+
+        tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
+        tcCotizacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));        
+        tcFechaRegistro.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
+        tcCliente.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));        
+        tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.16));
+        tcTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.16));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         Tools.actualDate(Tools.getDate(), txtFechaInicio);

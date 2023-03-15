@@ -98,7 +98,7 @@ public class FxCotizacionDetalleController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
+                return CotizacionADO.Obtener_Cotizacion_ById(idCotizacion, false);
             }
         };
         task.setOnScheduled(e -> {

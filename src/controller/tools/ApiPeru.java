@@ -34,45 +34,43 @@ public class ApiPeru {
     }
 
     public String getUrlSunatApisPeru(String numDocument) {
-        URLAPI_SUNAT_APISPERU=URLAPI_SUNAT_APISPERU+numDocument+"?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFsZXhhbmRlcl9keF8xMEBob3RtYWlsLmNvbSJ9.6TLycBwcRyW1d-f_hhCoWK1yOWG_HJvXo8b-EoS5MhE";
+        URLAPI_SUNAT_APISPERU = URLAPI_SUNAT_APISPERU + numDocument + "?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFsZXhhbmRlcl9keF8xMEBob3RtYWlsLmNvbSJ9.6TLycBwcRyW1d-f_hhCoWK1yOWG_HJvXo8b-EoS5MhE";
         return GetRequest(URLAPI_SUNAT_APISPERU);
     }
 
-    public String getUrlReniecApisPeru(String numDocument){
+    public String getUrlReniecApisPeru(String numDocument) {
         URLAPI_RENIEC_APISPERU = URLAPI_RENIEC_APISPERU + numDocument + "?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFsZXhhbmRlcl9keF8xMEBob3RtYWlsLmNvbSJ9.6TLycBwcRyW1d-f_hhCoWK1yOWG_HJvXo8b-EoS5MhE";
-        return  GetRequest(URLAPI_RENIEC_APISPERU);
+        return GetRequest(URLAPI_RENIEC_APISPERU);
     }
 
     private String GetRequest(String url) {
-        String result;
-        if (isValid(url)) {
-            try {
-                URL obj = new URL(url);
-                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                con.setRequestMethod("GET");
-                int responseCode = con.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-                        StringBuilder buffer = new StringBuilder();
-                        int read;
-                        char[] chars = new char[1024];
-                        while ((read = reader.read(chars)) != -1) {
-                            buffer.append(chars, 0, read);
-                        }
-                        jsonURL = buffer.toString();
-                        result = "200";
-                    }
-                } else {
-                    result = "Error en buscar los datos:" + responseCode;
-                }
-
-            } catch (IOException ex) {
-                result = "Error:" + ex.getLocalizedMessage();
-            }
-        } else {
-            result = "Error en el formato de la URL";
+        if (!isValid(url)) {
+            return "Error en el formato de la URL";
         }
-        return result;
+
+        try {
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            int responseCode = con.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+                    StringBuilder buffer = new StringBuilder();
+                    int read;
+                    char[] chars = new char[1024];
+                    while ((read = reader.read(chars)) != -1) {
+                        buffer.append(chars, 0, read);
+                    }
+                    jsonURL = buffer.toString();
+                    return "200";
+                }
+            }
+
+            return "Error en buscar los datos:" + responseCode;
+        } catch (IOException ex) {
+            return "Error:" + ex.getLocalizedMessage();
+        }
+
     }
 
     private boolean isValid(String url) {

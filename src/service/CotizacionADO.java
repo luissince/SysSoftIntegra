@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
 import model.ClienteTB;
 import model.CotizacionDetalleTB;
 import model.CotizacionTB;
@@ -30,7 +31,6 @@ public class CotizacionADO {
         PreparedStatement statementDetalleCotizacion = null;
         PreparedStatement statementDetalleCotizacionBorrar = null;
 
-     
         try {
             String result[] = new String[2];
             dbf.dbConnect();
@@ -39,7 +39,6 @@ public class CotizacionADO {
             statementValidacion = dbf.getConnection().prepareStatement("SELECT * FROM CotizacionTB WHERE IdCotizacion = ?");
             statementValidacion.setString(1, cotizacionTB.getIdCotizacion());
             if (statementValidacion.executeQuery().next()) {
-
                 statementCotizacion = dbf.getConnection().prepareStatement("UPDATE CotizacionTB SET "
                         + "IdCliente=?"
                         + ",IdVendedor=?"
@@ -50,7 +49,7 @@ public class CotizacionADO {
                         + ",HoraVencimiento=?"
                         + ",Estado=?"
                         + ",Observaciones=?"
-                        + ",IdVenta='' "
+                        + ",IdVenta=? "
                         + "WHERE IdCotizacion = ?");
 
                 statementCotizacion.setString(1, cotizacionTB.getIdCliente());
@@ -63,6 +62,7 @@ public class CotizacionADO {
                 statementCotizacion.setInt(8, cotizacionTB.getEstado());
                 statementCotizacion.setString(9, cotizacionTB.getObservaciones());
                 statementCotizacion.setString(10, cotizacionTB.getIdCotizacion());
+                statementCotizacion.setString(11, cotizacionTB.getIdVenta());
                 statementCotizacion.addBatch();
 
                 statementDetalleCotizacionBorrar = dbf.getConnection().prepareStatement("DELETE FROM DetalleCotizacionTB WHERE IdCotizacion = ?");
@@ -77,8 +77,9 @@ public class CotizacionADO {
                         + ",Precio"
                         + ",Descuento"
                         + ",IdImpuesto"
-                        + ",IdMedida)"
-                        + "VALUES(?,?,?,?,?,?,?)");
+                        + ",IdMedida"
+                        + ",Uso)"
+                        + "VALUES(?,?,?,?,?,?,?,?)");
 
                 for (CotizacionDetalleTB detalleCotizacionTB : cotizacionTB.getCotizacionDetalleTBs()) {
                     statementDetalleCotizacion.setString(1, cotizacionTB.getIdCotizacion());
@@ -88,6 +89,7 @@ public class CotizacionADO {
                     statementDetalleCotizacion.setDouble(5, detalleCotizacionTB.getDescuento());
                     statementDetalleCotizacion.setInt(6, detalleCotizacionTB.getIdImpuesto());
                     statementDetalleCotizacion.setInt(7, detalleCotizacionTB.getSuministroTB().getUnidadCompra());
+                    statementDetalleCotizacion.setBoolean(8, detalleCotizacionTB.isUso());
                     statementDetalleCotizacion.addBatch();
                 }
 
@@ -137,8 +139,9 @@ public class CotizacionADO {
                         + ",Precio"
                         + ",Descuento"
                         + ",IdImpuesto"
-                        + ",IdMedida)"
-                        + "VALUES(?,?,?,?,?,?,?)");
+                        + ",IdMedida"
+                        + ",Uso)"
+                        + "VALUES(?,?,?,?,?,?,?,?)");
 
                 for (CotizacionDetalleTB detalleCotizacionTB : cotizacionTB.getCotizacionDetalleTBs()) {
                     statementDetalleCotizacion.setString(1, idCotizacion);
@@ -148,6 +151,7 @@ public class CotizacionADO {
                     statementDetalleCotizacion.setDouble(5, detalleCotizacionTB.getDescuento());
                     statementDetalleCotizacion.setInt(6, detalleCotizacionTB.getIdImpuesto());
                     statementDetalleCotizacion.setInt(7, detalleCotizacionTB.getSuministroTB().getUnidadCompra());
+                    statementDetalleCotizacion.setBoolean(8, detalleCotizacionTB.isUso());
                     statementDetalleCotizacion.addBatch();
                 }
 
@@ -164,8 +168,6 @@ public class CotizacionADO {
             } catch (SQLException e) {
                 return e.getLocalizedMessage();
             }
-            return ex.getLocalizedMessage();
-        } catch (Exception ex) {
             return ex.getLocalizedMessage();
         } finally {
             try {
@@ -224,11 +226,10 @@ public class CotizacionADO {
                 cotizacionTB.setIdVenta(buscar);
 
                 Label lblEstado = new Label(cotizacionTB.getEstado() == 1 ? "SIN USO" : ventaTB.getComprobanteName() + "\n" + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-                lblEstado.getStyleClass().add("labelRoboto13");
+                lblEstado.getStyleClass().add("labelRoboto12");
                 lblEstado.setAlignment(Pos.CENTER_LEFT);
                 lblEstado.setStyle(cotizacionTB.getEstado() == 1 ? "-fx-text-fill:#020203;" : "-fx-text-fill:#0a6f25;");
-                lblEstado.setMinHeight(30);
-                lblEstado.setPrefHeight(30);
+                lblEstado.setPrefHeight(44);
                 cotizacionTB.setLblEstado(lblEstado);
 
                 EmpleadoTB empleadoTB = new EmpleadoTB();
@@ -278,7 +279,7 @@ public class CotizacionADO {
         }
     }
 
-    public static Object Obtener_Cotizacion_ById(String idCotizacion) {
+    public static Object Obtener_Cotizacion_ById(String idCotizacion, boolean venta) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementCotizacione = null;
         PreparedStatement statementDetalleCotizacione = null;
@@ -323,46 +324,99 @@ public class CotizacionADO {
                 empleadoTB.setNombres(result.getString("Nombres"));
                 cotizacionTB.setEmpleadoTB(empleadoTB);
 
+                if (result.getString("IdVenta") != null) {
+                    cotizacionTB.setIdVenta(result.getString("IdVenta"));
+                    VentaTB ventaTB = new VentaTB();
+                    ventaTB.setSerie(result.getString("Serie"));
+                    ventaTB.setNumeracion(result.getString("Numeracion"));
+                    cotizacionTB.setVentaTB(ventaTB);
+                } else {
+                    cotizacionTB.setIdVenta("");
+                }
+
+                result.close();
+
                 statementDetalleCotizacione = dbf.getConnection().prepareStatement("{CALL Sp_Obtener_Detalle_Cotizacion_ById(?)}");
                 statementDetalleCotizacione.setString(1, idCotizacion);
                 result = statementDetalleCotizacione.executeQuery();
                 ArrayList<CotizacionDetalleTB> cotizacionTBs = new ArrayList();
                 while (result.next()) {
-                    CotizacionDetalleTB cotizacionDetalleTB = new CotizacionDetalleTB();
-                    cotizacionDetalleTB.setId(result.getRow());
-                    cotizacionDetalleTB.setIdSuministro(result.getString("IdSuministro"));
+                    if (venta) {
+                        if (!result.getBoolean("Uso")) {
+                            CotizacionDetalleTB cotizacionDetalleTB = new CotizacionDetalleTB();
+                            cotizacionDetalleTB.setId(result.getRow());
+                            cotizacionDetalleTB.setIdSuministro(result.getString("IdSuministro"));
 
-                    SuministroTB suministroTB = new SuministroTB();
-                    suministroTB.setIdSuministro(result.getString("IdSuministro"));
-                    suministroTB.setClave(result.getString("Clave"));
-                    suministroTB.setNombreMarca(result.getString("NombreMarca"));
-                    suministroTB.setUnidadCompra(result.getInt("IdMedida"));
-                    suministroTB.setUnidadCompraName(result.getString("UnidadCompraName"));
-                    suministroTB.setInventario(result.getBoolean("Inventario"));
-                    suministroTB.setUnidadVenta(result.getInt("UnidadVenta"));
-                    suministroTB.setValorInventario(result.getShort("ValorInventario"));
-                    suministroTB.setCostoCompra(result.getDouble("PrecioCompra"));
-                    cotizacionDetalleTB.setSuministroTB(suministroTB);
+                            SuministroTB suministroTB = new SuministroTB();
+                            suministroTB.setIdSuministro(result.getString("IdSuministro"));
+                            suministroTB.setClave(result.getString("Clave"));
+                            suministroTB.setNombreMarca(result.getString("NombreMarca"));
+                            suministroTB.setUnidadCompra(result.getInt("IdMedida"));
+                            suministroTB.setUnidadCompraName(result.getString("UnidadCompraName"));
+                            suministroTB.setInventario(result.getBoolean("Inventario"));
+                            suministroTB.setUnidadVenta(result.getInt("UnidadVenta"));
+                            suministroTB.setValorInventario(result.getShort("ValorInventario"));
+                            suministroTB.setCostoCompra(result.getDouble("PrecioCompra"));
+                            cotizacionDetalleTB.setSuministroTB(suministroTB);
 
-                    cotizacionDetalleTB.setCantidad(result.getDouble("Cantidad"));
-                    cotizacionDetalleTB.setPrecio(result.getDouble("Precio"));
-                    cotizacionDetalleTB.setDescuento(result.getDouble("Descuento"));
+                            cotizacionDetalleTB.setCantidad(result.getDouble("Cantidad"));
+                            cotizacionDetalleTB.setPrecio(result.getDouble("Precio"));
+                            cotizacionDetalleTB.setDescuento(result.getDouble("Descuento"));
+                            cotizacionDetalleTB.setUso(result.getBoolean("Uso"));
 
-                    cotizacionDetalleTB.setIdImpuesto(result.getInt("IdImpuesto"));
-                    ImpuestoTB impuestoTB = new ImpuestoTB();
-                    impuestoTB.setIdImpuesto(result.getInt("IdImpuesto"));
-                    impuestoTB.setOperacion(result.getInt("Operacion"));
-                    impuestoTB.setNombreImpuesto(result.getString("ImpuestoNombre"));
-                    impuestoTB.setValor(result.getDouble("Valor"));
-                    cotizacionDetalleTB.setImpuestoTB(impuestoTB);
+                            cotizacionDetalleTB.setIdImpuesto(result.getInt("IdImpuesto"));
+                            ImpuestoTB impuestoTB = new ImpuestoTB();
+                            impuestoTB.setIdImpuesto(result.getInt("IdImpuesto"));
+                            impuestoTB.setOperacion(result.getInt("Operacion"));
+                            impuestoTB.setNombreImpuesto(result.getString("ImpuestoNombre"));
+                            impuestoTB.setValor(result.getDouble("Valor"));
+                            cotizacionDetalleTB.setImpuestoTB(impuestoTB);
 
-                    Button button = new Button("X");
-                    button.getStyleClass().add("buttonDark");
-                    cotizacionDetalleTB.setBtnRemove(button);
+                            Button button = new Button("X");
+                            button.getStyleClass().add("buttonDark");
+                            cotizacionDetalleTB.setBtnRemove(button);
 
-                    cotizacionTBs.add(cotizacionDetalleTB);
+                            cotizacionTBs.add(cotizacionDetalleTB);
+                        }
+                    } else {
+                        CotizacionDetalleTB cotizacionDetalleTB = new CotizacionDetalleTB();
+                        cotizacionDetalleTB.setId(result.getRow());
+                        cotizacionDetalleTB.setIdSuministro(result.getString("IdSuministro"));
+
+                        SuministroTB suministroTB = new SuministroTB();
+                        suministroTB.setIdSuministro(result.getString("IdSuministro"));
+                        suministroTB.setClave(result.getString("Clave"));
+                        suministroTB.setNombreMarca(result.getString("NombreMarca"));
+                        suministroTB.setUnidadCompra(result.getInt("IdMedida"));
+                        suministroTB.setUnidadCompraName(result.getString("UnidadCompraName"));
+                        suministroTB.setInventario(result.getBoolean("Inventario"));
+                        suministroTB.setUnidadVenta(result.getInt("UnidadVenta"));
+                        suministroTB.setValorInventario(result.getShort("ValorInventario"));
+                        suministroTB.setCostoCompra(result.getDouble("PrecioCompra"));
+                        cotizacionDetalleTB.setSuministroTB(suministroTB);
+
+                        cotizacionDetalleTB.setCantidad(result.getDouble("Cantidad"));
+                        cotizacionDetalleTB.setPrecio(result.getDouble("Precio"));
+                        cotizacionDetalleTB.setDescuento(result.getDouble("Descuento"));
+                        cotizacionDetalleTB.setUso(result.getBoolean("Uso"));
+
+                        cotizacionDetalleTB.setIdImpuesto(result.getInt("IdImpuesto"));
+                        ImpuestoTB impuestoTB = new ImpuestoTB();
+                        impuestoTB.setIdImpuesto(result.getInt("IdImpuesto"));
+                        impuestoTB.setOperacion(result.getInt("Operacion"));
+                        impuestoTB.setNombreImpuesto(result.getString("ImpuestoNombre"));
+                        impuestoTB.setValor(result.getDouble("Valor"));
+                        cotizacionDetalleTB.setImpuestoTB(impuestoTB);
+
+                        Button button = new Button("X");
+                        button.getStyleClass().add("buttonDark");
+                        cotizacionDetalleTB.setBtnRemove(button);
+
+                        cotizacionTBs.add(cotizacionDetalleTB);
+                    }
                 }
                 cotizacionTB.setCotizacionDetalleTBs(cotizacionTBs);
+                
                 return cotizacionTB;
             } else {
                 throw new Exception("No se puedo contrar la cotización, intente nuevamente por favor.");

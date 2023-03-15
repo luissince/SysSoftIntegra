@@ -113,7 +113,7 @@ public class TicketCotizacion {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object object = CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
+                Object object = CotizacionADO.Obtener_Cotizacion_ById(idCotizacion, false);
                 if (object instanceof CotizacionTB) {
                     try {
                         CotizacionTB cotizacionTB = (CotizacionTB) object;
@@ -377,7 +377,7 @@ public class TicketCotizacion {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() throws FileNotFoundException {
-                Object object = CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
+                Object object = CotizacionADO.Obtener_Cotizacion_ById(idCotizacion, false);
                 if (object instanceof CotizacionTB) {
                     try {
                         CotizacionTB cotizacionTB = (CotizacionTB) object;

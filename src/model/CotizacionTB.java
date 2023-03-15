@@ -29,8 +29,8 @@ public class CotizacionTB {
     
     private String idVenta;
 
-    private String observaciones;
-
+    private String observaciones; 
+    
     private ClienteTB clienteTB;
 
     private EmpleadoTB empleadoTB;

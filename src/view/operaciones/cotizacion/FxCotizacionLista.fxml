@@ -55,7 +55,7 @@
                               <HBox VBox.vgrow="ALWAYS">
                                  <children>
                                     <TextField fx:id="txtBuscar" onKeyPressed="#onKeyPressedBuscar" onKeyReleased="#onKeyReleasedBuscar" prefHeight="30.0" promptText="Buscar" styleClass="text-field-normal" HBox.hgrow="ALWAYS" />
-                                    <Button mnemonicParsing="false" onAction="#onActionRecargar" onKeyPressed="#onkeyPressedRecargar" prefHeight="30.0" styleClass="buttonLight" text="Recargar">
+                                    <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionRecargar" onKeyPressed="#onkeyPressedRecargar" styleClass="buttonLight" text="Recargar">
                                        <graphic>
                                           <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -102,12 +102,11 @@
                         <TableView fx:id="tvList" onKeyPressed="#onKeyPressedList" onMouseClicked="#onMouseClickedList" prefHeight="320.0" prefWidth="870.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
                           <columns>
                             <TableColumn fx:id="tcNumero" prefWidth="60.0" style="-fx-alignment: center;" text="N°" />
-                              <TableColumn fx:id="tcFechaRegistro" prefWidth="110.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha Registro" />
-                              <TableColumn fx:id="tcCliente" prefWidth="140.0" style="-fx-alignment: CENTER-LEFT;" text="Cliente" />
-                              <TableColumn fx:id="tcCotizacion" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Cotización" />
-                              <TableColumn fx:id="tcObservacion" prefWidth="170.0" style="-fx-alignment: CENTER-LEFT;" text="Observación" />
-                              <TableColumn fx:id="tcEstado" prefWidth="130.0" style="-fx-alignment: CENTER-LEFT;" text="Uso" />
-                              <TableColumn fx:id="tcTotal" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;" text="Total" />
+                              <TableColumn fx:id="tcCotizacion" prefWidth="156.0" style="-fx-alignment: CENTER-LEFT;" text="Cotización" />
+                              <TableColumn fx:id="tcFechaRegistro" prefWidth="141.0" style="-fx-alignment: CENTER-LEFT;" text="Fch. Registro" />
+                              <TableColumn fx:id="tcCliente" prefWidth="211.0" style="-fx-alignment: CENTER-LEFT;" text="Cliente" />
+                              <TableColumn fx:id="tcEstado" prefWidth="150.0" style="-fx-alignment: CENTER-LEFT;" text="Asociado" />
+                              <TableColumn fx:id="tcTotal" prefWidth="99.0" style="-fx-alignment: CENTER-LEFT;" text="Total" />
                           </columns>
                         </TableView>
                      </children>
@@ -141,7 +140,7 @@
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#onActionAceptar" onKeyPressed="#onKeyPressedAceptar" prefHeight="30.0" styleClass="buttonLight" text="Aceptar">
+                              <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionAceptar" onKeyPressed="#onKeyPressedAceptar" styleClass="buttonLight" text="Aceptar">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -150,7 +149,7 @@
                                     </ImageView>
                                  </graphic>
                               </Button>
-                              <Button mnemonicParsing="false" onAction="#onActionCerrar" onKeyPressed="#onKeyPressedCerrar" prefHeight="30.0" styleClass="buttonLight" text="Cerrar">
+                              <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionCerrar" onKeyPressed="#onKeyPressedCerrar" styleClass="buttonLight" text="Cerrar">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>

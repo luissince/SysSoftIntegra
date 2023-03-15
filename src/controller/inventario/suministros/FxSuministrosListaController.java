@@ -169,6 +169,14 @@ public class FxSuministrosListaController implements Initializable {
         tcPrecio.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getPrecioVentaGeneral(), 2)));
         tvList.setPlaceholder(Tools.placeHolderTableView("Ingrese datos para iniciar la busqueda.", "-fx-text-fill:#020203;", false));
 
+        tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
+        tcNombre.prefWidthProperty().bind(tvList.widthProperty().multiply(0.27));
+        tcCategoriaMarca.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
+        tcTipoProducto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
+        tcCantidad.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
+        tcImpuesto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
+        tcPrecio.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
+
         paginacion = 1;
         opcion = 0;
         status = false;

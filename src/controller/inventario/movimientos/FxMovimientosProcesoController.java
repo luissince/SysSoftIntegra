@@ -30,6 +30,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -93,6 +95,14 @@ public class FxMovimientosProcesoController implements Initializable {
 
     private SearchComboBox<AlmacenTB> searchComboBoxAlmacen;
 
+    private final ImageView loadImage = new ImageView(new Image("/view/image/load.gif"));
+
+    private final ImageView successImage = new ImageView(new Image("/view/image/succes_large.png"));
+
+    private final ImageView warningImage = new ImageView(new Image("/view/image/warning_large.png"));
+
+    private final ImageView errorImage = new ImageView(new Image("/view/image/error_large.png"));
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tcAccion.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
@@ -114,6 +124,18 @@ public class FxMovimientosProcesoController implements Initializable {
         rbDecremento.setToggleGroup(groupAjuste);
 
         TipoMovimientoADO.Get_list_Tipo_Movimiento(rbIncremento.isSelected(), false).forEach(e -> cbAjuste.getItems().add(e));
+
+        loadImage.setFitWidth(120);
+        loadImage.setFitHeight(120);
+
+        successImage.setFitWidth(120);
+        successImage.setFitHeight(120);
+
+        warningImage.setFitWidth(120);
+        warningImage.setFitHeight(120);
+
+        errorImage.setFitWidth(120);
+        errorImage.setFitHeight(120);
 
         filterCbAlmacen();
     }
@@ -169,113 +191,119 @@ public class FxMovimientosProcesoController implements Initializable {
     }
 
     private void registrarMovimiento() {
-        if (!tvList.getItems().isEmpty()) {
-            int validete = 0;
-            validete = tvList.getItems().stream().filter((SuministroTB e) -> e.getMovimiento() <= 0).map((_item) -> 1).reduce(validete, Integer::sum);
-            if (validete > 0) {
-                Tools.AlertMessageWarning(apWindow, "Movimiento", "Su nueva existencia de un producto no puede ser menor que 0.");
-            } else if (cbAjuste.getSelectionModel().getSelectedIndex() < 0) {
-                Tools.AlertMessageWarning(apWindow, "Movimiento", "Seleccione un tipo de ajuste, por favor.");
-                cbAjuste.requestFocus();
-            } else if (Tools.isText(txtObservacion.getText().trim())) {
-                Tools.AlertMessageWarning(apWindow, "Movimiento", "Ingrese una observación, por favor.");
-                txtObservacion.requestFocus();
-            } else if (cbAlmacen.getSelectionModel().getSelectedIndex() < 0) {
-                Tools.AlertMessageWarning(apWindow, "Movimiento", "Seleccione el almacen.");
-                cbAlmacen.requestFocus();
-            } else {
-                short validate = Tools.AlertMessageConfirmation(apWindow, "Movimiento", "¿Está seguro de continuar?");
-                if (validate == 1) {
-                    ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
-                        Thread t = new Thread(runnable);
-                        t.setDaemon(true);
-                        return t;
-                    });
-                    Task<String> task = new Task<String>() {
-                        @Override
-                        public String call() {
-                            AjusteInventarioTB inventarioTB = new AjusteInventarioTB();
-                            inventarioTB.setFecha(Tools.getDate());
-                            inventarioTB.setHora(Tools.getTime());
-                            inventarioTB.setTipoAjuste(rbIncremento.isSelected());
-                            inventarioTB.setTipoMovimiento(cbAjuste.getSelectionModel().getSelectedItem().getIdTipoMovimiento());
-                            inventarioTB.setTipoMovimientoName(cbAjuste.getSelectionModel().getSelectedItem().getNombre());
-                            inventarioTB.setObservacion(txtObservacion.getText().trim());
-                            inventarioTB.setSuministro(true);
-                            inventarioTB.setEstado(1);
-                            inventarioTB.setIdAlmacen(cbAlmacen.getSelectionModel().getSelectedItem().getIdAlmacen());
-                            inventarioTB.setSuministroTBs(new ArrayList<>(tvList.getItems()));
-                            return AjusteInventarioADO.Crud_Movimiento_Inventario(inventarioTB);
-                        }
-                    };
-                    task.setOnScheduled(t -> {
-                        hbBody.setDisable(true);
-                        hbLoad.setVisible(true);
-                        btnAceptarLoad.setVisible(false);
-                        lblMessageLoad.setText("Procesando información...");
-                        lblMessageLoad.setTextFill(Color.web("#ffffff"));
-                    });
-                    task.setOnFailed(t -> {
-                        btnAceptarLoad.setVisible(true);
-                        btnAceptarLoad.setOnAction(event -> {
-                            hbBody.setDisable(false);
-                            hbLoad.setVisible(false);
-                            clearComponents();
-                        });
-                        btnAceptarLoad.setOnKeyPressed(event -> {
-                            if (event.getCode() == KeyCode.ENTER) {
-                                hbBody.setDisable(false);
-                                hbLoad.setVisible(false);
-                                clearComponents();
-                            }
-                        });
-                        lblMessageLoad.setText(task.getException().getLocalizedMessage());
-                        lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-                    });
-                    task.setOnSucceeded(t -> {
-                        String result = task.getValue();
-                        if (result.equalsIgnoreCase("registered")) {
-                            lblMessageLoad.setText("Se completo el registro correctamente.");
-                            lblMessageLoad.setTextFill(Color.web("#ffffff"));
-                            btnAceptarLoad.setVisible(true);
-                            btnAceptarLoad.setOnAction(event -> {
-                                hbBody.setDisable(false);
-                                hbLoad.setVisible(false);
-                                clearComponents();
-                            });
-                            btnAceptarLoad.setOnKeyPressed(event -> {
-                                if (event.getCode() == KeyCode.ENTER) {
-                                    hbBody.setDisable(false);
-                                    hbLoad.setVisible(false);
-                                    clearComponents();
-                                }
-                            });
-                        } else {
-                            lblMessageLoad.setText(result);
-                            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-                            btnAceptarLoad.setVisible(true);
-                            btnAceptarLoad.setOnAction(event -> {
-                                hbBody.setDisable(false);
-                                hbLoad.setVisible(false);
-                                clearComponents();
-                            });
-                            btnAceptarLoad.setOnKeyPressed(event -> {
-                                if (event.getCode() == KeyCode.ENTER) {
-                                    hbBody.setDisable(false);
-                                    hbLoad.setVisible(false);
-                                    clearComponents();
-                                }
-                            });
-                        }
-                    });
-                    exec.execute(task);
-                    if (!exec.isShutdown()) {
-                        exec.shutdown();
-                    }
-                }
-            }
-        } else {
+        if (tvList.getItems().isEmpty()) {
             Tools.AlertMessageWarning(apWindow, "Movimiento", "La tabla no tiene campos para continuar con el proceso.");
+            return;
+        }
+
+        int validete = 0;
+        validete = tvList.getItems().stream().filter((SuministroTB e) -> e.getMovimiento() <= 0).map((_item) -> 1).reduce(validete, Integer::sum);
+        if (validete > 0) {
+            Tools.AlertMessageWarning(apWindow, "Movimiento", "Su nueva existencia de un producto no puede ser menor que 0.");
+            return;
+        }
+
+        if (cbAjuste.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(apWindow, "Movimiento", "Seleccione un tipo de ajuste, por favor.");
+            cbAjuste.requestFocus();
+            return;
+        }
+
+        if (Tools.isText(txtObservacion.getText().trim())) {
+            Tools.AlertMessageWarning(apWindow, "Movimiento", "Ingrese una observación, por favor.");
+            txtObservacion.requestFocus();
+            return;
+        }
+
+        if (cbAlmacen.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(apWindow, "Movimiento", "Seleccione el almacen.");
+            cbAlmacen.requestFocus();
+            return;
+        }
+
+        short validate = Tools.AlertMessageConfirmation(apWindow, "Movimiento", "¿Está seguro de continuar?");
+
+        if (validate == 1) {
+            ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+                Thread t = new Thread(runnable);
+                t.setDaemon(true);
+                return t;
+            });
+            Task<String> task = new Task<String>() {
+                @Override
+                public String call() throws Exception {
+                    AjusteInventarioTB inventarioTB = new AjusteInventarioTB();
+                    inventarioTB.setFecha(Tools.getDate());
+                    inventarioTB.setHora(Tools.getTime());
+                    inventarioTB.setTipoAjuste(rbIncremento.isSelected());
+                    inventarioTB.setTipoMovimiento(cbAjuste.getSelectionModel().getSelectedItem().getIdTipoMovimiento());
+                    inventarioTB.setTipoMovimientoName(cbAjuste.getSelectionModel().getSelectedItem().getNombre());
+                    inventarioTB.setObservacion(txtObservacion.getText().trim());
+                    inventarioTB.setSuministro(true);
+                    inventarioTB.setEstado(1);
+                    inventarioTB.setIdAlmacen(cbAlmacen.getSelectionModel().getSelectedItem().getIdAlmacen());
+                    inventarioTB.setSuministroTBs(new ArrayList<>(tvList.getItems()));
+
+                    String result = AjusteInventarioADO.Crud_Movimiento_Inventario(inventarioTB);
+                    if (result.equalsIgnoreCase("registered")) {
+                        return result;
+                    }
+                    
+                    throw new Exception(result);
+                }
+            };
+
+            task.setOnScheduled(t -> {
+                hbBody.setDisable(true);
+                hbLoad.setVisible(true);
+                btnAceptarLoad.setVisible(false);
+                lblMessageLoad.setText("Procesando información...");
+                lblMessageLoad.setTextFill(Color.web("#ffffff"));
+                lblMessageLoad.setGraphic(loadImage);
+            });
+
+            task.setOnFailed(t -> {
+                btnAceptarLoad.setVisible(true);
+                btnAceptarLoad.setOnAction(event -> {
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    clearComponents();
+                });
+                btnAceptarLoad.setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        hbBody.setDisable(false);
+                        hbLoad.setVisible(false);
+                        clearComponents();
+                    }
+                });
+                lblMessageLoad.setText(task.getException().getLocalizedMessage());
+                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+                lblMessageLoad.setGraphic(warningImage);
+            });
+
+            task.setOnSucceeded(t -> {
+                btnAceptarLoad.setVisible(true);
+                btnAceptarLoad.setOnAction(event -> {
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    clearComponents();
+                });
+                btnAceptarLoad.setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        hbBody.setDisable(false);
+                        hbLoad.setVisible(false);
+                        clearComponents();
+                    }
+                });
+
+                lblMessageLoad.setText("Se completó el registro correctamente.");
+                lblMessageLoad.setTextFill(Color.web("#ffffff"));
+                lblMessageLoad.setGraphic(successImage);
+            });
+            exec.execute(task);
+            if (!exec.isShutdown()) {
+                exec.shutdown();
+            }
         }
     }
 

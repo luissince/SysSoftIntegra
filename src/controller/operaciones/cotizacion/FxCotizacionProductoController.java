@@ -64,39 +64,47 @@ public class FxCotizacionProductoController implements Initializable {
         if (!Tools.isNumeric(txtCantidad.getText().trim())) {
             Tools.AlertMessageWarning(apWindow, "Cotización", "Ingrese la cantidad.");
             txtCantidad.requestFocus();
-        } else if (!Tools.isNumeric(txtPrecio.getText().trim())) {
+            return;
+        }
+
+        if (!Tools.isNumeric(txtPrecio.getText().trim())) {
             Tools.AlertMessageWarning(apWindow, "Cotización", "Ingrese el precio.");
             txtPrecio.requestFocus();
-        } else if (cbUnidadMedida.getSelectionModel().getSelectedIndex() < 0) {
+            return;
+        }
+
+        if (cbUnidadMedida.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(apWindow, "Cotización", "Seleccione su unidad de medida.");
             cbUnidadMedida.requestFocus();
+            return;
+        }
+
+        CotizacionDetalleTB cotizacionDetalleTB = new CotizacionDetalleTB();
+        cotizacionDetalleTB.setIdSuministro(suministroTB.getIdSuministro());
+        cotizacionDetalleTB.setCantidad(Double.parseDouble(txtCantidad.getText()));
+        cotizacionDetalleTB.setPrecio(Double.parseDouble(txtPrecio.getText()));
+        cotizacionDetalleTB.setDescuento(0);
+        cotizacionDetalleTB.setIdImpuesto(suministroTB.getIdImpuesto());
+        cotizacionDetalleTB.setUso(false);
+
+        cotizacionDetalleTB.setImpuestoTB(suministroTB.getImpuestoTB());
+
+        SuministroTB newSuministroTB = new SuministroTB();
+        newSuministroTB.setClave(suministroTB.getClave());
+        newSuministroTB.setNombreMarca(suministroTB.getNombreMarca());
+        newSuministroTB.setUnidadCompra(cbUnidadMedida.getSelectionModel().getSelectedItem().getIdDetalle());
+        newSuministroTB.setUnidadCompraName(cbUnidadMedida.getSelectionModel().getSelectedItem().getNombre());
+        cotizacionDetalleTB.setSuministroTB(newSuministroTB);
+
+        Button button = new Button("X");
+        button.getStyleClass().add("buttonDark");
+        cotizacionDetalleTB.setBtnRemove(button);
+
+        Tools.Dispose(apWindow);
+        if (edit) {
+            cotizacionController.getEditDetalle(index, cotizacionDetalleTB);
         } else {
-            CotizacionDetalleTB cotizacionDetalleTB = new CotizacionDetalleTB();
-            cotizacionDetalleTB.setIdSuministro(suministroTB.getIdSuministro());
-            cotizacionDetalleTB.setCantidad(Double.parseDouble(txtCantidad.getText()));
-            cotizacionDetalleTB.setPrecio(Double.parseDouble(txtPrecio.getText()));
-            cotizacionDetalleTB.setDescuento(0);
-            cotizacionDetalleTB.setIdImpuesto(suministroTB.getIdImpuesto());
-
-            cotizacionDetalleTB.setImpuestoTB(suministroTB.getImpuestoTB());
-
-            SuministroTB newSuministroTB = new SuministroTB();
-            newSuministroTB.setClave(suministroTB.getClave());
-            newSuministroTB.setNombreMarca(suministroTB.getNombreMarca());
-            newSuministroTB.setUnidadCompra(cbUnidadMedida.getSelectionModel().getSelectedItem().getIdDetalle());
-            newSuministroTB.setUnidadCompraName(cbUnidadMedida.getSelectionModel().getSelectedItem().getNombre());
-            cotizacionDetalleTB.setSuministroTB(newSuministroTB);
-
-            Button button = new Button("X");
-            button.getStyleClass().add("buttonDark");
-            cotizacionDetalleTB.setBtnRemove(button);
-
-            Tools.Dispose(apWindow);
-            if (edit) {
-                cotizacionController.getEditDetalle(index, cotizacionDetalleTB);
-            } else {
-                cotizacionController.getAddDetalle(cotizacionDetalleTB);
-            }
+            cotizacionController.getAddDetalle(cotizacionDetalleTB);
         }
     }
 

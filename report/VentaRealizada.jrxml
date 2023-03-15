@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a8fcc85-bb64-405d-8ebb-a9f118fce454">
-	<property name="ireport.zoom" value="1.9965000000000395"/>
+	<property name="ireport.zoom" value="1.5000000000000295"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="467"/>
+	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="style1" mode="Opaque" backcolor="#CCCCCC" fill="Solid" isBold="true"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
@@ -56,7 +56,7 @@
 	<title>
 		<band height="209" splitType="Stretch">
 			<staticText>
-				<reportElement x="19" y="94" width="516" height="101" uuid="fc63a68f-87f7-4b0f-af58-0595cfcb8b6e"/>
+				<reportElement x="8" y="94" width="527" height="101" uuid="fc63a68f-87f7-4b0f-af58-0595cfcb8b6e"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -67,7 +67,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="19" y="114" width="101" height="12" forecolor="#000000" backcolor="#020203" uuid="7f9cb32e-75e7-423c-bade-b3b4418af6ed"/>
+				<reportElement mode="Transparent" x="8" y="114" width="100" height="12" forecolor="#000000" backcolor="#020203" uuid="7f9cb32e-75e7-423c-bade-b3b4418af6ed"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -75,7 +75,7 @@
 				<text><![CDATA[NOMBRE/RAZÓN SOCIAL:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="19" y="138" width="101" height="12" forecolor="#000000" backcolor="#020203" uuid="50e4627f-f063-4afa-8e86-932a270ede4a"/>
+				<reportElement mode="Transparent" x="8" y="138" width="100" height="12" forecolor="#000000" backcolor="#020203" uuid="50e4627f-f063-4afa-8e86-932a270ede4a"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -83,7 +83,7 @@
 				<text><![CDATA[D.N.I./R.U.C.:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="19" y="177" width="101" height="12" forecolor="#000000" backcolor="#020203" uuid="e4b9e70d-8b1c-4a30-83b7-8bae8d155ddc"/>
+				<reportElement mode="Transparent" x="8" y="177" width="100" height="12" forecolor="#000000" backcolor="#020203" uuid="e4b9e70d-8b1c-4a30-83b7-8bae8d155ddc"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -99,7 +99,7 @@
 				<text><![CDATA[EMAIL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="19" y="126" width="101" height="12" forecolor="#000000" backcolor="#020203" uuid="94d83c1c-9336-4b35-acbc-4646270b868b"/>
+				<reportElement mode="Transparent" x="8" y="126" width="100" height="12" forecolor="#000000" backcolor="#020203" uuid="94d83c1c-9336-4b35-acbc-4646270b868b"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -107,7 +107,7 @@
 				<text><![CDATA[DIRECCIÓN:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="19" y="164" width="101" height="12" forecolor="#000000" backcolor="#020203" uuid="f2047b4d-ec13-4186-ad75-7ba0f188d961"/>
+				<reportElement mode="Transparent" x="8" y="164" width="100" height="12" forecolor="#000000" backcolor="#020203" uuid="f2047b4d-ec13-4186-ad75-7ba0f188d961"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true" isStrikeThrough="false"/>
 					<paragraph leftIndent="5"/>
@@ -138,9 +138,9 @@
 				<reportElement mode="Transparent" x="386" y="31" width="149" height="23" forecolor="#000000" backcolor="#FE3152" uuid="5cfb7879-9434-491a-81b6-6c56a0c89bec"/>
 				<box>
 					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
+					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -152,7 +152,7 @@
 				<reportElement mode="Transparent" x="386" y="54" width="149" height="24" forecolor="#000000" backcolor="#FE3152" uuid="e442535a-430b-40df-ad6a-497f23e3e044"/>
 				<box>
 					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
+					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -168,7 +168,7 @@
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -177,7 +177,7 @@
 				<textFieldExpression><![CDATA[$P{DOCUMENTOEMPRESA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Transparent" x="19" y="150" width="101" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="4c7e52a9-2e3c-4648-b65c-90adf30ca728"/>
+				<reportElement mode="Transparent" x="8" y="150" width="100" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="4c7e52a9-2e3c-4648-b65c-90adf30ca728"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -185,7 +185,7 @@
 				<text><![CDATA[MONEDA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="19" y="102" width="101" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="33d65441-daf2-4c44-9b9a-5c49ec75231f"/>
+				<reportElement mode="Transparent" x="8" y="102" width="100" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="33d65441-daf2-4c44-9b9a-5c49ec75231f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -193,7 +193,7 @@
 				<text><![CDATA[FECHA VENTA:]]></text>
 			</staticText>
 			<textField>
-				<reportElement isPrintRepeatedValues="false" x="120" y="150" width="404" height="12" forecolor="#000000" uuid="2a764a8b-90f8-4439-8ce3-5f0cb5967da0"/>
+				<reportElement isPrintRepeatedValues="false" x="108" y="150" width="416" height="12" forecolor="#000000" uuid="2a764a8b-90f8-4439-8ce3-5f0cb5967da0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>
@@ -201,7 +201,7 @@
 				<textFieldExpression><![CDATA[$P{MONEDA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement isPrintRepeatedValues="false" x="120" y="102" width="74" height="12" forecolor="#000000" uuid="cfd17a7e-07f6-468b-97b1-9b217ef852d0"/>
+				<reportElement isPrintRepeatedValues="false" x="108" y="102" width="86" height="12" forecolor="#000000" uuid="cfd17a7e-07f6-468b-97b1-9b217ef852d0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>
@@ -209,7 +209,7 @@
 				<textFieldExpression><![CDATA[$P{FECHA_VENTA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="120" y="138" width="404" height="12" forecolor="#020203" uuid="d0ae09dd-1302-4f87-8ade-20617d17f080"/>
+				<reportElement x="108" y="138" width="416" height="12" forecolor="#020203" uuid="d0ae09dd-1302-4f87-8ade-20617d17f080"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>
@@ -217,7 +217,7 @@
 				<textFieldExpression><![CDATA[$P{DOUMENTO_CLIENTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="120" y="114" width="404" height="12" forecolor="#020203" uuid="f341fe8e-771f-461f-9b98-96dfef0db16d"/>
+				<reportElement x="108" y="114" width="416" height="12" forecolor="#020203" uuid="f341fe8e-771f-461f-9b98-96dfef0db16d"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>
@@ -225,7 +225,7 @@
 				<textFieldExpression><![CDATA[$P{INFORMACION_CLIENTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="120" y="126" width="404" height="12" forecolor="#020203" uuid="7aa0478b-355f-4603-a186-50cdf8d8f91e"/>
+				<reportElement x="108" y="126" width="416" height="12" forecolor="#020203" uuid="7aa0478b-355f-4603-a186-50cdf8d8f91e"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>
@@ -233,7 +233,7 @@
 				<textFieldExpression><![CDATA[$P{DIRECCION_CLIENTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="120" y="177" width="135" height="12" forecolor="#020203" uuid="25e7b9d2-cc4e-4b48-83ef-f8775c5ce4eb"/>
+				<reportElement x="108" y="177" width="147" height="12" forecolor="#020203" uuid="25e7b9d2-cc4e-4b48-83ef-f8775c5ce4eb"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>
@@ -249,7 +249,7 @@
 				<textFieldExpression><![CDATA[$P{EMAIL_CLIENTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="120" y="164" width="404" height="12" forecolor="#020203" uuid="676d16b0-74bf-4d43-94f2-78bcf3c60a5c"/>
+				<reportElement x="108" y="164" width="416" height="12" forecolor="#020203" uuid="676d16b0-74bf-4d43-94f2-78bcf3c60a5c"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>
@@ -538,11 +538,7 @@
 Para consultar el Documento ingrese a: www.sunat.pe]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="264" y="112" width="291" height="36" forecolor="#000000" backcolor="#FE3152" uuid="c885ce9a-ee8e-4214-b6b2-4dad818ea73e"/>
-				<box>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-				</box>
+				<reportElement mode="Transparent" x="264" y="129" width="291" height="19" forecolor="#000000" backcolor="#FE3152" uuid="c885ce9a-ee8e-4214-b6b2-4dad818ea73e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>

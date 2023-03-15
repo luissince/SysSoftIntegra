@@ -369,11 +369,11 @@ public class ClienteADO {
         return clienteTBs;
     }
 
-    public static ClienteTB GetSearchClienteNumeroDocumento(short opcion, String search) {
+    public static Object GetSearchClienteNumeroDocumento(short opcion, String search) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
-        ClienteTB clienteTB = null;
+
         try {
             dbf.dbConnect();
             preparedStatement = dbf.getConnection()
@@ -382,7 +382,7 @@ public class ClienteADO {
             preparedStatement.setString(2, search);
             rsEmps = preparedStatement.executeQuery();
             if (rsEmps.next()) {
-                clienteTB = new ClienteTB();
+                ClienteTB clienteTB = new ClienteTB();
                 clienteTB.setIdCliente(rsEmps.getString("IdCliente"));
                 clienteTB.setTipoDocumento(rsEmps.getInt("TipoDocumento"));
                 clienteTB.setNumeroDocumento(rsEmps.getString("NumeroDocumento"));
@@ -390,9 +390,14 @@ public class ClienteADO {
                 clienteTB.setCelular(rsEmps.getString("Celular"));
                 clienteTB.setEmail(rsEmps.getString("Email"));
                 clienteTB.setDireccion(rsEmps.getString("Direccion"));
+
+                return clienteTB;
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            Tools.println("Error en GetSearchClienteNumeroDocumento()");
+            throw new Exception("No se encontro los datos.");
+        } catch (SQLException | ClassNotFoundException ex) {
+            return ex.getLocalizedMessage();
+        } catch (Exception ex) {
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (preparedStatement != null) {
@@ -403,10 +408,9 @@ public class ClienteADO {
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
-
+                return ex.getLocalizedMessage();
             }
         }
-        return clienteTB;
     }
 
     public static ClienteTB GetClientePredetermined() {

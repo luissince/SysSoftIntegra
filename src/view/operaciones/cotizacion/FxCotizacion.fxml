@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.cotizacion.FxCotizacionController">
+<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.cotizacion.FxCotizacionController">
    <children>
       <HBox fx:id="hbBody" onKeyReleased="#onKeyReleasedWindow" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -152,11 +152,12 @@
                                     </VBox>
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_RIGHT" style="-fx-spacing: 0.8333333333333334em;">
+                              <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;">
                                  <children>
                                     <VBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;">
                                        <children>
-                                          <Label fx:id="lblProceso" styleClass="labelRobotoBold15" text="Cotización en proceso de registrar" textFill="#0060e8" />
+                                          <Label fx:id="lblProceso" styleClass="labelRobotoBold15" text="Proceso de Creación" textFill="#0060e8" />
+                                          <Label fx:id="lblComprobante" styleClass="labelRobotoBold15" text="Comprobante Asociado: -" textFill="#0060e8" />
                                        </children>
                                     </VBox>
                                  </children>
@@ -164,6 +165,7 @@
                               <TableView fx:id="tvList" editable="true" fixedCellSize="-0.0" prefHeight="300.0" prefWidth="850.0" styleClass="table-view-principal" VBox.vgrow="ALWAYS">
                                  <columns>
                                     <TableColumn fx:id="tcOpcion" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Quitar" />
+                                    <TableColumn fx:id="tcUso" prefWidth="130.0" style="-fx-alignment: CENTER-LEFT;" text="Usado" />
                                     <TableColumn fx:id="tcProducto" prefWidth="176.0" style="-fx-alignment: CENTER-LEFT;" text="Producto" />
                                     <TableColumn fx:id="tcCantidad" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Cantidad" />
                                     <TableColumn fx:id="tcMedida" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Medida" />
@@ -249,7 +251,7 @@
             </VBox>
          </children>
       </HBox>
-      <HBox fx:id="hbLoad" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox fx:id="hbLoad" alignment="CENTER" focusTraversable="true" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em;">
                <children>

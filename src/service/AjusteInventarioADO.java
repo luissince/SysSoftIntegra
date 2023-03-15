@@ -186,7 +186,7 @@ public class AjusteInventarioADO {
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
-
+                return ex.getLocalizedMessage();
             }
         }
     }

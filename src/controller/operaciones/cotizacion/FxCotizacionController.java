@@ -28,17 +28,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.ClienteTB;
 import model.CotizacionDetalleTB;
 import model.CotizacionTB;
@@ -64,6 +68,8 @@ public class FxCotizacionController implements Initializable {
     private TableView<CotizacionDetalleTB> tvList;
     @FXML
     private TableColumn<CotizacionDetalleTB, Button> tcOpcion;
+    @FXML
+    private TableColumn<CotizacionDetalleTB, String> tcUso;
     @FXML
     private TableColumn<CotizacionDetalleTB, String> tcCantidad;
     @FXML
@@ -91,6 +97,8 @@ public class FxCotizacionController implements Initializable {
     @FXML
     private Label lblProceso;
     @FXML
+    private Label lblComprobante;
+    @FXML
     private HBox hbBody;
     @FXML
     private HBox hbLoad;
@@ -102,6 +110,8 @@ public class FxCotizacionController implements Initializable {
     private FxPrincipalController fxPrincipalController;
 
     private String idCotizacion;
+
+    private String idVenta;
 
     private double importeBrutoTotal;
 
@@ -115,10 +125,19 @@ public class FxCotizacionController implements Initializable {
 
     private String monedaSimbolo;
 
+    private final ImageView loadImage = new ImageView(new Image("/view/image/load.gif"));
+
+    private final ImageView successImage = new ImageView(new Image("/view/image/succes_large.png"));
+
+    private final ImageView warningImage = new ImageView(new Image("/view/image/warning_large.png"));
+
+    private final ImageView errorImage = new ImageView(new Image("/view/image/error_large.png"));
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         monedaSimbolo = "M";
         idCotizacion = "";
+        idVenta = "";
         Tools.actualDate(Tools.getDate(), dtFechaEmision);
         Tools.actualDate(Tools.getDate(), dtFechaVencimiento);
         loadTableView();
@@ -134,10 +153,29 @@ public class FxCotizacionController implements Initializable {
                 }
             }
         }
+
+        loadImage.setFitWidth(120);
+        loadImage.setFitHeight(120);
+
+        successImage.setFitWidth(120);
+        successImage.setFitHeight(120);
+
+        warningImage.setFitWidth(120);
+        warningImage.setFitHeight(120);
+
+        errorImage.setFitWidth(120);
+        errorImage.setFitHeight(120);
+    }
+
+    private void openAlertMessageWarning(String message) {
+        fxPrincipalController.openFondoModal();
+        Tools.AlertMessageWarning(apWindow, "Cotización", message);
+        fxPrincipalController.closeFondoModal();
     }
 
     private void loadTableView() {
         tcOpcion.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
+        tcUso.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().isUso() ? "ASIGNADO" : "LIBRE"));
         tcProducto.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getSuministroTB().getClave() + "\n" + cellData.getValue().getSuministroTB().getNombreMarca()));
         tcCantidad.setCellValueFactory(cellData -> Bindings.concat(
@@ -152,8 +190,8 @@ public class FxCotizacionController implements Initializable {
         tcCantidad.setCellFactory(TextFieldTableCell.forTableColumn());
         tcCantidad.setOnEditCommit(data -> {
             final Double newCantidad = Tools.isNumeric(data.getNewValue())
-                    ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.parseDouble(data.getOldValue()) : Double.parseDouble(data.getNewValue()))
-                    : Double.parseDouble(data.getOldValue());
+                    ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.valueOf(data.getOldValue()) : Double.valueOf(data.getNewValue()))
+                    : Double.valueOf(data.getOldValue());
 
             CotizacionDetalleTB detalleTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
             detalleTB.setCantidad(newCantidad);
@@ -162,11 +200,33 @@ public class FxCotizacionController implements Initializable {
             calculateTotales();
         });
 
+        tcUso.setCellFactory(new Callback<TableColumn<CotizacionDetalleTB, String>, TableCell<CotizacionDetalleTB, String>>() {
+            @Override
+            public TableCell<CotizacionDetalleTB, String> call(TableColumn<CotizacionDetalleTB, String> param) {
+                return new TableCell<CotizacionDetalleTB, String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            if (item.toString().equalsIgnoreCase("ASIGNADO")) {
+                                setStyle("-fx-text-fill: green;");
+                            } else {
+                                setStyle("-fx-text-fill: #020203;");
+                            }
+                            setText(item.toString());
+                        }
+                    }
+                };
+            }
+        });
+
         tcPrecio.setCellFactory(TextFieldTableCell.forTableColumn());
         tcPrecio.setOnEditCommit(data -> {
             final Double newPrecio = Tools.isNumeric(data.getNewValue())
-                    ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.parseDouble(data.getOldValue()) : Double.parseDouble(data.getNewValue()))
-                    : Double.parseDouble(data.getOldValue());
+                    ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.valueOf(data.getOldValue()) : Double.valueOf(data.getNewValue()))
+                    : Double.valueOf(data.getOldValue());
 
             CotizacionDetalleTB detalleTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
             detalleTB.setPrecio(newPrecio);
@@ -176,7 +236,8 @@ public class FxCotizacionController implements Initializable {
         });
 
         tcOpcion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
-        tcProducto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.30));
+        tcUso.prefWidthProperty().bind(tvList.widthProperty().multiply(0.10));
+        tcProducto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.22));
         tcCantidad.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcMedida.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcPrecio.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
@@ -235,45 +296,37 @@ public class FxCotizacionController implements Initializable {
         });
     }
 
-    private void onEventCliente() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_CLIENTE_PROCESO);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
-            FxClienteProcesoController controller = fXMLLoader.getController();
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Cliente", apWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.setOnShown(w->controller.loadAddCliente());
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println("Cliente controller en openWindowAddCliente()" + ex.getLocalizedMessage());
-        }
+    private void onEventCliente() throws IOException {
+        fxPrincipalController.openFondoModal();
+        URL url = getClass().getResource(FilesRouters.FX_CLIENTE_PROCESO);
+        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+        Parent parent = fXMLLoader.load(url.openStream());
+        //Controlller here
+        FxClienteProcesoController controller = fXMLLoader.getController();
+        //
+        Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Cliente", apWindow.getScene().getWindow());
+        stage.setResizable(false);
+        stage.sizeToScene();
+        stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.setOnShown(w -> controller.loadAddCliente());
+        stage.show();
     }
 
-    private void openWindowSuministro() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_LISTA);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
-            FxSuministrosListaController controller = fXMLLoader.getController();
-            controller.setInitCotizacionController(this);
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto", apWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.setOnShown(w -> controller.getTxtSearch().requestFocus());
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println("openWindowArticulos():" + ex.getLocalizedMessage());
-        }
+    private void openWindowSuministro() throws IOException {
+        fxPrincipalController.openFondoModal();
+        URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_LISTA);
+        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+        Parent parent = fXMLLoader.load(url.openStream());
+        //Controlller here
+        FxSuministrosListaController controller = fXMLLoader.getController();
+        controller.setInitCotizacionController(this);
+        //
+        Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto", apWindow.getScene().getWindow());
+        stage.setResizable(false);
+        stage.sizeToScene();
+        stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.setOnShown(w -> controller.getTxtSearch().requestFocus());
+        stage.show();
     }
 
     private void openModalImpresion(String idCotizacion) {
@@ -293,75 +346,85 @@ public class FxCotizacionController implements Initializable {
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
             stage.show();
         } catch (IOException ex) {
-            System.out.println("Controller Modal Impresión: " + ex.getLocalizedMessage());
         }
     }
 
-    private void openWindowCotizaciones() {
-        try {
+    private void openWindowCotizaciones() throws IOException {
+        fxPrincipalController.openFondoModal();
+        URL url = getClass().getResource(FilesRouters.FX_COTIZACION_LISTA);
+        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+        Parent parent = fXMLLoader.load(url.openStream());
+        //Controlller here
+        FxCotizacionListaController controller = fXMLLoader.getController();
+        controller.setInitCotizacionListaController(this);
+        //
+        Stage stage = WindowStage.StageLoaderModal(parent, "Mostrar Cotizaciones", apWindow.getScene().getWindow());
+        stage.setResizable(false);
+        stage.sizeToScene();
+        stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.setOnShown(w -> controller.initLoad());
+        stage.show();
+    }
+
+    private void onEventEditar() throws IOException {
+        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
+            CotizacionDetalleTB select = tvList.getSelectionModel().getSelectedItem();
+            SuministroTB suministroSelect = select.getSuministroTB();
+
+            if (select.isUso()) {
+                openAlertMessageWarning("No se puede editar un producto ya usado, para ello es mejor clonar la cotización.");
+                return;
+            }
+
+            SuministroTB suministroTB = new SuministroTB();
+            suministroTB.setIdSuministro(suministroSelect.getIdSuministro());
+            suministroTB.setClave(suministroSelect.getClave());
+            suministroTB.setNombreMarca(suministroSelect.getNombreMarca());
+            suministroTB.setUnidadCompra(suministroSelect.getUnidadCompra());
+            suministroTB.setUnidadCompraName(suministroSelect.getUnidadCompraName());
+            suministroTB.setIdImpuesto(select.getIdImpuesto());
+            suministroTB.setImpuestoTB(select.getImpuestoTB());
+
+            suministroTB.setCantidad(select.getCantidad());
+            suministroTB.setPrecioVentaGeneral(select.getPrecio());
+
             fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_COTIZACION_LISTA);
+            URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_COTIZACION_PRODUCTO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
-            FxCotizacionListaController controller = fXMLLoader.getController();
-            controller.setInitCotizacionListaController(this);
+            FxCotizacionProductoController controller = fXMLLoader.getController();
+            controller.setInitCotizacionController(this);
+            controller.initComponents(suministroTB, true, tvList.getSelectionModel().getSelectedIndex());
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Mostrar Cotizaciones", apWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.setOnShown(w -> controller.initLoad());
+            stage.setOnShown(w -> controller.getTxtCantidad().requestFocus());
             stage.show();
-        } catch (IOException ex) {
-            Tools.println("Error en la funcioón openWindowCotizaciones():" + ex.getLocalizedMessage());
-        }
-    }
 
-    private void onEventEditar() {
-        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            try {
-                SuministroTB suministroTB = new SuministroTB();
-                suministroTB.setIdSuministro(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getIdSuministro());
-                suministroTB.setClave(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getClave());
-                suministroTB.setNombreMarca(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getNombreMarca());
-                suministroTB.setUnidadCompra(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getUnidadCompra());
-                suministroTB.setUnidadCompraName(tvList.getSelectionModel().getSelectedItem().getSuministroTB().getUnidadCompraName());
-                suministroTB.setIdImpuesto(tvList.getSelectionModel().getSelectedItem().getIdImpuesto());
-                suministroTB.setImpuestoTB(tvList.getSelectionModel().getSelectedItem().getImpuestoTB());
-
-                suministroTB.setCantidad(tvList.getSelectionModel().getSelectedItem().getCantidad());
-                suministroTB.setPrecioVentaGeneral(tvList.getSelectionModel().getSelectedItem().getPrecio());
-
-                fxPrincipalController.openFondoModal();
-                URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_COTIZACION_PRODUCTO);
-                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                Parent parent = fXMLLoader.load(url.openStream());
-                //Controlller here
-                FxCotizacionProductoController controller = fXMLLoader.getController();
-                controller.setInitCotizacionController(this);
-                controller.initComponents(suministroTB, true, tvList.getSelectionModel().getSelectedIndex());
-                //
-                Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
-                stage.setResizable(false);
-                stage.sizeToScene();
-                stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-                stage.setOnShown(w -> controller.getTxtCantidad().requestFocus());
-                stage.show();
-            } catch (IOException ix) {
-                System.out.println("Error Producto Lista Controller:" + ix.getLocalizedMessage());
-            }
         }
     }
 
     public void getAddDetalle(CotizacionDetalleTB cotizacionDetalleTB) {
         cotizacionDetalleTB.getBtnRemove().setOnAction(e -> {
+            if (cotizacionDetalleTB.isUso()) {
+                openAlertMessageWarning("No se puede eliminar un producto ya usado, para ello es mejor clonar la cotización.");
+                return;
+            }
+
             tvList.getItems().remove(cotizacionDetalleTB);
             calculateTotales();
         });
 
         cotizacionDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
+                if (cotizacionDetalleTB.isUso()) {
+                    openAlertMessageWarning("No se puede eliminar un producto ya usado, para ello es mejor clonar la cotización.");
+                    return;
+                }
+
                 tvList.getItems().remove(cotizacionDetalleTB);
                 calculateTotales();
             }
@@ -376,12 +439,22 @@ public class FxCotizacionController implements Initializable {
 
     public void getEditDetalle(int index, CotizacionDetalleTB cotizacionDetalleTB) {
         cotizacionDetalleTB.getBtnRemove().setOnAction(e -> {
+            if (cotizacionDetalleTB.isUso()) {
+                openAlertMessageWarning("No se puede eliminar un producto ya usado, para ello es mejor clonar la cotización.");
+                return;
+            }
+
             tvList.getItems().remove(cotizacionDetalleTB);
             calculateTotales();
         });
 
         cotizacionDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
+                if (cotizacionDetalleTB.isUso()) {
+                    openAlertMessageWarning("No se puede eliminar un producto ya usado, para ello es mejor clonar la cotización.");
+                    return;
+                }
+
                 tvList.getItems().remove(cotizacionDetalleTB);
                 calculateTotales();
             }
@@ -432,7 +505,7 @@ public class FxCotizacionController implements Initializable {
         lblImporteTotal.setText(monedaSimbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
     }
 
-    private void cancelarVenta() {
+    private void onEventCancelar() {
         short value = Tools.AlertMessageConfirmation(apWindow, "Cotización", "¿Está seguro de limpiar la cotización?");
         if (value == 1) {
             resetVenta();
@@ -447,8 +520,10 @@ public class FxCotizacionController implements Initializable {
         Tools.actualDate(Tools.getDate(), dtFechaVencimiento);
         txtObservacion.setText("");
         idCotizacion = "";
-        lblProceso.setText("Cotización en proceso de registrar");
-        lblProceso.setTextFill(Color.web("#ffffff"));
+        idVenta = "";
+        lblProceso.setText("Proceso de Creación");
+        lblProceso.setTextFill(Color.web("#0060e8"));
+        lblComprobante.setText("Comprobante Asociado: -");
         cbMoneda.getItems().clear();
         cbMoneda.getItems().addAll(MonedaADO.GetMonedasComboBox());
         for (int i = 0; i < cbMoneda.getItems().size(); i++) {
@@ -467,19 +542,29 @@ public class FxCotizacionController implements Initializable {
             t.setDaemon(true);
             return t;
         });
+
         Task<Object> task = new Task<Object>() {
             @Override
-            public Object call() {
-                return CotizacionADO.Obtener_Cotizacion_ById(idCotizacion);
+            public Object call() throws Exception {
+                Object result = CotizacionADO.Obtener_Cotizacion_ById(idCotizacion, false);
+
+                if (result instanceof CotizacionTB) {
+                    return result;
+                }
+
+                throw new Exception((String) result);
             }
         };
+
         task.setOnScheduled(w -> {
             hbBody.setDisable(true);
             hbLoad.setVisible(true);
             btnAceptarLoad.setVisible(false);
             lblMessageLoad.setText("Cargando información...");
             lblMessageLoad.setTextFill(Color.web("#ffffff"));
+            lblMessageLoad.setGraphic(loadImage);
         });
+
         task.setOnFailed(w -> {
             btnAceptarLoad.setVisible(true);
             btnAceptarLoad.setOnAction(event -> {
@@ -495,54 +580,147 @@ public class FxCotizacionController implements Initializable {
                 }
                 event.consume();
             });
+
             lblMessageLoad.setText(task.getException().getLocalizedMessage());
             lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+            lblMessageLoad.setGraphic(warningImage);
         });
+
         task.setOnSucceeded(w -> {
-            Object object = task.getValue();
-            if (object instanceof CotizacionTB) {
-                CotizacionTB cotizacionTB = (CotizacionTB) object;
-                this.idCotizacion = idCotizacion;
-                for (MonedaTB monedaTB : cbMoneda.getItems()) {
-                    if (monedaTB.getIdMoneda() == cotizacionTB.getIdMoneda()) {
-                        cbMoneda.getSelectionModel().select(monedaTB);
-                        monedaSimbolo = cbMoneda.getSelectionModel().getSelectedItem().getSimbolo();
-                        break;
-                    }
+            CotizacionTB cotizacionTB = (CotizacionTB) task.getValue();
+            this.idCotizacion = idCotizacion;
+            idVenta = cotizacionTB.getIdVenta();
+            for (MonedaTB monedaTB : cbMoneda.getItems()) {
+                if (monedaTB.getIdMoneda() == cotizacionTB.getIdMoneda()) {
+                    cbMoneda.getSelectionModel().select(monedaTB);
+                    monedaSimbolo = cbMoneda.getSelectionModel().getSelectedItem().getSimbolo();
+                    break;
                 }
+            }
 
-                cbCliente.getItems().clear();
-                cbCliente.getItems().add(new ClienteTB(cotizacionTB.getClienteTB().getIdCliente(), cotizacionTB.getClienteTB().getNumeroDocumento(), cotizacionTB.getClienteTB().getInformacion(), cotizacionTB.getClienteTB().getCelular(), cotizacionTB.getClienteTB().getEmail(), cotizacionTB.getClienteTB().getDireccion()));
-                cbCliente.getSelectionModel().select(0);
+            cbCliente.getItems().clear();
+            cbCliente.getItems().add(new ClienteTB(cotizacionTB.getClienteTB().getIdCliente(), cotizacionTB.getClienteTB().getNumeroDocumento(), cotizacionTB.getClienteTB().getInformacion(), cotizacionTB.getClienteTB().getCelular(), cotizacionTB.getClienteTB().getEmail(), cotizacionTB.getClienteTB().getDireccion()));
+            cbCliente.getSelectionModel().select(0);
 
-                Tools.actualDate(Tools.getDate(), dtFechaEmision);
-                Tools.actualDate(Tools.getDate(), dtFechaVencimiento);
+            Tools.actualDate(Tools.getDate(), dtFechaEmision);
+            Tools.actualDate(Tools.getDate(), dtFechaVencimiento);
 
-                lblProceso.setText("Cotización en proceso de actualizar");
-                lblProceso.setTextFill(Color.web("#c52700"));
-                txtObservacion.setText(cotizacionTB.getObservaciones());
+            lblProceso.setText("Proceso de Actualización");
+            lblProceso.setTextFill(Color.web("#c52700"));
+            if (cotizacionTB.getVentaTB() != null) {
+                lblComprobante.setText("Comprobante Asociado: " + cotizacionTB.getVentaTB().getSerie() + "-" + Tools.formatNumber(cotizacionTB.getVentaTB().getNumeracion()));
+            } else {
+                lblComprobante.setText("Comprobante Asociado: -");
 
-                ObservableList<CotizacionDetalleTB> cotizacionDetalleTBs = FXCollections.observableArrayList(cotizacionTB.getCotizacionDetalleTBs());
-                cotizacionDetalleTBs.forEach(cotizacionDetalleTB -> {
-                    cotizacionDetalleTB.getBtnRemove().setOnAction(e -> {
+            }
+            txtObservacion.setText(cotizacionTB.getObservaciones());
+
+            ObservableList<CotizacionDetalleTB> cotizacionDetalleTBs = FXCollections.observableArrayList(cotizacionTB.getCotizacionDetalleTBs());
+            cotizacionDetalleTBs.forEach(cotizacionDetalleTB -> {
+                cotizacionDetalleTB.getBtnRemove().setOnAction(e -> {
+                    if (cotizacionDetalleTB.isUso()) {
+                        openAlertMessageWarning("No se puede eliminar un producto ya usado, para ello es mejor clonar la cotización.");
+                        return;
+                    }
+                    tvList.getItems().remove(cotizacionDetalleTB);
+                    calculateTotales();
+                });
+                cotizacionDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
+                    if (e.getCode() == KeyCode.ENTER) {
+                        if (cotizacionDetalleTB.isUso()) {
+                            openAlertMessageWarning("No se puede eliminar un producto ya usado, para ello es mejor clonar la cotización.");
+                            return;
+                        }
                         tvList.getItems().remove(cotizacionDetalleTB);
                         calculateTotales();
-                    });
-                    cotizacionDetalleTB.getBtnRemove().setOnKeyPressed(e -> {
-                        if (e.getCode() == KeyCode.ENTER) {
-                            tvList.getItems().remove(cotizacionDetalleTB);
-                            calculateTotales();
-                        }
-                    });
+                    }
                 });
-                tvList.setItems(cotizacionDetalleTBs);
+            });
+            tvList.setItems(cotizacionDetalleTBs);
 
-                calculateTotales();
-                hbBody.setDisable(false);
-                hbLoad.setVisible(false);
-            } else {
-                lblMessageLoad.setText((String) object);
-                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+            calculateTotales();
+            hbBody.setDisable(false);
+            hbLoad.setVisible(false);
+        });
+
+        exec.execute(task);
+
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+
+    private void onEventGuardar() {
+        if (cbCliente.getSelectionModel().getSelectedIndex() < 0) {
+            openAlertMessageWarning("Seleccione un cliente.");
+            cbCliente.requestFocus();
+            return;
+        }
+
+        if (dtFechaVencimiento.getValue() == null) {
+            openAlertMessageWarning("Ingrese un fecha valida.");
+            dtFechaVencimiento.requestFocus();
+            return;
+        }
+
+        if (tvList.getItems().isEmpty()) {
+            openAlertMessageWarning("Ingrese productos a la lista.");
+            return;
+        }
+
+        if (cbMoneda.getSelectionModel().getSelectedIndex() < 0) {
+            openAlertMessageWarning("Seleccione la moneda a usar.");
+            cbMoneda.requestFocus();
+            return;
+        }
+
+        fxPrincipalController.openFondoModal();
+        short value = Tools.AlertMessageConfirmation(apWindow, "Cotización", "¿Está seguro de continuar?");
+
+        if (value == 1) {
+            ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+                Thread t = new Thread(runnable);
+                t.setDaemon(true);
+                return t;
+            });
+
+            Task<Object> task = new Task<Object>() {
+                @Override
+                protected Object call() throws Exception {
+                    CotizacionTB cotizacionTB = new CotizacionTB();
+                    cotizacionTB.setIdCotizacion(idCotizacion);
+                    cotizacionTB.setIdCliente(cbCliente.getSelectionModel().getSelectedItem().getIdCliente());
+                    cotizacionTB.setIdVendedor(Session.USER_ID);
+                    cotizacionTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
+                    cotizacionTB.setFechaCotizacion(Tools.getDatePicker(dtFechaEmision));
+                    cotizacionTB.setFechaVencimiento(Tools.getDatePicker(dtFechaVencimiento));
+                    cotizacionTB.setHoraCotizacion(Tools.getTime());
+                    cotizacionTB.setHoraVencimiento(Tools.getTime());
+                    cotizacionTB.setEstado((short) 1);
+                    cotizacionTB.setObservaciones(txtObservacion.getText().trim());
+                    cotizacionTB.setIdVenta(idVenta);
+
+                    cotizacionTB.setCotizacionDetalleTBs(new ArrayList<>(tvList.getItems()));
+                    Object result = CotizacionADO.CrudCotizacion(cotizacionTB);
+                    if (result instanceof String[]) {
+                        return result;
+                    }
+                    
+                    throw new Exception((String) result);
+                }
+            };
+
+            task.setOnScheduled(w -> {
+                fxPrincipalController.closeFondoModal();
+                hbBody.setDisable(true);
+                hbLoad.setVisible(true);
+                btnAceptarLoad.setVisible(false);
+                lblMessageLoad.setText("Procesando información...");
+                lblMessageLoad.setTextFill(Color.web("#ffffff"));
+                lblMessageLoad.setGraphic(loadImage);
+            });
+
+            task.setOnFailed(w -> {
                 btnAceptarLoad.setVisible(true);
                 btnAceptarLoad.setOnAction(event -> {
                     hbBody.setDisable(false);
@@ -555,189 +733,104 @@ public class FxCotizacionController implements Initializable {
                         hbLoad.setVisible(false);
                         resetVenta();
                     }
-                    event.consume();
-                });
-            }
-        });
-
-        exec.execute(task);
-
-        if (!exec.isShutdown()) {
-            exec.shutdown();
-        }
-    }
-
-    private void onEventGuardar() {
-        if (cbCliente.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(apWindow, "Cotización", "Seleccione un cliente.");
-            cbCliente.requestFocus();
-        } else if (dtFechaVencimiento.getValue() == null) {
-            Tools.AlertMessageWarning(apWindow, "Cotización", "Ingrese un fecha valida.");
-            dtFechaVencimiento.requestFocus();
-        } else if (tvList.getItems().isEmpty()) {
-            Tools.AlertMessageWarning(apWindow, "Cotización", "Ingrese productos a la lista.");
-        } else if (cbMoneda.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(apWindow, "Cotización", "Seleccione la moneda a usar.");
-            cbMoneda.requestFocus();
-        } else {
-            short value = Tools.AlertMessageConfirmation(apWindow, "Cotización", "¿Está seguro de continuar?");
-            if (value == 1) {
-                ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
-                    Thread t = new Thread(runnable);
-                    t.setDaemon(true);
-                    return t;
                 });
 
-                Task<Object> task = new Task<Object>() {
-                    @Override
-                    protected Object call() {
-                        CotizacionTB cotizacionTB = new CotizacionTB();
-                        cotizacionTB.setIdCotizacion(idCotizacion);
-                        cotizacionTB.setIdCliente(cbCliente.getSelectionModel().getSelectedItem().getIdCliente());
-                        cotizacionTB.setIdVendedor(Session.USER_ID);
-                        cotizacionTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
-                        cotizacionTB.setFechaCotizacion(Tools.getDatePicker(dtFechaEmision));
-                        cotizacionTB.setFechaVencimiento(Tools.getDatePicker(dtFechaVencimiento));
-                        cotizacionTB.setHoraCotizacion(Tools.getTime());
-                        cotizacionTB.setHoraVencimiento(Tools.getTime());
-                        cotizacionTB.setEstado((short) 1);
-                        cotizacionTB.setObservaciones(txtObservacion.getText().trim());
-                        cotizacionTB.setIdVenta("");
+                lblMessageLoad.setText(task.getException().getLocalizedMessage());
+                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+                lblMessageLoad.setGraphic(warningImage);
+            });
 
-                        cotizacionTB.setCotizacionDetalleTBs(new ArrayList<>(tvList.getItems()));
-                        return CotizacionADO.CrudCotizacion(cotizacionTB);
-                    }
-                };
-
-                task.setOnScheduled(w -> {
-                    hbBody.setDisable(true);
-                    hbLoad.setVisible(true);
-                    btnAceptarLoad.setVisible(false);
-                    lblMessageLoad.setText("Procesando información...");
+            task.setOnSucceeded(w -> {
+                String result[] = (String[]) task.getValue();
+                if (result[0].equalsIgnoreCase("1")) {
+                    lblMessageLoad.setText("Se actualizó correctamente la cotización.");
                     lblMessageLoad.setTextFill(Color.web("#ffffff"));
-                });
-                task.setOnFailed(w -> {
-                    btnAceptarLoad.setVisible(true);
-                    btnAceptarLoad.setOnAction(event -> {
-                        hbBody.setDisable(false);
-                        hbLoad.setVisible(false);
-                        resetVenta();
-                    });
-                    btnAceptarLoad.setOnKeyPressed(event -> {
-                        if (event.getCode() == KeyCode.ENTER) {
-                            hbBody.setDisable(false);
-                            hbLoad.setVisible(false);
-                            resetVenta();
-                        }
-                    });
-                    lblMessageLoad.setText(task.getException().getLocalizedMessage());
-                    lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-                });
-                task.setOnSucceeded(w -> {
-                    Object object = task.getValue();
-                    if (object instanceof String[]) {
-                        String result[] = (String[]) object;
-                        if (result[0].equalsIgnoreCase("1")) {
-                            lblMessageLoad.setText("Se actualizó correctamente la cotización.");
-                            lblMessageLoad.setTextFill(Color.web("#ffffff"));
-                            hbBody.setDisable(false);
-                            hbLoad.setVisible(false);
-                            openModalImpresion(result[1]);
-                            resetVenta();
-                        } else {
-                            lblMessageLoad.setText("Se registro corectamente la cotización.");
-                            lblMessageLoad.setTextFill(Color.web("#ffffff"));
-                            hbBody.setDisable(false);
-                            hbLoad.setVisible(false);
-                            openModalImpresion(result[1]);
-                            resetVenta();
-                        }
-                    } else {
-                        lblMessageLoad.setText((String) object);
-                        lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-                        btnAceptarLoad.setVisible(true);
-                        btnAceptarLoad.setOnAction(event -> {
-                            hbBody.setDisable(false);
-                            hbLoad.setVisible(false);
-                            resetVenta();
-                        });
-                        btnAceptarLoad.setOnKeyPressed(event -> {
-                            if (event.getCode() == KeyCode.ENTER) {
-                                hbBody.setDisable(false);
-                                hbLoad.setVisible(false);
-                                resetVenta();
-                            }
-                        });
-                    }
-                });
+                    lblMessageLoad.setGraphic(successImage);
 
-                exec.execute(task);
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    openModalImpresion(result[1]);
+                    resetVenta();
+                } else {
+                    lblMessageLoad.setText("Se registró corectamente la cotización.");
+                    lblMessageLoad.setTextFill(Color.web("#ffffff"));
+                    lblMessageLoad.setGraphic(successImage);
 
-                if (!exec.isShutdown()) {
-                    exec.shutdown();
+                    hbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    openModalImpresion(result[1]);
+                    resetVenta();
                 }
+            });
+
+            exec.execute(task);
+
+            if (!exec.isShutdown()) {
+                exec.shutdown();
             }
+        } else {
+            fxPrincipalController.closeFondoModal();
         }
     }
 
     @FXML
-    private void onKeyPressedCliente(KeyEvent event) {
+    private void onKeyPressedCliente(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             onEventCliente();
         }
     }
 
     @FXML
-    private void onActionCliente(ActionEvent event) {
+    private void onActionCliente(ActionEvent event) throws IOException {
         onEventCliente();
     }
 
     @FXML
-    private void onKeyPressedGuardar(KeyEvent event) {
+    private void onKeyPressedGuardar(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             onEventGuardar();
         }
     }
 
     @FXML
-    private void onActionGuardar(ActionEvent event) {
+    private void onActionGuardar(ActionEvent event) throws IOException {
         onEventGuardar();
     }
 
     @FXML
-    private void onKeyPressedProducto(KeyEvent event) {
+    private void onKeyPressedProducto(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             openWindowSuministro();
         }
     }
 
     @FXML
-    private void onActionProducto(ActionEvent event) {
+    private void onActionProducto(ActionEvent event) throws IOException {
         openWindowSuministro();
     }
 
     @FXML
-    private void onKeyPressedEditar(KeyEvent event) {
+    private void onKeyPressedEditar(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             onEventEditar();
         }
     }
 
     @FXML
-    private void onActionEditar(ActionEvent event) {
+    private void onActionEditar(ActionEvent event) throws IOException {
         onEventEditar();
     }
 
     @FXML
     private void onKeyPressedCancelar(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            cancelarVenta();
+            onEventCancelar();
         }
     }
 
     @FXML
     private void onActionCancelar(ActionEvent event) {
-        cancelarVenta();
+        onEventCancelar();
     }
 
     @FXML
@@ -746,19 +839,19 @@ public class FxCotizacionController implements Initializable {
     }
 
     @FXML
-    private void onKeyPressedCotizaciones(KeyEvent event) {
+    private void onKeyPressedCotizaciones(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             openWindowCotizaciones();
         }
     }
 
     @FXML
-    private void onActionCotizaciones(ActionEvent event) {
+    private void onActionCotizaciones(ActionEvent event) throws IOException {
         openWindowCotizaciones();
     }
 
     @FXML
-    private void onKeyReleasedWindow(KeyEvent event) {
+    private void onKeyReleasedWindow(KeyEvent event) throws IOException {
         switch (event.getCode()) {
             case F1:
                 onEventGuardar();
@@ -773,7 +866,7 @@ public class FxCotizacionController implements Initializable {
 
                 break;
             case F5:
-                cancelarVenta();
+                onEventCancelar();
                 break;
         }
     }

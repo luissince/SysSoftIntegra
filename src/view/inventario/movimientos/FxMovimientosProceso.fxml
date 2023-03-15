@@ -168,9 +168,9 @@
                   </Label>
                   <Button fx:id="btnAceptarLoad" mnemonicParsing="false" styleClass="buttonLight" text="Aceptar" visible="false">
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../image/accept.png" />
+                              <Image url="@../../image/information.png" />
                            </image>
                         </ImageView>
                      </graphic>

@@ -1407,8 +1407,13 @@
     -fx-font-family:"Roboto"; 
     -fx-font-size: 1em;/*12px*/
     -fx-font-weight: normal;
-    -fx-padding: 0.75em 0.3333333333333333em 0.75em 0.3333333333333333em;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0.6666666666666666em 0.3333333333333333em 0.6666666666666666em 0.3333333333333333em;  /*8px 4px 8px 4px*/
     -fx-text-fill: #020203;
+    
+    -fx-background-color: transparent;
+    -fx-border-color: transparent -fx-table-cell-border-color transparent transparent;
+    -fx-border-width: 0.083333em; /* 1 */
 }
 
 .table-view-principal:row-selection .table-row-cell:filled:hover { 

@@ -85,9 +85,9 @@
 				<reportElement mode="Transparent" x="333" y="16" width="222" height="23" forecolor="#000000" backcolor="#FE3152" uuid="5a588367-fb83-4b15-9d2c-24bbffda38e3"/>
 				<box>
 					<pen lineWidth="0.0" lineColor="#000000"/>
-					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineColor="#000000"/>
 					<leftPen lineWidth="0.25" lineColor="#000000"/>
-					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -563,10 +563,10 @@
 			<textField>
 				<reportElement mode="Transparent" x="333" y="39" width="222" height="24" forecolor="#000000" backcolor="#FE3152" uuid="c19aec9e-9763-4711-97d8-a793faae8d66"/>
 				<box>
-					<pen lineWidth="0.0" lineColor="#FE3152"/>
-					<topPen lineWidth="0.0" lineColor="#FE3152"/>
+					<pen lineWidth="0.0" lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineColor="#000000"/>
 					<leftPen lineWidth="0.25" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#FE3152"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -788,7 +788,7 @@
 	<lastPageFooter>
 		<band height="48">
 			<staticText>
-				<reportElement mode="Transparent" x="18" y="27" width="209" height="20" forecolor="#000000" backcolor="#020203" uuid="e8c43c68-b73a-47fd-9ef4-cdbf5885039f"/>
+				<reportElement mode="Transparent" x="18" y="28" width="209" height="20" forecolor="#000000" backcolor="#020203" uuid="e8c43c68-b73a-47fd-9ef4-cdbf5885039f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
@@ -799,11 +799,7 @@
 				<imageExpression><![CDATA[$P{ICON}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement mode="Transparent" x="263" y="10" width="292" height="38" forecolor="#000000" backcolor="#FE3152" uuid="a0071ab5-72a4-40ba-9e29-e911abab3a90"/>
-				<box>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-				</box>
+				<reportElement mode="Transparent" x="263" y="30" width="292" height="18" forecolor="#000000" backcolor="#FE3152" uuid="a0071ab5-72a4-40ba-9e29-e911abab3a90"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>

@@ -1,31 +1,31 @@
-
 package model;
 
 import javafx.scene.control.Button;
 
-
 public class CotizacionDetalleTB {
-    
+
     private int id;
-    
+
     private String idCotizacion;
-    
+
     private String idSuministro;
-    
+
     private double cantidad;
-    
+
     private double precio;
-    
+
     private double descuento;
-    
+
     private int idImpuesto;
-    
+
     private int idMedida;
-    
+
+    private boolean uso;
+
     private SuministroTB suministroTB;
-    
+
     private ImpuestoTB impuestoTB;
-    
+
     private Button btnRemove;
 
     public CotizacionDetalleTB() {
@@ -95,6 +95,14 @@ public class CotizacionDetalleTB {
         this.idMedida = idMedida;
     }
 
+    public boolean isUso() {
+        return uso;
+    }
+
+    public void setUso(boolean uso) {
+        this.uso = uso;
+    }
+
     public SuministroTB getSuministroTB() {
         return suministroTB;
     }
@@ -109,7 +117,7 @@ public class CotizacionDetalleTB {
 
     public void setImpuestoTB(ImpuestoTB impuestoTB) {
         this.impuestoTB = impuestoTB;
-    } 
+    }
 
     public Button getBtnRemove() {
         return btnRemove;
@@ -118,5 +126,5 @@ public class CotizacionDetalleTB {
     public void setBtnRemove(Button btnRemove) {
         this.btnRemove = btnRemove;
     }
-    
+
 }
