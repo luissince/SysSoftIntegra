@@ -140,22 +140,24 @@ public class FxClienteListaController implements Initializable {
     }
 
     private void selectClienteList() {
-        if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            if (ventaReporteController != null) {
-                ventaReporteController.setClienteVentaReporte(
-                        tvList.getSelectionModel().getSelectedItem().getIdCliente(),
-                        tvList.getSelectionModel().getSelectedItem().getInformacion());
-                Tools.Dispose(apWindow);
-            } else if (notaCreditoReporteController != null) {
-                notaCreditoReporteController.setClienteVentaReporte(
-                        tvList.getSelectionModel().getSelectedItem().getIdCliente(),
-                        tvList.getSelectionModel().getSelectedItem().getInformacion());
-                Tools.Dispose(apWindow);
-            } else if (posReporteController != null) {
-                posReporteController.setClienteVentaReporte(tvList.getSelectionModel().getSelectedItem().getIdCliente(),
-                        tvList.getSelectionModel().getSelectedItem().getInformacion());
-                Tools.Dispose(apWindow);
-            }
+        if (tvList.getSelectionModel().getSelectedIndex() < 0) {
+            return;
+        }
+
+        if (ventaReporteController != null) {
+            ventaReporteController.setClienteVentaReporte(
+                    tvList.getSelectionModel().getSelectedItem().getIdCliente(),
+                    tvList.getSelectionModel().getSelectedItem().getInformacion());
+            Tools.Dispose(apWindow);
+        } else if (notaCreditoReporteController != null) {
+            notaCreditoReporteController.setClienteVentaReporte(
+                    tvList.getSelectionModel().getSelectedItem().getIdCliente(),
+                    tvList.getSelectionModel().getSelectedItem().getInformacion());
+            Tools.Dispose(apWindow);
+        } else if (posReporteController != null) {
+            posReporteController.setClienteVentaReporte(tvList.getSelectionModel().getSelectedItem().getIdCliente(),
+                    tvList.getSelectionModel().getSelectedItem().getInformacion());
+            Tools.Dispose(apWindow);
         }
     }
 

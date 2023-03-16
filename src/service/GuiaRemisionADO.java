@@ -244,6 +244,9 @@ public class GuiaRemisionADO {
                 if (preparedStatementCount != null) {
                     preparedStatementCount.close();
                 }
+                if (rsEmps != null) {
+                    rsEmps.close();
+                }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
                 return ex.getLocalizedMessage();
@@ -382,6 +385,52 @@ public class GuiaRemisionADO {
                 }
                 if (statementGuiaRemisionDetalle != null) {
                     statementGuiaRemisionDetalle.close();
+                }
+                dbf.dbDisconnect();
+            } catch (SQLException ex) {
+                return ex.getLocalizedMessage();
+            }
+        }
+    }
+
+    public static String removeGuiaRemisionById(String idGuiaRemision) {
+        DBUtil dbf = new DBUtil();
+        PreparedStatement statementEliminar = null;
+        PreparedStatement statementValidar = null;
+
+        try {
+            dbf.dbConnect();
+            dbf.getConnection().setAutoCommit(false);
+
+            statementValidar = dbf.getConnection().prepareStatement("SELECT * FROM GuiaRemisionTB WHERE IdGuiaRemision = ? AND Estado = 3");
+            statementValidar.setString(1, idGuiaRemision);
+            if (statementValidar.executeQuery().next()) {
+                dbf.getConnection().rollback();
+                return "La guía de remisión ya se encuentra anulada.";
+            }
+
+            statementEliminar = dbf.getConnection().prepareStatement("UPDATE GuiaRemisionTB SET Estado = 3 WHERE IdGuiaRemision = ?");
+            statementEliminar.setString(1, idGuiaRemision);
+            statementEliminar.addBatch();
+
+            statementEliminar.executeBatch();
+            dbf.getConnection().commit();
+            return "deleted";
+        } catch (SQLException | ClassNotFoundException ex) {
+            try {
+                dbf.getConnection().rollback();
+                return ex.getLocalizedMessage() + "/";
+            } catch (SQLException e) {
+                return e.getLocalizedMessage() + "/";
+            }
+        } finally {
+            try {
+                if (statementEliminar != null) {
+                    statementEliminar.close();
+                }
+
+                if (statementValidar != null) {
+                    statementValidar.close();
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {

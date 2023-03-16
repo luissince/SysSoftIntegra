@@ -244,7 +244,8 @@ public class FxPostVentaEstructuraController implements Initializable {
 
     private void loadDataComponent() {
         cbComprobante.getItems().clear();
-        TipoDocumentoADO.GetDocumentoCombBoxVentas().forEach(cbComprobante.getItems()::add);
+        cbComprobante.getItems().addAll(TipoDocumentoADO.GetDocumentoCombBoxVentas());
+       
         if (!cbComprobante.getItems().isEmpty()) {
             for (int i = 0; i < cbComprobante.getItems().size(); i++) {
                 if (cbComprobante.getItems().get(i).isPredeterminado()) {
@@ -952,12 +953,12 @@ public class FxPostVentaEstructuraController implements Initializable {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<CotizacionTB> task = new Task<CotizacionTB>() {
             @Override
-            public Object call() throws Exception {
+            public CotizacionTB call() throws Exception {
                 Object result = CotizacionADO.Obtener_Cotizacion_ById(idCotizacion, true);
                 if (result instanceof CotizacionTB) {
-                    return result;
+                    return (CotizacionTB) result;
                 }
 
                 throw new Exception((String) result);
@@ -981,7 +982,7 @@ public class FxPostVentaEstructuraController implements Initializable {
         });
 
         task.setOnSucceeded(w -> {
-            CotizacionTB cotizacionTB = (CotizacionTB) task.getValue();
+            CotizacionTB cotizacionTB = task.getValue();
             for (DetalleTB detalleTB : cbTipoDocumento.getItems()) {
                 if (detalleTB.getIdDetalle() == cotizacionTB.getClienteTB().getTipoDocumento()) {
                     cbTipoDocumento.getSelectionModel().select(detalleTB);
@@ -1073,12 +1074,12 @@ public class FxPostVentaEstructuraController implements Initializable {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<VentaTB> task = new Task<VentaTB>() {
             @Override
-            public Object call() throws Exception {
+            public VentaTB call() throws Exception {
                 Object result = VentaADO.Obtener_Venta_ById(idVenta);
                 if (result instanceof VentaTB) {
-                    return result;
+                    return (VentaTB) result;
                 }
 
                 throw new Exception((String) result);
@@ -1102,7 +1103,7 @@ public class FxPostVentaEstructuraController implements Initializable {
         });
 
         task.setOnSucceeded(w -> {
-            VentaTB ventaTB = (VentaTB) task.getValue();
+            VentaTB ventaTB = task.getValue();
 
             for (int i = 0; i < cbTipoDocumento.getItems().size(); i++) {
                 if (cbTipoDocumento.getItems().get(i).getIdDetalle() == ventaTB.getClienteTB().getTipoDocumento()) {
@@ -1191,13 +1192,13 @@ public class FxPostVentaEstructuraController implements Initializable {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<VentaTB> task = new Task<VentaTB>() {
             @Override
-            public Object call() throws Exception {
+            public VentaTB call() throws Exception {
                 Object result = VentaADO.Obtener_Venta_ById(idVenta);
 
                 if (result instanceof VentaTB) {
-                    return result;
+                    return (VentaTB) result;
                 }
 
                 throw new Exception((String) result);
@@ -1221,7 +1222,7 @@ public class FxPostVentaEstructuraController implements Initializable {
         });
 
         task.setOnSucceeded(w -> {
-            VentaTB ventaTB = (VentaTB) task.getValue();
+            VentaTB ventaTB = task.getValue();
 
             ventaTB.getSuministroTBs().forEach(s -> {
                 if (validateDuplicate(s)) {

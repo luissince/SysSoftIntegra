@@ -5,12 +5,6 @@
         <group>
             <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/operaciones/cotizacion/FxCotizacionController.java</file>
             <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/service/CotizacionADO.java</file>
-            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/inventario/movimientos/FxMovimientosProcesoController.java</file>
-            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/contactos/clientes/FxClienteProcesoController.java</file>
-            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/operaciones/venta/FxVentaEstructuraController.java</file>
-            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/inventario/suministros/FxSuministrosProcesoController.java</file>
-            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/posterminal/venta/FxPostVentaEstructuraController.java</file>
-            <file>file:/C:/Users/Ruberfc/Documents/NetBeansProjects/SysSoftIntegra/src/controller/tools/Tools.java</file>
         </group>
     </open-files>
 </project-private>

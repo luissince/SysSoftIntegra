@@ -66,7 +66,7 @@ public class VentaADO {
             int dig5 = rd.nextInt(90000) + 10000;
 
             int countValidate = 0;
-            ArrayList<String> arrayResult = new ArrayList<String>();
+            ArrayList<String> arrayResult = new ArrayList<>();
             ventaVerificar = dbf.getConnection()
                     .prepareStatement("SELECT Cantidad FROM SuministroTB WHERE IdSuministro = ?");
             for (int i = 0; i < ventaTB.getSuministroTBs().size(); i++) {
@@ -322,11 +322,11 @@ public class VentaADO {
                     suministro_kardex.setString(11, Session.USER_ID);
                     suministro_kardex.addBatch();
 
-                    if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {                      
+                    if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
                         cotizacionDetalle.setBoolean(1, true);
                         cotizacionDetalle.setString(2, ventaTB.getIdCotizacion());
                         cotizacionDetalle.setString(3, sm.getIdSuministro());
-                        cotizacionDetalle.addBatch();                        
+                        cotizacionDetalle.addBatch();
                     }
                 }
 
@@ -456,13 +456,14 @@ public class VentaADO {
         PreparedStatement ventaVerificar = null;
         PreparedStatement clienteVerificar = null;
         PreparedStatement cliente = null;
-        PreparedStatement detalle_venta = null;
+        PreparedStatement ventaDetalle = null;
         PreparedStatement venta_credito_codigo = null;
         PreparedStatement venta_credito = null;
         PreparedStatement ingreso = null;
         PreparedStatement suministro_update = null;
         PreparedStatement suministro_kardex = null;
         PreparedStatement cotizacion = null;
+        PreparedStatement cotizacionDetalle = null;
         ResultTransaction resultTransaction = new ResultTransaction();
         resultTransaction.setResult("Error en completar la petición intente nuevamente por favor.");
         try {
@@ -586,7 +587,11 @@ public class VentaADO {
                 cotizacion = dbf.getConnection()
                         .prepareStatement("UPDATE CotizacionTB SET Estado = 2,IdVenta=?  WHERE IdCotizacion = ?");
 
-                detalle_venta = dbf.getConnection().prepareStatement("INSERT INTO DetalleVentaTB\n"
+                cotizacionDetalle = dbf.getConnection().prepareStatement("UPDATE DetalleCotizacionTB "
+                        + "SET Uso = ? "
+                        + "WHERE IdCotizacion = ? AND IdSuministro = ?");
+
+                ventaDetalle = dbf.getConnection().prepareStatement("INSERT INTO DetalleVentaTB\n"
                         + "(IdVenta\n"
                         + ",IdArticulo\n"
                         + ",Cantidad\n"
@@ -732,21 +737,21 @@ public class VentaADO {
                     // sm.getPrecioVentaGeneralAuxiliar() : sm.getPrecioVentaGeneral();
                     double precio = sm.getPrecioVentaGeneral();
 
-                    detalle_venta.setString(1, id_venta);
-                    detalle_venta.setString(2, sm.getIdSuministro());
-                    detalle_venta.setDouble(3, cantidad);
-                    detalle_venta.setDouble(4, sm.getCostoCompra());
-                    detalle_venta.setDouble(5, precio);
-                    detalle_venta.setDouble(6, sm.getDescuento());
-                    detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
-                    detalle_venta.setDouble(8, sm.getIdImpuesto());
-                    detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
-                    detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
-                    detalle_venta.setDouble(11, sm.getBonificacion());
-                    detalle_venta.setDouble(12, cantidad);
-                    detalle_venta.setString(13, "C");
-                    detalle_venta.setInt(14, sm.getUnidadCompra());
-                    detalle_venta.addBatch();
+                    ventaDetalle.setString(1, id_venta);
+                    ventaDetalle.setString(2, sm.getIdSuministro());
+                    ventaDetalle.setDouble(3, cantidad);
+                    ventaDetalle.setDouble(4, sm.getCostoCompra());
+                    ventaDetalle.setDouble(5, precio);
+                    ventaDetalle.setDouble(6, sm.getDescuento());
+                    ventaDetalle.setDouble(7, sm.getImpuestoTB().getOperacion());
+                    ventaDetalle.setDouble(8, sm.getIdImpuesto());
+                    ventaDetalle.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                    ventaDetalle.setDouble(10, sm.getImpuestoTB().getValor());
+                    ventaDetalle.setDouble(11, sm.getBonificacion());
+                    ventaDetalle.setDouble(12, cantidad);
+                    ventaDetalle.setString(13, "C");
+                    ventaDetalle.setInt(14, sm.getUnidadCompra());
+                    ventaDetalle.addBatch();
 
                     if (sm.isInventario() && sm.getValorInventario() == 1) {
                         suministro_update.setDouble(1, sm.getCantidad() + sm.getBonificacion());
@@ -785,14 +790,22 @@ public class VentaADO {
                     suministro_kardex.setInt(10, 0);
                     suministro_kardex.setString(11, Session.USER_ID);
                     suministro_kardex.addBatch();
+
+                    if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
+                        cotizacionDetalle.setBoolean(1, true);
+                        cotizacionDetalle.setString(2, ventaTB.getIdCotizacion());
+                        cotizacionDetalle.setString(3, sm.getIdSuministro());
+                        cotizacionDetalle.addBatch();
+                    }
                 }
 
                 cliente.executeBatch();
                 venta.executeBatch();
-                detalle_venta.executeBatch();
+                ventaDetalle.executeBatch();
                 suministro_update.executeBatch();
                 suministro_kardex.executeBatch();
                 cotizacion.executeBatch();
+                cotizacionDetalle.executeBatch();
                 venta_credito.executeBatch();
                 ingreso.executeBatch();
 
@@ -838,11 +851,14 @@ public class VentaADO {
                 if (cotizacion != null) {
                     cotizacion.close();
                 }
+                if (cotizacionDetalle != null) {
+                    cotizacionDetalle.close();
+                }
                 if (cliente != null) {
                     cliente.close();
                 }
-                if (detalle_venta != null) {
-                    detalle_venta.close();
+                if (ventaDetalle != null) {
+                    ventaDetalle.close();
                 }
                 if (suministro_update != null) {
                     suministro_update.close();
@@ -868,9 +884,10 @@ public class VentaADO {
         PreparedStatement venta = null;
         PreparedStatement clienteVerificar = null;
         PreparedStatement cliente = null;
-        PreparedStatement detalle_venta = null;
+        PreparedStatement ventaDetalle = null;
         PreparedStatement ingreso = null;
         PreparedStatement cotizacion = null;
+        PreparedStatement cotizacionDetalle = null;
         ResultTransaction resultTransaction = new ResultTransaction();
         resultTransaction.setResult("Error en completar la petición intente nuevamente por favor.");
         try {
@@ -967,7 +984,11 @@ public class VentaADO {
             cotizacion = dbf.getConnection()
                     .prepareStatement("UPDATE CotizacionTB SET Estado = 2,IdVenta=?  WHERE IdCotizacion = ?");
 
-            detalle_venta = dbf.getConnection().prepareStatement("INSERT INTO DetalleVentaTB\n"
+            cotizacionDetalle = dbf.getConnection().prepareStatement("UPDATE DetalleCotizacionTB "
+                    + "SET Uso = ? "
+                    + "WHERE IdCotizacion = ? AND IdSuministro = ?");
+
+            ventaDetalle = dbf.getConnection().prepareStatement("INSERT INTO DetalleVentaTB\n"
                     + "(IdVenta\n"
                     + ",IdArticulo\n"
                     + ",Cantidad\n"
@@ -1021,21 +1042,28 @@ public class VentaADO {
                 // sm.getPrecioVentaGeneralAuxiliar() : sm.getPrecioVentaGeneral();
                 double precio = sm.getPrecioVentaGeneral();
 
-                detalle_venta.setString(1, id_venta);
-                detalle_venta.setString(2, sm.getIdSuministro());
-                detalle_venta.setDouble(3, cantidad);
-                detalle_venta.setDouble(4, sm.getCostoCompra());
-                detalle_venta.setDouble(5, precio);
-                detalle_venta.setDouble(6, sm.getDescuento());
-                detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
-                detalle_venta.setDouble(8, sm.getIdImpuesto());
-                detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
-                detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
-                detalle_venta.setDouble(11, sm.getBonificacion());
-                detalle_venta.setDouble(12, 0);
-                detalle_venta.setString(13, "L");
-                detalle_venta.setInt(14, sm.getUnidadCompra());
-                detalle_venta.addBatch();
+                ventaDetalle.setString(1, id_venta);
+                ventaDetalle.setString(2, sm.getIdSuministro());
+                ventaDetalle.setDouble(3, cantidad);
+                ventaDetalle.setDouble(4, sm.getCostoCompra());
+                ventaDetalle.setDouble(5, precio);
+                ventaDetalle.setDouble(6, sm.getDescuento());
+                ventaDetalle.setDouble(7, sm.getImpuestoTB().getOperacion());
+                ventaDetalle.setDouble(8, sm.getIdImpuesto());
+                ventaDetalle.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                ventaDetalle.setDouble(10, sm.getImpuestoTB().getValor());
+                ventaDetalle.setDouble(11, sm.getBonificacion());
+                ventaDetalle.setDouble(12, 0);
+                ventaDetalle.setString(13, "L");
+                ventaDetalle.setInt(14, sm.getUnidadCompra());
+                ventaDetalle.addBatch();
+
+                if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
+                    cotizacionDetalle.setBoolean(1, true);
+                    cotizacionDetalle.setString(2, ventaTB.getIdCotizacion());
+                    cotizacionDetalle.setString(3, sm.getIdSuministro());
+                    cotizacionDetalle.addBatch();
+                }
             }
 
             ingreso = dbf.getConnection().prepareStatement(
@@ -1084,8 +1112,9 @@ public class VentaADO {
             cliente.executeBatch();
             venta.executeBatch();
             ingreso.executeBatch();
-            detalle_venta.executeBatch();
+            ventaDetalle.executeBatch();
             cotizacion.executeBatch();
+            cotizacionDetalle.executeBatch();
 
             dbf.getConnection().commit();
             resultTransaction.setCode("register");
@@ -1110,6 +1139,9 @@ public class VentaADO {
                 if (cotizacion != null) {
                     cotizacion.close();
                 }
+                if (cotizacionDetalle != null) {
+                    cotizacionDetalle.close();
+                }
                 if (venta != null) {
                     venta.close();
                 }
@@ -1119,8 +1151,8 @@ public class VentaADO {
                 if (cliente != null) {
                     cliente.close();
                 }
-                if (detalle_venta != null) {
-                    detalle_venta.close();
+                if (ventaDetalle != null) {
+                    ventaDetalle.close();
                 }
                 if (codigo_venta != null) {
                     codigo_venta.close();
@@ -1144,11 +1176,12 @@ public class VentaADO {
         PreparedStatement ventaVerificar = null;
         PreparedStatement clienteVerificar = null;
         PreparedStatement cliente = null;
-        PreparedStatement detalle_venta = null;
+        PreparedStatement ventaDetalle = null;
         PreparedStatement suministro_update = null;
         PreparedStatement suministro_kardex = null;
         PreparedStatement movimiento_caja = null;
         PreparedStatement cotizacion = null;
+        PreparedStatement cotizacionDetalle = null;
         ResultTransaction resultTransaction = new ResultTransaction();
         resultTransaction.setResult("Error en completar la petición intente nuevamente por favor.");
         try {
@@ -1284,7 +1317,11 @@ public class VentaADO {
                     cotizacion = dbf.getConnection()
                             .prepareStatement("UPDATE CotizacionTB SET Estado = 2,IdVenta=?  WHERE IdCotizacion = ?");
 
-                    detalle_venta = dbf.getConnection().prepareStatement("INSERT INTO DetalleVentaTB\n"
+                    cotizacionDetalle = dbf.getConnection().prepareStatement("UPDATE DetalleCotizacionTB "
+                            + "SET Uso = ? "
+                            + "WHERE IdCotizacion = ? AND IdSuministro = ?");
+
+                    ventaDetalle = dbf.getConnection().prepareStatement("INSERT INTO DetalleVentaTB\n"
                             + "(IdVenta\n"
                             + ",IdArticulo\n"
                             + ",Cantidad\n"
@@ -1358,21 +1395,21 @@ public class VentaADO {
                         // sm.getPrecioVentaGeneralAuxiliar() : sm.getPrecioVentaGeneral();
                         double precio = sm.getPrecioVentaGeneral();
 
-                        detalle_venta.setString(1, id_venta);
-                        detalle_venta.setString(2, sm.getIdSuministro());
-                        detalle_venta.setDouble(3, cantidad);
-                        detalle_venta.setDouble(4, sm.getCostoCompra());
-                        detalle_venta.setDouble(5, precio);
-                        detalle_venta.setDouble(6, sm.getDescuento());
-                        detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
-                        detalle_venta.setDouble(8, sm.getIdImpuesto());
-                        detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
-                        detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
-                        detalle_venta.setDouble(11, sm.getBonificacion());
-                        detalle_venta.setDouble(12, cantidad);
-                        detalle_venta.setString(13, "C");
-                        detalle_venta.setInt(14, sm.getUnidadCompra());
-                        detalle_venta.addBatch();
+                        ventaDetalle.setString(1, id_venta);
+                        ventaDetalle.setString(2, sm.getIdSuministro());
+                        ventaDetalle.setDouble(3, cantidad);
+                        ventaDetalle.setDouble(4, sm.getCostoCompra());
+                        ventaDetalle.setDouble(5, precio);
+                        ventaDetalle.setDouble(6, sm.getDescuento());
+                        ventaDetalle.setDouble(7, sm.getImpuestoTB().getOperacion());
+                        ventaDetalle.setDouble(8, sm.getIdImpuesto());
+                        ventaDetalle.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                        ventaDetalle.setDouble(10, sm.getImpuestoTB().getValor());
+                        ventaDetalle.setDouble(11, sm.getBonificacion());
+                        ventaDetalle.setDouble(12, cantidad);
+                        ventaDetalle.setString(13, "C");
+                        ventaDetalle.setInt(14, sm.getUnidadCompra());
+                        ventaDetalle.addBatch();
 
                         if (sm.isInventario() && sm.getValorInventario() == 1) {
                             suministro_update.setDouble(1, sm.getCantidad() + sm.getBonificacion());
@@ -1411,6 +1448,13 @@ public class VentaADO {
                         suministro_kardex.setInt(10, 0);
                         suministro_kardex.setString(11, Session.USER_ID);
                         suministro_kardex.addBatch();
+
+                        if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
+                            cotizacionDetalle.setBoolean(1, true);
+                            cotizacionDetalle.setString(2, ventaTB.getIdCotizacion());
+                            cotizacionDetalle.setString(3, sm.getIdSuministro());
+                            cotizacionDetalle.addBatch();
+                        }
                     }
 
                     movimiento_caja = dbf.getConnection().prepareStatement(
@@ -1460,9 +1504,10 @@ public class VentaADO {
                     venta.executeBatch();
                     movimiento_caja.executeBatch();
                     suministro_update.executeBatch();
-                    detalle_venta.executeBatch();
+                    ventaDetalle.executeBatch();
                     suministro_kardex.executeBatch();
                     cotizacion.executeBatch();
+                    cotizacionDetalle.executeBatch();
 
                     dbf.getConnection().commit();
                     resultTransaction.setCode("register");
@@ -1492,6 +1537,9 @@ public class VentaADO {
                 if (cotizacion != null) {
                     cotizacion.close();
                 }
+                if (cotizacionDetalle != null) {
+                    cotizacionDetalle.close();
+                }
                 if (ventaVerificar != null) {
                     ventaVerificar.close();
                 }
@@ -1505,8 +1553,8 @@ public class VentaADO {
                 if (suministro_update != null) {
                     suministro_update.close();
                 }
-                if (detalle_venta != null) {
-                    detalle_venta.close();
+                if (ventaDetalle != null) {
+                    ventaDetalle.close();
                 }
                 if (suministro_kardex != null) {
                     suministro_kardex.close();
@@ -1533,13 +1581,14 @@ public class VentaADO {
         PreparedStatement ventaVerificar = null;
         PreparedStatement clienteVerificar = null;
         PreparedStatement cliente = null;
-        PreparedStatement detalle_venta = null;
+        PreparedStatement ventaDetalle = null;
         PreparedStatement venta_credito_codigo = null;
         PreparedStatement venta_credito = null;
         PreparedStatement movimiento_caja = null;
         PreparedStatement suministro_update = null;
         PreparedStatement suministro_kardex = null;
         PreparedStatement cotizacion = null;
+        PreparedStatement cotizacionDetalle = null;
         ResultTransaction resultTransaction = new ResultTransaction();
         resultTransaction.setResult("Error en completar la petición intente nuevamente por favor.");
         try {
@@ -1550,7 +1599,7 @@ public class VentaADO {
             int dig5 = rd.nextInt(90000) + 10000;
 
             int countValidate = 0;
-            ArrayList<String> arrayResult = new ArrayList<String>();
+            ArrayList<String> arrayResult = new ArrayList<>();
             ventaVerificar = dbf.getConnection()
                     .prepareStatement("SELECT Cantidad FROM SuministroTB WHERE IdSuministro = ?");
             for (int i = 0; i < ventaTB.getSuministroTBs().size(); i++) {
@@ -1674,7 +1723,11 @@ public class VentaADO {
                     cotizacion = dbf.getConnection()
                             .prepareStatement("UPDATE CotizacionTB SET Estado = 2,IdVenta=?  WHERE IdCotizacion = ?");
 
-                    detalle_venta = dbf.getConnection().prepareStatement("INSERT INTO DetalleVentaTB\n"
+                    cotizacionDetalle = dbf.getConnection().prepareStatement("UPDATE DetalleCotizacionTB "
+                            + "SET Uso = ? "
+                            + "WHERE IdCotizacion = ? AND IdSuministro = ?");
+
+                    ventaDetalle = dbf.getConnection().prepareStatement("INSERT INTO DetalleVentaTB\n"
                             + "(IdVenta\n"
                             + ",IdArticulo\n"
                             + ",Cantidad\n"
@@ -1748,7 +1801,7 @@ public class VentaADO {
                         venta_credito_codigo = dbf.getConnection()
                                 .prepareStatement("SELECT IdVentaCredito FROM VentaCreditoTB ");
                         ResultSet resultSet = venta_credito_codigo.executeQuery();
-                        ArrayList<Integer> listCodigos = new ArrayList<Integer>();
+                        ArrayList<Integer> listCodigos = new ArrayList<>();
                         while (resultSet.next()) {
                             listCodigos.add(Integer.parseInt(resultSet.getString("IdVentaCredito").replace("VC", "")));
                         }
@@ -1818,21 +1871,21 @@ public class VentaADO {
                         // sm.getPrecioVentaGeneralAuxiliar() : sm.getPrecioVentaGeneral();
                         double precio = sm.getPrecioVentaGeneral();
 
-                        detalle_venta.setString(1, id_venta);
-                        detalle_venta.setString(2, sm.getIdSuministro());
-                        detalle_venta.setDouble(3, cantidad);
-                        detalle_venta.setDouble(4, sm.getCostoCompra());
-                        detalle_venta.setDouble(5, precio);
-                        detalle_venta.setDouble(6, sm.getDescuento());
-                        detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
-                        detalle_venta.setDouble(8, sm.getIdImpuesto());
-                        detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
-                        detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
-                        detalle_venta.setDouble(11, sm.getBonificacion());
-                        detalle_venta.setDouble(12, cantidad);
-                        detalle_venta.setString(13, "C");
-                        detalle_venta.setInt(14, sm.getUnidadCompra());
-                        detalle_venta.addBatch();
+                        ventaDetalle.setString(1, id_venta);
+                        ventaDetalle.setString(2, sm.getIdSuministro());
+                        ventaDetalle.setDouble(3, cantidad);
+                        ventaDetalle.setDouble(4, sm.getCostoCompra());
+                        ventaDetalle.setDouble(5, precio);
+                        ventaDetalle.setDouble(6, sm.getDescuento());
+                        ventaDetalle.setDouble(7, sm.getImpuestoTB().getOperacion());
+                        ventaDetalle.setDouble(8, sm.getIdImpuesto());
+                        ventaDetalle.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                        ventaDetalle.setDouble(10, sm.getImpuestoTB().getValor());
+                        ventaDetalle.setDouble(11, sm.getBonificacion());
+                        ventaDetalle.setDouble(12, cantidad);
+                        ventaDetalle.setString(13, "C");
+                        ventaDetalle.setInt(14, sm.getUnidadCompra());
+                        ventaDetalle.addBatch();
 
                         if (sm.isInventario() && sm.getValorInventario() == 1) {
                             suministro_update.setDouble(1, sm.getCantidad() + sm.getBonificacion());
@@ -1871,14 +1924,22 @@ public class VentaADO {
                         suministro_kardex.setInt(10, 0);
                         suministro_kardex.setString(11, Session.USER_ID);
                         suministro_kardex.addBatch();
+
+                        if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
+                            cotizacionDetalle.setBoolean(1, true);
+                            cotizacionDetalle.setString(2, ventaTB.getIdCotizacion());
+                            cotizacionDetalle.setString(3, sm.getIdSuministro());
+                            cotizacionDetalle.addBatch();
+                        }
                     }
 
                     cliente.executeBatch();
                     venta.executeBatch();
-                    detalle_venta.executeBatch();
+                    ventaDetalle.executeBatch();
                     suministro_update.executeBatch();
                     suministro_kardex.executeBatch();
                     cotizacion.executeBatch();
+                    cotizacionDetalle.executeBatch();
                     venta_credito.executeBatch();
                     movimiento_caja.executeBatch();
 
@@ -1919,6 +1980,9 @@ public class VentaADO {
                 if (cotizacion != null) {
                     cotizacion.close();
                 }
+                if (cotizacionDetalle != null) {
+                    cotizacionDetalle.close();
+                }
                 if (ventaVerificar != null) {
                     ventaVerificar.close();
                 }
@@ -1928,8 +1992,8 @@ public class VentaADO {
                 if (cliente != null) {
                     cliente.close();
                 }
-                if (detalle_venta != null) {
-                    detalle_venta.close();
+                if (ventaDetalle != null) {
+                    ventaDetalle.close();
                 }
                 if (suministro_update != null) {
                     suministro_update.close();
@@ -1957,9 +2021,10 @@ public class VentaADO {
         PreparedStatement ventaVerificar = null;
         PreparedStatement clienteVerificar = null;
         PreparedStatement cliente = null;
-        PreparedStatement detalle_venta = null;
+        PreparedStatement ventaDetalle = null;
         PreparedStatement movimiento_caja = null;
         PreparedStatement cotizacion = null;
+        PreparedStatement cotizacionDetalle = null;
         ResultTransaction resultTransaction = new ResultTransaction();
         resultTransaction.setResult("Error en completar la petición intente nuevamente por favor.");
         try {
@@ -2066,7 +2131,11 @@ public class VentaADO {
                 cotizacion = dbf.getConnection()
                         .prepareStatement("UPDATE CotizacionTB SET Estado = 2,IdVenta=?  WHERE IdCotizacion = ?");
 
-                detalle_venta = dbf.getConnection().prepareStatement("INSERT INTO DetalleVentaTB\n"
+                cotizacionDetalle = dbf.getConnection().prepareStatement("UPDATE DetalleCotizacionTB "
+                        + "SET Uso = ? "
+                        + "WHERE IdCotizacion = ? AND IdSuministro = ?");
+
+                ventaDetalle = dbf.getConnection().prepareStatement("INSERT INTO DetalleVentaTB\n"
                         + "(IdVenta\n"
                         + ",IdArticulo\n"
                         + ",Cantidad\n"
@@ -2119,21 +2188,28 @@ public class VentaADO {
                     // sm.getPrecioVentaGeneralAuxiliar() : sm.getPrecioVentaGeneral();
                     double precio = sm.getPrecioVentaGeneral();
 
-                    detalle_venta.setString(1, id_venta);
-                    detalle_venta.setString(2, sm.getIdSuministro());
-                    detalle_venta.setDouble(3, cantidad);
-                    detalle_venta.setDouble(4, sm.getCostoCompra());
-                    detalle_venta.setDouble(5, precio);
-                    detalle_venta.setDouble(6, sm.getDescuento());
-                    detalle_venta.setDouble(7, sm.getImpuestoTB().getOperacion());
-                    detalle_venta.setDouble(8, sm.getIdImpuesto());
-                    detalle_venta.setString(9, sm.getImpuestoTB().getNombreImpuesto());
-                    detalle_venta.setDouble(10, sm.getImpuestoTB().getValor());
-                    detalle_venta.setDouble(11, sm.getBonificacion());
-                    detalle_venta.setDouble(12, 0);
-                    detalle_venta.setString(13, "L");
-                    detalle_venta.setInt(14, sm.getUnidadCompra());
-                    detalle_venta.addBatch();
+                    ventaDetalle.setString(1, id_venta);
+                    ventaDetalle.setString(2, sm.getIdSuministro());
+                    ventaDetalle.setDouble(3, cantidad);
+                    ventaDetalle.setDouble(4, sm.getCostoCompra());
+                    ventaDetalle.setDouble(5, precio);
+                    ventaDetalle.setDouble(6, sm.getDescuento());
+                    ventaDetalle.setDouble(7, sm.getImpuestoTB().getOperacion());
+                    ventaDetalle.setDouble(8, sm.getIdImpuesto());
+                    ventaDetalle.setString(9, sm.getImpuestoTB().getNombreImpuesto());
+                    ventaDetalle.setDouble(10, sm.getImpuestoTB().getValor());
+                    ventaDetalle.setDouble(11, sm.getBonificacion());
+                    ventaDetalle.setDouble(12, 0);
+                    ventaDetalle.setString(13, "L");
+                    ventaDetalle.setInt(14, sm.getUnidadCompra());
+                    ventaDetalle.addBatch();
+
+                    if (!ventaTB.getIdCotizacion().equalsIgnoreCase("")) {
+                        cotizacionDetalle.setBoolean(1, true);
+                        cotizacionDetalle.setString(2, ventaTB.getIdCotizacion());
+                        cotizacionDetalle.setString(3, sm.getIdSuministro());
+                        cotizacionDetalle.addBatch();
+                    }
                 }
 
                 movimiento_caja = dbf.getConnection().prepareStatement(
@@ -2178,8 +2254,9 @@ public class VentaADO {
                 cliente.executeBatch();
                 venta.executeBatch();
                 movimiento_caja.executeBatch();
-                detalle_venta.executeBatch();
+                ventaDetalle.executeBatch();
                 cotizacion.executeBatch();
+                cotizacionDetalle.executeBatch();
 
                 dbf.getConnection().commit();
                 resultTransaction.setCode("register");
@@ -2211,14 +2288,17 @@ public class VentaADO {
                 if (cotizacion != null) {
                     cotizacion.close();
                 }
+                if (cotizacionDetalle != null) {
+                    cotizacionDetalle.close();
+                }
                 if (clienteVerificar != null) {
                     clienteVerificar.close();
                 }
                 if (cliente != null) {
                     cliente.close();
                 }
-                if (detalle_venta != null) {
-                    detalle_venta.close();
+                if (ventaDetalle != null) {
+                    ventaDetalle.close();
                 }
                 if (codigo_venta != null) {
                     codigo_venta.close();

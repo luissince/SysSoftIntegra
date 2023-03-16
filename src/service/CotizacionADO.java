@@ -1,5 +1,6 @@
 package service;
 
+import controller.tools.Tools;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
 import model.ClienteTB;
 import model.CotizacionDetalleTB;
 import model.CotizacionTB;
@@ -196,7 +196,13 @@ public class CotizacionADO {
     public static Object Listar_Cotizacion(int opcion, String buscar, String fechaInicio, String fechaFinal, int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementCotizaciones = null;
-        ResultSet result = null;
+        PreparedStatement statementTotales = null;
+        PreparedStatement statementUso = null;
+
+        ResultSet resultCotizacion = null;
+        ResultSet resultTotales = null;
+        ResultSet resultUse = null;
+
         try {
             dbf.dbConnect();
             Object[] object = new Object[2];
@@ -209,53 +215,61 @@ public class CotizacionADO {
             statementCotizaciones.setString(4, fechaFinal);
             statementCotizaciones.setInt(5, posicionPagina);
             statementCotizaciones.setInt(6, filasPorPagina);
-            result = statementCotizaciones.executeQuery();
-            while (result.next()) {
+            resultCotizacion = statementCotizaciones.executeQuery();
+            while (resultCotizacion.next()) {
                 CotizacionTB cotizacionTB = new CotizacionTB();
-                cotizacionTB.setId(result.getRow());
-                cotizacionTB.setIdCotizacion(result.getString("IdCotizacion"));
-                cotizacionTB.setFechaCotizacion(result.getDate("FechaCotizacion").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                cotizacionTB.setHoraCotizacion(result.getTime("HoraCotizacion").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
-                cotizacionTB.setObservaciones(result.getString("Observaciones"));
-                cotizacionTB.setEstado(result.getInt("Estado"));
+                cotizacionTB.setId(resultCotizacion.getRow());
+                cotizacionTB.setIdCotizacion(resultCotizacion.getString("IdCotizacion"));
+                cotizacionTB.setFechaCotizacion(resultCotizacion.getDate("FechaCotizacion").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                cotizacionTB.setHoraCotizacion(resultCotizacion.getTime("HoraCotizacion").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                cotizacionTB.setObservaciones(resultCotizacion.getString("Observaciones"));
+                cotizacionTB.setEstado(resultCotizacion.getInt("Estado"));
 
                 VentaTB ventaTB = new VentaTB();
-                ventaTB.setComprobanteName(result.getString("Comprobante"));
-                ventaTB.setSerie(result.getString("Serie"));
-                ventaTB.setNumeracion(result.getString("Numeracion"));
-                cotizacionTB.setIdVenta(buscar);
+                ventaTB.setComprobanteName(resultCotizacion.getString("Comprobante"));
+                ventaTB.setSerie(resultCotizacion.getString("Serie"));
+                ventaTB.setNumeracion(resultCotizacion.getString("Numeracion"));
 
-                Label lblEstado = new Label(cotizacionTB.getEstado() == 1 ? "SIN USO" : ventaTB.getComprobanteName() + "\n" + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+                statementUso = dbf.getConnection().prepareStatement("{CALL Sp_Total_Productos_Usado_Cotizacion_ById(?)}");
+                statementUso.setString(1, resultCotizacion.getString("IdCotizacion"));
+                resultUse = statementUso.executeQuery();
+
+                int uso = 0;
+                if (resultUse.next()) {
+                    uso = resultUse.getInt("Uso");
+                }
+
+                Label lblEstado = new Label(cotizacionTB.getEstado() == 1 ? "SIN USO" : uso == 0 ? "FALTANTES" : "ASOCIADO \n" + ventaTB.getSerie() + "-" + Tools.formatNumber(ventaTB.getNumeracion()));
                 lblEstado.getStyleClass().add("labelRoboto12");
                 lblEstado.setAlignment(Pos.CENTER_LEFT);
-                lblEstado.setStyle(cotizacionTB.getEstado() == 1 ? "-fx-text-fill:#020203;" : "-fx-text-fill:#0a6f25;");
+                lblEstado.setStyle(uso == 1 ? "-fx-text-fill:#0a6f25;" : "-fx-text-fill:#da1414;");
                 lblEstado.setPrefHeight(44);
                 cotizacionTB.setLblEstado(lblEstado);
 
                 EmpleadoTB empleadoTB = new EmpleadoTB();
-                empleadoTB.setApellidos(result.getString("Apellidos"));
-                empleadoTB.setNombres(result.getString("Nombres"));
+                empleadoTB.setApellidos(resultCotizacion.getString("Apellidos"));
+                empleadoTB.setNombres(resultCotizacion.getString("Nombres"));
                 cotizacionTB.setEmpleadoTB(empleadoTB);
 
                 ClienteTB clienteTB = new ClienteTB();
-                clienteTB.setNumeroDocumento(result.getString("NumeroDocumento"));
-                clienteTB.setInformacion(result.getString("Informacion"));
+                clienteTB.setNumeroDocumento(resultCotizacion.getString("NumeroDocumento"));
+                clienteTB.setInformacion(resultCotizacion.getString("Informacion"));
                 cotizacionTB.setClienteTB(clienteTB);
 
-                cotizacionTB.setMonedaTB(new MonedaTB(result.getString("SimboloMoneda")));
-                cotizacionTB.setTotal(result.getDouble("Total"));
+                cotizacionTB.setMonedaTB(new MonedaTB(resultCotizacion.getString("SimboloMoneda")));
+                cotizacionTB.setTotal(resultCotizacion.getDouble("Total"));
                 cotizacionTBs.add(cotizacionTB);
             }
 
-            statementCotizaciones = dbf.getConnection().prepareStatement("{call Sp_Listar_Cotizacion_Count(?,?,?,?)}");
-            statementCotizaciones.setInt(1, opcion);
-            statementCotizaciones.setString(2, buscar);
-            statementCotizaciones.setString(3, fechaInicio);
-            statementCotizaciones.setString(4, fechaFinal);
-            result = statementCotizaciones.executeQuery();
+            statementTotales = dbf.getConnection().prepareStatement("{call Sp_Listar_Cotizacion_Count(?,?,?,?)}");
+            statementTotales.setInt(1, opcion);
+            statementTotales.setString(2, buscar);
+            statementTotales.setString(3, fechaInicio);
+            statementTotales.setString(4, fechaFinal);
+            resultTotales = statementTotales.executeQuery();
             Integer cantidadTotal = 0;
-            if (result.next()) {
-                cantidadTotal = result.getInt("Total");
+            if (resultTotales.next()) {
+                cantidadTotal = resultTotales.getInt("Total");
             }
 
             object[0] = cotizacionTBs;
@@ -269,8 +283,20 @@ public class CotizacionADO {
                 if (statementCotizaciones != null) {
                     statementCotizaciones.close();
                 }
-                if (result != null) {
-                    result.close();
+                if (statementTotales != null) {
+                    statementTotales.close();
+                }
+                if (statementUso != null) {
+                    statementUso.close();
+                }
+                if (resultCotizacion != null) {
+                    resultCotizacion.close();
+                }
+                if (resultTotales != null) {
+                    resultTotales.close();
+                }
+                if (resultUse != null) {
+                    resultUse.close();
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
@@ -324,14 +350,15 @@ public class CotizacionADO {
                 empleadoTB.setNombres(result.getString("Nombres"));
                 cotizacionTB.setEmpleadoTB(empleadoTB);
 
-                if (result.getString("IdVenta") != null) {
-                    cotizacionTB.setIdVenta(result.getString("IdVenta"));
+                cotizacionTB.setIdVenta(result.getString("IdVenta"));
+
+                if (cotizacionTB.getIdVenta().equalsIgnoreCase("")) {
+                    cotizacionTB.setIdVenta("");
+                } else {
                     VentaTB ventaTB = new VentaTB();
                     ventaTB.setSerie(result.getString("Serie"));
                     ventaTB.setNumeracion(result.getString("Numeracion"));
                     cotizacionTB.setVentaTB(ventaTB);
-                } else {
-                    cotizacionTB.setIdVenta("");
                 }
 
                 result.close();
@@ -416,7 +443,7 @@ public class CotizacionADO {
                     }
                 }
                 cotizacionTB.setCotizacionDetalleTBs(cotizacionTBs);
-                
+
                 return cotizacionTB;
             } else {
                 throw new Exception("No se puedo contrar la cotización, intente nuevamente por favor.");

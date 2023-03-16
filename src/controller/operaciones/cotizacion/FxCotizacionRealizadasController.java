@@ -184,7 +184,7 @@ public class FxCotizacionRealizadasController implements Initializable {
         }
     }
 
-    private void removeCotizacion() {
+    private void onEventEliminar() {
         short value = Tools.AlertMessageConfirmation(hbWindow, "Cotización", "¿Está seguro de eliminar la cotización.");
         if (value == 1) {
             if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
@@ -216,13 +216,13 @@ public class FxCotizacionRealizadasController implements Initializable {
     @FXML
     private void onKeyPressedEliminar(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            removeCotizacion();
+            onEventEliminar();
         }
     }
 
     @FXML
     private void onActionEliminar(ActionEvent event) {
-        removeCotizacion();
+        onEventEliminar();
     }
 
     @FXML

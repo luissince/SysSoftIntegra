@@ -15,7 +15,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -37,10 +36,6 @@ public class FxGuiaRemisionRealizadasController implements Initializable {
     private VBox hbWindow;
     @FXML
     private Label lblLoad;
-    @FXML
-    private Button btnMostrar;
-    @FXML
-    private Button btnRecargar;
     @FXML
     private TextField txtSearch;
     @FXML
@@ -84,15 +79,15 @@ public class FxGuiaRemisionRealizadasController implements Initializable {
                 .concat(cellData.getValue().getFechaRegistro() + "\n" + cellData.getValue().getHoraRegistro()));
         tcComprobante
                 .setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getTipoDocumentoTB().getNombre()
-                        + "\n" + cellData.getValue().getSerie() + "-"
-                        + Tools.formatNumber(cellData.getValue().getNumeracion())));
+                + "\n" + cellData.getValue().getSerie() + "-"
+                + Tools.formatNumber(cellData.getValue().getNumeracion())));
         tcReferencia.setCellValueFactory(
                 cellData -> Bindings.concat(cellData.getValue().getVentaTB().getTipoDocumentoTB().getNombre() + "\n"
                         + cellData.getValue().getVentaTB().getSerie() + "-"
                         + Tools.formatNumber(cellData.getValue().getVentaTB().getNumeracion())));
         tcCliente
                 .setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento()
-                        + "\n" + cellData.getValue().getClienteTB().getInformacion()));
+                + "\n" + cellData.getValue().getClienteTB().getInformacion()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
@@ -200,6 +195,24 @@ public class FxGuiaRemisionRealizadasController implements Initializable {
         }
     }
 
+    private void onEventEliminar() {
+        short value = Tools.AlertMessageConfirmation(hbWindow, "Guía Remisión", "¿Está seguro de eliminar la guía remisión.");
+        if (value == 1) {            
+            if (tvList.getSelectionModel().getSelectedIndex() < 0) {
+                Tools.AlertMessageWarning(hbWindow, "Guía Remisión", "Seleccione una guía de remisión para anular.");
+                return;
+            }
+
+            String result = GuiaRemisionADO.removeGuiaRemisionById(tvList.getSelectionModel().getSelectedItem().getIdGuiaRemision());
+            if (result.equalsIgnoreCase("deleted")) {
+                Tools.AlertMessageInformation(hbWindow, "Guía Remisión", "Se anuló correctamente la guía remisión.");
+                loadInit();
+            } else {
+                Tools.AlertMessageWarning(hbWindow, "Guía Remisión", result);
+            }
+        }
+    }
+
     @FXML
     private void onKeyPressedMostar(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
@@ -210,6 +223,18 @@ public class FxGuiaRemisionRealizadasController implements Initializable {
     @FXML
     private void onActionMostrar(ActionEvent event) throws IOException {
         openWindowDetalleGuiaRemision();
+    }
+
+    @FXML
+    private void onKeyPressedEliminar(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            onEventEliminar();
+        }
+    }
+
+    @FXML
+    private void onActionEliminar(ActionEvent event) {
+        onEventEliminar();
     }
 
     @FXML

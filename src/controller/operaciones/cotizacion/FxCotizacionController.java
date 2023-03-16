@@ -588,6 +588,7 @@ public class FxCotizacionController implements Initializable {
 
         task.setOnSucceeded(w -> {
             CotizacionTB cotizacionTB = (CotizacionTB) task.getValue();
+
             this.idCotizacion = idCotizacion;
             idVenta = cotizacionTB.getIdVenta();
             for (MonedaTB monedaTB : cbMoneda.getItems()) {
@@ -611,7 +612,6 @@ public class FxCotizacionController implements Initializable {
                 lblComprobante.setText("Comprobante Asociado: " + cotizacionTB.getVentaTB().getSerie() + "-" + Tools.formatNumber(cotizacionTB.getVentaTB().getNumeracion()));
             } else {
                 lblComprobante.setText("Comprobante Asociado: -");
-
             }
             txtObservacion.setText(cotizacionTB.getObservaciones());
 
@@ -639,6 +639,7 @@ public class FxCotizacionController implements Initializable {
             tvList.setItems(cotizacionDetalleTBs);
 
             calculateTotales();
+
             hbBody.setDisable(false);
             hbLoad.setVisible(false);
         });
@@ -705,7 +706,7 @@ public class FxCotizacionController implements Initializable {
                     if (result instanceof String[]) {
                         return result;
                     }
-                    
+
                     throw new Exception((String) result);
                 }
             };

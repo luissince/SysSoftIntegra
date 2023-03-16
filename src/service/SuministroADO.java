@@ -29,7 +29,6 @@ public class SuministroADO {
 
     public static String CrudSuministro(SuministroTB suministroTB, ObservableList<PreciosTB> tvPrecios) {
         DBUtil dbf = new DBUtil();
-        String result = "";
 
         CallableStatement codigoSuministro = null;
         PreparedStatement preparedSuministro = null;
@@ -46,6 +45,7 @@ public class SuministroADO {
                     .prepareStatement("select IdSuministro from SuministroTB where IdSuministro = ?");
             preparedValidation.setString(1, suministroTB.getIdSuministro());
             if (preparedValidation.executeQuery().next()) {
+
                 preparedValidation.close();
                 preparedValidation = dbf.getConnection()
                         .prepareStatement("select Clave from SuministroTB where IdSuministro <> ? and Clave = ?");
@@ -53,211 +53,213 @@ public class SuministroADO {
                 preparedValidation.setString(2, suministroTB.getClave());
                 if (preparedValidation.executeQuery().next()) {
                     dbf.getConnection().rollback();
-                    result = "duplicate";
-                } else {
-                    preparedValidation = dbf.getConnection().prepareStatement(
-                            "select NombreMarca from SuministroTB where IdSuministro <> ? and NombreMarca = ?");
-                    preparedValidation.setString(1, suministroTB.getIdSuministro());
-                    preparedValidation.setString(2, suministroTB.getNombreMarca());
-                    if (preparedValidation.executeQuery().next()) {
-                        dbf.getConnection().rollback();
-                        result = "duplicatename";
-                    } else {
-                        preparedSuministro = dbf.getConnection().prepareStatement(
-                                "UPDATE SuministroTB SET Origen=?,Clave=?,ClaveAlterna=UPPER(?), NombreMarca=UPPER(?),NombreGenerico=UPPER(?),Categoria=?,Marca=?,Presentacion=?,StockMinimo=?,StockMaximo=?,PrecioCompra=?,PrecioVentaGeneral=?,UnidadCompra=?,UnidadVenta = ?,Estado=?,Lote=?,Inventario=?,NuevaImagen=?,Impuesto=?, ValorInventario = ?,ClaveSat = ?,TipoPrecio=?,Descripcion=? WHERE IdSuministro = ? ");
-
-                        preparedSuministro.setInt(1, suministroTB.getOrigen());
-                        preparedSuministro.setString(2, suministroTB.getClave());
-                        preparedSuministro.setString(3, suministroTB.getClaveAlterna());
-                        preparedSuministro.setString(4, suministroTB.getNombreMarca());
-                        preparedSuministro.setString(5, suministroTB.getNombreGenerico());
-                        preparedSuministro.setInt(6, suministroTB.getCategoria());
-                        preparedSuministro.setInt(7, suministroTB.getMarcar());
-                        preparedSuministro.setInt(8, suministroTB.getPresentacion());
-                        preparedSuministro.setDouble(9, suministroTB.getStockMinimo());
-                        preparedSuministro.setDouble(10, suministroTB.getStockMaximo());
-                        preparedSuministro.setDouble(11, suministroTB.getCostoCompra());
-
-                        preparedSuministro.setDouble(12, suministroTB.getPrecioVentaGeneral());
-
-                        preparedSuministro.setInt(13, suministroTB.getUnidadCompra());
-                        preparedSuministro.setInt(14, suministroTB.getUnidadVenta());
-                        preparedSuministro.setInt(15, suministroTB.getEstado());
-                        preparedSuministro.setBoolean(16, suministroTB.isLote());
-                        preparedSuministro.setBoolean(17, suministroTB.isInventario());
-                        // ------------------------------------------------------------
-                        preparedSuministro.setBytes(18, suministroTB.getNuevaImagen());
-                        //
-                        preparedSuministro.setInt(19, suministroTB.getIdImpuesto());
-                        preparedSuministro.setShort(20, suministroTB.getValorInventario());
-                        preparedSuministro.setString(21, suministroTB.getClaveSat());
-                        preparedSuministro.setBoolean(22, suministroTB.isTipoPrecio());
-                        preparedSuministro.setString(23, suministroTB.getDescripcion());
-                        preparedSuministro.setString(24, suministroTB.getIdSuministro());
-
-                        preparedSuministro.addBatch();
-                        preparedSuministro.executeBatch();
-
-                        preparedPrecios = dbf.getConnection()
-                                .prepareStatement("DELETE FROM PreciosTB WHERE IdSuministro = ?");
-                        preparedPrecios.setString(1, suministroTB.getIdSuministro());
-                        preparedPrecios.addBatch();
-                        preparedPrecios.executeBatch();
-
-                        preparedPrecios.close();
-                        preparedPrecios = dbf.getConnection().prepareStatement(
-                                "INSERT INTO PreciosTB(IdArticulo, IdSuministro, Nombre, Valor, Factor,Estado) VALUES(?,?,?,?,?,?)");
-                        for (int i = 0; i < tvPrecios.size(); i++) {
-                            preparedPrecios.setString(1, "");
-                            preparedPrecios.setString(2, suministroTB.getIdSuministro());
-                            preparedPrecios.setString(3, tvPrecios.get(i).getNombre().toUpperCase());
-                            preparedPrecios.setDouble(4, tvPrecios.get(i).getValor());
-                            preparedPrecios.setDouble(5,
-                                    tvPrecios.get(i).getFactor() <= 0 ? 1 : tvPrecios.get(i).getFactor());
-                            preparedPrecios.setBoolean(6, true);
-                            preparedPrecios.addBatch();
-                        }
-                        preparedPrecios.executeBatch();
-
-                        dbf.getConnection().commit();
-                        result = "updated";
-                    }
+                    return "duplicate";
                 }
+
+                preparedValidation = dbf.getConnection().prepareStatement(
+                        "select NombreMarca from SuministroTB where IdSuministro <> ? and NombreMarca = ?");
+                preparedValidation.setString(1, suministroTB.getIdSuministro());
+                preparedValidation.setString(2, suministroTB.getNombreMarca());
+                if (preparedValidation.executeQuery().next()) {
+                    dbf.getConnection().rollback();
+                    return "duplicatename";
+                }
+
+                preparedSuministro = dbf.getConnection().prepareStatement(
+                        "UPDATE SuministroTB SET Origen=?,Clave=?,ClaveAlterna=UPPER(?), NombreMarca=UPPER(?),NombreGenerico=UPPER(?),Categoria=?,Marca=?,Presentacion=?,StockMinimo=?,StockMaximo=?,PrecioCompra=?,PrecioVentaGeneral=?,UnidadCompra=?,UnidadVenta = ?,Estado=?,Lote=?,Inventario=?,NuevaImagen=?,Impuesto=?, ValorInventario = ?,ClaveSat = ?,TipoPrecio=?,Descripcion=? WHERE IdSuministro = ? ");
+
+                preparedSuministro.setInt(1, suministroTB.getOrigen());
+                preparedSuministro.setString(2, suministroTB.getClave());
+                preparedSuministro.setString(3, suministroTB.getClaveAlterna());
+                preparedSuministro.setString(4, suministroTB.getNombreMarca());
+                preparedSuministro.setString(5, suministroTB.getNombreGenerico());
+                preparedSuministro.setInt(6, suministroTB.getCategoria());
+                preparedSuministro.setInt(7, suministroTB.getMarcar());
+                preparedSuministro.setInt(8, suministroTB.getPresentacion());
+                preparedSuministro.setDouble(9, suministroTB.getStockMinimo());
+                preparedSuministro.setDouble(10, suministroTB.getStockMaximo());
+                preparedSuministro.setDouble(11, suministroTB.getCostoCompra());
+
+                preparedSuministro.setDouble(12, suministroTB.getPrecioVentaGeneral());
+
+                preparedSuministro.setInt(13, suministroTB.getUnidadCompra());
+                preparedSuministro.setInt(14, suministroTB.getUnidadVenta());
+                preparedSuministro.setInt(15, suministroTB.getEstado());
+                preparedSuministro.setBoolean(16, suministroTB.isLote());
+                preparedSuministro.setBoolean(17, suministroTB.isInventario());
+                // ------------------------------------------------------------
+                preparedSuministro.setBytes(18, suministroTB.getNuevaImagen());
+                //
+                preparedSuministro.setInt(19, suministroTB.getIdImpuesto());
+                preparedSuministro.setShort(20, suministroTB.getValorInventario());
+                preparedSuministro.setString(21, suministroTB.getClaveSat());
+                preparedSuministro.setBoolean(22, suministroTB.isTipoPrecio());
+                preparedSuministro.setString(23, suministroTB.getDescripcion());
+                preparedSuministro.setString(24, suministroTB.getIdSuministro());
+
+                preparedSuministro.addBatch();
+                preparedSuministro.executeBatch();
+
+                preparedPrecios = dbf.getConnection()
+                        .prepareStatement("DELETE FROM PreciosTB WHERE IdSuministro = ?");
+                preparedPrecios.setString(1, suministroTB.getIdSuministro());
+                preparedPrecios.addBatch();
+                preparedPrecios.executeBatch();
+
+                preparedPrecios.close();
+                preparedPrecios = dbf.getConnection().prepareStatement(
+                        "INSERT INTO PreciosTB(IdArticulo, IdSuministro, Nombre, Valor, Factor,Estado) VALUES(?,?,?,?,?,?)");
+                for (int i = 0; i < tvPrecios.size(); i++) {
+                    preparedPrecios.setString(1, "");
+                    preparedPrecios.setString(2, suministroTB.getIdSuministro());
+                    preparedPrecios.setString(3, tvPrecios.get(i).getNombre().toUpperCase());
+                    preparedPrecios.setDouble(4, tvPrecios.get(i).getValor());
+                    preparedPrecios.setDouble(5,
+                            tvPrecios.get(i).getFactor() <= 0 ? 1 : tvPrecios.get(i).getFactor());
+                    preparedPrecios.setBoolean(6, true);
+                    preparedPrecios.addBatch();
+                }
+                preparedPrecios.executeBatch();
+
+                dbf.getConnection().commit();
+                return "updated";
+
             } else {
+                
                 preparedValidation.close();
                 preparedValidation = dbf.getConnection()
                         .prepareStatement("select Clave from SuministroTB where Clave = ?");
                 preparedValidation.setString(1, suministroTB.getClave());
                 if (preparedValidation.executeQuery().next()) {
                     dbf.getConnection().rollback();
-                    result = "duplicate";
-                } else {
-                    preparedValidation = dbf.getConnection()
-                            .prepareStatement("select NombreMarca from SuministroTB where NombreMarca = ?");
-                    preparedValidation.setString(1, suministroTB.getNombreMarca());
-                    if (preparedValidation.executeQuery().next()) {
-                        dbf.getConnection().rollback();
-                        result = "duplicatename";
-                    } else {
-                        codigoSuministro = dbf.getConnection()
-                                .prepareCall("{? = call Fc_Suministro_Codigo_Alfanumerico()}");
-                        codigoSuministro.registerOutParameter(1, java.sql.Types.VARCHAR);
-                        codigoSuministro.execute();
-                        String idSuministro = codigoSuministro.getString(1);
+                    return "duplicate";
+                }
 
-                        preparedSuministro = dbf.getConnection().prepareStatement("INSERT INTO SuministroTB "
-                                + "(IdSuministro,"
-                                + "Origen,"
-                                + "Clave,"
-                                + "ClaveAlterna,"
-                                + "NombreMarca,"
-                                + "NombreGenerico,"
-                                + "Categoria,"
-                                + "Marca,"
-                                + "Presentacion,"
-                                + "StockMinimo,"
-                                + "StockMaximo,"
-                                + "PrecioCompra,"
-                                + "PrecioVentaGeneral,"
-                                + "Cantidad,"
-                                + "UnidadCompra,"
-                                + "UnidadVenta,"
-                                + "Estado,"
-                                + "Lote,"
-                                + "Inventario,"
-                                + "NuevaImagen,"
-                                + "Impuesto,"
-                                + "ValorInventario,"
-                                + "Imagen,"
-                                + "ClaveSat,"
-                                + "TipoPrecio,"
-                                + "Descripcion)"
-                                + "values(?,?,?,UPPER(?),UPPER(?),UPPER(?),UPPER(?),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                preparedValidation = dbf.getConnection()
+                        .prepareStatement("select NombreMarca from SuministroTB where NombreMarca = ?");
+                preparedValidation.setString(1, suministroTB.getNombreMarca());
+                if (preparedValidation.executeQuery().next()) {
+                    dbf.getConnection().rollback();
+                    return "duplicatename";
+                }
 
-                        preparedSuministro.setString(1, idSuministro);
-                        preparedSuministro.setInt(2, suministroTB.getOrigen());
-                        preparedSuministro.setString(3, suministroTB.getClave());
-                        preparedSuministro.setString(4, suministroTB.getClaveAlterna());
-                        preparedSuministro.setString(5, suministroTB.getNombreMarca());
-                        preparedSuministro.setString(6, suministroTB.getNombreGenerico());
-                        preparedSuministro.setInt(7, suministroTB.getCategoria());
-                        preparedSuministro.setInt(8, suministroTB.getMarcar());
-                        preparedSuministro.setInt(9, suministroTB.getPresentacion());
-                        preparedSuministro.setDouble(10, suministroTB.getStockMinimo());
-                        preparedSuministro.setDouble(11, suministroTB.getStockMaximo());
-                        preparedSuministro.setDouble(12, suministroTB.getCostoCompra());
+                codigoSuministro = dbf.getConnection()
+                        .prepareCall("{? = call Fc_Suministro_Codigo_Alfanumerico()}");
+                codigoSuministro.registerOutParameter(1, java.sql.Types.VARCHAR);
+                codigoSuministro.execute();
+                String idSuministro = codigoSuministro.getString(1);
 
-                        preparedSuministro.setDouble(13, suministroTB.getPrecioVentaGeneral());
+                preparedSuministro = dbf.getConnection().prepareStatement("INSERT INTO SuministroTB "
+                        + "(IdSuministro,"
+                        + "Origen,"
+                        + "Clave,"
+                        + "ClaveAlterna,"
+                        + "NombreMarca,"
+                        + "NombreGenerico,"
+                        + "Categoria,"
+                        + "Marca,"
+                        + "Presentacion,"
+                        + "StockMinimo,"
+                        + "StockMaximo,"
+                        + "PrecioCompra,"
+                        + "PrecioVentaGeneral,"
+                        + "Cantidad,"
+                        + "UnidadCompra,"
+                        + "UnidadVenta,"
+                        + "Estado,"
+                        + "Lote,"
+                        + "Inventario,"
+                        + "NuevaImagen,"
+                        + "Impuesto,"
+                        + "ValorInventario,"
+                        + "Imagen,"
+                        + "ClaveSat,"
+                        + "TipoPrecio,"
+                        + "Descripcion)"
+                        + "values(?,?,?,UPPER(?),UPPER(?),UPPER(?),UPPER(?),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
-                        preparedSuministro.setDouble(14, 0);
-                        preparedSuministro.setInt(15, suministroTB.getUnidadCompra());
-                        preparedSuministro.setInt(16, suministroTB.getUnidadVenta());
-                        preparedSuministro.setInt(17, suministroTB.getEstado());
-                        preparedSuministro.setBoolean(18, suministroTB.isLote());
-                        preparedSuministro.setBoolean(19, suministroTB.isInventario());
-                        // ------------------------------------------------------------
-                        preparedSuministro.setBytes(20, suministroTB.getNuevaImagen());
-                        // preparedSuministro.setString(20, suministroTB.getImagenFile() != null
-                        // ? selectFileImage("./img/" + idSuministro + "." +
-                        // Tools.getFileExtension(suministroTB.getImagenFile()),
-                        // suministroTB.getImagenFile())
-                        // : (suministroTB.getImagenTB().equalsIgnoreCase("") ? ""
-                        // : selectFileImage("./img/" + idSuministro + "." + Tools.getFileExtension(new
-                        // File(suministroTB.getImagenTB())), new File(suministroTB.getImagenTB())))
-                        // );
-                        //
-                        preparedSuministro.setInt(21, suministroTB.getIdImpuesto());
-                        preparedSuministro.setShort(22, suministroTB.getValorInventario());
-                        preparedSuministro.setString(23, "");
-                        preparedSuministro.setString(24, suministroTB.getClaveSat());
-                        preparedSuministro.setBoolean(25, suministroTB.isTipoPrecio());
-                        preparedSuministro.setString(26, suministroTB.getDescripcion());
+                preparedSuministro.setString(1, idSuministro);
+                preparedSuministro.setInt(2, suministroTB.getOrigen());
+                preparedSuministro.setString(3, suministroTB.getClave());
+                preparedSuministro.setString(4, suministroTB.getClaveAlterna());
+                preparedSuministro.setString(5, suministroTB.getNombreMarca());
+                preparedSuministro.setString(6, suministroTB.getNombreGenerico());
+                preparedSuministro.setInt(7, suministroTB.getCategoria());
+                preparedSuministro.setInt(8, suministroTB.getMarcar());
+                preparedSuministro.setInt(9, suministroTB.getPresentacion());
+                preparedSuministro.setDouble(10, suministroTB.getStockMinimo());
+                preparedSuministro.setDouble(11, suministroTB.getStockMaximo());
+                preparedSuministro.setDouble(12, suministroTB.getCostoCompra());
 
-                        preparedSuministro.addBatch();
-                        preparedSuministro.executeBatch();
+                preparedSuministro.setDouble(13, suministroTB.getPrecioVentaGeneral());
 
-                        preparedPrecios = dbf.getConnection().prepareStatement(
-                                "INSERT INTO PreciosTB(IdArticulo, IdSuministro, Nombre, Valor, Factor,Estado) VALUES(?,?,?,?,?,?)");
+                preparedSuministro.setDouble(14, 0);
+                preparedSuministro.setInt(15, suministroTB.getUnidadCompra());
+                preparedSuministro.setInt(16, suministroTB.getUnidadVenta());
+                preparedSuministro.setInt(17, suministroTB.getEstado());
+                preparedSuministro.setBoolean(18, suministroTB.isLote());
+                preparedSuministro.setBoolean(19, suministroTB.isInventario());
+                // ------------------------------------------------------------
+                preparedSuministro.setBytes(20, suministroTB.getNuevaImagen());
+                // preparedSuministro.setString(20, suministroTB.getImagenFile() != null
+                // ? selectFileImage("./img/" + idSuministro + "." +
+                // Tools.getFileExtension(suministroTB.getImagenFile()),
+                // suministroTB.getImagenFile())
+                // : (suministroTB.getImagenTB().equalsIgnoreCase("") ? ""
+                // : selectFileImage("./img/" + idSuministro + "." + Tools.getFileExtension(new
+                // File(suministroTB.getImagenTB())), new File(suministroTB.getImagenTB())))
+                // );
+                //
+                preparedSuministro.setInt(21, suministroTB.getIdImpuesto());
+                preparedSuministro.setShort(22, suministroTB.getValorInventario());
+                preparedSuministro.setString(23, "");
+                preparedSuministro.setString(24, suministroTB.getClaveSat());
+                preparedSuministro.setBoolean(25, suministroTB.isTipoPrecio());
+                preparedSuministro.setString(26, suministroTB.getDescripcion());
 
-                        for (int i = 0; i < tvPrecios.size(); i++) {
-                            preparedPrecios.setString(1, "");
-                            preparedPrecios.setString(2, idSuministro);
-                            preparedPrecios.setString(3, tvPrecios.get(i).getNombre().toUpperCase());
-                            preparedPrecios.setDouble(4, tvPrecios.get(i).getValor());
-                            preparedPrecios.setDouble(5,
-                                    tvPrecios.get(i).getFactor() <= 0 ? 1 : tvPrecios.get(i).getFactor());
-                            preparedPrecios.setBoolean(6, true);
-                            preparedPrecios.addBatch();
-                        }
-                        preparedPrecios.executeBatch();
+                preparedSuministro.addBatch();
+                preparedSuministro.executeBatch();
 
-                        preparedAlmacen = dbf.getConnection().prepareStatement("SELECT IdAlmacen FROM AlmacenTB");
-                        ResultSet resultSet = preparedAlmacen.executeQuery();
-                        preparedCantidad = dbf.getConnection().prepareStatement(
-                                "INSERT INTO CantidadTB(IdAlmacen,IdSuministro,StockMinimo,StockMaximo,Cantidad) VALUES(?,?,?,?,?)");
-                        while (resultSet.next()) {
-                            if (resultSet.getInt("IdAlmacen") != 0) {
-                                preparedCantidad.setInt(1, resultSet.getInt("IdAlmacen"));
-                                preparedCantidad.setString(2, idSuministro);
-                                preparedCantidad.setDouble(3, suministroTB.getStockMinimo());
-                                preparedCantidad.setDouble(4, suministroTB.getStockMaximo());
-                                preparedCantidad.setDouble(5, 0);
-                                preparedCantidad.addBatch();
-                            }
-                        }
-                        preparedCantidad.executeBatch();
+                preparedPrecios = dbf.getConnection().prepareStatement(
+                        "INSERT INTO PreciosTB(IdArticulo, IdSuministro, Nombre, Valor, Factor,Estado) VALUES(?,?,?,?,?,?)");
 
-                        dbf.getConnection().commit();
-                        result = "registered";
+                for (int i = 0; i < tvPrecios.size(); i++) {
+                    preparedPrecios.setString(1, "");
+                    preparedPrecios.setString(2, idSuministro);
+                    preparedPrecios.setString(3, tvPrecios.get(i).getNombre().toUpperCase());
+                    preparedPrecios.setDouble(4, tvPrecios.get(i).getValor());
+                    preparedPrecios.setDouble(5,
+                            tvPrecios.get(i).getFactor() <= 0 ? 1 : tvPrecios.get(i).getFactor());
+                    preparedPrecios.setBoolean(6, true);
+                    preparedPrecios.addBatch();
+                }
+                preparedPrecios.executeBatch();
+
+                preparedAlmacen = dbf.getConnection().prepareStatement("SELECT IdAlmacen FROM AlmacenTB");
+                ResultSet resultSet = preparedAlmacen.executeQuery();
+                preparedCantidad = dbf.getConnection().prepareStatement(
+                        "INSERT INTO CantidadTB(IdAlmacen,IdSuministro,StockMinimo,StockMaximo,Cantidad) VALUES(?,?,?,?,?)");
+                while (resultSet.next()) {
+                    if (resultSet.getInt("IdAlmacen") != 0) {
+                        preparedCantidad.setInt(1, resultSet.getInt("IdAlmacen"));
+                        preparedCantidad.setString(2, idSuministro);
+                        preparedCantidad.setDouble(3, suministroTB.getStockMinimo());
+                        preparedCantidad.setDouble(4, suministroTB.getStockMaximo());
+                        preparedCantidad.setDouble(5, 0);
+                        preparedCantidad.addBatch();
                     }
                 }
+                preparedCantidad.executeBatch();
+
+                dbf.getConnection().commit();
+                return "registered";
             }
         } catch (SQLException | ClassNotFoundException ex) {
             try {
                 dbf.getConnection().rollback();
             } catch (SQLException exr) {
             }
-            result = ex.getLocalizedMessage();
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (preparedSuministro != null) {
@@ -283,11 +285,9 @@ public class SuministroADO {
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
-                result = ex.getLocalizedMessage();
+                return ex.getLocalizedMessage();
             }
         }
-
-        return result;
     }
 
     public static Object CrudMasivoSuministro(SuministroTB suministroTB) {
@@ -1087,12 +1087,12 @@ public class SuministroADO {
                     + "FROM SuministroTB AS s INNER JOIN DetalleTB AS d ON d.IdDetalle = s.UnidadCompra AND d.IdMantenimiento = '0013'\n"
                     + "WHERE s.IdSuministro = ?"
                     : "SELECT\n"
-                            + "s.IdSuministro,\n"
-                            + "s.Clave,\n"
-                            + "s.NombreMarca,\n"
-                            + "d.Nombre AS Unidad\n"
-                            + "FROM SuministroTB AS s INNER JOIN DetalleTB AS d ON d.IdDetalle = s.UnidadCompra AND d.IdMantenimiento = '0013'\n"
-                            + "WHERE s.Clave LIKE CONCAT(?,'%') OR s.NombreMarca LIKE CONCAT(?,'%')");
+                    + "s.IdSuministro,\n"
+                    + "s.Clave,\n"
+                    + "s.NombreMarca,\n"
+                    + "d.Nombre AS Unidad\n"
+                    + "FROM SuministroTB AS s INNER JOIN DetalleTB AS d ON d.IdDetalle = s.UnidadCompra AND d.IdMantenimiento = '0013'\n"
+                    + "WHERE s.Clave LIKE CONCAT(?,'%') OR s.NombreMarca LIKE CONCAT(?,'%')");
             if (directo) {
                 preparedStatement.setString(1, buscar);
             } else {
@@ -1374,14 +1374,14 @@ public class SuministroADO {
                 lblCantidad.getStyleClass().add("label-existencia");
                 lblCantidad.getStyleClass().add(
                         suministroTB.getCantidad() <= 0
-                                ? "label-existencia-negativa"
-                                : suministroTB.getCantidad() > 0
-                                        && suministroTB.getCantidad() < suministroTB.getStockMinimo()
-                                                ? "label-existencia-intermedia"
-                                                : suministroTB.getCantidad() >= suministroTB.getStockMinimo()
-                                                        && suministroTB.getCantidad() < suministroTB.getStockMaximo()
-                                                                ? "label-existencia-normal"
-                                                                : "label-existencia-Excedentes");
+                        ? "label-existencia-negativa"
+                        : suministroTB.getCantidad() > 0
+                        && suministroTB.getCantidad() < suministroTB.getStockMinimo()
+                        ? "label-existencia-intermedia"
+                        : suministroTB.getCantidad() >= suministroTB.getStockMinimo()
+                        && suministroTB.getCantidad() < suministroTB.getStockMaximo()
+                        ? "label-existencia-normal"
+                        : "label-existencia-Excedentes");
                 suministroTB.setLblCantidad(lblCantidad);
 
                 Button btnTraspaso = new Button();

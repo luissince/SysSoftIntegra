@@ -753,7 +753,7 @@ public class FxSuministrosProcesoController implements Initializable {
         }
     }
 
-    private void aValidityProcess() {
+    private void onEventRegistrar() {
         //primera validacion
         if (txtClave.getText().isEmpty()) {
             openAlertMessageWarning("Ingrese la clave del producto, por favor.");
@@ -894,12 +894,12 @@ public class FxSuministrosProcesoController implements Initializable {
                     case "registered":
                         Tools.AlertMessageInformation(spWindow, "Producto", "Registrado correctamente el producto.");
                         fxPrincipalController.closeFondoModal();
-                        closeWindow();
+                        onEventCerrar();
                         break;
                     case "updated":
                         Tools.AlertMessageInformation(spWindow, "Producto", "Actualizado correctamente el producto.");
                         fxPrincipalController.closeFondoModal();
-                        closeWindow();
+                        onEventCerrar();
                         break;
                     case "duplicate":
                         Tools.AlertMessageWarning(spWindow, "Producto", "No se puede haber 2 producto con la misma clave.");
@@ -996,7 +996,7 @@ public class FxSuministrosProcesoController implements Initializable {
         }
     }
 
-    private void closeWindow() {
+    private void onEventCerrar() {
         fxPrincipalController.getVbContent().getChildren().remove(spWindow);
         fxPrincipalController.getVbContent().getChildren().clear();
         AnchorPane.setLeftAnchor(suministrosController.getHbWindow(), 0d);
@@ -1008,26 +1008,26 @@ public class FxSuministrosProcesoController implements Initializable {
 
     @FXML
     private void onActionToRegister(ActionEvent event) {
-        aValidityProcess();
+        onEventRegistrar();
     }
 
     @FXML
     private void onKeyPressedToRegister(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            aValidityProcess();
+            onEventRegistrar();
         }
     }
 
     @FXML
     private void onKeyPressedToCancel(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            closeWindow();
+            onEventCerrar();
         }
     }
 
     @FXML
     private void onActionToCancel(ActionEvent event) {
-        closeWindow();
+        onEventCerrar();
     }
 
     @FXML
@@ -1228,7 +1228,7 @@ public class FxSuministrosProcesoController implements Initializable {
 
     @FXML
     private void onMouseClickedBehind(MouseEvent event) {
-        closeWindow();
+        onEventCerrar();
     }
 
     @FXML

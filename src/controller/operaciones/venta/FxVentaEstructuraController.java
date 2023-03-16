@@ -954,97 +954,96 @@ public class FxVentaEstructuraController implements Initializable {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<CotizacionTB> task = new Task<CotizacionTB>() {
             @Override
-            public Object call() {
-                return CotizacionADO.Obtener_Cotizacion_ById(idCotizacion, true);
+            public CotizacionTB call() throws Exception {
+                Object result = CotizacionADO.Obtener_Cotizacion_ById(idCotizacion, true);
+                if (result instanceof CotizacionTB) {
+                    return (CotizacionTB) result;
+                }
+
+                throw new Exception((String) result);
             }
         };
 
         task.setOnSucceeded(w -> {
-            Object result = task.getValue();
-            if (result instanceof CotizacionTB) {
-                CotizacionTB cotizacionTB = (CotizacionTB) result;
-                for (DetalleTB detalleTB : cbTipoDocumento.getItems()) {
-                    if (detalleTB.getIdDetalle() == cotizacionTB.getClienteTB().getTipoDocumento()) {
-                        cbTipoDocumento.getSelectionModel().select(detalleTB);
-                        break;
-                    }
+            CotizacionTB cotizacionTB = task.getValue();
+
+            for (DetalleTB detalleTB : cbTipoDocumento.getItems()) {
+                if (detalleTB.getIdDetalle() == cotizacionTB.getClienteTB().getTipoDocumento()) {
+                    cbTipoDocumento.getSelectionModel().select(detalleTB);
+                    break;
                 }
+            }
 
-                for (MonedaTB monedaTB : cbMoneda.getItems()) {
-                    if (monedaTB.getIdMoneda() == cotizacionTB.getIdMoneda()) {
-                        cbMoneda.getSelectionModel().select(monedaTB);
-                        monedaSimbolo = cbMoneda.getSelectionModel().getSelectedItem().getSimbolo();
-                        break;
-                    }
+            for (MonedaTB monedaTB : cbMoneda.getItems()) {
+                if (monedaTB.getIdMoneda() == cotizacionTB.getIdMoneda()) {
+                    cbMoneda.getSelectionModel().select(monedaTB);
+                    monedaSimbolo = cbMoneda.getSelectionModel().getSelectedItem().getSimbolo();
+                    break;
                 }
+            }
 
-                this.idCotizacion = idCotizacion;
+            this.idCotizacion = idCotizacion;
 
-                txtNumeroDocumento.setText(cotizacionTB.getClienteTB().getNumeroDocumento());
-                txtDatosCliente.setText(cotizacionTB.getClienteTB().getInformacion());
-                txtCelularCliente.setText(cotizacionTB.getClienteTB().getCelular());
-                txtCorreoElectronico.setText(cotizacionTB.getClienteTB().getEmail());
-                txtDireccionCliente.setText(cotizacionTB.getClienteTB().getDireccion());
+            txtNumeroDocumento.setText(cotizacionTB.getClienteTB().getNumeroDocumento());
+            txtDatosCliente.setText(cotizacionTB.getClienteTB().getInformacion());
+            txtCelularCliente.setText(cotizacionTB.getClienteTB().getCelular());
+            txtCorreoElectronico.setText(cotizacionTB.getClienteTB().getEmail());
+            txtDireccionCliente.setText(cotizacionTB.getClienteTB().getDireccion());
 
-                ObservableList<SuministroTB> suministroTBs = FXCollections.observableArrayList();
-                cotizacionTB.getCotizacionDetalleTBs().forEach(detalleTB -> {
-                    CotizacionDetalleTB cdtb = detalleTB;
+            ObservableList<SuministroTB> suministroTBs = FXCollections.observableArrayList();
+            cotizacionTB.getCotizacionDetalleTBs().forEach(detalleTB -> {
+                CotizacionDetalleTB cdtb = detalleTB;
 
-                    SuministroTB suministroTB = new SuministroTB();
-                    suministroTB.setIdSuministro(cdtb.getSuministroTB().getIdSuministro());
-                    suministroTB.setClave(cdtb.getSuministroTB().getClave());
-                    suministroTB.setNombreMarca(cdtb.getSuministroTB().getNombreMarca());
-                    suministroTB.setCantidad(cdtb.getCantidad());
-                    suministroTB.setCostoCompra(cdtb.getSuministroTB().getCostoCompra());
-                    suministroTB.setBonificacion(0);
-                    suministroTB.setUnidadCompra(cdtb.getSuministroTB().getUnidadCompra());
-                    suministroTB.setUnidadCompraName(cdtb.getSuministroTB().getUnidadCompraName());
+                SuministroTB suministroTB = new SuministroTB();
+                suministroTB.setIdSuministro(cdtb.getSuministroTB().getIdSuministro());
+                suministroTB.setClave(cdtb.getSuministroTB().getClave());
+                suministroTB.setNombreMarca(cdtb.getSuministroTB().getNombreMarca());
+                suministroTB.setCantidad(cdtb.getCantidad());
+                suministroTB.setCostoCompra(cdtb.getSuministroTB().getCostoCompra());
+                suministroTB.setBonificacion(0);
+                suministroTB.setUnidadCompra(cdtb.getSuministroTB().getUnidadCompra());
+                suministroTB.setUnidadCompraName(cdtb.getSuministroTB().getUnidadCompraName());
 
-                    suministroTB.setDescuento(cdtb.getDescuento());
-                    suministroTB.setDescuentoCalculado(cdtb.getDescuento());
-                    suministroTB.setDescuentoSumado(cdtb.getDescuento());
+                suministroTB.setDescuento(cdtb.getDescuento());
+                suministroTB.setDescuentoCalculado(cdtb.getDescuento());
+                suministroTB.setDescuentoSumado(cdtb.getDescuento());
 
-                    suministroTB.setPrecioVentaGeneral(cdtb.getPrecio());
-                    suministroTB.setPrecioVentaGeneralUnico(cdtb.getPrecio());
-                    suministroTB.setPrecioVentaGeneralReal(cdtb.getPrecio());
+                suministroTB.setPrecioVentaGeneral(cdtb.getPrecio());
+                suministroTB.setPrecioVentaGeneralUnico(cdtb.getPrecio());
+                suministroTB.setPrecioVentaGeneralReal(cdtb.getPrecio());
 
-                    suministroTB.setIdImpuesto(cdtb.getIdImpuesto());
-                    suministroTB.setImpuestoTB(cdtb.getImpuestoTB());
+                suministroTB.setIdImpuesto(cdtb.getIdImpuesto());
+                suministroTB.setImpuestoTB(cdtb.getImpuestoTB());
 
-                    suministroTB.setInventario(cdtb.getSuministroTB().isInventario());
-                    suministroTB.setUnidadVenta(cdtb.getSuministroTB().getUnidadVenta());
-                    suministroTB.setValorInventario(cdtb.getSuministroTB().getValorInventario());
-                    suministroTB.setUso(cdtb.isUso());
+                suministroTB.setInventario(cdtb.getSuministroTB().isInventario());
+                suministroTB.setUnidadVenta(cdtb.getSuministroTB().getUnidadVenta());
+                suministroTB.setValorInventario(cdtb.getSuministroTB().getValorInventario());
+                suministroTB.setUso(cdtb.isUso());
 
-                    Button button = new Button("X");
-                    button.getStyleClass().add("buttonDark");
-                    button.setOnAction(e -> {
+                Button button = new Button("X");
+                button.getStyleClass().add("buttonDark");
+                button.setOnAction(e -> {
+                    tvList.getItems().remove(suministroTB);
+                    calculateTotales();
+                });
+                button.setOnKeyPressed(e -> {
+                    if (e.getCode() == KeyCode.ENTER) {
                         tvList.getItems().remove(suministroTB);
                         calculateTotales();
-                    });
-                    button.setOnKeyPressed(e -> {
-                        if (e.getCode() == KeyCode.ENTER) {
-                            tvList.getItems().remove(suministroTB);
-                            calculateTotales();
-                        }
-                    });
-                    suministroTB.setBtnRemove(button);
-
-                    suministroTBs.add(suministroTB);
+                    }
                 });
+                suministroTB.setBtnRemove(button);
 
-                tvList.setItems(suministroTBs);
-                calculateTotales();
+                suministroTBs.add(suministroTB);
+            });
 
-                vbBody.setDisable(false);
-                hbLoad.setVisible(false);
-            } else {
-                lblMessageLoad.setText((String) result);
-                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-                btnAceptarLoad.setVisible(true);
-            }
+            tvList.setItems(suministroTBs);
+            calculateTotales();
+
+            vbBody.setDisable(false);
+            hbLoad.setVisible(false);
         });
         task.setOnFailed(w -> {
             vbBody.setDisable(false);
@@ -1073,66 +1072,194 @@ public class FxVentaEstructuraController implements Initializable {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<VentaTB> task = new Task<VentaTB>() {
             @Override
-            public Object call() {
-                return VentaADO.Obtener_Venta_ById(idVenta);
+            public VentaTB call() throws Exception {
+                Object result = VentaADO.Obtener_Venta_ById(idVenta);
+                if (result instanceof VentaTB) {
+                    return (VentaTB) result;
+                }
+
+                throw new Exception((String) result);
             }
         };
 
+        task.setOnScheduled(w -> {
+            vbBody.setDisable(true);
+            hbLoad.setVisible(true);
+            btnAceptarLoad.setVisible(false);
+            lblMessageLoad.setText("Cargando datos...");
+            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+        });
+
+        task.setOnFailed(w -> {
+            vbBody.setDisable(false);
+            hbLoad.setVisible(false);
+            lblMessageLoad.setText(task.getException().getLocalizedMessage());
+            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+            btnAceptarLoad.setVisible(true);
+        });
+
         task.setOnSucceeded(w -> {
-            Object object = task.getValue();
-            if (object instanceof VentaTB) {
-                VentaTB ventaTB = (VentaTB) object;
-                for (int i = 0; i < cbTipoDocumento.getItems().size(); i++) {
-                    if (cbTipoDocumento.getItems().get(i).getIdDetalle() == ventaTB.getClienteTB().getTipoDocumento()) {
-                        cbTipoDocumento.getSelectionModel().select(i);
-                        break;
+            VentaTB ventaTB = task.getValue();
+            
+            for (int i = 0; i < cbTipoDocumento.getItems().size(); i++) {
+                if (cbTipoDocumento.getItems().get(i).getIdDetalle() == ventaTB.getClienteTB().getTipoDocumento()) {
+                    cbTipoDocumento.getSelectionModel().select(i);
+                    break;
+                }
+            }
+
+            for (MonedaTB monedaTB : cbMoneda.getItems()) {
+                if (monedaTB.getIdMoneda() == ventaTB.getIdMoneda()) {
+                    cbMoneda.getSelectionModel().select(monedaTB);
+                    monedaSimbolo = cbMoneda.getSelectionModel().getSelectedItem().getSimbolo();
+                    break;
+                }
+            }
+
+            txtNumeroDocumento.setText(ventaTB.getClienteTB().getNumeroDocumento());
+            txtDatosCliente.setText(ventaTB.getClienteTB().getInformacion());
+            txtCelularCliente.setText(ventaTB.getClienteTB().getCelular());
+            txtCorreoElectronico.setText(ventaTB.getClienteTB().getEmail());
+            txtDireccionCliente.setText(ventaTB.getClienteTB().getDireccion());
+
+            ObservableList<SuministroTB> cotizacionTBs = FXCollections.observableArrayList();
+            for (int i = 0; i < ventaTB.getSuministroTBs().size(); i++) {
+                SuministroTB oldSuministroTB = ventaTB.getSuministroTBs().get(i);
+
+                SuministroTB suministroTB = new SuministroTB();
+                suministroTB.setIdSuministro(oldSuministroTB.getIdSuministro());
+                suministroTB.setClave(oldSuministroTB.getClave());
+                suministroTB.setNombreMarca(oldSuministroTB.getNombreMarca());
+                suministroTB.setCantidad(oldSuministroTB.getCantidad());
+                suministroTB.setCostoCompra(oldSuministroTB.getCostoCompra());
+                suministroTB.setBonificacion(0);
+                suministroTB.setUnidadCompra(oldSuministroTB.getUnidadCompra());
+                suministroTB.setUnidadCompraName(oldSuministroTB.getUnidadCompraName());
+
+                suministroTB.setDescuento(oldSuministroTB.getDescuento());
+                suministroTB.setDescuentoCalculado(oldSuministroTB.getDescuento());
+                suministroTB.setDescuentoSumado(oldSuministroTB.getDescuento());
+
+                suministroTB.setPrecioVentaGeneral(oldSuministroTB.getPrecioVentaGeneral());
+                suministroTB.setPrecioVentaGeneralUnico(oldSuministroTB.getPrecioVentaGeneral());
+                suministroTB.setPrecioVentaGeneralReal(oldSuministroTB.getPrecioVentaGeneral());
+
+                suministroTB.setIdImpuesto(oldSuministroTB.getImpuestoTB().getIdImpuesto());
+                suministroTB.setImpuestoTB(oldSuministroTB.getImpuestoTB());
+
+                suministroTB.setInventario(oldSuministroTB.isInventario());
+                suministroTB.setUnidadVenta(oldSuministroTB.getUnidadVenta());
+                suministroTB.setValorInventario(oldSuministroTB.getValorInventario());
+
+                Button button = new Button("X");
+                button.getStyleClass().add("buttonDark");
+                button.setOnAction(e -> {
+                    tvList.getItems().remove(suministroTB);
+                    calculateTotales();
+                });
+                button.setOnKeyPressed(e -> {
+                    if (e.getCode() == KeyCode.ENTER) {
+                        tvList.getItems().remove(suministroTB);
+                        calculateTotales();
                     }
+                });
+                suministroTB.setBtnRemove(button);
+
+                cotizacionTBs.add(suministroTB);
+            }
+
+            tvList.setItems(cotizacionTBs);
+            calculateTotales();
+
+            vbBody.setDisable(false);
+            hbLoad.setVisible(false);
+        });
+
+        exec.execute(task);
+
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+
+    public void loadPlusVenta(String idVenta) {
+        ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<VentaTB> task = new Task<VentaTB>() {
+            @Override
+            public VentaTB call() throws Exception {
+                Object result = VentaADO.Obtener_Venta_ById(idVenta);
+
+                if (result instanceof VentaTB) {
+                    return (VentaTB) result;
                 }
 
-                for (MonedaTB monedaTB : cbMoneda.getItems()) {
-                    if (monedaTB.getIdMoneda() == ventaTB.getIdMoneda()) {
-                        cbMoneda.getSelectionModel().select(monedaTB);
-                        monedaSimbolo = cbMoneda.getSelectionModel().getSelectedItem().getSimbolo();
-                        break;
+                throw new Exception((String) result);
+            }
+        };
+
+        task.setOnScheduled(w -> {
+            vbBody.setDisable(true);
+            hbLoad.setVisible(true);
+            btnAceptarLoad.setVisible(false);
+            lblMessageLoad.setText("Cargando datos...");
+            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+        });
+
+        task.setOnFailed(w -> {
+            vbBody.setDisable(false);
+            hbLoad.setVisible(false);
+            lblMessageLoad.setText(task.getException().getLocalizedMessage());
+            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+            btnAceptarLoad.setVisible(true);
+        });
+
+        task.setOnSucceeded(w -> {
+            VentaTB ventaTB = task.getValue();
+
+            ventaTB.getSuministroTBs().forEach(s -> {
+                if (validateDuplicate(s)) {
+                    for (int i = 0; i < tvList.getItems().size(); i++) {
+                        if (tvList.getItems().get(i).getIdSuministro().equalsIgnoreCase(s.getIdSuministro())) {
+                            SuministroTB suministroTB = tvList.getItems().get(i);
+                            suministroTB.setCantidad(suministroTB.getCantidad() + s.getCantidad());
+                            tvList.refresh();
+                            tvList.getSelectionModel().select(i);
+                            calculateTotales();
+                            break;
+                        }
                     }
-                }
-
-                txtNumeroDocumento.setText(ventaTB.getClienteTB().getNumeroDocumento());
-                txtDatosCliente.setText(ventaTB.getClienteTB().getInformacion());
-                txtCelularCliente.setText(ventaTB.getClienteTB().getCelular());
-                txtCorreoElectronico.setText(ventaTB.getClienteTB().getEmail());
-                txtDireccionCliente.setText(ventaTB.getClienteTB().getDireccion());
-
-                ObservableList<SuministroTB> cotizacionTBs = FXCollections.observableArrayList();
-                for (int i = 0; i < ventaTB.getSuministroTBs().size(); i++) {
-                    SuministroTB oldSuministroTB = ventaTB.getSuministroTBs().get(i);
-
+                } else {
                     SuministroTB suministroTB = new SuministroTB();
-                    suministroTB.setIdSuministro(oldSuministroTB.getIdSuministro());
-                    suministroTB.setClave(oldSuministroTB.getClave());
-                    suministroTB.setNombreMarca(oldSuministroTB.getNombreMarca());
-                    suministroTB.setCantidad(oldSuministroTB.getCantidad());
-                    suministroTB.setCostoCompra(oldSuministroTB.getCostoCompra());
+                    suministroTB.setIdSuministro(s.getIdSuministro());
+                    suministroTB.setClave(s.getClave());
+                    suministroTB.setNombreMarca(s.getNombreMarca());
+                    suministroTB.setCantidad(s.getCantidad());
+                    suministroTB.setCostoCompra(s.getCostoCompra());
                     suministroTB.setBonificacion(0);
-                    suministroTB.setUnidadCompra(oldSuministroTB.getUnidadCompra());
-                    suministroTB.setUnidadCompraName(oldSuministroTB.getUnidadCompraName());
+                    suministroTB.setUnidadCompra(s.getUnidadCompra());
+                    suministroTB.setUnidadCompraName(s.getUnidadCompraName());
 
-                    suministroTB.setDescuento(oldSuministroTB.getDescuento());
-                    suministroTB.setDescuentoCalculado(oldSuministroTB.getDescuento());
-                    suministroTB.setDescuentoSumado(oldSuministroTB.getDescuento());
+                    suministroTB.setDescuento(s.getDescuento());
+                    suministroTB.setDescuentoCalculado(s.getDescuento());
+                    suministroTB.setDescuentoSumado(s.getDescuento());
 
-                    suministroTB.setPrecioVentaGeneral(oldSuministroTB.getPrecioVentaGeneral());
-                    suministroTB.setPrecioVentaGeneralUnico(oldSuministroTB.getPrecioVentaGeneral());
-                    suministroTB.setPrecioVentaGeneralReal(oldSuministroTB.getPrecioVentaGeneral());
+                    suministroTB.setPrecioVentaGeneral(s.getPrecioVentaGeneral());
+                    suministroTB.setPrecioVentaGeneralUnico(s.getPrecioVentaGeneral());
+                    suministroTB.setPrecioVentaGeneralReal(s.getPrecioVentaGeneral());
 
-                    suministroTB.setIdImpuesto(oldSuministroTB.getImpuestoTB().getIdImpuesto());
-                    suministroTB.setImpuestoTB(oldSuministroTB.getImpuestoTB());
+                    suministroTB.setIdImpuesto(s.getImpuestoTB().getIdImpuesto());
+                    suministroTB.setImpuestoTB(s.getImpuestoTB());
 
-                    suministroTB.setInventario(oldSuministroTB.isInventario());
-                    suministroTB.setUnidadVenta(oldSuministroTB.getUnidadVenta());
-                    suministroTB.setValorInventario(oldSuministroTB.getValorInventario());
+                    suministroTB.setInventario(s.isInventario());
+                    suministroTB.setUnidadVenta(s.getUnidadVenta());
+                    suministroTB.setValorInventario(s.getValorInventario());
 
                     Button button = new Button("X");
                     button.getStyleClass().add("buttonDark");
@@ -1148,143 +1275,21 @@ public class FxVentaEstructuraController implements Initializable {
                     });
                     suministroTB.setBtnRemove(button);
 
-                    cotizacionTBs.add(suministroTB);
+                    tvList.getItems().add(suministroTB);
+                    int index = tvList.getItems().size() - 1;
+                    tvList.getSelectionModel().select(index);
+                    calculateTotales();
                 }
+            });
 
-                tvList.setItems(cotizacionTBs);
-                calculateTotales();
-
-                vbBody.setDisable(false);
-                hbLoad.setVisible(false);
-            } else {
-                lblMessageLoad.setText((String) object);
-                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-                btnAceptarLoad.setVisible(true);
-            }
-        });
-        task.setOnFailed(w -> {
             vbBody.setDisable(false);
             hbLoad.setVisible(false);
-            lblMessageLoad.setText(task.getException().getLocalizedMessage());
-            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-            btnAceptarLoad.setVisible(true);
+            txtSearch.requestFocus();
+
         });
-        task.setOnScheduled(w -> {
-            vbBody.setDisable(true);
-            hbLoad.setVisible(true);
-            btnAceptarLoad.setVisible(false);
-            lblMessageLoad.setText("Cargando datos...");
-            lblMessageLoad.setTextFill(Color.web("#ffffff"));
-        });
+
         exec.execute(task);
-        if (!exec.isShutdown()) {
-            exec.shutdown();
-        }
-    }
 
-    public void loadPlusVenta(String idVenta) {
-        ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
-            Thread t = new Thread(runnable);
-            t.setDaemon(true);
-            return t;
-        });
-
-        Task<Object> task = new Task<Object>() {
-            @Override
-            public Object call() {
-                return VentaADO.Obtener_Venta_ById(idVenta);
-            }
-        };
-
-        task.setOnSucceeded(w -> {
-            Object object = task.getValue();
-            if (object instanceof VentaTB) {
-                VentaTB ventaTB = (VentaTB) object;
-
-                ventaTB.getSuministroTBs().forEach(s -> {
-                    if (validateDuplicate(s)) {
-                        for (int i = 0; i < tvList.getItems().size(); i++) {
-                            if (tvList.getItems().get(i).getIdSuministro().equalsIgnoreCase(s.getIdSuministro())) {
-                                SuministroTB suministroTB = tvList.getItems().get(i);
-                                suministroTB.setCantidad(suministroTB.getCantidad() + s.getCantidad());
-                                tvList.refresh();
-                                tvList.getSelectionModel().select(i);
-                                calculateTotales();
-                                break;
-                            }
-                        }
-                    } else {
-                        SuministroTB suministroTB = new SuministroTB();
-                        suministroTB.setIdSuministro(s.getIdSuministro());
-                        suministroTB.setClave(s.getClave());
-                        suministroTB.setNombreMarca(s.getNombreMarca());
-                        suministroTB.setCantidad(s.getCantidad());
-                        suministroTB.setCostoCompra(s.getCostoCompra());
-                        suministroTB.setBonificacion(0);
-                        suministroTB.setUnidadCompra(s.getUnidadCompra());
-                        suministroTB.setUnidadCompraName(s.getUnidadCompraName());
-
-                        suministroTB.setDescuento(s.getDescuento());
-                        suministroTB.setDescuentoCalculado(s.getDescuento());
-                        suministroTB.setDescuentoSumado(s.getDescuento());
-
-                        suministroTB.setPrecioVentaGeneral(s.getPrecioVentaGeneral());
-                        suministroTB.setPrecioVentaGeneralUnico(s.getPrecioVentaGeneral());
-                        suministroTB.setPrecioVentaGeneralReal(s.getPrecioVentaGeneral());
-
-                        suministroTB.setIdImpuesto(s.getImpuestoTB().getIdImpuesto());
-                        suministroTB.setImpuestoTB(s.getImpuestoTB());
-
-                        suministroTB.setInventario(s.isInventario());
-                        suministroTB.setUnidadVenta(s.getUnidadVenta());
-                        suministroTB.setValorInventario(s.getValorInventario());
-
-                        Button button = new Button("X");
-                        button.getStyleClass().add("buttonDark");
-                        button.setOnAction(e -> {
-                            tvList.getItems().remove(suministroTB);
-                            calculateTotales();
-                        });
-                        button.setOnKeyPressed(e -> {
-                            if (e.getCode() == KeyCode.ENTER) {
-                                tvList.getItems().remove(suministroTB);
-                                calculateTotales();
-                            }
-                        });
-                        suministroTB.setBtnRemove(button);
-
-                        tvList.getItems().add(suministroTB);
-                        int index = tvList.getItems().size() - 1;
-                        tvList.getSelectionModel().select(index);
-                        calculateTotales();
-                    }
-                });
-
-                vbBody.setDisable(false);
-                hbLoad.setVisible(false);
-                txtSearch.requestFocus();
-            } else {
-                lblMessageLoad.setText((String) object);
-                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-                btnAceptarLoad.setVisible(true);
-            }
-        });
-
-        task.setOnFailed(w -> {
-            vbBody.setDisable(false);
-            hbLoad.setVisible(false);
-            lblMessageLoad.setText(task.getException().getLocalizedMessage());
-            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-            btnAceptarLoad.setVisible(true);
-        });
-        task.setOnScheduled(w -> {
-            vbBody.setDisable(true);
-            hbLoad.setVisible(true);
-            btnAceptarLoad.setVisible(false);
-            lblMessageLoad.setText("Cargando datos...");
-            lblMessageLoad.setTextFill(Color.web("#ffffff"));
-        });
-        exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();
         }
@@ -1696,13 +1701,6 @@ public class FxVentaEstructuraController implements Initializable {
         autoCompletionBindingDocumento = TextFields.bindAutoCompletion(txtNumeroDocumento, posiblesWordDocumento);
     }
 
-//    private void learnWordInfo(String text) {
-//        posiblesWordInfo.add(new ClienteTB("", text));
-//        if (autoCompletionBindingInfo != null) {
-//            autoCompletionBindingInfo.dispose();
-//        }
-//        autoCompletionBindingInfo = TextFields.bindAutoCompletion(txtDatosCliente, posiblesWordInfo);
-//    }
     @FXML
     private void onKeyPressedRegister(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
