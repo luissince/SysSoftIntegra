@@ -61,8 +61,8 @@ public class CotizacionADO {
                 statementCotizacion.setString(7, cotizacionTB.getHoraVencimiento());
                 statementCotizacion.setInt(8, cotizacionTB.getEstado());
                 statementCotizacion.setString(9, cotizacionTB.getObservaciones());
-                statementCotizacion.setString(10, cotizacionTB.getIdCotizacion());
-                statementCotizacion.setString(11, cotizacionTB.getIdVenta());
+                statementCotizacion.setString(10, cotizacionTB.getIdVenta());
+                statementCotizacion.setString(11, cotizacionTB.getIdCotizacion());               
                 statementCotizacion.addBatch();
 
                 statementDetalleCotizacionBorrar = dbf.getConnection().prepareStatement("DELETE FROM DetalleCotizacionTB WHERE IdCotizacion = ?");
