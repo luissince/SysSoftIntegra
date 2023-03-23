@@ -254,7 +254,7 @@
                                     </Label>
                                     <HBox VBox.vgrow="ALWAYS">
                                        <children>
-                                          <ComboBox fx:id="cbVehiculo" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese el Conductor" HBox.hgrow="ALWAYS" />
+                                          <ComboBox fx:id="cbVehiculo" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Buscar vehículo" HBox.hgrow="ALWAYS" />
                                           <Button fx:id="btnAgregarVehiculo" disable="true" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionVehiculo" onKeyPressed="#onKeyPressedVehiculo" styleClass="buttonLight" text="Agregar Vehículo">
                                              <graphic>
                                                 <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
@@ -291,7 +291,7 @@
                                     </Label>
                                     <HBox VBox.vgrow="ALWAYS">
                                        <children>
-                                          <ComboBox fx:id="cbConductor" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese el Conductor" HBox.hgrow="ALWAYS" />
+                                          <ComboBox fx:id="cbConductor" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Buscar conductor" HBox.hgrow="ALWAYS" />
                                           <Button fx:id="btnAgregarConductor" disable="true" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionConductor" onKeyPressed="#onKeyPressedConductor" styleClass="buttonLight" text="Agregar Conductor">
                                              <graphic>
                                                 <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
@@ -328,7 +328,7 @@
                                     </Label>
                                     <HBox VBox.vgrow="ALWAYS">
                                        <children>
-                                          <ComboBox fx:id="cbEmpresa" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese el Conductor" HBox.hgrow="ALWAYS" />
+                                          <ComboBox fx:id="cbEmpresa" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Buscar transporte público" HBox.hgrow="ALWAYS" />
                                           <Button fx:id="btnAgregarEmpresa" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionConductor" onKeyPressed="#onKeyPressedConductor" styleClass="buttonLight" text="Agregar Empresa">
                                              <graphic>
                                                 <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
