@@ -7,6 +7,7 @@ import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,6 +36,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.EmpleadoTB;
+import model.IngresoTB;
 import model.SuministroTB;
 import model.VentaTB;
 import service.VentaADO;
@@ -66,27 +68,19 @@ public class FxVentaDetalleController implements Initializable {
     @FXML
     private Text lblVendedor;
     @FXML
-    private GridPane gpList;
-    @FXML
     private Label lblValorVenta;
     @FXML
     private Label lblDescuento;
     @FXML
     private Label lblSubTotal;
     @FXML
-    private Label lblEfectivo;
-    @FXML
-    private Label lblTarjeta;
-    @FXML
-    private Label lblVuelto;
-    @FXML
-    private Label lblValor;
-    @FXML
     private Text lbClienteInformacion;
     @FXML
     private Label lblImpuesto;
     @FXML
-    private Label lblDeposito;
+    private GridPane gpListVetanDetalle;
+    @FXML
+    private GridPane gpListIngresos;
     @FXML
     private HBox hbLoad;
     @FXML
@@ -152,29 +146,29 @@ public class FxVentaDetalleController implements Initializable {
                 EmpleadoTB empleadoTB = ventaTB.getEmpleadoTB();
 
                 lblFechaVenta.setText(ventaTB.getFechaVenta() + " " + ventaTB.getHoraVenta());
-                lblCliente.setText(ventaTB.getClienteTB().getNumeroDocumento() + " " + ventaTB.getClienteTB().getInformacion());
-                lbClienteInformacion.setText(ventaTB.getClienteTB().getTelefono() + "-" + ventaTB.getClienteTB().getCelular());
+                lblCliente.setText(
+                        ventaTB.getClienteTB().getNumeroDocumento() + " " + ventaTB.getClienteTB().getInformacion());
+                lbClienteInformacion
+                        .setText(ventaTB.getClienteTB().getTelefono() + "-" + ventaTB.getClienteTB().getCelular());
                 lbCorreoElectronico.setText(ventaTB.getClienteTB().getEmail());
                 lbDireccion.setText(ventaTB.getClienteTB().getDireccion());
-                lblComprobante.setText(ventaTB.getComprobanteName() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+                lblComprobante.setText(
+                        ventaTB.getTipoDocumentoTB().getNombre() + " " + ventaTB.getSerie() + "-"
+                                + ventaTB.getNumeracion());
                 lblObservaciones.setText(ventaTB.getObservaciones());
                 lblTipo.setText(ventaTB.getTipoName() + " - " + ventaTB.getEstadoName());
-
-                lblEfectivo.setText(Tools.roundingValue(ventaTB.getEfectivo(), 2));
-                lblTarjeta.setText(Tools.roundingValue(ventaTB.getTarjeta(), 2));
-                lblDeposito.setText(Tools.roundingValue(ventaTB.getDeposito(), 2));
-                lblValor.setText(Tools.roundingValue(ventaTB.getTotal(), 2));
-                lblVuelto.setText(Tools.roundingValue(ventaTB.getVuelto(), 2));
 
                 if (empleadoTB != null) {
                     lblVendedor.setText(empleadoTB.getApellidos() + ", " + empleadoTB.getNombres());
                 }
 
-                ObservableList<SuministroTB> empList = FXCollections.observableArrayList(ventaTB.getSuministroTBs());
+                gpListVetanDetalle.getChildren().clear();
+                createHeadTableDetalleVenta();
+                createBodyTableDetalleVenta(ventaTB.getSuministroTBs());
 
-                gpList.getChildren().clear();
-                createHeadTable();
-                createBodyTable(empList);
+                gpListIngresos.getChildren().clear();
+                createHeadTableIngresos();
+                createBodyTableIngresos(ventaTB.getIngresoTBs());
 
                 spBody.setDisable(false);
                 hbLoad.setVisible(false);
@@ -192,38 +186,102 @@ public class FxVentaDetalleController implements Initializable {
         }
     }
 
-    private void createHeadTable() {
-        gpList.add(addHeadGridPane("N#"), 0, 0);
-        gpList.add(addHeadGridPane("Descripción"), 1, 0);
-        gpList.add(addHeadGridPane("Cantidad"), 2, 0);
-        gpList.add(addHeadGridPane("Bonificación"), 3, 0);
-        gpList.add(addHeadGridPane("Medida"), 4, 0);
-        gpList.add(addHeadGridPane("Impuesto"), 5, 0);
-        gpList.add(addHeadGridPane("Precio"), 6, 0);
-        gpList.add(addHeadGridPane("Descuento"), 7, 0);
-        gpList.add(addHeadGridPane("Importe"), 8, 0);
-        gpList.add(addHeadGridPane("Por Llevar"), 9, 0);
-        gpList.add(addHeadGridPane("Historial"), 10, 0);
+    private void createHeadTableDetalleVenta() {
+        gpListVetanDetalle.add(addHeadGridPane("N°"), 0, 0);
+        gpListVetanDetalle.add(addHeadGridPane("Descripción"), 1, 0);
+        gpListVetanDetalle.add(addHeadGridPane("Cantidad"), 2, 0);
+        gpListVetanDetalle.add(addHeadGridPane("Bonificación"), 3, 0);
+        gpListVetanDetalle.add(addHeadGridPane("Medida"), 4, 0);
+        gpListVetanDetalle.add(addHeadGridPane("Impuesto"), 5, 0);
+        gpListVetanDetalle.add(addHeadGridPane("Precio"), 6, 0);
+        gpListVetanDetalle.add(addHeadGridPane("Descuento"), 7, 0);
+        gpListVetanDetalle.add(addHeadGridPane("Importe"), 8, 0);
+        gpListVetanDetalle.add(addHeadGridPane("Por Llevar"), 9, 0);
+        gpListVetanDetalle.add(addHeadGridPane("Historial"), 10, 0);
     }
 
-    private void createBodyTable(ObservableList<SuministroTB> empList) {
+    private void createBodyTableDetalleVenta(ArrayList<SuministroTB> empList) {
         for (int i = 0; i < empList.size(); i++) {
-            gpList.add(addElementGridPaneLabel("l1" + (i + 1), empList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
-            gpList.add(addElementGridPaneLabel("l2" + (i + 1), empList.get(i).getClave() + "\n" + empList.get(i).getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
-            gpList.add(addElementGridPaneLabel("l3" + (i + 1), Tools.roundingValue(empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpList.add(addElementGridPaneLabel("l4" + (i + 1), Tools.roundingValue(empList.get(i).getBonificacion(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
-            gpList.add(addElementGridPaneLabel("l5" + (i + 1), empList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 4, (i + 1));
-            gpList.add(addElementGridPaneLabel("l6" + (i + 1), empList.get(i).getImpuestoTB().getNombreImpuesto(), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpList.add(addElementGridPaneLabel("l7" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPaneLabel("l8" + (i + 1), Tools.roundingValue(empList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
-            gpList.add(addElementGridPaneLabel("l9" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral() * empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 8, (i + 1));
-            gpList.add(empList.get(i).getEstadoName().equalsIgnoreCase("C")
+            SuministroTB suministroTB = empList.get(i);
+
+            gpListVetanDetalle.add(addElementGridPaneLabel("l1" + (i + 1), suministroTB.getId() + "", Pos.CENTER), 0,
+                    (i + 1));
+            gpListVetanDetalle.add(
+                    addElementGridPaneLabel("l2" + (i + 1),
+                            suministroTB.getClave() + "\n" + suministroTB.getNombreMarca(), Pos.CENTER_LEFT),
+                    1, (i + 1));
+            gpListVetanDetalle.add(addElementGridPaneLabel("l3" + (i + 1),
+                    Tools.roundingValue(suministroTB.getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
+            gpListVetanDetalle.add(addElementGridPaneLabel("l4" + (i + 1),
+                    Tools.roundingValue(suministroTB.getBonificacion(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
+            gpListVetanDetalle.add(
+                    addElementGridPaneLabel("l5" + (i + 1), suministroTB.getUnidadCompraName(), Pos.CENTER_LEFT), 4,
+                    (i + 1));
+            gpListVetanDetalle.add(addElementGridPaneLabel("l6" + (i + 1),
+                    suministroTB.getImpuestoTB().getNombreImpuesto(), Pos.CENTER_RIGHT), 5, (i + 1));
+            gpListVetanDetalle.add(
+                    addElementGridPaneLabel("l7" + (i + 1),
+                            ventaTB.getMonedaTB().getSimbolo() + ""
+                                    + Tools.roundingValue(suministroTB.getPrecioVentaGeneral(), 2),
+                            Pos.CENTER_RIGHT),
+                    6, (i + 1));
+            gpListVetanDetalle.add(addElementGridPaneLabel("l8" + (i + 1),
+                    Tools.roundingValue(suministroTB.getDescuento(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpListVetanDetalle.add(addElementGridPaneLabel("l9" + (i + 1),
+                    ventaTB.getMonedaTB().getSimbolo() + "" + Tools
+                            .roundingValue(suministroTB.getPrecioVentaGeneral() * suministroTB.getCantidad(), 2),
+                    Pos.CENTER_RIGHT), 8, (i + 1));
+            gpListVetanDetalle.add(suministroTB.getEstadoName().equalsIgnoreCase("C")
                     ? addElementGridPaneLabel("l10" + (i + 1), "COMPLETADO", Pos.CENTER_LEFT)
-                    : addElementGridPaneButtonLlevar("l11" + (i + 1), "LLEVAR \n" + Tools.roundingValue(empList.get(i).getPorLlevar(), 2), empList.get(i).getIdSuministro(), empList.get(i).getCostoCompra(), Pos.CENTER_LEFT),
+                    : addElementGridPaneButtonLlevar("l11" + (i + 1),
+                            "LLEVAR \n" + Tools.roundingValue(suministroTB.getPorLlevar(), 2),
+                            suministroTB.getIdSuministro(), suministroTB.getCostoCompra(), Pos.CENTER_LEFT),
                     9, (i + 1));
-            gpList.add(addElementGridPaneButtonHistorial("l12" + (i + 1), "HISTORIAL", empList.get(i), Pos.CENTER_LEFT), 10, (i + 1));
+            gpListVetanDetalle.add(
+                    addElementGridPaneButtonHistorial("l12" + (i + 1), "HISTORIAL", suministroTB, Pos.CENTER_LEFT),
+                    10, (i + 1));
         }
         calcularTotales();
+    }
+
+    private void createHeadTableIngresos() {
+        gpListIngresos.add(addHeadGridPane("N°"), 0, 0);
+        gpListIngresos.add(addHeadGridPane("Fecha"), 1, 0);
+        gpListIngresos.add(addHeadGridPane("Banco"), 2, 0);
+        gpListIngresos.add(addHeadGridPane("Detalle"), 3, 0);
+        gpListIngresos.add(addHeadGridPane("Monto"), 4, 0);
+        gpListIngresos.add(addHeadGridPane("Vuelto"), 5, 0);
+    }
+
+    private void createBodyTableIngresos(ArrayList<IngresoTB> empList) {
+        if (empList.isEmpty()) {
+            Label titulo = addElementGridPaneLabel("l1", "No hay ingresos para mostrar.", Pos.CENTER);
+            gpListIngresos.add(titulo, 0, 1);
+            GridPane.setRowSpan(titulo, GridPane.REMAINING);
+            GridPane.setColumnSpan(titulo, GridPane.REMAINING);
+
+        } else {
+            for (int i = 0; i < empList.size(); i++) {
+                IngresoTB ingresoTB = empList.get(i);
+                gpListIngresos.add(addElementGridPaneLabel("l1" + (i + 1), ingresoTB.getId() + "", Pos.CENTER), 0,
+                        (i + 1));
+                gpListIngresos.add(addElementGridPaneLabel("l2" + (i + 1),
+                        ingresoTB.getFecha() + "\n" + ingresoTB.getHora(), Pos.CENTER), 1, (i + 1));
+                gpListIngresos.add(
+                        addElementGridPaneLabel("l3" + (i + 1), ingresoTB.getBancoTB().getNombreCuenta(),
+                                Pos.CENTER_LEFT),
+                        2, (i + 1));
+                gpListIngresos.add(addElementGridPaneLabel("l4" + (i + 1), ingresoTB.getDetalle(), Pos.CENTER_LEFT), 3,
+                        (i + 1));
+                gpListIngresos.add(addElementGridPaneLabel("l5" + (i + 1),
+                        ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ingresoTB.getMonto(), 2),
+                        Pos.CENTER_LEFT), 4, (i + 1));
+                gpListIngresos.add(addElementGridPaneLabel("l6" + (i + 1),
+                        ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ingresoTB.getVuelto(), 2),
+                        Pos.CENTER_LEFT), 5, (i + 1));
+
+            }
+        }
     }
 
     private void calcularTotales() {
@@ -262,7 +320,8 @@ public class FxVentaDetalleController implements Initializable {
         Label label = new Label(nombre);
         label.setTextFill(Color.web("#FFFFFF"));
         label.getStyleClass().add("labelRoboto13");
-        label.setStyle("-fx-background-color:  #020203;-fx-padding:  0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;-fx-font-weight:100;");
+        label.setStyle(
+                "-fx-background-color:  #020203;-fx-padding:  0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;-fx-font-weight:100;");
         label.setAlignment(Pos.CENTER);
         label.setWrapText(true);
         label.setPrefWidth(Control.USE_COMPUTED_SIZE);
@@ -276,7 +335,8 @@ public class FxVentaDetalleController implements Initializable {
         Label label = new Label(nombre);
         label.setId(id);
         label.getStyleClass().add("labelRoboto13");
-        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
+        label.setStyle(
+                "-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.setAlignment(pos);
         label.setWrapText(true);
         label.setPrefWidth(Control.USE_COMPUTED_SIZE);
@@ -286,7 +346,8 @@ public class FxVentaDetalleController implements Initializable {
         return label;
     }
 
-    private Button addElementGridPaneButtonLlevar(String id, String nombre, String idSuministro, double costo, Pos pos) {
+    private Button addElementGridPaneButtonLlevar(String id, String nombre, String idSuministro, double costo,
+            Pos pos) {
         Button button = new Button(nombre);
         button.setId(id);
         button.getStyleClass().add("buttonLightCancel");
@@ -340,7 +401,7 @@ public class FxVentaDetalleController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_VENTA_DEVOLUCION);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxVentaDevolucionController controller = fXMLLoader.getController();
             controller.setInitVentaDetalle(this);
             controller.setLoadVentaDevolucion(ventaTB, Tools.roundingValue(total, 2));
@@ -361,7 +422,7 @@ public class FxVentaDetalleController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_VENTA_LLEVAR);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxVentaLlevarController controller = fXMLLoader.getController();
             controller.setInitVentaDetalleController(this);
             //
@@ -383,11 +444,12 @@ public class FxVentaDetalleController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_VENTA_LLEVAR_HISTORIAL);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxVentaLlevarControllerHistorial controller = fXMLLoader.getController();
             controller.setInitVentaDetalleController(this);
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Historial del Producto", apWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Historial del Producto",
+                    apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnShowing(w -> controller.loadData(ventaTB, suministroTB));
@@ -470,7 +532,8 @@ public class FxVentaDetalleController implements Initializable {
         onEventClose();
     }
 
-    public void setInitVentasController(FxVentaRealizadasController ventaRealizadasController, FxPrincipalController principalController) {
+    public void setInitVentasController(FxVentaRealizadasController ventaRealizadasController,
+            FxPrincipalController principalController) {
         this.ventaRealizadasController = ventaRealizadasController;
         this.principalController = principalController;
     }

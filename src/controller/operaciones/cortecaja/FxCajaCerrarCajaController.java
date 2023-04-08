@@ -57,8 +57,8 @@ public class FxCajaCerrarCajaController implements Initializable {
         this.calculado = calculado;
         this.valorTarjeta = valorTarjeta;
         lblValorTarjeta.setText(Tools.roundingValue(valorTarjeta, 2));
-        cbCuentasEfectivo.getItems().addAll(BancoADO.GetBancoComboBoxForma((short) 1));
-        cbCuentasTarjeta.getItems().addAll(BancoADO.GetBancoComboBoxForma((short) 2));
+//        cbCuentasEfectivo.getItems().addAll(BancoADO.GetBancoComboBoxForma((short) 1));
+//        cbCuentasTarjeta.getItems().addAll(BancoADO.GetBancoComboBoxForma((short) 2));
     }
 
     private void onEventAceptar() {

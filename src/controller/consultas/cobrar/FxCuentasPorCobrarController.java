@@ -1,4 +1,4 @@
-package controller.consultas.pagar;
+package controller.consultas.cobrar;
 
 import controller.menus.FxPrincipalController;
 import controller.reporte.FxReportViewController;

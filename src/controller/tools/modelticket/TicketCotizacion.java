@@ -428,9 +428,10 @@ public class TicketCotizacion {
                         File archivoc = new File("./report/Cotizacion.jasper");
                         InputStream dir = new FileInputStream(archivoc.getPath());
 
-                        // InputStream dir = getClass().getResourceAsStream("/report/Cotizacion.jasper");
+                        // InputStream dir =
+                        // getClass().getResourceAsStream("/report/Cotizacion.jasper");
 
-                        Map map = new HashMap();
+                        Map<String, Object> map = new HashMap<>();
                         map.put("LOGO", imgInputStream);
                         map.put("ICON", imgInputStreamIcon);
                         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);

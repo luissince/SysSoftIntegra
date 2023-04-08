@@ -152,11 +152,14 @@ public class FxPostVentaDetalleController implements Initializable {
                 EmpleadoTB empleadoTB = ventaTB.getEmpleadoTB();
 
                 lblFechaVenta.setText(ventaTB.getFechaVenta() + " " + ventaTB.getHoraVenta());
-                lblCliente.setText(ventaTB.getClienteTB().getNumeroDocumento() + " " + ventaTB.getClienteTB().getInformacion());
-                lbClienteInformacion.setText(ventaTB.getClienteTB().getTelefono() + "-" + ventaTB.getClienteTB().getCelular());
+                lblCliente.setText(
+                        ventaTB.getClienteTB().getNumeroDocumento() + " " + ventaTB.getClienteTB().getInformacion());
+                lbClienteInformacion
+                        .setText(ventaTB.getClienteTB().getTelefono() + "-" + ventaTB.getClienteTB().getCelular());
                 lbCorreoElectronico.setText(ventaTB.getClienteTB().getEmail());
                 lbDireccion.setText(ventaTB.getClienteTB().getDireccion());
-                lblComprobante.setText(ventaTB.getComprobanteName() + " " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+                lblComprobante.setText(ventaTB.getTipoDocumentoTB().getNombre() + " " + ventaTB.getSerie() + "-"
+                        + ventaTB.getNumeracion());
                 lblObservaciones.setText(ventaTB.getObservaciones());
                 lblTipo.setText(ventaTB.getTipoName() + " - " + ventaTB.getEstadoName());
 
@@ -209,19 +212,38 @@ public class FxPostVentaDetalleController implements Initializable {
     private void createBodyTable(ObservableList<SuministroTB> empList) {
         for (int i = 0; i < empList.size(); i++) {
             gpList.add(addElementGridPaneLabel("l1" + (i + 1), empList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
-            gpList.add(addElementGridPaneLabel("l2" + (i + 1), empList.get(i).getClave() + "\n" + empList.get(i).getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
-            gpList.add(addElementGridPaneLabel("l3" + (i + 1), Tools.roundingValue(empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpList.add(addElementGridPaneLabel("l4" + (i + 1), Tools.roundingValue(empList.get(i).getBonificacion(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
-            gpList.add(addElementGridPaneLabel("l5" + (i + 1), empList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 4, (i + 1));
-            gpList.add(addElementGridPaneLabel("l6" + (i + 1), empList.get(i).getImpuestoTB().getNombreImpuesto(), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpList.add(addElementGridPaneLabel("l7" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPaneLabel("l8" + (i + 1), Tools.roundingValue(empList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
-            gpList.add(addElementGridPaneLabel("l9" + (i + 1), ventaTB.getMonedaTB().getSimbolo() + "" + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral() * empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 8, (i + 1));
+            gpList.add(
+                    addElementGridPaneLabel("l2" + (i + 1),
+                            empList.get(i).getClave() + "\n" + empList.get(i).getNombreMarca(), Pos.CENTER_LEFT),
+                    1, (i + 1));
+            gpList.add(addElementGridPaneLabel("l3" + (i + 1), Tools.roundingValue(empList.get(i).getCantidad(), 2),
+                    Pos.CENTER_RIGHT), 2, (i + 1));
+            gpList.add(addElementGridPaneLabel("l4" + (i + 1), Tools.roundingValue(empList.get(i).getBonificacion(), 2),
+                    Pos.CENTER_RIGHT), 3, (i + 1));
+            gpList.add(addElementGridPaneLabel("l5" + (i + 1), empList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT),
+                    4, (i + 1));
+            gpList.add(addElementGridPaneLabel("l6" + (i + 1), empList.get(i).getImpuestoTB().getNombreImpuesto(),
+                    Pos.CENTER_RIGHT), 5, (i + 1));
+            gpList.add(
+                    addElementGridPaneLabel("l7" + (i + 1),
+                            ventaTB.getMonedaTB().getSimbolo() + ""
+                                    + Tools.roundingValue(empList.get(i).getPrecioVentaGeneral(), 2),
+                            Pos.CENTER_RIGHT),
+                    6, (i + 1));
+            gpList.add(addElementGridPaneLabel("l8" + (i + 1), Tools.roundingValue(empList.get(i).getDescuento(), 2),
+                    Pos.CENTER_RIGHT), 7, (i + 1));
+            gpList.add(addElementGridPaneLabel("l9" + (i + 1),
+                    ventaTB.getMonedaTB().getSimbolo() + "" + Tools
+                            .roundingValue(empList.get(i).getPrecioVentaGeneral() * empList.get(i).getCantidad(), 2),
+                    Pos.CENTER_RIGHT), 8, (i + 1));
             gpList.add(empList.get(i).getEstadoName().equalsIgnoreCase("C")
                     ? addElementGridPaneLabel("l10" + (i + 1), "COMPLETADO", Pos.CENTER_LEFT)
-                    : addElementGridPaneButtonLlevar("l11" + (i + 1), "LLEVAR \n" + Tools.roundingValue(empList.get(i).getPorLlevar(), 2), empList.get(i).getIdSuministro(), empList.get(i).getCostoCompra(), Pos.CENTER_LEFT),
+                    : addElementGridPaneButtonLlevar("l11" + (i + 1),
+                            "LLEVAR \n" + Tools.roundingValue(empList.get(i).getPorLlevar(), 2),
+                            empList.get(i).getIdSuministro(), empList.get(i).getCostoCompra(), Pos.CENTER_LEFT),
                     9, (i + 1));
-            gpList.add(addElementGridPaneButtonHistorial("l12" + (i + 1), "HISTORIAL", empList.get(i), Pos.CENTER_LEFT), 10, (i + 1));
+            gpList.add(addElementGridPaneButtonHistorial("l12" + (i + 1), "HISTORIAL", empList.get(i), Pos.CENTER_LEFT),
+                    10, (i + 1));
         }
         calcularTotales();
     }
@@ -262,7 +284,8 @@ public class FxPostVentaDetalleController implements Initializable {
         Label label = new Label(nombre);
         label.setTextFill(Color.web("#FFFFFF"));
         label.getStyleClass().add("labelRoboto13");
-        label.setStyle("-fx-background-color:  #020203;-fx-padding:  0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;-fx-font-weight:100;");
+        label.setStyle(
+                "-fx-background-color:  #020203;-fx-padding:  0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;-fx-font-weight:100;");
         label.setAlignment(Pos.CENTER);
         label.setWrapText(true);
         label.setPrefWidth(Control.USE_COMPUTED_SIZE);
@@ -276,7 +299,8 @@ public class FxPostVentaDetalleController implements Initializable {
         Label label = new Label(nombre);
         label.setId(id);
         label.getStyleClass().add("labelRoboto13");
-        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
+        label.setStyle(
+                "-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.setAlignment(pos);
         label.setWrapText(true);
         label.setPrefWidth(Control.USE_COMPUTED_SIZE);
@@ -286,7 +310,8 @@ public class FxPostVentaDetalleController implements Initializable {
         return label;
     }
 
-    private Button addElementGridPaneButtonLlevar(String id, String nombre, String idSuministro, double costo, Pos pos) {
+    private Button addElementGridPaneButtonLlevar(String id, String nombre, String idSuministro, double costo,
+            Pos pos) {
         Button button = new Button(nombre);
         button.setId(id);
         button.getStyleClass().add("buttonLightCancel");
@@ -340,7 +365,7 @@ public class FxPostVentaDetalleController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_DEVOLUCION);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxPostVentaDevolucionController controller = fXMLLoader.getController();
             controller.setInitVentaDetalle(this);
             controller.setLoadVentaDevolucion(ventaTB, Tools.roundingValue(total, 2));
@@ -361,7 +386,7 @@ public class FxPostVentaDetalleController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_LLEVAR);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxPostVentaLlevarController controller = fXMLLoader.getController();
             controller.setInitVentaDetalleController(this);
             //
@@ -383,7 +408,7 @@ public class FxPostVentaDetalleController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_POS_VENTA_LLEVAR_HISTORIAL);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxPostVentaLlevarControllerHistorial controller = fXMLLoader.getController();
             controller.setInitVentaDetalleController(this);
             //
@@ -470,7 +495,8 @@ public class FxPostVentaDetalleController implements Initializable {
         onEventClose();
     }
 
-    public void setInitVentasController(FxPostVentaRealizadasController ventaRealizadasController, FxPrincipalController fxPrincipalController) {
+    public void setInitVentasController(FxPostVentaRealizadasController ventaRealizadasController,
+            FxPrincipalController fxPrincipalController) {
         this.ventaRealizadasController = ventaRealizadasController;
         this.principalController = fxPrincipalController;
     }

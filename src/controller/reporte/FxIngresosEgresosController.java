@@ -93,7 +93,7 @@ public class FxIngresosEgresosController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_EMPLEADO_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxEmpleadosListaController controller = fXMLLoader.getController();
             controller.setInitIngresosEgresosReporteController(this);
             //
@@ -161,36 +161,36 @@ public class FxIngresosEgresosController implements Initializable {
                     ingresoTBs.add(bt);
                 }
 
-                for (IngresoTB ingresoTB : bsTransaccion) {
-                    if (ingresoTB.getFormaIngreso().equalsIgnoreCase("EFECTIVO")) {
-                        if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
-                                || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
-                            totalEfectivoIngreso += 0;
-                            totalEfectivoSalida += ingresoTB.getEfectivo();
-                        } else {
-                            totalEfectivoIngreso += ingresoTB.getEfectivo();
-                            totalEfectivoSalida += 0;
-                        }
-                    } else if (ingresoTB.getFormaIngreso().equalsIgnoreCase("TARJETA")) {
-                        if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
-                                || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
-                            totalTarjetaIngreso += 0;
-                            totalTarjetaSalida += ingresoTB.getTarjeta();
-                        } else {
-                            totalTarjetaIngreso += ingresoTB.getTarjeta();
-                            totalTarjetaSalida += 0;
-                        }
-                    } else {
-                        if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
-                                || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
-                            totalDepositoIngreso += 0;
-                            totalDepositoSalida += ingresoTB.getDeposito();
-                        } else {
-                            totalDepositoIngreso += ingresoTB.getDeposito();
-                            totalDepositoSalida += 0;
-                        }
-                    }
-                }
+                // for (IngresoTB ingresoTB : bsTransaccion) {
+                // if (ingresoTB.getFormaIngreso().equalsIgnoreCase("EFECTIVO")) {
+                // if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
+                // || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
+                // totalEfectivoIngreso += 0;
+                // totalEfectivoSalida += ingresoTB.getEfectivo();
+                // } else {
+                // totalEfectivoIngreso += ingresoTB.getEfectivo();
+                // totalEfectivoSalida += 0;
+                // }
+                // } else if (ingresoTB.getFormaIngreso().equalsIgnoreCase("TARJETA")) {
+                // if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
+                // || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
+                // totalTarjetaIngreso += 0;
+                // totalTarjetaSalida += ingresoTB.getTarjeta();
+                // } else {
+                // totalTarjetaIngreso += ingresoTB.getTarjeta();
+                // totalTarjetaSalida += 0;
+                // }
+                // } else {
+                // if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
+                // || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
+                // totalDepositoIngreso += 0;
+                // totalDepositoSalida += ingresoTB.getDeposito();
+                // } else {
+                // totalDepositoIngreso += ingresoTB.getDeposito();
+                // totalDepositoSalida += 0;
+                // }
+                // }
+                // }
             }
 
             if (cbMovientoCaja.isSelected()) {
@@ -200,45 +200,45 @@ public class FxIngresosEgresosController implements Initializable {
                     ingresoTBs.add(bt);
                 }
 
-                for (IngresoTB ingresoTB : bsMovimiento) {
-                    if (ingresoTB.getFormaIngreso().equalsIgnoreCase("EFECTIVO")) {
+                // for (IngresoTB ingresoTB : bsMovimiento) {
+                // if (ingresoTB.getFormaIngreso().equalsIgnoreCase("EFECTIVO")) {
 
-                        if (ingresoTB.getTransaccion().equalsIgnoreCase("APERTURA DE CAJA")
-                                || ingresoTB.getTransaccion().equalsIgnoreCase("VENTAS")
-                                || ingresoTB.getTransaccion().equalsIgnoreCase("INGRESOS")) {
-                            totalEfectivoSalida += 0;
-                            totalEfectivoIngreso += ingresoTB.getEfectivo();
-                        } else {
-                            totalEfectivoIngreso += 0;
-                            totalEfectivoSalida += ingresoTB.getEfectivo();
-                        }
+                // if (ingresoTB.getTransaccion().equalsIgnoreCase("APERTURA DE CAJA")
+                // || ingresoTB.getTransaccion().equalsIgnoreCase("VENTAS")
+                // || ingresoTB.getTransaccion().equalsIgnoreCase("INGRESOS")) {
+                // totalEfectivoSalida += 0;
+                // totalEfectivoIngreso += ingresoTB.getEfectivo();
+                // } else {
+                // totalEfectivoIngreso += 0;
+                // totalEfectivoSalida += ingresoTB.getEfectivo();
+                // }
 
-                    } else if (ingresoTB.getFormaIngreso().equalsIgnoreCase("TARJETA")) {
+                // } else if (ingresoTB.getFormaIngreso().equalsIgnoreCase("TARJETA")) {
 
-                        if (ingresoTB.getTransaccion().equalsIgnoreCase("APERTURA DE CAJA")
-                                || ingresoTB.getTransaccion().equalsIgnoreCase("VENTAS")
-                                || ingresoTB.getTransaccion().equalsIgnoreCase("INGRESOS")) {
-                            totalTarjetaSalida += 0;
-                            totalTarjetaIngreso += ingresoTB.getTarjeta();
-                        } else {
-                            totalTarjetaIngreso += 0;
-                            totalTarjetaSalida += ingresoTB.getTarjeta();
-                        }
+                // if (ingresoTB.getTransaccion().equalsIgnoreCase("APERTURA DE CAJA")
+                // || ingresoTB.getTransaccion().equalsIgnoreCase("VENTAS")
+                // || ingresoTB.getTransaccion().equalsIgnoreCase("INGRESOS")) {
+                // totalTarjetaSalida += 0;
+                // totalTarjetaIngreso += ingresoTB.getTarjeta();
+                // } else {
+                // totalTarjetaIngreso += 0;
+                // totalTarjetaSalida += ingresoTB.getTarjeta();
+                // }
 
-                    } else {
+                // } else {
 
-                        if (ingresoTB.getTransaccion().equalsIgnoreCase("APERTURA DE CAJA")
-                                || ingresoTB.getTransaccion().equalsIgnoreCase("VENTAS")
-                                || ingresoTB.getTransaccion().equalsIgnoreCase("INGRESOS")) {
-                            totalDepositoSalida += 0;
-                            totalDepositoIngreso += ingresoTB.getDeposito();
-                        } else {
-                            totalDepositoIngreso += 0;
-                            totalDepositoSalida += ingresoTB.getDeposito();
-                        }
+                // if (ingresoTB.getTransaccion().equalsIgnoreCase("APERTURA DE CAJA")
+                // || ingresoTB.getTransaccion().equalsIgnoreCase("VENTAS")
+                // || ingresoTB.getTransaccion().equalsIgnoreCase("INGRESOS")) {
+                // totalDepositoSalida += 0;
+                // totalDepositoIngreso += ingresoTB.getDeposito();
+                // } else {
+                // totalDepositoIngreso += 0;
+                // totalDepositoSalida += ingresoTB.getDeposito();
+                // }
 
-                    }
-                }
+                // }
+                // }
             }
 
             InputStream imgInputStreamIcon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
@@ -247,15 +247,17 @@ public class FxIngresosEgresosController implements Initializable {
                 imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
             }
             InputStream dir = getClass().getResourceAsStream("/report/Ingresos.jasper");
-            Map map = new HashMap();
+            Map<String, Object> map = new HashMap<>();
             map.put("LOGO", imgInputStream);
             map.put("ICON", imgInputStreamIcon);
             map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
             map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C: ", Session.COMPANY_NUMERO_DOCUMENTO));
             map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-            map.put("TELEFONOCELULAR", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
+            map.put("TELEFONOCELULAR",
+                    "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
             map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
-            map.put("FECHAS", "DEL " + Tools.formatDate(Tools.getDatePicker(dpFechaInicial)) + " AL " + Tools.formatDate(Tools.getDatePicker(dpFechaFinal)));
+            map.put("FECHAS", "DEL " + Tools.formatDate(Tools.getDatePicker(dpFechaInicial)) + " AL "
+                    + Tools.formatDate(Tools.getDatePicker(dpFechaFinal)));
             map.put("INGRESO_EFECTIVO", Tools.roundingValue(totalEfectivoIngreso, 2));
             map.put("SALIDA_EFECTIVO", Tools.roundingValue(totalEfectivoSalida, 2));
             map.put("INGRESO_TARJETA", Tools.roundingValue(totalTarjetaIngreso, 2));
@@ -271,7 +273,8 @@ public class FxIngresosEgresosController implements Initializable {
 
     private void openViewVisualizarIngresos() {
         if (!cbVendedorSelect.isSelected() && idVendedor.equalsIgnoreCase("") && txtVendedores.getText().isEmpty()) {
-            Tools.AlertMessageWarning(vbWindow, "Reporte General de Movimientos", "Ingrese un vendedor para generar el reporte.");
+            Tools.AlertMessageWarning(vbWindow, "Reporte General de Movimientos",
+                    "Ingrese un vendedor para generar el reporte.");
             btnVendedor.requestFocus();
         } else {
 
@@ -302,9 +305,10 @@ public class FxIngresosEgresosController implements Initializable {
                         URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
                         FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                         Parent parent = fXMLLoader.load(url.openStream());
-                        //Controlller here
+                        // Controlller here
                         FxReportViewController controller = fXMLLoader.getController();
-                        controller.setFileName("REPORTE GENERAL DE MOVIMIENTO DEL " + Tools.getDatePicker(dpFechaInicial) + " AL " + Tools.getDatePicker(dpFechaFinal));
+                        controller.setFileName("REPORTE GENERAL DE MOVIMIENTO DEL "
+                                + Tools.getDatePicker(dpFechaInicial) + " AL " + Tools.getDatePicker(dpFechaFinal));
                         controller.setJasperPrint((JasperPrint) object);
                         controller.show();
                         Stage stage = WindowStage.StageLoader(parent, "Reporte General de Movimientos");
@@ -333,7 +337,8 @@ public class FxIngresosEgresosController implements Initializable {
                 Tools.showAlertNotification(
                         "/view/image/warning_large.png",
                         "Generar Vista",
-                        Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
+                        Tools.newLineString(
+                                "Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             });
@@ -355,16 +360,17 @@ public class FxIngresosEgresosController implements Initializable {
 
     private void onEventPdfIngresos() {
         if (!cbVendedorSelect.isSelected() && idVendedor.equalsIgnoreCase("") && txtVendedores.getText().isEmpty()) {
-            Tools.AlertMessageWarning(vbWindow, "Reporte General de Movimientos", "Ingrese un vendedor para generar el reporte.");
+            Tools.AlertMessageWarning(vbWindow, "Reporte General de Movimientos",
+                    "Ingrese un vendedor para generar el reporte.");
             btnVendedor.requestFocus();
         } else {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
             fileChooser.setTitle("Reporte de Movimientos");
-            fileChooser.setInitialFileName("REPORTE DE MOVIMIENTO DEL " + Tools.getDatePicker(dpFechaInicial) + " AL " + Tools.getDatePicker(dpFechaFinal));
+            fileChooser.setInitialFileName("REPORTE DE MOVIMIENTO DEL " + Tools.getDatePicker(dpFechaInicial) + " AL "
+                    + Tools.getDatePicker(dpFechaFinal));
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("PDF Documento", Arrays.asList("*.pdf", "*.PDF"))
-            );
+                    new FileChooser.ExtensionFilter("PDF Documento", Arrays.asList("*.pdf", "*.PDF")));
             File file = fileChooser.showSaveDialog(vbWindow.getScene().getWindow());
             if (file != null) {
                 file = new File(file.getAbsolutePath());
@@ -405,7 +411,8 @@ public class FxIngresosEgresosController implements Initializable {
                 Tools.showAlertNotification(
                         "/view/image/information_large.png",
                         "Generar PDF",
-                        Tools.newLineString("Se completó la creación del pdf correctamente en la ruta " + file.getAbsolutePath()),
+                        Tools.newLineString(
+                                "Se completó la creación del pdf correctamente en la ruta " + file.getAbsolutePath()),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else {
@@ -422,7 +429,8 @@ public class FxIngresosEgresosController implements Initializable {
             Tools.showAlertNotification(
                     "/view/image/warning_large.png",
                     "Generar PDF",
-                    Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -443,18 +451,19 @@ public class FxIngresosEgresosController implements Initializable {
 
     private void onEventExcelIngresos() {
         if (!cbVendedorSelect.isSelected() && idVendedor.equalsIgnoreCase("") && txtVendedores.getText().isEmpty()) {
-            Tools.AlertMessageWarning(vbWindow, "Reporte General de Movimientos", "Ingrese un vendedor para generar el reporte.");
+            Tools.AlertMessageWarning(vbWindow, "Reporte General de Movimientos",
+                    "Ingrese un vendedor para generar el reporte.");
             btnVendedor.requestFocus();
         } else {
 
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
             fileChooser.setTitle("Reporte de Ingresos");
-            fileChooser.setInitialFileName("REPORTE DE MOVIMIENTO DEL " + Tools.getDatePicker(dpFechaInicial) + " AL " + Tools.getDatePicker(dpFechaFinal));
+            fileChooser.setInitialFileName("REPORTE DE MOVIMIENTO DEL " + Tools.getDatePicker(dpFechaInicial) + " AL "
+                    + Tools.getDatePicker(dpFechaFinal));
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Libro de Excel (*.xlsx)", "*.xlsx"),
-                    new FileChooser.ExtensionFilter("Libro de Excel(1997-2003) (*.xls)", "*.xls")
-            );
+                    new FileChooser.ExtensionFilter("Libro de Excel(1997-2003) (*.xls)", "*.xls"));
             File file = fileChooser.showSaveDialog(vbWindow.getScene().getWindow());
             if (file != null) {
                 file = new File(file.getAbsolutePath());
@@ -626,319 +635,319 @@ public class FxIngresosEgresosController implements Initializable {
                             cell2.setCellValue(ingresoTB.getCantidad());
                             cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 
-                            if (ingresoTB.getFormaIngreso().equalsIgnoreCase("EFECTIVO")) {
-                                if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
-                                        || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
-                                    Cell cell3 = row.createCell(3);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell3.setCellStyle(cellStyle);
-                                    cell3.setCellValue(0);
-                                    cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell3.getColumnIndex());
+                            // if (ingresoTB.getFormaIngreso().equalsIgnoreCase("EFECTIVO")) {
+                            // if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
+                            // || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
+                            // Cell cell3 = row.createCell(3);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell3.setCellStyle(cellStyle);
+                            // cell3.setCellValue(0);
+                            // cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell3.getColumnIndex());
 
-                                    Cell cell4 = row.createCell(4);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell4.setCellStyle(cellStyle);
-                                    cell4.setCellValue(ingresoTB.getEfectivo());
-                                    cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell4.getColumnIndex());
+                            // Cell cell4 = row.createCell(4);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell4.setCellStyle(cellStyle);
+                            // cell4.setCellValue(ingresoTB.getEfectivo());
+                            // cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell4.getColumnIndex());
 
-                                    Cell cell5 = row.createCell(5);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell5.setCellStyle(cellStyle);
-                                    cell5.setCellValue(0);
-                                    cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell5.getColumnIndex());
+                            // Cell cell5 = row.createCell(5);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell5.setCellStyle(cellStyle);
+                            // cell5.setCellValue(0);
+                            // cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell5.getColumnIndex());
 
-                                    Cell cell6 = row.createCell(6);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell6.setCellStyle(cellStyle);
-                                    cell6.setCellValue(0);
-                                    cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell6.getColumnIndex());
+                            // Cell cell6 = row.createCell(6);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell6.setCellStyle(cellStyle);
+                            // cell6.setCellValue(0);
+                            // cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell6.getColumnIndex());
 
-                                    Cell cell7 = row.createCell(7);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell7.setCellStyle(cellStyle);
-                                    cell7.setCellValue(0);
-                                    cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell7.getColumnIndex());
+                            // Cell cell7 = row.createCell(7);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell7.setCellStyle(cellStyle);
+                            // cell7.setCellValue(0);
+                            // cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell7.getColumnIndex());
 
-                                    Cell cell8 = row.createCell(8);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell8.setCellStyle(cellStyle);
-                                    cell8.setCellValue(0);
-                                    cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell8.getColumnIndex());
+                            // Cell cell8 = row.createCell(8);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell8.setCellStyle(cellStyle);
+                            // cell8.setCellValue(0);
+                            // cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell8.getColumnIndex());
 
-                                    totalESalida += ingresoTB.getEfectivo();
-                                } else {
-                                    Cell cell3 = row.createCell(3);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell3.setCellStyle(cellStyle);
-                                    cell3.setCellValue(ingresoTB.getEfectivo());
-                                    cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell3.getColumnIndex());
+                            // totalESalida += ingresoTB.getEfectivo();
+                            // } else {
+                            // Cell cell3 = row.createCell(3);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell3.setCellStyle(cellStyle);
+                            // cell3.setCellValue(ingresoTB.getEfectivo());
+                            // cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell3.getColumnIndex());
 
-                                    Cell cell4 = row.createCell(4);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell4.setCellStyle(cellStyle);
-                                    cell4.setCellValue(0);
-                                    cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell4.getColumnIndex());
+                            // Cell cell4 = row.createCell(4);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell4.setCellStyle(cellStyle);
+                            // cell4.setCellValue(0);
+                            // cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell4.getColumnIndex());
 
-                                    Cell cell5 = row.createCell(5);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell5.setCellStyle(cellStyle);
-                                    cell5.setCellValue(0);
-                                    cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell5.getColumnIndex());
+                            // Cell cell5 = row.createCell(5);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell5.setCellStyle(cellStyle);
+                            // cell5.setCellValue(0);
+                            // cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell5.getColumnIndex());
 
-                                    Cell cell6 = row.createCell(6);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell6.setCellStyle(cellStyle);
-                                    cell6.setCellValue(0);
-                                    cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell6.getColumnIndex());
+                            // Cell cell6 = row.createCell(6);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell6.setCellStyle(cellStyle);
+                            // cell6.setCellValue(0);
+                            // cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell6.getColumnIndex());
 
-                                    Cell cell7 = row.createCell(7);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell7.setCellStyle(cellStyle);
-                                    cell7.setCellValue(0);
-                                    cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell7.getColumnIndex());
+                            // Cell cell7 = row.createCell(7);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell7.setCellStyle(cellStyle);
+                            // cell7.setCellValue(0);
+                            // cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell7.getColumnIndex());
 
-                                    Cell cell8 = row.createCell(8);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell8.setCellStyle(cellStyle);
-                                    cell8.setCellValue(0);
-                                    cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell8.getColumnIndex());
+                            // Cell cell8 = row.createCell(8);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell8.setCellStyle(cellStyle);
+                            // cell8.setCellValue(0);
+                            // cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell8.getColumnIndex());
 
-                                    totalEIngreso += ingresoTB.getEfectivo();
-                                }
-                            } else if (ingresoTB.getFormaIngreso().equalsIgnoreCase("TARJETA")) {
-                                if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
-                                        || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
+                            // totalEIngreso += ingresoTB.getEfectivo();
+                            // }
+                            // } else if (ingresoTB.getFormaIngreso().equalsIgnoreCase("TARJETA")) {
+                            // if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
+                            // || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
 
-                                    Cell cell3 = row.createCell(3);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell3.setCellStyle(cellStyle);
-                                    cell3.setCellValue(0);
-                                    cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell3.getColumnIndex());
+                            // Cell cell3 = row.createCell(3);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell3.setCellStyle(cellStyle);
+                            // cell3.setCellValue(0);
+                            // cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell3.getColumnIndex());
 
-                                    Cell cell4 = row.createCell(4);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell4.setCellStyle(cellStyle);
-                                    cell4.setCellValue(0);
-                                    cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell4.getColumnIndex());
+                            // Cell cell4 = row.createCell(4);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell4.setCellStyle(cellStyle);
+                            // cell4.setCellValue(0);
+                            // cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell4.getColumnIndex());
 
-                                    Cell cell5 = row.createCell(5);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell5.setCellStyle(cellStyle);
-                                    cell5.setCellValue(0);
-                                    cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell5.getColumnIndex());
+                            // Cell cell5 = row.createCell(5);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell5.setCellStyle(cellStyle);
+                            // cell5.setCellValue(0);
+                            // cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell5.getColumnIndex());
 
-                                    Cell cell6 = row.createCell(6);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell6.setCellStyle(cellStyle);
-                                    cell6.setCellValue(ingresoTB.getTarjeta());
-                                    cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell6.getColumnIndex());
+                            // Cell cell6 = row.createCell(6);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell6.setCellStyle(cellStyle);
+                            // cell6.setCellValue(ingresoTB.getTarjeta());
+                            // cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell6.getColumnIndex());
 
-                                    Cell cell7 = row.createCell(7);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell7.setCellStyle(cellStyle);
-                                    cell7.setCellValue(0);
-                                    cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell7.getColumnIndex());
+                            // Cell cell7 = row.createCell(7);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell7.setCellStyle(cellStyle);
+                            // cell7.setCellValue(0);
+                            // cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell7.getColumnIndex());
 
-                                    Cell cell8 = row.createCell(8);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell8.setCellStyle(cellStyle);
-                                    cell8.setCellValue(0);
-                                    cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell8.getColumnIndex());
+                            // Cell cell8 = row.createCell(8);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell8.setCellStyle(cellStyle);
+                            // cell8.setCellValue(0);
+                            // cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell8.getColumnIndex());
 
-                                    totalTSalida += ingresoTB.getTarjeta();
-                                } else {
-                                    Cell cell3 = row.createCell(3);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell3.setCellStyle(cellStyle);
-                                    cell3.setCellValue(0);
-                                    cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell3.getColumnIndex());
+                            // totalTSalida += ingresoTB.getTarjeta();
+                            // } else {
+                            // Cell cell3 = row.createCell(3);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell3.setCellStyle(cellStyle);
+                            // cell3.setCellValue(0);
+                            // cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell3.getColumnIndex());
 
-                                    Cell cell4 = row.createCell(4);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell4.setCellStyle(cellStyle);
-                                    cell4.setCellValue(0);
-                                    cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell4.getColumnIndex());
+                            // Cell cell4 = row.createCell(4);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell4.setCellStyle(cellStyle);
+                            // cell4.setCellValue(0);
+                            // cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell4.getColumnIndex());
 
-                                    Cell cell5 = row.createCell(5);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell5.setCellStyle(cellStyle);
-                                    cell5.setCellValue(ingresoTB.getTarjeta());
-                                    cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell5.getColumnIndex());
+                            // Cell cell5 = row.createCell(5);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell5.setCellStyle(cellStyle);
+                            // cell5.setCellValue(ingresoTB.getTarjeta());
+                            // cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell5.getColumnIndex());
 
-                                    Cell cell6 = row.createCell(6);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell6.setCellStyle(cellStyle);
-                                    cell6.setCellValue(0);
-                                    cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell6.getColumnIndex());
+                            // Cell cell6 = row.createCell(6);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell6.setCellStyle(cellStyle);
+                            // cell6.setCellValue(0);
+                            // cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell6.getColumnIndex());
 
-                                    Cell cell7 = row.createCell(7);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell7.setCellStyle(cellStyle);
-                                    cell7.setCellValue(0);
-                                    cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell7.getColumnIndex());
+                            // Cell cell7 = row.createCell(7);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell7.setCellStyle(cellStyle);
+                            // cell7.setCellValue(0);
+                            // cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell7.getColumnIndex());
 
-                                    Cell cell8 = row.createCell(8);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell8.setCellStyle(cellStyle);
-                                    cell8.setCellValue(0);
-                                    cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell8.getColumnIndex());
+                            // Cell cell8 = row.createCell(8);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell8.setCellStyle(cellStyle);
+                            // cell8.setCellValue(0);
+                            // cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell8.getColumnIndex());
 
-                                    totalTIngreso += ingresoTB.getTarjeta();
-                                }
-                            } else {
-                                if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
-                                        || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
+                            // totalTIngreso += ingresoTB.getTarjeta();
+                            // }
+                            // } else {
+                            // if (ingresoTB.getTransaccion().equalsIgnoreCase("COMPRAS")
+                            // || ingresoTB.getTransaccion().equalsIgnoreCase("EGRESOS")) {
 
-                                    Cell cell3 = row.createCell(3);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell3.setCellStyle(cellStyle);
-                                    cell3.setCellValue(0);
-                                    cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell3.getColumnIndex());
+                            // Cell cell3 = row.createCell(3);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell3.setCellStyle(cellStyle);
+                            // cell3.setCellValue(0);
+                            // cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell3.getColumnIndex());
 
-                                    Cell cell4 = row.createCell(4);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell4.setCellStyle(cellStyle);
-                                    cell4.setCellValue(0);
-                                    cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell4.getColumnIndex());
+                            // Cell cell4 = row.createCell(4);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell4.setCellStyle(cellStyle);
+                            // cell4.setCellValue(0);
+                            // cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell4.getColumnIndex());
 
-                                    Cell cell5 = row.createCell(5);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell5.setCellStyle(cellStyle);
-                                    cell5.setCellValue(0);
-                                    cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell5.getColumnIndex());
+                            // Cell cell5 = row.createCell(5);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell5.setCellStyle(cellStyle);
+                            // cell5.setCellValue(0);
+                            // cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell5.getColumnIndex());
 
-                                    Cell cell6 = row.createCell(6);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell6.setCellStyle(cellStyle);
-                                    cell6.setCellValue(0);
-                                    cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell6.getColumnIndex());
+                            // Cell cell6 = row.createCell(6);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell6.setCellStyle(cellStyle);
+                            // cell6.setCellValue(0);
+                            // cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell6.getColumnIndex());
 
-                                    Cell cell7 = row.createCell(7);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell7.setCellStyle(cellStyle);
-                                    cell7.setCellValue(0);
-                                    cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell7.getColumnIndex());
+                            // Cell cell7 = row.createCell(7);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell7.setCellStyle(cellStyle);
+                            // cell7.setCellValue(0);
+                            // cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell7.getColumnIndex());
 
-                                    Cell cell8 = row.createCell(8);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell8.setCellStyle(cellStyle);
-                                    cell8.setCellValue(ingresoTB.getDeposito());
-                                    cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell8.getColumnIndex());
+                            // Cell cell8 = row.createCell(8);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell8.setCellStyle(cellStyle);
+                            // cell8.setCellValue(ingresoTB.getDeposito());
+                            // cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell8.getColumnIndex());
 
-                                    totalDSalida += ingresoTB.getDeposito();
-                                } else {
-                                    Cell cell3 = row.createCell(3);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell3.setCellStyle(cellStyle);
-                                    cell3.setCellValue(0);
-                                    cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell3.getColumnIndex());
+                            // totalDSalida += ingresoTB.getDeposito();
+                            // } else {
+                            // Cell cell3 = row.createCell(3);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell3.setCellStyle(cellStyle);
+                            // cell3.setCellValue(0);
+                            // cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell3.getColumnIndex());
 
-                                    Cell cell4 = row.createCell(4);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell4.setCellStyle(cellStyle);
-                                    cell4.setCellValue(0);
-                                    cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell4.getColumnIndex());
+                            // Cell cell4 = row.createCell(4);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell4.setCellStyle(cellStyle);
+                            // cell4.setCellValue(0);
+                            // cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell4.getColumnIndex());
 
-                                    Cell cell5 = row.createCell(5);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell5.setCellStyle(cellStyle);
-                                    cell5.setCellValue(0);
-                                    cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell5.getColumnIndex());
+                            // Cell cell5 = row.createCell(5);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell5.setCellStyle(cellStyle);
+                            // cell5.setCellValue(0);
+                            // cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell5.getColumnIndex());
 
-                                    Cell cell6 = row.createCell(6);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell6.setCellStyle(cellStyle);
-                                    cell6.setCellValue(0);
-                                    cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell6.getColumnIndex());
+                            // Cell cell6 = row.createCell(6);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell6.setCellStyle(cellStyle);
+                            // cell6.setCellValue(0);
+                            // cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell6.getColumnIndex());
 
-                                    Cell cell7 = row.createCell(7);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell7.setCellStyle(cellStyle);
-                                    cell7.setCellValue(ingresoTB.getDeposito());
-                                    cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell7.getColumnIndex());
+                            // Cell cell7 = row.createCell(7);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell7.setCellStyle(cellStyle);
+                            // cell7.setCellValue(ingresoTB.getDeposito());
+                            // cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell7.getColumnIndex());
 
-                                    Cell cell8 = row.createCell(8);
-                                    cellStyle = workbook.createCellStyle();
-                                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
-                                    cell8.setCellStyle(cellStyle);
-                                    cell8.setCellValue(0);
-                                    cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    sheet.autoSizeColumn(cell8.getColumnIndex());
+                            // Cell cell8 = row.createCell(8);
+                            // cellStyle = workbook.createCellStyle();
+                            // cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
+                            // cell8.setCellStyle(cellStyle);
+                            // cell8.setCellValue(0);
+                            // cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            // sheet.autoSizeColumn(cell8.getColumnIndex());
 
-                                    totalDIngreso += ingresoTB.getDeposito();
-                                }
-                            }
-                            i++;
+                            // totalDIngreso += ingresoTB.getDeposito();
+                            // }
+                            // }
+                            // i++;
                         }
 
                         row = sheet.createRow(i + 2);
@@ -996,7 +1005,8 @@ public class FxIngresosEgresosController implements Initializable {
                 Tools.showAlertNotification(
                         "/view/image/information_large.png",
                         "Generar Excel",
-                        Tools.newLineString("Se completo la creación del excel correctamente en la ruta " + file.getAbsolutePath()),
+                        Tools.newLineString(
+                                "Se completo la creación del excel correctamente en la ruta " + file.getAbsolutePath()),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else {
@@ -1013,7 +1023,8 @@ public class FxIngresosEgresosController implements Initializable {
             Tools.showAlertNotification(
                     "/view/image/warning_large.png",
                     "Generar Excel",
-                    Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });

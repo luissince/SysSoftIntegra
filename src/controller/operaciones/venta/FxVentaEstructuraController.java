@@ -255,7 +255,8 @@ public class FxVentaEstructuraController implements Initializable {
             }
 
             if (cbComprobante.getSelectionModel().getSelectedIndex() >= 0) {
-                String[] array = ComprobanteADO.GetSerieNumeracionEspecifico(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento()).split("-");
+                String[] array = ComprobanteADO.GetSerieNumeracionEspecifico(
+                        cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento()).split("-");
                 lblSerie.setText(array[0]);
                 lblNumeracion.setText(array[1]);
             }
@@ -302,16 +303,21 @@ public class FxVentaEstructuraController implements Initializable {
     private void initTable() {
         tcOpcion.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
         tcArticulo.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getClave() + " - " + cellData.getValue().getUnidadCompraName() + "\n" + cellData.getValue().getNombreMarca()));
+                cellData.getValue().getClave() + " - " + cellData.getValue().getUnidadCompraName() + "\n"
+                        + cellData.getValue().getNombreMarca()));
         tcCantidad.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
         tcPrecio.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getPrecioVentaGeneral(), 2)));
         tcDescuento.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getDescuento(), 2)));
-        tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getNombreImpuesto()));
+        tcImpuesto.setCellValueFactory(
+                cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getNombreImpuesto()));
         tcImporte.setCellValueFactory(cellData -> Bindings.concat(
-                Tools.roundingValue(cellData.getValue().getCantidad() * (cellData.getValue().getPrecioVentaGeneral() - cellData.getValue().getDescuento()), 2)));
+                Tools.roundingValue(
+                        cellData.getValue().getCantidad()
+                                * (cellData.getValue().getPrecioVentaGeneral() - cellData.getValue().getDescuento()),
+                        2)));
     }
 
     public void loadPrivilegios(ObservableList<PrivilegioTB> privilegioTBs) {
@@ -337,7 +343,7 @@ public class FxVentaEstructuraController implements Initializable {
             hbBotonesSuperior.getChildren().remove(btnSumarPrecio);
         }
         if (privilegioTBs.get(8).getIdPrivilegio() != 0 && !privilegioTBs.get(8).isEstado()) {
-//            hbBotonesInferior.getChildren().remove(btnQuitar);
+            // hbBotonesInferior.getChildren().remove(btnQuitar);
         }
         if (privilegioTBs.get(9).getIdPrivilegio() != 0 && !privilegioTBs.get(9).isEstado()) {
             hbBotonesSuperior.getChildren().remove(btnMovimiento);
@@ -367,11 +373,14 @@ public class FxVentaEstructuraController implements Initializable {
 
             tcCantidad.setOnEditCommit(data -> {
                 final Double value = Tools.isNumeric(data.getNewValue())
-                        ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.parseDouble(data.getOldValue()) : Double.parseDouble(data.getNewValue()))
+                        ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.parseDouble(data.getOldValue())
+                                : Double.parseDouble(data.getNewValue()))
                         : Double.parseDouble(data.getOldValue());
                 SuministroTB suministroTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
 
-                if (unidades_cambio_cantidades && suministroTB.getUnidadVenta() == 1 || valormonetario_cambio_cantidades && suministroTB.getUnidadVenta() == 2 || medida_cambio_cantidades && suministroTB.getUnidadVenta() == 3) {
+                if (unidades_cambio_cantidades && suministroTB.getUnidadVenta() == 1
+                        || valormonetario_cambio_cantidades && suministroTB.getUnidadVenta() == 2
+                        || medida_cambio_cantidades && suministroTB.getUnidadVenta() == 3) {
                     suministroTB.setCantidad(value);
                     tvList.refresh();
                     calculateTotales();
@@ -389,8 +398,8 @@ public class FxVentaEstructuraController implements Initializable {
             tcPrecio.setOnEditCommit(data -> {
                 final Double value = Tools.isNumeric(data.getNewValue())
                         ? (Double.parseDouble(data.getNewValue()) <= 0
-                        ? Double.parseDouble(data.getOldValue())
-                        : Double.parseDouble(data.getNewValue()))
+                                ? Double.parseDouble(data.getOldValue())
+                                : Double.parseDouble(data.getNewValue()))
                         : Double.parseDouble(data.getOldValue());
                 SuministroTB suministroTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
 
@@ -407,13 +416,18 @@ public class FxVentaEstructuraController implements Initializable {
             });
         }
 
-        unidades_cambio_cantidades = !(privilegioTBs.get(18).getIdPrivilegio() != 0 && !privilegioTBs.get(18).isEstado());
+        unidades_cambio_cantidades = !(privilegioTBs.get(18).getIdPrivilegio() != 0
+                && !privilegioTBs.get(18).isEstado());
         unidades_cambio_precio = !(privilegioTBs.get(19).getIdPrivilegio() != 0 && !privilegioTBs.get(19).isEstado());
-        unidades_cambio_descuento = !(privilegioTBs.get(20).getIdPrivilegio() != 0 && !privilegioTBs.get(20).isEstado());
+        unidades_cambio_descuento = !(privilegioTBs.get(20).getIdPrivilegio() != 0
+                && !privilegioTBs.get(20).isEstado());
 
-        valormonetario_cambio_cantidades = !(privilegioTBs.get(21).getIdPrivilegio() != 0 && !privilegioTBs.get(21).isEstado());
-        valormonetario_cambio_precio = !(privilegioTBs.get(22).getIdPrivilegio() != 0 && !privilegioTBs.get(22).isEstado());
-        valormonetario_cambio_decuento = !(privilegioTBs.get(23).getIdPrivilegio() != 0 && !privilegioTBs.get(23).isEstado());
+        valormonetario_cambio_cantidades = !(privilegioTBs.get(21).getIdPrivilegio() != 0
+                && !privilegioTBs.get(21).isEstado());
+        valormonetario_cambio_precio = !(privilegioTBs.get(22).getIdPrivilegio() != 0
+                && !privilegioTBs.get(22).isEstado());
+        valormonetario_cambio_decuento = !(privilegioTBs.get(23).getIdPrivilegio() != 0
+                && !privilegioTBs.get(23).isEstado());
 
         medida_cambio_cantidades = !(privilegioTBs.get(24).getIdPrivilegio() != 0 && !privilegioTBs.get(24).isEstado());
         medida_cambio_precio = !(privilegioTBs.get(25).getIdPrivilegio() != 0 && !privilegioTBs.get(25).isEstado());
@@ -427,9 +441,11 @@ public class FxVentaEstructuraController implements Initializable {
         tcDescuento.setVisible(!(privilegioTBs.get(32).getIdPrivilegio() != 0 && !privilegioTBs.get(32).isEstado()));
         tcImporte.setVisible(!(privilegioTBs.get(33).getIdPrivilegio() != 0 && !privilegioTBs.get(33).isEstado()));
 
-        vender_con_cantidades_negativas = privilegioTBs.get(34).getIdPrivilegio() != 0 && !privilegioTBs.get(34).isEstado();
+        vender_con_cantidades_negativas = privilegioTBs.get(34).getIdPrivilegio() != 0
+                && !privilegioTBs.get(34).isEstado();
 
-        cerar_modal_agregar_item_lista = privilegioTBs.get(35).getIdPrivilegio() != 0 && !privilegioTBs.get(35).isEstado();
+        cerar_modal_agregar_item_lista = privilegioTBs.get(35).getIdPrivilegio() != 0
+                && !privilegioTBs.get(35).isEstado();
 
         if (privilegioTBs.get(36).getIdPrivilegio() != 0 && !privilegioTBs.get(36).isEstado()) {
             mostrarUltimasVentas = true;
@@ -442,14 +458,16 @@ public class FxVentaEstructuraController implements Initializable {
         tcDescuento.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcImpuesto.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcImporte.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+        tvList.setPlaceholder(
+                Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
     }
 
     private void filterSuministro(String search) {
         SuministroTB a = SuministroADO.Get_Suministro_By_Search(search);
         if (a != null) {
             if (vender_con_cantidades_negativas && a.getCantidad() <= 0) {
-                Tools.AlertMessageWarning(window, "Venta", "No puede agregar el producto ya que tiene la cantidad <= 0.");
+                Tools.AlertMessageWarning(window, "Venta",
+                        "No puede agregar el producto ya que tiene la cantidad <= 0.");
                 txtSearch.clear();
                 txtSearch.selectAll();
                 txtSearch.requestFocus();
@@ -512,7 +530,7 @@ public class FxVentaEstructuraController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxSuministrosListaController controller = fXMLLoader.getController();
             controller.setInitVentaEstructuraController(this);
             //
@@ -533,7 +551,7 @@ public class FxVentaEstructuraController implements Initializable {
                 URL url = getClass().getResource(FilesRouters.FX_LISTA_PRECIOS);
                 FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                 Parent parent = fXMLLoader.load(url.openStream());
-                //Controlller here
+                // Controlller here
                 FxListaPreciosController controller = fXMLLoader.getController();
                 controller.setInitVentaEstructuraController(this);
                 controller.loadDataView(tvList.getSelectionModel().getSelectedItem());
@@ -558,9 +576,12 @@ public class FxVentaEstructuraController implements Initializable {
     public void openWindowCantidad(boolean isClose, Window window, boolean primerLlamado) {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             if (!unidades_cambio_cantidades && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 1
-                    || !valormonetario_cambio_cantidades && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
-                    || !medida_cambio_cantidades && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
-                Tools.AlertMessageWarning(window.getScene().getRoot(), "Ventas", "No se puede cambiar la cantidad a este producto.");
+                    || !valormonetario_cambio_cantidades
+                            && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
+                    || !medida_cambio_cantidades
+                            && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
+                Tools.AlertMessageWarning(window.getScene().getRoot(), "Ventas",
+                        "No se puede cambiar la cantidad a este producto.");
             } else {
                 try {
                     if (isClose) {
@@ -569,7 +590,7 @@ public class FxVentaEstructuraController implements Initializable {
                     URL url = getClass().getResource(FilesRouters.FX_VENTA_CANTIDADES);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                     Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
+                    // Controlller here
                     FxVentaCantidadesController controller = fXMLLoader.getController();
                     controller.setInitVentaEstructuraController(this);
                     //
@@ -602,9 +623,12 @@ public class FxVentaEstructuraController implements Initializable {
     private void openWindowCambiarPrecio(String title, boolean opcion, boolean isClose, Window window) {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             if (!unidades_cambio_precio && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 1
-                    || !valormonetario_cambio_precio && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
-                    || !medida_cambio_precio && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
-                Tools.AlertMessageWarning(window.getScene().getRoot(), "Ventas", "No se puede cambiar precio a este producto.");
+                    || !valormonetario_cambio_precio
+                            && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
+                    || !medida_cambio_precio
+                            && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
+                Tools.AlertMessageWarning(window.getScene().getRoot(), "Ventas",
+                        "No se puede cambiar precio a este producto.");
             } else {
                 try {
                     if (isClose) {
@@ -613,14 +637,15 @@ public class FxVentaEstructuraController implements Initializable {
                     URL url = getClass().getResource(FilesRouters.FX_VENTA_GRANEL);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                     Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
+                    // Controlller here
                     FxVentaGranelController controller = fXMLLoader.getController();
                     controller.setInitVentaEstructuraController(this);
                     //
                     Stage stage = WindowStage.StageLoaderModal(parent, title, window.getScene().getWindow());
                     stage.setResizable(false);
                     stage.sizeToScene();
-                    stage.setOnShowing(w -> controller.initComponents(title, tvList.getSelectionModel().getSelectedItem(), opcion));
+                    stage.setOnShowing(w -> controller.initComponents(title,
+                            tvList.getSelectionModel().getSelectedItem(), opcion));
                     stage.setOnHiding(w -> {
                         if (isClose) {
                             fxPrincipalController.closeFondoModal();
@@ -643,19 +668,22 @@ public class FxVentaEstructuraController implements Initializable {
         try {
             if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
                 if (!unidades_cambio_descuento && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 1
-                        || !valormonetario_cambio_decuento && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
-                        || !medida_cambio_decuento && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
+                        || !valormonetario_cambio_decuento
+                                && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
+                        || !medida_cambio_decuento
+                                && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
                     Tools.AlertMessageWarning(window, "Ventas", "No se puede aplicar descuento a este producto.");
                 } else {
                     fxPrincipalController.openFondoModal();
                     URL url = getClass().getResource(FilesRouters.FX_VENTA_DESCUENTO);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                     Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
+                    // Controlller here
                     FxVentaDescuentoController controller = fXMLLoader.getController();
                     controller.setInitVentaEstructuraController(this);
                     //
-                    Stage stage = WindowStage.StageLoaderModal(parent, "Descuento del Producto", window.getScene().getWindow());
+                    Stage stage = WindowStage.StageLoaderModal(parent, "Descuento del Producto",
+                            window.getScene().getWindow());
                     stage.setResizable(false);
                     stage.sizeToScene();
                     stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
@@ -676,9 +704,9 @@ public class FxVentaEstructuraController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_VENTA_MOVIMIENTO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxVentaMovimientoController controller = fXMLLoader.getController();
-//            controller.setInitVentaEstructuraController(this);
+            // controller.setInitVentaEstructuraController(this);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Movimiento de caja", window.getScene().getWindow());
             stage.setResizable(false);
@@ -696,7 +724,7 @@ public class FxVentaEstructuraController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_VENTA_MOSTRAR);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxVentaMostrarController controller = fXMLLoader.getController();
             controller.setInitControllerVentaEstructura(this);
             controller.setMostrarUltimasVentas(mostrarUltimasVentas);
@@ -721,7 +749,7 @@ public class FxVentaEstructuraController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_COTIZACION_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxCotizacionListaController controller = fXMLLoader.getController();
             controller.setInitVentaEstructuraController(this);
             //
@@ -740,68 +768,96 @@ public class FxVentaEstructuraController implements Initializable {
         try {
             if (tvList.getItems().isEmpty()) {
                 Tools.AlertMessageWarning(window, "Ventas", "Debes agregar artículos a la venta");
-            } else if (cbComprobante.getSelectionModel().getSelectedIndex() < 0) {
+                return;
+            }
+
+            if (cbComprobante.getSelectionModel().getSelectedIndex() < 0) {
                 Tools.AlertMessageWarning(window, "Ventas", "Seleccione el tipo de comprobante");
                 cbComprobante.requestFocus();
-            } else if (cbTipoDocumento.getSelectionModel().getSelectedIndex() < 0) {
+                return;
+            }
+
+            if (cbTipoDocumento.getSelectionModel().getSelectedIndex() < 0) {
                 Tools.AlertMessageWarning(window, "Ventas", "Seleccione el tipo de documento del cliente.");
                 cbTipoDocumento.requestFocus();
-            } else if (!Tools.isNumeric(txtNumeroDocumento.getText().trim())) {
+                return;
+            }
+
+            if (!Tools.isNumeric(txtNumeroDocumento.getText().trim())) {
                 Tools.AlertMessageWarning(window, "Ventas", "Ingrese el número del documento del cliente.");
                 txtNumeroDocumento.requestFocus();
-            } else if (cbComprobante.getSelectionModel().getSelectedItem().isCampo() && txtNumeroDocumento.getText().length() != cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo()) {
-                Tools.AlertMessageWarning(window, "Ventas", "El número de documento tiene que tener " + cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo() + " caracteres.");
+                return;
+            }
+
+            if (cbComprobante.getSelectionModel().getSelectedItem().isCampo() && txtNumeroDocumento.getText()
+                    .length() != cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo()) {
+                Tools.AlertMessageWarning(window, "Ventas", "El número de documento tiene que tener "
+                        + cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo() + " caracteres.");
                 txtNumeroDocumento.requestFocus();
-            } else if (txtDatosCliente.getText().trim().equalsIgnoreCase("")) {
+                return;
+            }
+
+            if (txtDatosCliente.getText().trim().equalsIgnoreCase("")) {
                 Tools.AlertMessageWarning(window, "Ventas", "Ingrese los datos del cliente.");
                 txtDatosCliente.requestFocus();
-            } else if (cbMoneda.getSelectionModel().getSelectedIndex() < 0) {
+                return;
+            }
+
+            if (cbMoneda.getSelectionModel().getSelectedIndex() < 0) {
                 Tools.AlertMessageWarning(window, "Ventas", "Seleccione un moneda.");
                 cbMoneda.requestFocus();
-            } else if (importeNetoTotal <= 0) {
-                Tools.AlertMessageWarning(window, "Ventas", "El total de la venta no puede ser menor que 0.");
-            } else {
-                VentaTB ventaTB = new VentaTB();
-                ventaTB.setVendedor(Session.USER_ID);
-                ventaTB.setIdComprobante(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento());
-                ventaTB.setComprobanteName(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
-                ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
-                ventaTB.setSerie(lblSerie.getText());
-                ventaTB.setNumeracion(lblNumeracion.getText());
-                ventaTB.setFechaVenta(Tools.getDate());
-                ventaTB.setHoraVenta(Tools.getTime());
-                ventaTB.setTotal(importeNetoTotal);
-                ventaTB.setIdCotizacion(idCotizacion);
-
-                ventaTB.setMonedaTB(cbMoneda.getSelectionModel().getSelectedItem());
-
-                ClienteTB clienteTB = new ClienteTB();
-                clienteTB.setIdCliente(idCliente);
-                clienteTB.setTipoDocumento(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
-                clienteTB.setNumeroDocumento(txtNumeroDocumento.getText().trim().toUpperCase());
-                clienteTB.setInformacion(txtDatosCliente.getText().trim().toUpperCase());
-                clienteTB.setCelular(txtCelularCliente.getText().trim().toUpperCase());
-                clienteTB.setEmail(txtCorreoElectronico.getText().trim().toUpperCase());
-                clienteTB.setDireccion(txtDireccionCliente.getText().trim().toUpperCase());
-                ventaTB.setClienteTB(clienteTB);
-
-                ventaTB.setSuministroTBs(new ArrayList<>(tvList.getItems()));
-
-                fxPrincipalController.openFondoModal();
-                URL url = getClass().getResource(FilesRouters.FX_VENTA_PROCESO);
-                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                Parent parent = fXMLLoader.load(url.openStream());
-                //Controlller here
-                FxVentaProcesoController controller = fXMLLoader.getController();
-                controller.setInitVentaEstructuraController(this);
-                //
-                Stage stage = WindowStage.StageLoaderModal(parent, "Completar la venta", window.getScene().getWindow());
-                stage.setResizable(false);
-                stage.sizeToScene();
-                stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-                stage.setOnShowing(w -> controller.setInitComponents(ventaTB, vender_con_cantidades_negativas));
-                stage.show();
+                return;
             }
+
+            if (importeNetoTotal <= 0) {
+                Tools.AlertMessageWarning(window, "Ventas", "El total de la venta no puede ser menor que 0.");
+                return;
+            }
+
+            VentaTB ventaTB = new VentaTB();
+            ventaTB.setVendedor(Session.USER_ID);
+            ventaTB.setIdComprobante(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento());
+
+            TipoDocumentoTB tipoDocumentoTB = new TipoDocumentoTB();
+            tipoDocumentoTB.setNombre(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
+            ventaTB.setTipoDocumentoTB(tipoDocumentoTB);
+
+            ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
+            ventaTB.setSerie(lblSerie.getText());
+            ventaTB.setNumeracion(lblNumeracion.getText());
+            ventaTB.setFechaVenta(Tools.getDate());
+            ventaTB.setHoraVenta(Tools.getTime());
+            ventaTB.setTotal(importeNetoTotal);
+            ventaTB.setIdCotizacion(idCotizacion);
+
+            ventaTB.setMonedaTB(cbMoneda.getSelectionModel().getSelectedItem());
+
+            ClienteTB clienteTB = new ClienteTB();
+            clienteTB.setIdCliente(idCliente);
+            clienteTB.setTipoDocumento(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
+            clienteTB.setNumeroDocumento(txtNumeroDocumento.getText().trim().toUpperCase());
+            clienteTB.setInformacion(txtDatosCliente.getText().trim().toUpperCase());
+            clienteTB.setCelular(txtCelularCliente.getText().trim().toUpperCase());
+            clienteTB.setEmail(txtCorreoElectronico.getText().trim().toUpperCase());
+            clienteTB.setDireccion(txtDireccionCliente.getText().trim().toUpperCase());
+            ventaTB.setClienteTB(clienteTB);
+
+            ventaTB.setSuministroTBs(new ArrayList<>(tvList.getItems()));
+
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_VENTA_PROCESO);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            // Controlller here
+            FxVentaProcesoController controller = fXMLLoader.getController();
+            controller.setInitVentaEstructuraController(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Completar la venta", window.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShowing(w -> controller.loadInitComponents(ventaTB, vender_con_cantidades_negativas));
+            stage.show();
         } catch (IOException ex) {
             System.out.println("openWindowVentaProceso():" + ex.getLocalizedMessage());
         }
@@ -820,7 +876,8 @@ public class FxVentaEstructuraController implements Initializable {
                         case 2:
                             tvList.requestFocus();
                             tvList.getSelectionModel().select(i);
-                            openWindowCambiarPrecio("Cambiar precio del Producto", false, cerar_modal_agregar_item_lista, window);
+                            openWindowCambiarPrecio("Cambiar precio del Producto", false,
+                                    cerar_modal_agregar_item_lista, window);
                             break;
                         default:
                             SuministroTB suministroTB = tvList.getItems().get(i);
@@ -850,7 +907,8 @@ public class FxVentaEstructuraController implements Initializable {
                     int index = tvList.getItems().size() - 1;
                     tvList.requestFocus();
                     tvList.getSelectionModel().select(index);
-                    openWindowCambiarPrecio("Cambiar precio al Artículo", false, cerar_modal_agregar_item_lista, window);
+                    openWindowCambiarPrecio("Cambiar precio al Artículo", false, cerar_modal_agregar_item_lista,
+                            window);
                     calculateTotales();
                     break;
                 }
@@ -1102,7 +1160,7 @@ public class FxVentaEstructuraController implements Initializable {
 
         task.setOnSucceeded(w -> {
             VentaTB ventaTB = task.getValue();
-            
+
             for (int i = 0; i < cbTipoDocumento.getItems().size(); i++) {
                 if (cbTipoDocumento.getItems().get(i).getIdDetalle() == ventaTB.getClienteTB().getTipoDocumento()) {
                     cbTipoDocumento.getSelectionModel().select(i);
@@ -1328,8 +1386,7 @@ public class FxVentaEstructuraController implements Initializable {
                 subImporteNetoTotal,
                 impuestoNetoTotal,
                 importeNetoTotal,
-                tvList.getItems()
-        );
+                tvList.getItems());
     }
 
     public void onExecuteCliente(short opcion, String search) {
@@ -1439,23 +1496,26 @@ public class FxVentaEstructuraController implements Initializable {
         Task<Object[]> task = new Task<Object[]>() {
             @Override
             public Object[] call() throws Exception {
-                Object resultCliente = ClienteADO.GetSearchClienteNumeroDocumento((short) 2, txtNumeroDocumento.getText().trim());
+                Object resultCliente = ClienteADO.GetSearchClienteNumeroDocumento((short) 2,
+                        txtNumeroDocumento.getText().trim());
                 String resultApi = apiSunat.getUrlSunatApisPeru(txtNumeroDocumento.getText().trim());
 
                 if (resultApi.equalsIgnoreCase("200") && !Tools.isText(apiSunat.getJsonURL())) {
                     JSONObject sONObject = Json.obtenerObjetoJSON(apiSunat.getJsonURL());
                     if (sONObject == null) {
-                        throw new Exception("No se pudo parcear le formato de resultado, intente en un par de minutos.");
+                        throw new Exception(
+                                "No se pudo parcear le formato de resultado, intente en un par de minutos.");
                     }
 
                     if (resultCliente instanceof ClienteTB) {
-                        return new Object[]{"client-exists", resultCliente};
+                        return new Object[] { "client-exists", resultCliente };
                     } else {
-                        return new Object[]{"client-no-exists", ""};
+                        return new Object[] { "client-no-exists", "" };
                     }
                 }
 
-                throw new Exception("Se produjo un error al buscar al cliente intente\n nuevamente, si persiste el problema comuniquese con su \nproveedor del sistema.");
+                throw new Exception(
+                        "Se produjo un error al buscar al cliente intente\n nuevamente, si persiste el problema comuniquese con su \nproveedor del sistema.");
             }
         };
 
@@ -1563,26 +1623,29 @@ public class FxVentaEstructuraController implements Initializable {
             return t;
         });
 
-        Task< Object[]> task = new Task< Object[]>() {
+        Task<Object[]> task = new Task<Object[]>() {
             @Override
             public Object[] call() throws Exception {
-                Object resultCliente = ClienteADO.GetSearchClienteNumeroDocumento((short) 2, txtNumeroDocumento.getText().trim());
+                Object resultCliente = ClienteADO.GetSearchClienteNumeroDocumento((short) 2,
+                        txtNumeroDocumento.getText().trim());
                 String resultApi = apiSunat.getUrlReniecApisPeru(txtNumeroDocumento.getText().trim());
 
                 if (resultApi.equalsIgnoreCase("200") && !Tools.isText(apiSunat.getJsonURL())) {
                     JSONObject sONObject = Json.obtenerObjetoJSON(apiSunat.getJsonURL());
                     if (sONObject == null) {
-                        throw new Exception("No se pudo parcear le formato de resultado, intente en un par de minutos.");
+                        throw new Exception(
+                                "No se pudo parcear le formato de resultado, intente en un par de minutos.");
                     }
 
                     if (resultCliente instanceof ClienteTB) {
-                        return new Object[]{"client-exists", resultCliente};
+                        return new Object[] { "client-exists", resultCliente };
                     } else {
-                        return new Object[]{"client-no-exists", ""};
+                        return new Object[] { "client-no-exists", "" };
                     }
                 }
 
-                throw new Exception("Se produjo un error al buscar al cliente intente\n nuevamente, si persiste el problema comuniquese con su \nproveedor del sistema.");
+                throw new Exception(
+                        "Se produjo un error al buscar al cliente intente\n nuevamente, si persiste el problema comuniquese con su \nproveedor del sistema.");
             }
         };
 
@@ -1643,8 +1706,10 @@ public class FxVentaEstructuraController implements Initializable {
             if (sONObject.get("dni") != null) {
                 txtNumeroDocumento.setText(sONObject.get("dni").toString());
             }
-            if (sONObject.get("apellidoPaterno") != null && sONObject.get("apellidoMaterno") != null && sONObject.get("nombres") != null) {
-                txtDatosCliente.setText(sONObject.get("apellidoPaterno").toString() + " " + sONObject.get("apellidoMaterno").toString() + " " + sONObject.get("nombres").toString());
+            if (sONObject.get("apellidoPaterno") != null && sONObject.get("apellidoMaterno") != null
+                    && sONObject.get("nombres") != null) {
+                txtDatosCliente.setText(sONObject.get("apellidoPaterno").toString() + " "
+                        + sONObject.get("apellidoMaterno").toString() + " " + sONObject.get("nombres").toString());
             }
             if (stateClient.equals("client-exists")) {
                 ClienteTB clienteTB = (ClienteTB) result[1];
@@ -1865,7 +1930,8 @@ public class FxVentaEstructuraController implements Initializable {
     @FXML
     private void onActionComprobante(ActionEvent event) {
         if (cbComprobante.getSelectionModel().getSelectedIndex() >= 0) {
-            String[] array = ComprobanteADO.GetSerieNumeracionEspecifico(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento()).split("-");
+            String[] array = ComprobanteADO.GetSerieNumeracionEspecifico(
+                    cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento()).split("-");
             lblSerie.setText(array[0]);
             lblNumeracion.setText(array[1]);
         }

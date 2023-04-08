@@ -86,7 +86,7 @@ public class FxNotaCreditoReporteController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_CLIENTE_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxClienteListaController controller = fXMLLoader.getController();
             controller.setInitNotaCreditoReporteController(this);
             //
@@ -108,14 +108,16 @@ public class FxNotaCreditoReporteController implements Initializable {
                 cbClientes.isSelected() ? 0 : 1,
                 idCliente);
         if (object instanceof ArrayList) {
-            ArrayList<NotaCreditoTB> ingresoTBs = (ArrayList<NotaCreditoTB>) object;
-            if (!ingresoTBs.isEmpty()) {
+            ArrayList<NotaCreditoTB> notaCreditoTBs = (ArrayList<NotaCreditoTB>) object;
+            if (!notaCreditoTBs.isEmpty()) {
                 InputStream dir = getClass().getResourceAsStream("/report/NotaCreditoGeneral.jasper");
-                Map map = new HashMap();
+                Map<String, Object> map = new HashMap<String, Object>();
                 map.put("CLIENTE", cbClientes.isSelected() ? "TODOS" : txtClientes.getText());
-                map.put("PERIODO", "DEL " + Tools.formatDate(Tools.getDatePicker(dpFechaInicial)) + " al " + Tools.formatDate(Tools.getDatePicker(dpFechaFinal)));
+                map.put("PERIODO", "DEL " + Tools.formatDate(Tools.getDatePicker(dpFechaInicial)) + " al "
+                        + Tools.formatDate(Tools.getDatePicker(dpFechaFinal)));
 
-                JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map, new JRBeanCollectionDataSource(ingresoTBs));
+                JasperPrint jasperPrint = JasperFillManager.fillReport(dir, map,
+                        new JRBeanCollectionDataSource(notaCreditoTBs));
                 return jasperPrint;
             } else {
                 return "No hay datos para mostrar";
@@ -129,7 +131,8 @@ public class FxNotaCreditoReporteController implements Initializable {
     private void openViewVisualizar() {
 
         if (!cbClientes.isSelected() && idCliente.equalsIgnoreCase("") && txtClientes.getText().isEmpty()) {
-            Tools.AlertMessageWarning(vbWindow, "Reporte General de Notas de Credito", "Ingrese un cliente para generar el reporte.");
+            Tools.AlertMessageWarning(vbWindow, "Reporte General de Notas de Credito",
+                    "Ingrese un cliente para generar el reporte.");
             btnClientes.requestFocus();
         } else {
 
@@ -160,9 +163,10 @@ public class FxNotaCreditoReporteController implements Initializable {
                         URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
                         FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                         Parent parent = fXMLLoader.load(url.openStream());
-                        //Controlller here
+                        // Controlller here
                         FxReportViewController controller = fXMLLoader.getController();
-                        controller.setFileName("Lista de Notas de Crédito del " + Tools.getDatePicker(dpFechaInicial) + " al " + Tools.getDatePicker(dpFechaFinal));
+                        controller.setFileName("Lista de Notas de Crédito del " + Tools.getDatePicker(dpFechaInicial)
+                                + " al " + Tools.getDatePicker(dpFechaFinal));
                         controller.setJasperPrint((JasperPrint) object);
                         controller.show();
                         Stage stage = WindowStage.StageLoader(parent, "Reporte General de Notas de Credito");
@@ -191,7 +195,8 @@ public class FxNotaCreditoReporteController implements Initializable {
                 Tools.showAlertNotification(
                         "/view/image/warning_large.png",
                         "Generar Vista",
-                        Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
+                        Tools.newLineString(
+                                "Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             });
@@ -214,16 +219,17 @@ public class FxNotaCreditoReporteController implements Initializable {
 
     private void onEventPdf() {
         if (!cbClientes.isSelected() && idCliente.equalsIgnoreCase("") && txtClientes.getText().isEmpty()) {
-            Tools.AlertMessageWarning(vbWindow, "Reporte General de Notas de Credito", "Ingrese un cliente para generar el reporte.");
+            Tools.AlertMessageWarning(vbWindow, "Reporte General de Notas de Credito",
+                    "Ingrese un cliente para generar el reporte.");
             btnClientes.requestFocus();
         } else {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
             fileChooser.setTitle("Reporte de Notas de Crédito");
-            fileChooser.setInitialFileName("Lista de Notas de Crédito del " + Tools.getDatePicker(dpFechaInicial) + " al " + Tools.getDatePicker(dpFechaFinal));
+            fileChooser.setInitialFileName("Lista de Notas de Crédito del " + Tools.getDatePicker(dpFechaInicial)
+                    + " al " + Tools.getDatePicker(dpFechaFinal));
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("PDF Documento", Arrays.asList("*.pdf", "*.PDF"))
-            );
+                    new FileChooser.ExtensionFilter("PDF Documento", Arrays.asList("*.pdf", "*.PDF")));
             File file = fileChooser.showSaveDialog(vbWindow.getScene().getWindow());
             if (file != null) {
                 file = new File(file.getAbsolutePath());
@@ -264,7 +270,8 @@ public class FxNotaCreditoReporteController implements Initializable {
                 Tools.showAlertNotification(
                         "/view/image/information_large.png",
                         "Generar PDF",
-                        Tools.newLineString("Se completó la creación del pdf correctamente en la ruta " + file.getAbsolutePath()),
+                        Tools.newLineString(
+                                "Se completó la creación del pdf correctamente en la ruta " + file.getAbsolutePath()),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else {
@@ -281,7 +288,8 @@ public class FxNotaCreditoReporteController implements Initializable {
             Tools.showAlertNotification(
                     "/view/image/warning_large.png",
                     "Generar PDF",
-                    Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -302,18 +310,19 @@ public class FxNotaCreditoReporteController implements Initializable {
 
     private void onEventExcel() {
         if (!cbClientes.isSelected() && idCliente.equalsIgnoreCase("") && txtClientes.getText().isEmpty()) {
-            Tools.AlertMessageWarning(vbWindow, "Reporte General de Notas de Credito", "Ingrese un cliente para generar el reporte.");
+            Tools.AlertMessageWarning(vbWindow, "Reporte General de Notas de Credito",
+                    "Ingrese un cliente para generar el reporte.");
             btnClientes.requestFocus();
         } else {
 
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
             fileChooser.setTitle("Reporte de Nota de Credito");
-            fileChooser.setInitialFileName("Lista de Notas de Crédito del " + Tools.getDatePicker(dpFechaInicial) + " al " + Tools.getDatePicker(dpFechaFinal));
+            fileChooser.setInitialFileName("Lista de Notas de Crédito del " + Tools.getDatePicker(dpFechaInicial)
+                    + " al " + Tools.getDatePicker(dpFechaFinal));
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Libro de Excel (*.xlsx)", "*.xlsx"),
-                    new FileChooser.ExtensionFilter("Libro de Excel(1997-2003) (*.xls)", "*.xls")
-            );
+                    new FileChooser.ExtensionFilter("Libro de Excel(1997-2003) (*.xls)", "*.xls"));
             File file = fileChooser.showSaveDialog(vbWindow.getScene().getWindow());
             if (file != null) {
                 file = new File(file.getAbsolutePath());
@@ -361,7 +370,7 @@ public class FxNotaCreditoReporteController implements Initializable {
                         CellStyle cellStyleHeader = workbook.createCellStyle();
                         cellStyleHeader.setFont(font);
                         cellStyleHeader.setFillForegroundColor(IndexedColors.WHITE.getIndex());
-                        String header[] = {"Id", "N° Documento", "Cliente", "Serie", "Numeracion", "Total"};
+                        String header[] = { "Id", "N° Documento", "Cliente", "Serie", "Numeracion", "Total" };
 
                         Row headerRow = sheet.createRow(0);
                         for (int i = 0; i < header.length; i++) {
@@ -407,7 +416,8 @@ public class FxNotaCreditoReporteController implements Initializable {
                             cellStyle = workbook.createCellStyle();
                             cellStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00"));
                             cell6.setCellStyle(cellStyle);
-                            cell6.setCellValue(Double.parseDouble(Tools.roundingValue(notaCreditoTBs.get(i).getImporteNeto(), 2)));
+                            cell6.setCellValue(
+                                    Double.parseDouble(Tools.roundingValue(notaCreditoTBs.get(i).getImporteNeto(), 2)));
                             cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
                             sheet.autoSizeColumn(cell6.getColumnIndex());
                         }
@@ -431,7 +441,8 @@ public class FxNotaCreditoReporteController implements Initializable {
                 Tools.showAlertNotification(
                         "/view/image/information_large.png",
                         "Generar Excel",
-                        Tools.newLineString("Se completo la creación del excel correctamente en la ruta " + file.getAbsolutePath()),
+                        Tools.newLineString(
+                                "Se completo la creación del excel correctamente en la ruta " + file.getAbsolutePath()),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else {
@@ -448,7 +459,8 @@ public class FxNotaCreditoReporteController implements Initializable {
             Tools.showAlertNotification(
                     "/view/image/warning_large.png",
                     "Generar Excel",
-                    Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -525,10 +537,10 @@ public class FxNotaCreditoReporteController implements Initializable {
         this.idCliente = idCliente;
         txtClientes.setText(datos);
     }
-    
+
     @FXML
     private void onActionClientes(ActionEvent event) {
-        
+
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

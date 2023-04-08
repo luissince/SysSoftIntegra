@@ -1,4 +1,4 @@
-package controller.consultas.pagar;
+package controller.consultas.cobrar;
 
 import controller.tools.Session;
 import controller.tools.Tools;
@@ -23,7 +23,7 @@ import model.VentaTB;
 import service.CajaADO;
 import service.VentaADO;
 
-public class FxVentaAbonoProcesoController implements Initializable {
+public class FxGenerarCobroController implements Initializable {
 
     @FXML
     private AnchorPane window;

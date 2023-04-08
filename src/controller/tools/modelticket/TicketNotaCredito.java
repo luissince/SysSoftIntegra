@@ -239,7 +239,7 @@ public class TicketNotaCredito {
                     "", // direccion_llegada_guia
                     "", // ubigeo_llegada_guia
                     "", // movito_traslado_guia
-                    notaCreditoTB.getVentaTB().getComprobanteName(), // comprobante_anulado_nombre
+                    notaCreditoTB.getVentaTB().getTipoDocumentoTB().getNombre(), // comprobante_anulado_nombre
                     notaCreditoTB.getVentaTB().getSerie(), // comprobante_anulado_serie
                     notaCreditoTB.getVentaTB().getNumeracion(), // comprobante_anulado_numeracion
                     notaCreditoTB.getNombreMotivo(), // nota_credito_motivo_anulacion
@@ -456,7 +456,7 @@ public class TicketNotaCredito {
                         /*
                         **
                          */
-                        Map map = new HashMap();
+                        Map<String, Object> map = new HashMap<>();
                         map.put("LOGO", imgInputStream);
                         map.put("ICON", imgInputStreamIcon);
                         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);

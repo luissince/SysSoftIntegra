@@ -80,6 +80,7 @@ public class FxVentaMovimientoController implements Initializable {
                         IngresoTB ingresoTB = new IngresoTB();
                         ingresoTB.setIdProcedencia("");
                         ingresoTB.setIdUsuario(Session.USER_ID);
+                        
                         ingresoTB.setDetalle(txtComentario.getText().toUpperCase().trim());
                         ingresoTB.setProcedencia(cbMovimiento.getSelectionModel().getSelectedIndex() == 0 ? 3 : 4);
                         ingresoTB.setFecha(Tools.getDate());

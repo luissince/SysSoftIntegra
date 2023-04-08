@@ -75,27 +75,24 @@ public class FxNotaCreditoRealizadasController implements Initializable {
         Tools.actualDate(Tools.getDate(), txtFechaFinal);
 
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getId()
-        ));
+                cellData.getValue().getId()));
         tcFechaRegistro.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getFechaRegistro() + "\n"
-                + cellData.getValue().getHoraRegistro()
-        ));
+                        + cellData.getValue().getHoraRegistro()));
         tcCliente.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getClienteTB().getNumeroDocumento() + "\n"
-                + cellData.getValue().getClienteTB().getInformacion()
-        ));
+                        + cellData.getValue().getClienteTB().getInformacion()));
         tcComprobante.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getNombreComprobante() + "\n"
-                + cellData.getValue().getSerie() + "-" + Tools.formatNumber(cellData.getValue().getNumeracion())
-        ));
+                        + cellData.getValue().getSerie() + "-"
+                        + Tools.formatNumber(cellData.getValue().getNumeracion())));
         tcDetalle.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getVentaTB().getComprobanteName() + "\n"
-                + "MODIFICADA: " + cellData.getValue().getVentaTB().getSerie() + "-" + cellData.getValue().getVentaTB().getNumeracion()
-        ));
+                cellData.getValue().getVentaTB().getTipoDocumentoTB().getNombre() + "\n"
+                        + "MODIFICADA: " + cellData.getValue().getVentaTB().getSerie() + "-"
+                        + cellData.getValue().getVentaTB().getNumeracion()));
         tcTotal.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)
-        ));
+                cellData.getValue().getMonedaTB().getSimbolo() + " "
+                        + Tools.roundingValue(cellData.getValue().getImporteNeto(), 2)));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcFechaRegistro.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
@@ -103,7 +100,8 @@ public class FxNotaCreditoRealizadasController implements Initializable {
         tcComprobante.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
         tcDetalle.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
         tcTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
-        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+        tvList.setPlaceholder(
+                Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         initLoad();
     }
@@ -126,7 +124,8 @@ public class FxNotaCreditoRealizadasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return NotaCreditoADO.ListarNotasCredito(opcion, buscar, fechaInico, fechaFinal, (paginacion - 1) * 10, 10);
+                return NotaCreditoADO.ListarNotasCredito(opcion, buscar, fechaInico, fechaFinal, (paginacion - 1) * 10,
+                        10);
             }
         };
 
@@ -141,14 +140,16 @@ public class FxNotaCreditoRealizadasController implements Initializable {
                     lblPaginaActual.setText(paginacion + "");
                     lblPaginaSiguiente.setText(totalPaginacion + "");
                 } else {
-                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                    tvList.setPlaceholder(
+                            Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
                     lblPaginaActual.setText("0");
                     lblPaginaSiguiente.setText("0");
                 }
             } else if (object instanceof String) {
                 tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
             } else {
-                tvList.setPlaceholder(Tools.placeHolderTableView("Error en traer los datos, intente nuevamente.", "-fx-text-fill:#a70820;", false));
+                tvList.setPlaceholder(Tools.placeHolderTableView("Error en traer los datos, intente nuevamente.",
+                        "-fx-text-fill:#a70820;", false));
             }
             lblLoad.setVisible(false);
         });
@@ -159,7 +160,8 @@ public class FxNotaCreditoRealizadasController implements Initializable {
         task.setOnScheduled(w -> {
             lblLoad.setVisible(true);
             tvList.getItems().clear();
-            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            tvList.setPlaceholder(
+                    Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
             totalPaginacion = 0;
         });
         exec.execute(task);
@@ -186,7 +188,7 @@ public class FxNotaCreditoRealizadasController implements Initializable {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             FXMLLoader fXMLLoader = new FXMLLoader(getClass().getResource(FilesRouters.FX_NOTA_CREDITO_DETALLE));
             AnchorPane node = fXMLLoader.load();
-            //Controlller here
+            // Controlller here
             FxNotaCreditoDetalleController controller = fXMLLoader.getController();
             controller.loadInitData(tvList.getSelectionModel().getSelectedItem().getIdNotaCredito());
             controller.setInitNotaCreditoRealizadasController(this, fxPrincipalController);

@@ -1,4 +1,4 @@
-package controller.consultas.pagar;
+package controller.consultas.cobrar;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
@@ -247,11 +247,11 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
     private void onEventAmortizar() {
         try {
             fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_VENTA_ABONO_PROCESO);
+            URL url = getClass().getResource(FilesRouters.FX_GENERAR_COBRO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
-            FxVentaAbonoProcesoController controller = fXMLLoader.getController();
+            FxGenerarCobroController controller = fXMLLoader.getController();
             controller.setInitLoadVentaAbono(ventaTB);
             controller.setInitVentaAbonarController(this);
             //
@@ -268,11 +268,11 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
     private void onEventAmortizarUpdate(String idVentaCredito, double monto) {
         try {
             fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_VENTA_ABONO_PROCESO);
+            URL url = getClass().getResource(FilesRouters.FX_GENERAR_COBRO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
-            FxVentaAbonoProcesoController controller = fXMLLoader.getController();
+            FxGenerarCobroController controller = fXMLLoader.getController();
             controller.setInitLoadVentaAbono(ventaTB, idVentaCredito, monto);
             controller.setInitVentaAbonarController(this);
             //

@@ -344,24 +344,27 @@ public class BancoADO {
         return list;
     }
 
-    public static List<BancoTB> GetBancoComboBoxForma(short forma) {
+    public static Object ObtenerListarBancos() {
         DBUtil dbf = new DBUtil();
-        List<BancoTB> list = new ArrayList<>();
 
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
             dbf.dbConnect();
             statement = dbf.getConnection().prepareStatement(
-                    "select IdBanco,NombreCuenta from Banco where FormaPago = ? order by HoraCreacion ASC");
-            statement.setShort(1, forma);
+                    "SELECT IdBanco,NombreCuenta,FormaPago FROM Banco");
             resultSet = statement.executeQuery();
+            ObservableList<BancoTB> empList = FXCollections.observableArrayList();
             while (resultSet.next()) {
-                list.add(
-                        new BancoTB(resultSet.getString("IdBanco"), resultSet.getString("NombreCuenta").toUpperCase()));
+                BancoTB bancoTB = new BancoTB();
+                bancoTB.setIdBanco(resultSet.getString("IdBanco"));
+                bancoTB.setNombreCuenta(resultSet.getString("NombreCuenta"));
+                bancoTB.setFormaPago(resultSet.getShort("FormaPago"));
+                empList.add(bancoTB);
             }
+            return empList;
         } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println("Error¨Plazos: " + ex.getLocalizedMessage());
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (statement != null) {
@@ -372,11 +375,9 @@ public class BancoADO {
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
-                System.out.println("Error Plazos: " + ex.getLocalizedMessage());
+                return ex.getLocalizedMessage();
             }
         }
-
-        return list;
     }
 
     public static ArrayList<Object> Listar_Bancos_Historial(String idBanco) {

@@ -19,6 +19,7 @@ import model.EmpleadoTB;
 import model.ImpuestoTB;
 import model.MonedaTB;
 import model.SuministroTB;
+import model.TipoDocumentoTB;
 import model.VentaTB;
 
 public class CotizacionADO {
@@ -36,7 +37,8 @@ public class CotizacionADO {
             dbf.dbConnect();
             dbf.getConnection().setAutoCommit(false);
 
-            statementValidacion = dbf.getConnection().prepareStatement("SELECT * FROM CotizacionTB WHERE IdCotizacion = ?");
+            statementValidacion = dbf.getConnection()
+                    .prepareStatement("SELECT * FROM CotizacionTB WHERE IdCotizacion = ?");
             statementValidacion.setString(1, cotizacionTB.getIdCotizacion());
             if (statementValidacion.executeQuery().next()) {
                 statementCotizacion = dbf.getConnection().prepareStatement("UPDATE CotizacionTB SET "
@@ -62,10 +64,11 @@ public class CotizacionADO {
                 statementCotizacion.setInt(8, cotizacionTB.getEstado());
                 statementCotizacion.setString(9, cotizacionTB.getObservaciones());
                 statementCotizacion.setString(10, cotizacionTB.getIdVenta());
-                statementCotizacion.setString(11, cotizacionTB.getIdCotizacion());               
+                statementCotizacion.setString(11, cotizacionTB.getIdCotizacion());
                 statementCotizacion.addBatch();
 
-                statementDetalleCotizacionBorrar = dbf.getConnection().prepareStatement("DELETE FROM DetalleCotizacionTB WHERE IdCotizacion = ?");
+                statementDetalleCotizacionBorrar = dbf.getConnection()
+                        .prepareStatement("DELETE FROM DetalleCotizacionTB WHERE IdCotizacion = ?");
                 statementDetalleCotizacionBorrar.setString(1, cotizacionTB.getIdCotizacion());
                 statementDetalleCotizacionBorrar.addBatch();
                 statementDetalleCotizacionBorrar.executeBatch();
@@ -101,7 +104,8 @@ public class CotizacionADO {
                 return result;
             } else {
 
-                statementCodigoCotizacion = dbf.getConnection().prepareCall("{? = call Fc_Cotizacion_Codigo_Alfanumerico()}");
+                statementCodigoCotizacion = dbf.getConnection()
+                        .prepareCall("{? = call Fc_Cotizacion_Codigo_Alfanumerico()}");
                 statementCodigoCotizacion.registerOutParameter(1, java.sql.Types.VARCHAR);
                 statementCodigoCotizacion.execute();
                 String idCotizacion = statementCodigoCotizacion.getString(1);
@@ -193,7 +197,8 @@ public class CotizacionADO {
         }
     }
 
-    public static Object Listar_Cotizacion(int opcion, String buscar, String fechaInicio, String fechaFinal, int posicionPagina, int filasPorPagina) {
+    public static Object Listar_Cotizacion(int opcion, String buscar, String fechaInicio, String fechaFinal,
+            int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementCotizaciones = null;
         PreparedStatement statementTotales = null;
@@ -220,17 +225,22 @@ public class CotizacionADO {
                 CotizacionTB cotizacionTB = new CotizacionTB();
                 cotizacionTB.setId(resultCotizacion.getRow());
                 cotizacionTB.setIdCotizacion(resultCotizacion.getString("IdCotizacion"));
-                cotizacionTB.setFechaCotizacion(resultCotizacion.getDate("FechaCotizacion").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                cotizacionTB.setHoraCotizacion(resultCotizacion.getTime("HoraCotizacion").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                cotizacionTB.setFechaCotizacion(resultCotizacion.getDate("FechaCotizacion").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                cotizacionTB.setHoraCotizacion(resultCotizacion.getTime("HoraCotizacion").toLocalTime()
+                        .format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
                 cotizacionTB.setObservaciones(resultCotizacion.getString("Observaciones"));
                 cotizacionTB.setEstado(resultCotizacion.getInt("Estado"));
 
                 VentaTB ventaTB = new VentaTB();
-                ventaTB.setComprobanteName(resultCotizacion.getString("Comprobante"));
+                TipoDocumentoTB tipoDocumentoTB = new TipoDocumentoTB();
+                tipoDocumentoTB.setNombre(resultCotizacion.getString("Comprobante"));
+                ventaTB.setTipoDocumentoTB(tipoDocumentoTB);
                 ventaTB.setSerie(resultCotizacion.getString("Serie"));
                 ventaTB.setNumeracion(resultCotizacion.getString("Numeracion"));
 
-                statementUso = dbf.getConnection().prepareStatement("{CALL Sp_Total_Productos_Usado_Cotizacion_ById(?)}");
+                statementUso = dbf.getConnection()
+                        .prepareStatement("{CALL Sp_Total_Productos_Usado_Cotizacion_ById(?)}");
                 statementUso.setString(1, resultCotizacion.getString("IdCotizacion"));
                 resultUse = statementUso.executeQuery();
 
@@ -239,7 +249,10 @@ public class CotizacionADO {
                     uso = resultUse.getInt("Uso");
                 }
 
-                Label lblEstado = new Label(cotizacionTB.getEstado() == 1 ? "SIN USO" : uso == 0 ? "FALTANTES" : "ASOCIADO \n" + ventaTB.getSerie() + "-" + Tools.formatNumber(ventaTB.getNumeracion()));
+                Label lblEstado = new Label(cotizacionTB.getEstado() == 1 ? "SIN USO"
+                        : uso == 0 ? "FALTANTES"
+                                : "ASOCIADO \n" + ventaTB.getSerie() + "-"
+                                        + Tools.formatNumber(ventaTB.getNumeracion()));
                 lblEstado.getStyleClass().add("labelRoboto12");
                 lblEstado.setAlignment(Pos.CENTER_LEFT);
                 lblEstado.setStyle(uso == 1 ? "-fx-text-fill:#0a6f25;" : "-fx-text-fill:#da1414;");
@@ -320,10 +333,14 @@ public class CotizacionADO {
                 CotizacionTB cotizacionTB = new CotizacionTB();
                 cotizacionTB.setId(result.getRow());
                 cotizacionTB.setIdCotizacion(result.getString("IdCotizacion"));
-                cotizacionTB.setFechaCotizacion(result.getDate("FechaCotizacion").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                cotizacionTB.setHoraCotizacion(result.getTime("HoraCotizacion").toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
-                cotizacionTB.setFechaVencimiento(result.getDate("FechaVencimiento").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                cotizacionTB.setHoraVencimiento(result.getTime("HoraVencimiento").toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
+                cotizacionTB.setFechaCotizacion(result.getDate("FechaCotizacion").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                cotizacionTB.setHoraCotizacion(result.getTime("HoraCotizacion").toLocalTime()
+                        .format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
+                cotizacionTB.setFechaVencimiento(result.getDate("FechaVencimiento").toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                cotizacionTB.setHoraVencimiento(result.getTime("HoraVencimiento").toLocalTime()
+                        .format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
                 cotizacionTB.setObservaciones(result.getString("Observaciones"));
 
                 ClienteTB clienteTB = new ClienteTB();
@@ -363,10 +380,11 @@ public class CotizacionADO {
 
                 result.close();
 
-                statementDetalleCotizacione = dbf.getConnection().prepareStatement("{CALL Sp_Obtener_Detalle_Cotizacion_ById(?)}");
+                statementDetalleCotizacione = dbf.getConnection()
+                        .prepareStatement("{CALL Sp_Obtener_Detalle_Cotizacion_ById(?)}");
                 statementDetalleCotizacione.setString(1, idCotizacion);
                 result = statementDetalleCotizacione.executeQuery();
-                ArrayList<CotizacionDetalleTB> cotizacionTBs = new ArrayList();
+                ArrayList<CotizacionDetalleTB> cotizacionTBs = new ArrayList<>();
                 while (result.next()) {
                     if (venta) {
                         if (!result.getBoolean("Uso")) {
@@ -480,15 +498,18 @@ public class CotizacionADO {
         try {
             dbf.dbConnect();
             dbf.getConnection().setAutoCommit(false);
-            statementValidate = dbf.getConnection().prepareStatement("SELECT * FROM CotizacionTB WHERE IdCotizacion = ?");
+            statementValidate = dbf.getConnection()
+                    .prepareStatement("SELECT * FROM CotizacionTB WHERE IdCotizacion = ?");
             statementValidate.setString(1, idCotizacion);
             if (statementValidate.executeQuery().next()) {
-                statementCotizacion = dbf.getConnection().prepareStatement("DELETE FROM CotizacionTB WHERE IdCotizacion = ?");
+                statementCotizacion = dbf.getConnection()
+                        .prepareStatement("DELETE FROM CotizacionTB WHERE IdCotizacion = ?");
                 statementCotizacion.setString(1, idCotizacion);
                 statementCotizacion.addBatch();
                 statementCotizacion.executeBatch();
 
-                statementCotizacionDetalle = dbf.getConnection().prepareStatement("DELETE FROM DetalleCotizacionTB WHERE IdCotizacion = ?");
+                statementCotizacionDetalle = dbf.getConnection()
+                        .prepareStatement("DELETE FROM DetalleCotizacionTB WHERE IdCotizacion = ?");
                 statementCotizacionDetalle.setString(1, idCotizacion);
                 statementCotizacionDetalle.addBatch();
                 statementCotizacionDetalle.executeBatch();

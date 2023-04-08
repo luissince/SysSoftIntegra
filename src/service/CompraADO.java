@@ -23,8 +23,8 @@ import model.AlmacenTB;
 import model.CompraCreditoTB;
 import model.CompraTB;
 import model.DetalleCompraTB;
+import model.EgresoTB;
 import model.ImpuestoTB;
-import model.IngresoTB;
 import model.LoteTB;
 import model.ModeloObject;
 import model.MonedaTB;
@@ -35,10 +35,12 @@ import model.SuministroTB;
 
 public class CompraADO {
 
-    public static String Compra_Contado(IngresoTB ingresoTB, MovimientoCajaTB movimientoCajaTB, CompraTB compraTB,
+    public static String Compra_Contado(EgresoTB egresoTB, MovimientoCajaTB movimientoCajaTB, CompraTB compraTB,
             TableView<DetalleCompraTB> tableView, ObservableList<LoteTB> loteTBs) {
         DBUtil dbf = new DBUtil();
+
         CallableStatement codigo_compra = null;
+        CallableStatement codigo_egreso = null;
         PreparedStatement compra = null;
         PreparedStatement detalle_compra = null;
         PreparedStatement suministro_precios_remover = null;
@@ -50,7 +52,7 @@ public class CompraADO {
         PreparedStatement suministro_kardex = null;
         // PreparedStatement lote_compra = null;
         PreparedStatement moviento_caja = null;
-        PreparedStatement ingreso = null;
+        PreparedStatement egreso = null;
         // PreparedStatement preparedBanco = null;
         // PreparedStatement preparedBancoHistorial = null;
 
@@ -62,6 +64,12 @@ public class CompraADO {
             codigo_compra.registerOutParameter(1, java.sql.Types.VARCHAR);
             codigo_compra.execute();
             String id_compra = codigo_compra.getString(1);
+
+            codigo_egreso = dbf.getConnection().prepareCall("{? = call Fc_Egreso_Codigo_Alfanumerico()}");
+            codigo_egreso.registerOutParameter(1, java.sql.Types.VARCHAR);
+            codigo_egreso.execute();
+
+            String id_egreso = codigo_egreso.getString(1);
 
             compra = dbf.getConnection().prepareStatement("INSERT INTO "
                     + "CompraTB("
@@ -162,18 +170,29 @@ public class CompraADO {
             // preparedBancoHistorial.setDouble(8, bancoHistorialTB.getSalida());
             // preparedBancoHistorial.addBatch();
             // }
-            ingreso = dbf.getConnection().prepareStatement(
-                    "INSERT INTO IngresoTB(IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)VALUES(?,?,?,?,?,?,?,?)");
-            if (ingresoTB != null) {
-                ingreso.setString(1, id_compra);
-                ingreso.setString(2, ingresoTB.getIdUsuario());
-                ingreso.setString(3, ingresoTB.getDetalle());
-                ingreso.setInt(4, ingresoTB.getProcedencia());
-                ingreso.setString(5, ingresoTB.getFecha());
-                ingreso.setString(6, ingresoTB.getHora());
-                ingreso.setInt(7, ingresoTB.getForma());
-                ingreso.setDouble(8, ingresoTB.getMonto());
-                ingreso.addBatch();
+            egreso = dbf.getConnection().prepareStatement(
+                    "INSERT INTO EgresoTB(\n" +
+                            "IdEgreso,\n" +
+                            "IdProcedencia,\n" +
+                            "IdUsuario,\n" +
+                            "Detalle,\n" +
+                            "Procedencia,\n" +
+                            "Fecha,\n" +
+                            "Hora,\n" +
+                            "Forma,\n" +
+                            "Monto)\n" +
+                            "VALUES(?,?,?,?,?,?,?,?,?)");
+            if (egresoTB != null) {
+                egreso.setString(1, id_egreso);
+                egreso.setString(2, id_compra);
+                egreso.setString(3, egresoTB.getIdUsuario());
+                egreso.setString(4, egresoTB.getDetalle());
+                egreso.setInt(5, egresoTB.getProcedencia());
+                egreso.setString(6, egresoTB.getFecha());
+                egreso.setString(7, egresoTB.getHora());
+                egreso.setInt(8, egresoTB.getForma());
+                egreso.setDouble(8, egresoTB.getMonto());
+                egreso.addBatch();
             }
 
             moviento_caja = dbf.getConnection().prepareStatement(
@@ -301,7 +320,7 @@ public class CompraADO {
             // lote_compra.setString(6, id_compra);
             // lote_compra.addBatch();
             // }
-            ingreso.executeBatch();
+            egreso.executeBatch();
             moviento_caja.executeBatch();
             compra.executeBatch();
             detalle_compra.executeBatch();
@@ -341,6 +360,9 @@ public class CompraADO {
                 if (suministro_costo != null) {
                     suministro_costo.close();
                 }
+                if (codigo_egreso != null) {
+                    codigo_egreso.close();
+                }
                 // if (preparedBanco != null) {
                 // preparedBanco.close();
                 // }
@@ -362,8 +384,8 @@ public class CompraADO {
                 if (suministro_precios_insertar != null) {
                     suministro_precios_insertar.close();
                 }
-                if (ingreso != null) {
-                    ingreso.close();
+                if (egreso != null) {
+                    egreso.close();
                 }
                 if (moviento_caja != null) {
                     moviento_caja.close();
@@ -1257,15 +1279,17 @@ public class CompraADO {
         }
     }
 
-    public static ModeloObject Registrar_Amortizacion(CompraCreditoTB compraCreditoTB, IngresoTB ingresoTB,
+    public static ModeloObject Registrar_Amortizacion(CompraCreditoTB compraCreditoTB, EgresoTB egresoTB,
             MovimientoCajaTB movimientoCajaTB) {
         DBUtil dbf = new DBUtil();
+
         ModeloObject result = new ModeloObject();
+        CallableStatement codigo_egreso = null;
         CallableStatement callableIdCompraCredito = null;
         PreparedStatement statementValidate = null;
         PreparedStatement statementCompra = null;
         PreparedStatement statementCompraCredito = null;
-        PreparedStatement statementIngreso = null;
+        PreparedStatement statementEgreso = null;
         PreparedStatement statementMovimientoCaja = null;
         try {
             dbf.dbConnect();
@@ -1299,18 +1323,27 @@ public class CompraADO {
                     callableIdCompraCredito.execute();
                     String idCompraCreditoCredito = callableIdCompraCredito.getString(1);
 
-                    statementIngreso = dbf.getConnection().prepareStatement(
-                            "INSERT INTO IngresoTB(IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)VALUES(?,?,?,?,?,?,?,?)");
-                    if (ingresoTB != null) {
-                        statementIngreso.setString(1, idCompraCreditoCredito);
-                        statementIngreso.setString(2, ingresoTB.getIdUsuario());
-                        statementIngreso.setString(3, ingresoTB.getDetalle().toUpperCase());
-                        statementIngreso.setInt(4, ingresoTB.getProcedencia());
-                        statementIngreso.setString(5, ingresoTB.getFecha());
-                        statementIngreso.setString(6, ingresoTB.getHora());
-                        statementIngreso.setInt(7, ingresoTB.getForma());
-                        statementIngreso.setDouble(8, ingresoTB.getMonto());
-                        statementIngreso.addBatch();
+                    codigo_egreso = dbf.getConnection().prepareCall("{? = call Fc_Egreso_Codigo_Alfanumerico()}");
+                    codigo_egreso.registerOutParameter(1, java.sql.Types.VARCHAR);
+                    codigo_egreso.execute();
+
+                    String id_egreso = codigo_egreso.getString(1);
+
+                    statementEgreso = dbf.getConnection().prepareStatement(
+                            "INSERT INTO IngresoTB(IdIngreso,IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)\n"
+                                    +
+                                    "VALUES(?,?,?,?,?,?,?,?,?)");
+                    if (egresoTB != null) {
+                        statementEgreso.setString(1, id_egreso);
+                        statementEgreso.setString(2, idCompraCreditoCredito);
+                        statementEgreso.setString(3, egresoTB.getIdUsuario());
+                        statementEgreso.setString(4, egresoTB.getDetalle().toUpperCase());
+                        statementEgreso.setInt(5, egresoTB.getProcedencia());
+                        statementEgreso.setString(6, egresoTB.getFecha());
+                        statementEgreso.setString(7, egresoTB.getHora());
+                        statementEgreso.setInt(8, egresoTB.getForma());
+                        statementEgreso.setDouble(9, egresoTB.getMonto());
+                        statementEgreso.addBatch();
                     }
 
                     statementMovimientoCaja = dbf.getConnection().prepareStatement(
@@ -1355,7 +1388,7 @@ public class CompraADO {
                     }
 
                     statementCompraCredito.executeBatch();
-                    statementIngreso.executeBatch();
+                    statementEgreso.executeBatch();
                     statementMovimientoCaja.executeBatch();
                     statementCompra.executeBatch();
                     dbf.getConnection().commit();
@@ -1402,8 +1435,11 @@ public class CompraADO {
                 if (statementCompra != null) {
                     statementCompra.close();
                 }
-                if (statementIngreso != null) {
-                    statementIngreso.close();
+                if (codigo_egreso != null) {
+                    codigo_egreso.close();
+                }
+                if (statementEgreso != null) {
+                    statementEgreso.close();
                 }
                 if (statementMovimientoCaja != null) {
                     statementMovimientoCaja.close();

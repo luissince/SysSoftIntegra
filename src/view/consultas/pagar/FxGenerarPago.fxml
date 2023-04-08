@@ -18,7 +18,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em; -fx-border-width: 0px0px 1px 0px; -fx-border-color: #3c8dbc;">
                      <children>
-                        <Label styleClass="labelRobotoBold15" text="Amortizar" textFill="#020203">
+                        <Label styleClass="labelRobotoBold15" text="Pagar" textFill="#020203">
                            <graphic>
                               <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

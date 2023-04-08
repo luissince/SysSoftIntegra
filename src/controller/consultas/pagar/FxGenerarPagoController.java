@@ -17,13 +17,13 @@ import javafx.scene.layout.AnchorPane;
 import model.CajaTB;
 import model.CompraCreditoTB;
 import model.CompraTB;
-import model.IngresoTB;
+import model.EgresoTB;
 import model.ModeloObject;
 import model.MovimientoCajaTB;
 import service.CajaADO;
 import service.CompraADO;
 
-public class FxAmortizarPagosController implements Initializable {
+public class FxGenerarPagoController implements Initializable {
 
     @FXML
     private AnchorPane apWindow;
@@ -111,17 +111,17 @@ public class FxAmortizarPagosController implements Initializable {
                     2 = tarjeta
                     3 = deposito
                      */
-                    IngresoTB ingresoTB = new IngresoTB();
-                    ingresoTB.setIdProcedencia("");
-                    ingresoTB.setIdUsuario(Session.USER_ID);
-                    ingresoTB.setDetalle("SALIDA DE DINERO POR CUENTAS POR PAGAR DEL COMPROBANTE " + compraTB.getSerie() + "-" + compraTB.getNumeracion());
-                    ingresoTB.setProcedencia(6);
-                    ingresoTB.setFecha(Tools.getDate());
-                    ingresoTB.setHora(Tools.getTime());
-                    ingresoTB.setForma(rbEfectivo.isSelected() ? 1 : rbTarjeta.isSelected() ? 2 : 3);
-                    ingresoTB.setMonto(Double.parseDouble(txtMonto.getText()));
+                    EgresoTB egresoTB = new EgresoTB();
+                    egresoTB.setIdProcedencia("");
+                    egresoTB.setIdUsuario(Session.USER_ID);
+                    egresoTB.setDetalle("SALIDA DE DINERO POR CUENTAS POR PAGAR DEL COMPROBANTE " + compraTB.getSerie() + "-" + compraTB.getNumeracion());
+                    egresoTB.setProcedencia(6);
+                    egresoTB.setFecha(Tools.getDate());
+                    egresoTB.setHora(Tools.getTime());
+                    egresoTB.setForma(rbEfectivo.isSelected() ? 1 : rbTarjeta.isSelected() ? 2 : 3);
+                    egresoTB.setMonto(Double.parseDouble(txtMonto.getText()));
 
-                    ModeloObject result = CompraADO.Registrar_Amortizacion(compraCreditoTB, ingresoTB, null);
+                    ModeloObject result = CompraADO.Registrar_Amortizacion(compraCreditoTB, egresoTB, null);
                     if (result.getState().equalsIgnoreCase("inserted")) {
                         Tools.Dispose(apWindow);
                         cuentasPorPagarVisualizarController.openModalImpresion(compraTB.getIdCompra());

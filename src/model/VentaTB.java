@@ -19,8 +19,6 @@ public class VentaTB {
 
     private int idMoneda;
 
-    private String comprobanteName;
-
     private String serie;
 
     private String numeracion;
@@ -65,8 +63,6 @@ public class VentaTB {
 
     private boolean tipopago;
 
-    private String codigoAlterno;
-
     private ClienteTB clienteTB;
 
     private MonedaTB monedaTB;
@@ -100,6 +96,8 @@ public class VentaTB {
     private String idCotizacion;
 
     private TipoDocumentoTB tipoDocumentoTB;
+
+    private ArrayList<IngresoTB> ingresoTBs;
 
     public VentaTB() {
 
@@ -156,14 +154,6 @@ public class VentaTB {
 
     public void setIdMoneda(int idMoneda) {
         this.idMoneda = idMoneda;
-    }
-
-    public String getComprobanteName() {
-        return comprobanteName;
-    }
-
-    public void setComprobanteName(String comprobanteName) {
-        this.comprobanteName = comprobanteName;
     }
 
     public String getSerie() {
@@ -342,14 +332,6 @@ public class VentaTB {
         this.numeroOperacion = numeroOperacion;
     }
 
-    public String getCodigoAlterno() {
-        return codigoAlterno;
-    }
-
-    public void setCodigoAlterno(String codigoAlterno) {
-        this.codigoAlterno = codigoAlterno;
-    }
-
     public ClienteTB getClienteTB() {
         return clienteTB;
     }
@@ -486,23 +468,31 @@ public class VentaTB {
         this.tipoDocumentoTB = tipoDocumentoTB;
     }
 
+    public ArrayList<IngresoTB> getIngresoTBs() {
+        return ingresoTBs;
+    }
+
+    public void setIngresoTBs(ArrayList<IngresoTB> ingresoTBs) {
+        this.ingresoTBs = ingresoTBs;
+    }
+
     @Override
     public String toString() {
-        return "VentaTB{" + "id=" + id + ", idVenta=" + idVenta + ", idCliente=" + idCliente + ", vendedor=" + vendedor
-                + ", idComprobante=" + idComprobante + ", idMoneda=" + idMoneda + ", comprobanteName=" + comprobanteName
-                + ", serie=" + serie + ", numeracion=" + numeracion + ", fechaVenta=" + fechaVenta + ", horaVenta="
-                + horaVenta + ", fechaVencimiento=" + fechaVencimiento + ", horaVencimiento=" + horaVencimiento
-                + ", total=" + total + ", tipo=" + tipo + ", tipoName=" + tipoName + ", estado=" + estado
-                + ", estadoName=" + estadoName + ", estadoLabel=" + estadoLabel + ", formaName=" + formaName
-                + ", observaciones=" + observaciones + ", efectivo=" + efectivo + ", vuelto=" + vuelto + ", tarjeta="
-                + tarjeta + ", deposito=" + deposito + ", tipoCredito=" + tipoCredito + ", codigo=" + codigo
-                + ", numeroOperacion=" + numeroOperacion + ", tipopago=" + tipopago + ", codigoAlterno=" + codigoAlterno
+        return "VentaTB [id=" + id + ", idVenta=" + idVenta + ", idCliente=" + idCliente + ", vendedor=" + vendedor
+                + ", idComprobante=" + idComprobante + ", idMoneda=" + idMoneda + ", serie=" + serie + ", numeracion="
+                + numeracion + ", fechaVenta=" + fechaVenta + ", horaVenta=" + horaVenta + ", fechaVencimiento="
+                + fechaVencimiento + ", horaVencimiento=" + horaVencimiento + ", total=" + total + ", tipo=" + tipo
+                + ", tipoName=" + tipoName + ", estado=" + estado + ", estadoName=" + estadoName + ", estadoLabel="
+                + estadoLabel + ", formaName=" + formaName + ", observaciones=" + observaciones + ", efectivo="
+                + efectivo + ", vuelto=" + vuelto + ", tarjeta=" + tarjeta + ", deposito=" + deposito + ", tipoCredito="
+                + tipoCredito + ", codigo=" + codigo + ", numeroOperacion=" + numeroOperacion + ", tipopago=" + tipopago
                 + ", clienteTB=" + clienteTB + ", monedaTB=" + monedaTB + ", empleadoTB=" + empleadoTB
                 + ", notaCreditoTB=" + notaCreditoTB + ", suministroTBs=" + suministroTBs + ", hbOpciones=" + hbOpciones
                 + ", btnImprimir=" + btnImprimir + ", btnAgregar=" + btnAgregar + ", btnSumar=" + btnSumar
                 + ", ventaCreditoTBs=" + ventaCreditoTBs + ", montoTotal=" + montoTotal + ", montoCobrado="
                 + montoCobrado + ", montoRestante=" + montoRestante + ", procedencia=" + procedencia + ", empresaTB="
-                + empresaTB + ", idCotizacion=" + idCotizacion + '}';
+                + empresaTB + ", idCotizacion=" + idCotizacion + ", tipoDocumentoTB=" + tipoDocumentoTB
+                + ", ingresoTBs=" + ingresoTBs + "]";
     }
 
 }

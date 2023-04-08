@@ -31,6 +31,7 @@ public class NotaCreditoADO {
     public static Object Obtener_Nota_Credito_ById_Venta(String comprobante) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementNotaCredito = null;
+        PreparedStatement statementNotaCreditoDetalle = null;
         try {
             dbf.dbConnect();
 
@@ -126,7 +127,7 @@ public class NotaCreditoADO {
                 }
             }
 
-            statementNotaCredito = dbf.getConnection().prepareStatement("SELECT \n"
+            statementNotaCreditoDetalle = dbf.getConnection().prepareStatement("SELECT \n"
                     + "dv.IdVenta,\n"
                     + "dv.IdArticulo,\n"
                     + "s.Clave,\n"
@@ -145,9 +146,9 @@ public class NotaCreditoADO {
                     + "INNER JOIN SuministroTB AS s ON s.IdSuministro = dv.IdArticulo\n"
                     + "LEFT JOIN DetalleTB AS d ON d.IdDetalle = dv.IdMedida AND d.IdMantenimiento = '0013'\n"
                     + "WHERE dv.IdVenta = ?");
-            statementNotaCredito.setString(1, ventaTB.getIdVenta());
+            statementNotaCreditoDetalle.setString(1, ventaTB.getIdVenta());
             ArrayList<DetalleVentaTB> arrayDetalleVenta = new ArrayList<>();
-            try (ResultSet resultSet = statementNotaCredito.executeQuery()) {
+            try (ResultSet resultSet = statementNotaCreditoDetalle.executeQuery()) {
                 while (resultSet.next()) {
                     DetalleVentaTB detalleVentaTB = new DetalleVentaTB();
                     detalleVentaTB.setIdVenta(resultSet.getString("IdVenta"));
@@ -206,6 +207,9 @@ public class NotaCreditoADO {
                 if (statementNotaCredito != null) {
                     statementNotaCredito.close();
                 }
+                if (statementNotaCreditoDetalle != null) {
+                    statementNotaCreditoDetalle.close();
+                }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
                 return ex.getLocalizedMessage();
@@ -217,7 +221,10 @@ public class NotaCreditoADO {
             int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementNotaCredito = null;
+        PreparedStatement statementNotaCreditoDetalle = null;
         ResultSet resultSet = null;
+        ResultSet resultSetDetalle = null;
+
         try {
             dbf.dbConnect();
             Object[] objects = new Object[2];
@@ -249,7 +256,10 @@ public class NotaCreditoADO {
                 notaCreditoTB.setClienteTB(clienteTB);
 
                 VentaTB ventaTB = new VentaTB();
-                ventaTB.setComprobanteName(resultSet.getString("VentaComprobante"));
+                TipoDocumentoTB tipoDocumentoTB = new TipoDocumentoTB();
+                tipoDocumentoTB.setNombre(resultSet.getString("VentaComprobante"));
+                ventaTB.setTipoDocumentoTB(tipoDocumentoTB);
+
                 ventaTB.setSerie(resultSet.getString("SerieVenta"));
                 ventaTB.setNumeracion(resultSet.getString("NumeracionVenta"));
                 notaCreditoTB.setVentaTB(ventaTB);
@@ -262,15 +272,16 @@ public class NotaCreditoADO {
                 notaCreditoTBs.add(notaCreditoTB);
             }
 
-            statementNotaCredito = dbf.getConnection().prepareStatement("{CALL Sp_Listar_NotaCredito_Count(?,?,?,?)}");
-            statementNotaCredito.setInt(1, opcion);
-            statementNotaCredito.setString(2, buscar);
-            statementNotaCredito.setString(3, fechaInico);
-            statementNotaCredito.setString(4, fechaFinal);
-            resultSet = statementNotaCredito.executeQuery();
+            statementNotaCreditoDetalle = dbf.getConnection()
+                    .prepareStatement("{CALL Sp_Listar_NotaCredito_Count(?,?,?,?)}");
+            statementNotaCreditoDetalle.setInt(1, opcion);
+            statementNotaCreditoDetalle.setString(2, buscar);
+            statementNotaCreditoDetalle.setString(3, fechaInico);
+            statementNotaCreditoDetalle.setString(4, fechaFinal);
+            resultSetDetalle = statementNotaCreditoDetalle.executeQuery();
             Integer cantidadTotal = 0;
-            if (resultSet.next()) {
-                cantidadTotal = resultSet.getInt("Total");
+            if (resultSetDetalle.next()) {
+                cantidadTotal = resultSetDetalle.getInt("Total");
             }
 
             objects[0] = notaCreditoTBs;
@@ -283,8 +294,14 @@ public class NotaCreditoADO {
                 if (statementNotaCredito != null) {
                     statementNotaCredito.close();
                 }
+                if (statementNotaCreditoDetalle != null) {
+                    statementNotaCreditoDetalle.close();
+                }
                 if (resultSet != null) {
                     resultSet.close();
+                }
+                if (resultSetDetalle != null) {
+                    resultSetDetalle.close();
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
@@ -296,7 +313,9 @@ public class NotaCreditoADO {
     public static Object DetalleNotaCreditoById(String idNotaCredito) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementNotaCredito = null;
+        PreparedStatement statementNotaCreditoDetalle = null;
         ResultSet resultSet = null;
+        ResultSet resultSetDetalle = null;
         try {
             dbf.dbConnect();
             statementNotaCredito = dbf.getConnection().prepareStatement("{CALL Sp_Obtener_NotaCredito_ById(?)}");
@@ -345,31 +364,33 @@ public class NotaCreditoADO {
                 notaCreditoTB.setEmpleadoTB(empleadoTB);
 
                 VentaTB ventaTB = new VentaTB();
-                ventaTB.setComprobanteName(resultSet.getString("VentaComprobante"));
+                TipoDocumentoTB tipoDocumentoTB = new TipoDocumentoTB();
+                tipoDocumentoTB.setNombre(resultSet.getString("VentaComprobante"));
+                ventaTB.setTipoDocumentoTB(tipoDocumentoTB);
                 ventaTB.setSerie(resultSet.getString("SerieVenta"));
                 ventaTB.setNumeracion(resultSet.getString("NumeracionVenta"));
                 notaCreditoTB.setVentaTB(ventaTB);
 
-                statementNotaCredito = dbf.getConnection()
+                statementNotaCreditoDetalle = dbf.getConnection()
                         .prepareStatement("{CALL Sp_Obtener_NotaCredito_Detalle_ById(?)}");
-                statementNotaCredito.setString(1, idNotaCredito);
-                resultSet = statementNotaCredito.executeQuery();
+                statementNotaCreditoDetalle.setString(1, idNotaCredito);
+                resultSetDetalle = statementNotaCreditoDetalle.executeQuery();
                 ArrayList<NotaCreditoDetalleTB> creditoDetalleTBs = new ArrayList<>();
-                while (resultSet.next()) {
+                while (resultSetDetalle.next()) {
                     NotaCreditoDetalleTB notaCreditoDetalleTB = new NotaCreditoDetalleTB();
-                    notaCreditoDetalleTB.setId(resultSet.getRow());
+                    notaCreditoDetalleTB.setId(resultSetDetalle.getRow());
                     SuministroTB suministroTB = new SuministroTB();
-                    suministroTB.setClave(resultSet.getString("Clave"));
-                    suministroTB.setNombreMarca(resultSet.getString("NombreMarca"));
-                    suministroTB.setUnidadCompraName(resultSet.getString("Unidad"));
+                    suministroTB.setClave(resultSetDetalle.getString("Clave"));
+                    suministroTB.setNombreMarca(resultSetDetalle.getString("NombreMarca"));
+                    suministroTB.setUnidadCompraName(resultSetDetalle.getString("Unidad"));
 
-                    notaCreditoDetalleTB.setCantidad(resultSet.getDouble("Cantidad"));
-                    notaCreditoDetalleTB.setPrecio(resultSet.getDouble("Precio"));
-                    notaCreditoDetalleTB.setDescuento(resultSet.getDouble("Descuento"));
+                    notaCreditoDetalleTB.setCantidad(resultSetDetalle.getDouble("Cantidad"));
+                    notaCreditoDetalleTB.setPrecio(resultSetDetalle.getDouble("Precio"));
+                    notaCreditoDetalleTB.setDescuento(resultSetDetalle.getDouble("Descuento"));
 
                     ImpuestoTB impuestoTB = new ImpuestoTB();
-                    impuestoTB.setNombre(resultSet.getString("NombreImpuesto"));
-                    impuestoTB.setValor(resultSet.getDouble("ValorImpuesto"));
+                    impuestoTB.setNombre(resultSetDetalle.getString("NombreImpuesto"));
+                    impuestoTB.setValor(resultSetDetalle.getDouble("ValorImpuesto"));
                     notaCreditoDetalleTB.setImpuestoTB(impuestoTB);
 
                     notaCreditoDetalleTB.setSuministroTB(suministroTB);
@@ -388,8 +409,14 @@ public class NotaCreditoADO {
                 if (statementNotaCredito != null) {
                     statementNotaCredito.close();
                 }
+                if (statementNotaCreditoDetalle != null) {
+                    statementNotaCreditoDetalle.close();
+                }
                 if (resultSet != null) {
                     resultSet.close();
+                }
+                if (resultSetDetalle != null) {
+                    resultSetDetalle.close();
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {

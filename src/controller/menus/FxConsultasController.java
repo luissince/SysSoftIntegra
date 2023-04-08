@@ -2,7 +2,7 @@ package controller.menus;
 
 import controller.banco.FxBancosController;
 import controller.consultas.compras.FxComprasRealizadasController;
-import controller.consultas.pagar.FxCuentasPorCobrarController;
+import controller.consultas.cobrar.FxCuentasPorCobrarController;
 import controller.consultas.pagar.FxCuentasPorPagarController;
 import controller.operaciones.cortecaja.FxCajaConsultasController;
 import controller.operaciones.cotizacion.FxCotizacionRealizadasController;

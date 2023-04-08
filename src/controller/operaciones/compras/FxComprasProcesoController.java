@@ -22,6 +22,7 @@ import javafx.scene.layout.HBox;
 import model.CajaTB;
 import model.CompraTB;
 import model.DetalleCompraTB;
+import model.EgresoTB;
 import model.IngresoTB;
 import model.LoteTB;
 import model.MovimientoCajaTB;
@@ -221,19 +222,19 @@ public class FxComprasProcesoController implements Initializable {
                     2 = tarjeta
                     3 = deposito
              */
-            IngresoTB ingresoTB = new IngresoTB();
-            ingresoTB.setIdProcedencia("");
-            ingresoTB.setIdUsuario(Session.USER_ID);
-            ingresoTB.setDetalle("SALIDA DE DINERO POR COMPRA");
-            ingresoTB.setProcedencia(2);
-            ingresoTB.setFecha(Tools.getDate());
-            ingresoTB.setHora(Tools.getTime());
-            ingresoTB.setForma(rbEfectivoEgreso.isSelected() ? 1 : rbTarjetaEgreso.isSelected() ? 2 : 3);
-            ingresoTB.setMonto(montoTotal);
+            EgresoTB egresoTB = new EgresoTB();
+            egresoTB.setIdProcedencia("");
+            egresoTB.setIdUsuario(Session.USER_ID);
+            egresoTB.setDetalle("SALIDA DE DINERO POR COMPRA");
+            egresoTB.setProcedencia(2);
+            egresoTB.setFecha(Tools.getDate());
+            egresoTB.setHora(Tools.getTime());
+            egresoTB.setForma(rbEfectivoEgreso.isSelected() ? 1 : rbTarjetaEgreso.isSelected() ? 2 : 3);
+            egresoTB.setMonto(montoTotal);
 
             short value = Tools.AlertMessageConfirmation(apWindow, "Compra", "¿Está seguro de continuar?");
             if (value == 1) {
-                String result = CompraADO.Compra_Contado(ingresoTB, null, compraTB, tvList, loteTBs);
+                String result = CompraADO.Compra_Contado(egresoTB, null, compraTB, tvList, loteTBs);
                 if (result.equalsIgnoreCase("register")) {
                     Tools.AlertMessageInformation(apWindow, "Compra", "Se registró correctamente la compra.");
                     Tools.Dispose(apWindow);

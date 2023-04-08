@@ -5,14 +5,24 @@ import controller.tools.Tools;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -21,15 +31,21 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import model.BancoTB;
+import model.IngresoTB;
 import model.ResultTransaction;
 import model.VentaCreditoTB;
 import model.VentaTB;
+import service.BancoADO;
 import service.VentaADO;
 
 public class FxVentaProcesoController implements Initializable {
@@ -41,63 +57,21 @@ public class FxVentaProcesoController implements Initializable {
     @FXML
     private Label lblTotal;
     @FXML
-    private TextField txtEfectivo;
-    @FXML
-    private TextField txtTarjeta;
-    @FXML
-    private Label lblVueltoNombre;
-    @FXML
-    private Label lblVuelto;
-    @FXML
-    private TextField txtEfectivoAdelantado;
-    @FXML
-    private TextField txtTarjetaAdelantado;
-    @FXML
-    private Label lblVueltoNombreAdelantado;
-    @FXML
-    private Label lblVueltoAdelantado;
-    @FXML
     private VBox vbEfectivo;
     @FXML
     private VBox vbCredito;
     @FXML
-    private VBox vbViewEfectivo;
-    @FXML
     private VBox vbViewCredito;
     @FXML
-    private VBox vbViewPagoAdelantado;
+    private VBox vbViewEfectivo;
     @FXML
     private Label lblEfectivo;
     @FXML
     private Label lblCredito;
     @FXML
-    private VBox vbPagoAdelantado;
-    @FXML
-    private Label lblPagoAdelantado;
-    @FXML
     private Label lblMonedaLetras;
     @FXML
     private DatePicker txtFechaVencimiento;
-    @FXML
-    private CheckBox cbDeposito;
-    @FXML
-    private VBox vbEfectivoView;
-    @FXML
-    private VBox vbDepositoView;
-    @FXML
-    private TextField txtDeposito;
-    @FXML
-    private TextField txtNumOperacion;
-    @FXML
-    private CheckBox cbDepositoAdelantado;
-    @FXML
-    private VBox vbEfectivoViewAdelantado;
-    @FXML
-    private VBox vbDepositoViewAdelantado;
-    @FXML
-    private TextField txtDepositoAdelantado;
-    @FXML
-    private TextField txtNumOperacionAdelantado;
     @FXML
     private RadioButton rbCreditoVariable;
     @FXML
@@ -118,6 +92,20 @@ public class FxVentaProcesoController implements Initializable {
     private TableColumn<VentaCreditoTB, CheckBox> tcAdelanto;
     @FXML
     private TableColumn<VentaCreditoTB, ComboBox<String>> tcForma;
+    @FXML
+    private HBox hbLoadProcesando;
+    @FXML
+    private Label lblTextoProceso;
+    @FXML
+    private Button btnCancelarProceso;
+    @FXML
+    private ComboBox<BancoTB> cbMetodoTransaccion;
+    @FXML
+    private VBox vbContenedorMetodoPago;
+    @FXML
+    private Label lblVueltoContadoNombre;
+    @FXML
+    private Label lblVueltoContado;
 
     private FxVentaEstructuraController ventaEstructuraController;
 
@@ -127,32 +115,37 @@ public class FxVentaProcesoController implements Initializable {
 
     private double vueltoContado;
 
-    private boolean estadoCobroContado;
+    private double totalVenta;
 
-    private double vueltoAdelantado;
-
-    private boolean estadoCobroAdelantado;
-
-    private double total_venta;
-
-    private short state_view_pago;
+    private short metodoVentaSelecciondo;
 
     private boolean privilegios;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_PRESSED);
-        state_view_pago = 0;
-        estadoCobroContado = false;
-        total_venta = 0;
+        metodoVentaSelecciondo = 0;
+        totalVenta = 0;
         vueltoContado = 0.00;
         monedaCadena = new ConvertMonedaCadena();
-        lblVueltoNombre.setText("SU CAMBIO: ");
-        lblVueltoNombreAdelantado.setText("SU CAMBIO: ");
+        lblVueltoContadoNombre.setText("SU CAMBIO");
 
         ToggleGroup toggleGroupTipo = new ToggleGroup();
         rbCreditoVariable.setToggleGroup(toggleGroupTipo);
         rbCreditoFijo.setToggleGroup(toggleGroupTipo);
+
+        txtFechaVencimiento.setDayCellFactory(picket -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                if (date.isBefore(LocalDate.now())) {
+                    setDisable(true);
+                }
+                if (date.isEqual(LocalDate.now())) {
+                    setDisable(true);
+                }
+            };
+        });
 
         loadInitTablePlazos();
     }
@@ -163,7 +156,8 @@ public class FxVentaProcesoController implements Initializable {
         tcMonto.setCellValueFactory(new PropertyValueFactory<>("tfMonto"));
         tcAdelanto.setCellValueFactory(new PropertyValueFactory<>("cbMontoInicial"));
         tcForma.setCellValueFactory(new PropertyValueFactory<>("cbForma"));
-        tvListPlazos.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+        tvListPlazos.setPlaceholder(
+                Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
     }
 
     private void addPlazos() {
@@ -211,434 +205,510 @@ public class FxVentaProcesoController implements Initializable {
         tvListPlazos.getItems().add(creditoTB);
     }
 
-    public void setInitComponents(VentaTB ventaTB, boolean provilegios) {
-        this.ventaTB = ventaTB;
-        total_venta = Double.parseDouble(Tools.roundingValue(ventaTB.getTotal(), 2));
-
-        lblTotal.setText("TOTAL A PAGAR: " + ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(total_venta, 2));
-
-        lblVuelto.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
-
-        lblVueltoAdelantado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoAdelantado, 2));
-
-        lblMonedaLetras.setText(monedaCadena.Convertir(Tools.roundingValue(total_venta, 2), true, ventaTB.getMonedaTB().getNombre()));
-        txtDeposito.setText(Tools.roundingValue(total_venta, 2));
-        txtDepositoAdelantado.setText(Tools.roundingValue(total_venta, 2));
-
-        hbContenido.setDisable(false);
-        txtEfectivo.requestFocus();
-        this.privilegios = provilegios;
-    }
-
-    private void TotalAPagarContado() {
-        if (txtEfectivo.getText().isEmpty() && txtTarjeta.getText().isEmpty()) {
-            lblVuelto.setText(ventaTB.getMonedaTB().getSimbolo() + " 0.00");
-            lblVueltoNombre.setText("POR PAGAR: ");
-            estadoCobroContado = false;
-        } else if (txtEfectivo.getText().isEmpty()) {
-            if (Double.parseDouble(txtTarjeta.getText()) >= total_venta) {
-                vueltoContado = Double.parseDouble(txtTarjeta.getText()) - total_venta;
-                lblVueltoNombre.setText("SU CAMBIO ES: ");
-                estadoCobroContado = true;
-            } else {
-                vueltoContado = total_venta - Double.parseDouble(txtTarjeta.getText());
-                lblVueltoNombre.setText("POR PAGAR: ");
-                estadoCobroContado = false;
-            }
-
-        } else if (txtTarjeta.getText().isEmpty()) {
-            if (Double.parseDouble(txtEfectivo.getText()) >= total_venta) {
-                vueltoContado = Double.parseDouble(txtEfectivo.getText()) - total_venta;
-                lblVueltoNombre.setText("SU CAMBIO ES: ");
-                estadoCobroContado = true;
-            } else {
-                vueltoContado = total_venta - Double.parseDouble(txtEfectivo.getText());
-                lblVueltoNombre.setText("POR PAGAR: ");
-                estadoCobroContado = false;
-            }
-        } else {
-            double suma = (Double.parseDouble(txtEfectivo.getText())) + (Double.parseDouble(txtTarjeta.getText()));
-            if (suma >= total_venta) {
-                vueltoContado = suma - total_venta;
-                lblVueltoNombre.setText("SU CAMBIO ES: ");
-                estadoCobroContado = true;
-            } else {
-                vueltoContado = total_venta - suma;
-                lblVueltoNombre.setText("POR PAGAR: ");
-                estadoCobroContado = false;
-            }
+    private void addMetodoPago() {
+        if (cbMetodoTransaccion.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(window, "Venta", "Seleccione el método de pago.");
+            cbMetodoTransaccion.requestFocus();
+            return;
         }
 
-        lblVuelto.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
-    }
+        List<Node> vBoxFiltrados = vbContenedorMetodoPago.getChildren()
+                .stream()
+                .filter(vBoxFilter -> ((HBox) vBoxFilter).getId() == cbMetodoTransaccion.getSelectionModel()
+                        .getSelectedItem().getIdBanco())
+                .collect(Collectors.toList());
 
-    private void TotalAPagarAdelantado() {
-        if (txtEfectivoAdelantado.getText().isEmpty() && txtTarjetaAdelantado.getText().isEmpty()) {
-            lblVueltoAdelantado.setText(ventaTB.getMonedaTB().getSimbolo() + " 0.00");
-            lblVueltoNombreAdelantado.setText("POR PAGAR: ");
-            estadoCobroAdelantado = false;
-        } else if (txtEfectivoAdelantado.getText().isEmpty()) {
-            if (Double.parseDouble(txtTarjetaAdelantado.getText()) >= total_venta) {
-                vueltoAdelantado = Double.parseDouble(txtTarjetaAdelantado.getText()) - total_venta;
-                lblVueltoNombreAdelantado.setText("SU CAMBIO ES: ");
-                estadoCobroAdelantado = true;
-            } else {
-                vueltoAdelantado = total_venta - Double.parseDouble(txtTarjetaAdelantado.getText());
-                lblVueltoNombreAdelantado.setText("POR PAGAR: ");
-                estadoCobroAdelantado = false;
-            }
-
-        } else if (txtTarjetaAdelantado.getText().isEmpty()) {
-            if (Double.parseDouble(txtEfectivoAdelantado.getText()) >= total_venta) {
-                vueltoAdelantado = Double.parseDouble(txtEfectivoAdelantado.getText()) - total_venta;
-                lblVueltoNombreAdelantado.setText("SU CAMBIO ES: ");
-                estadoCobroAdelantado = true;
-            } else {
-                vueltoAdelantado = total_venta - Double.parseDouble(txtEfectivoAdelantado.getText());
-                lblVueltoNombreAdelantado.setText("POR PAGAR: ");
-                estadoCobroAdelantado = false;
-            }
-        } else {
-            double suma = (Double.parseDouble(txtEfectivoAdelantado.getText())) + (Double.parseDouble(txtTarjetaAdelantado.getText()));
-            if (suma >= total_venta) {
-                vueltoAdelantado = suma - total_venta;
-                lblVueltoNombreAdelantado.setText("SU CAMBIO ES: ");
-                estadoCobroAdelantado = true;
-            } else {
-                vueltoAdelantado = total_venta - suma;
-                lblVueltoNombreAdelantado.setText("POR PAGAR: ");
-                estadoCobroAdelantado = false;
-            }
+        if (vBoxFiltrados.size() != 0) {
+            Tools.AlertMessageWarning(window, "Venta", "Ya existe en la lista el método de pago.");
+            cbMetodoTransaccion.requestFocus();
+            return;
         }
 
-        lblVueltoAdelantado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoAdelantado, 2));
+        generarMetodoPago(cbMetodoTransaccion.getSelectionModel().getSelectedItem());
+    }
+
+    private void generarMetodoPago(BancoTB bancoTB) {
+        HBox hBox = new HBox();
+        hBox.setId(bancoTB.getIdBanco());
+        hBox.setStyle("-fx-spacing: 0.6666666666666666em;");
+
+        VBox vbMonto = new VBox();
+        HBox.setHgrow(vbMonto, Priority.ALWAYS);
+        vbMonto.setStyle("-fx-spacing: 0.5333333333333333em;");
+        Label lblMonto = new Label(
+                "Monto - " + bancoTB.getNombreCuenta());
+        lblMonto.getStyleClass().add("labelOpenSansRegular13");
+        TextField txtMonto = new TextField();
+        txtMonto.setPromptText("0.00");
+        txtMonto.getStyleClass().add("text-field-normal");
+        txtMonto.setPrefWidth(260);
+        txtMonto.setPrefHeight(30);
+        txtMonto.setOnAction(event -> onEventAceptar());
+        txtMonto.setOnKeyReleased(event -> {
+            if (txtMonto.getText().isEmpty()) {
+                vueltoContado = totalVenta;
+                generarVuelto();
+                return;
+            }
+            if (Tools.isNumeric(txtMonto.getText())) {
+                generarVuelto();
+            }
+        });
+        txtMonto.setOnKeyTyped(event -> {
+            char c = event.getCharacter().charAt(0);
+            if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+                event.consume();
+            }
+            if (c == '.' && txtMonto.getText().contains(".")) {
+                event.consume();
+            }
+        });
+        vbMonto.getChildren().addAll(lblMonto, txtMonto);
+
+        VBox vbOperacion = new VBox();
+        HBox.setHgrow(vbOperacion, Priority.ALWAYS);
+        vbOperacion.setStyle("-fx-spacing: 0.5333333333333333em;");
+        Label lblOperacion = new Label(
+                "N° de Operación - " + bancoTB.getNombreCuenta());
+        lblOperacion.getStyleClass().add("labelOpenSansRegular13");
+
+        HBox hbContendorOperacion = new HBox();
+        TextField txtOperacion = new TextField();
+        txtOperacion.setPromptText(
+                "N° Operación");
+        txtOperacion.getStyleClass().add("text-field-normal");
+        txtOperacion.setPrefWidth(260);
+        txtOperacion.setPrefHeight(30);
+        txtOperacion.setOnAction(event -> onEventAceptar());
+        Button btnQuitar = new Button();
+        btnQuitar.setPrefHeight(30);
+        btnQuitar.setMaxHeight(Double.MAX_VALUE);
+        btnQuitar.getStyleClass().add("buttonLightError");
+        ImageView imageView = new ImageView(new Image("/view/image/remove-gray.png"));
+        imageView.setFitWidth(20);
+        imageView.setFitHeight(20);
+        btnQuitar.setGraphic(imageView);
+        btnQuitar.setOnAction(event -> {
+            vbContenedorMetodoPago.getChildren().remove(hBox);
+            generarVuelto();
+        });
+        btnQuitar.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                vbContenedorMetodoPago.getChildren().remove(hBox);
+                generarVuelto();
+            }
+        });
+        hbContendorOperacion.getChildren().addAll(txtOperacion, btnQuitar);
+        vbOperacion.getChildren().addAll(lblOperacion, hbContendorOperacion);
+
+        hBox.getChildren().addAll(vbMonto, vbOperacion);
+
+        vbContenedorMetodoPago.getChildren().add(hBox);
+        txtMonto.requestFocus();
+    }
+
+    public void loadInitComponents(VentaTB ventaTB, boolean provilegios) {
+        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<ObservableList<BancoTB>> task = new Task<ObservableList<BancoTB>>() {
+            @Override
+            public ObservableList<BancoTB> call() throws Exception {
+                Object result = BancoADO.ObtenerListarBancos();
+                if (result instanceof ObservableList<?>) {
+                    return (ObservableList<BancoTB>) result;
+                } else {
+                    throw new Exception("El objeto devuelto por el método no es una lista observable de bancos.");
+                }
+            }
+        };
+
+        task.setOnScheduled(e -> {
+            hbLoadProcesando.setVisible(true);
+            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
+            btnCancelarProceso.setText("Cancelar Proceso");
+            if (btnCancelarProceso.getOnAction() != null) {
+                btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
+            }
+            btnCancelarProceso.setOnAction(event -> {
+                if (task.isRunning()) {
+                    task.cancel();
+                }
+                Tools.Dispose(window);
+            });
+        });
+
+        task.setOnFailed(e -> {
+            lblTextoProceso.setText(task.getException().getMessage());
+            btnCancelarProceso.setText("Cerrar Vista");
+        });
+
+        task.setOnSucceeded(e -> {
+            ObservableList<BancoTB> bancos = task.getValue();
+            cbMetodoTransaccion.getItems().addAll(bancos);
+
+            Optional<BancoTB> bancoConFormaPago1 = bancos.stream().filter(b -> b.getFormaPago() == 1).findFirst();
+            bancoConFormaPago1.ifPresent(this::generarMetodoPago);
+
+            this.ventaTB = ventaTB;
+            totalVenta = Double.parseDouble(Tools.roundingValue(ventaTB.getTotal(), 2));
+
+            lblTotal.setText(
+                    "TOTAL A PAGAR: " + ventaTB.getMonedaTB().getSimbolo() + " "
+                            + Tools.roundingValue(totalVenta, 2));
+
+            lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " "
+                    + Tools.roundingValue(vueltoContado, 2));
+
+            lblMonedaLetras.setText(
+                    monedaCadena.Convertir(Tools.roundingValue(totalVenta, 2), true,
+                            ventaTB.getMonedaTB().getNombre()));
+
+            hbContenido.setDisable(false);
+            this.privilegios = provilegios;
+
+            hbLoadProcesando.setVisible(false);
+        });
+
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+
+    private void generarVuelto() {
+        double montoActual = 0;
+
+        for (Node contenedorMetodoPagoNode : vbContenedorMetodoPago.getChildren()) {
+            HBox hbox = (HBox) contenedorMetodoPagoNode;
+
+            VBox contenedorMonto = (VBox) hbox.getChildren().get(0);
+            if (contenedorMonto != null) {
+                for (Node nodo : contenedorMonto.getChildren()) {
+                    if (nodo instanceof TextField) {
+                        TextField txtMonto = (TextField) nodo;
+                        if (Tools.isNumeric(txtMonto.getText().trim())) {
+                            montoActual += Double.parseDouble(txtMonto.getText().trim());
+                        }
+                    }
+                }
+            }
+
+        }
+
+        if (montoActual >= totalVenta) {
+            vueltoContado = montoActual - totalVenta;
+            lblVueltoContadoNombre.setText("SU CAMBIO ES");
+        } else {
+            vueltoContado = totalVenta - montoActual;
+            lblVueltoContadoNombre.setText("POR PAGAR");
+        }
+
+        lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " "
+                + Tools.roundingValue(vueltoContado, 2));
     }
 
     private void onEventAceptar() {
-        switch (state_view_pago) {
+        switch (metodoVentaSelecciondo) {
             case 0:
-                if (!estadoCobroContado && !cbDeposito.isSelected()) {
-                    Tools.AlertMessageWarning(window, "Venta", "El monto es menor que el total.");
-                    txtEfectivo.requestFocus();
-                } else {
-                    ventaTB.setTipo(1);
-                    ventaTB.setEstado(1);
-                    ventaTB.setVuelto(vueltoContado);
-                    ventaTB.setObservaciones("");
-
-                    ventaTB.setEfectivo(0);
-                    ventaTB.setTarjeta(0);
-                    ventaTB.setDeposito(0);
-                    ventaTB.setNumeroOperacion("");
-
-                    ventaTB.setTipoCredito(0);
-
-                    if (cbDeposito.isSelected()) {
-                        if (!Tools.isNumeric(txtDeposito.getText())) {
-                            Tools.AlertMessageWarning(window, "Venta", "El monto del deposito tiene que ser numérico.");
-                            txtDeposito.requestFocus();
-                            return;
-                        } else if (Tools.isText(txtNumOperacion.getText().trim())) {
-                            Tools.AlertMessageWarning(window, "Venta", "Ingrese el número de Operación");
-                            txtNumOperacion.requestFocus();
-                            return;
-                        } else {
-                            ventaTB.setDeposito(Double.parseDouble(txtDeposito.getText().trim()));
-                            ventaTB.setNumeroOperacion(txtNumOperacion.getText().trim());
-                        }
-                    } else {
-                        
-                        if (Tools.isNumeric(txtEfectivo.getText()) && Double.parseDouble(txtEfectivo.getText()) > 0) {
-                            ventaTB.setEfectivo(Double.parseDouble(txtEfectivo.getText()));
-                        }
-
-                        if (Tools.isNumeric(txtTarjeta.getText()) && Double.parseDouble(txtTarjeta.getText()) > 0) {
-                            ventaTB.setTarjeta(Double.parseDouble(txtTarjeta.getText()));
-                        }
-
-                        if (Tools.isNumeric(txtEfectivo.getText()) && Tools.isNumeric(txtTarjeta.getText())) {
-                            if ((Double.parseDouble(txtEfectivo.getText())) >= total_venta) {
-                                Tools.AlertMessageWarning(window, "Venta", "Los valores ingresados no son correctos!!");
-                                return;
-                            }
-                            double efectivo = Double.parseDouble(txtEfectivo.getText());
-                            double tarjeta = Double.parseDouble(txtTarjeta.getText());
-                            if ((efectivo + tarjeta) != total_venta) {
-                                Tools.AlertMessageWarning(window, "Venta", " El monto a pagar no debe ser mayor al total!!");
-                                return;
-                            }
-                        }
-
-                        if (!Tools.isNumeric(txtEfectivo.getText()) && Tools.isNumeric(txtTarjeta.getText())) {
-                            if ((Double.parseDouble(txtTarjeta.getText())) > total_venta) {
-                                Tools.AlertMessageWarning(window, "Venta", "El pago con tarjeta no debe ser mayor al total!!");
-                                return;
-                            }
-                        }
-                    }
-
-                    short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Esta seguro de continuar?");
-                    if (confirmation == 1) {
-                        ResultTransaction result = VentaADO.registrarVentaContado(ventaTB, privilegios);
-                        switch (result.getCode()) {
-                            case "register":
-                                short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta", "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");
-                                if (value == 1) {
-                                    ventaEstructuraController.resetVenta();
-                                    ventaEstructuraController.imprimirVenta(result.getResult());
-                                    Tools.Dispose(window);
-                                } else {
-                                    ventaEstructuraController.resetVenta();
-                                    Tools.Dispose(window);
-                                }
-                                break;
-                            case "nocantidades":
-                                Tools.AlertDialogMessage(window, Alert.AlertType.WARNING, "Venta", "No se puede completar la venta por que hay productos con stock inferior.", result.toStringArrayResult());
-                                break;
-                            case "error":
-                                Tools.AlertMessageError(window, "Venta", result.getResult());
-                                break;
-                            default:
-                                Tools.AlertMessageError(window, "Venta", result.getResult());
-                                break;
-                        }
-                    }
-
-                }
+                onEventContado();
                 break;
-
             case 1:
-                if (rbCreditoVariable.isSelected() && txtFechaVencimiento.getValue() == null) {
-                    Tools.AlertMessageWarning(window, "Venta", "Ingrese la fecha de vencimiento.");
-                    txtFechaVencimiento.requestFocus();
-                } else {
-                    ventaTB.setTipo(2);
-                    ventaTB.setEstado(2);
-                    ventaTB.setVuelto(0);
-                    ventaTB.setObservaciones("");
-
-                    ventaTB.setEfectivo(0);
-                    ventaTB.setTarjeta(0);
-                    ventaTB.setDeposito(0);
-                    ventaTB.setNumeroOperacion("");
-
-                    if (rbCreditoVariable.isSelected()) {
-                        LocalDate now = LocalDate.now();
-                        LocalDate localDate = txtFechaVencimiento.getValue();
-                        if (now.isAfter(localDate)) {
-                            Tools.AlertMessageWarning(window, "Venta", "La fecha de pago no puede ser manor ala fecha de emisión.");
-                            return;
-                        }
-
-                        ventaTB.setFechaVencimiento(Tools.getDatePicker(txtFechaVencimiento));
-                        ventaTB.setHoraVencimiento(Tools.getTime());
-                        ventaTB.setTipoCredito(0);
-                    } else {
-                        if (tvListPlazos.getItems().isEmpty()) {
-                            Tools.AlertMessageWarning(window, "Venta", "No hay plazos a pagar en la tabla.");
-                            return;
-                        }
-
-                        int fecha = 0;
-                        int monto = 0;
-                        int distint = 0;
-                        int fechavl = 0;
-                        int totalvl = 0;
-                        int pagoval = 0;
-
-                        for (int i = 0; i < tvListPlazos.getItems().size(); i++) {
-                            if (tvListPlazos.getItems().get(i).getDpFecha().getValue() == null) {
-                                fecha++;
-                            } else {
-                                LocalDate now = LocalDate.now();
-                                LocalDate localDate = tvListPlazos.getItems().get(i).getDpFecha().getValue();
-                                if (now.isAfter(localDate)) {
-                                    fechavl++;
-                                }
-
-                                if (i > 0) {
-                                    LocalDate localDateBefore = tvListPlazos.getItems().get(i - 1).getDpFecha().getValue();
-                                    LocalDate localDateAfter = tvListPlazos.getItems().get(i).getDpFecha().getValue();
-
-                                    if (localDateBefore.isAfter(localDateAfter)) {
-                                        distint++;
-                                    }
-                                }
-                            }
-
-                            if (!Tools.isNumeric(tvListPlazos.getItems().get(i).getTfMonto().getText())) {
-                                monto++;
-                            }
-
-                            if (Tools.isNumeric(tvListPlazos.getItems().get(i).getTfMonto().getText()) && Double.parseDouble(tvListPlazos.getItems().get(i).getTfMonto().getText()) <= 0) {
-                                monto++;
-                            }
-
-                            if (Tools.isNumeric(tvListPlazos.getItems().get(i).getTfMonto().getText())) {
-                                totalvl += Double.parseDouble(tvListPlazos.getItems().get(i).getTfMonto().getText());
-                            }
-
-                            if (tvListPlazos.getItems().get(i).getCbMontoInicial().isSelected()) {
-                                if (tvListPlazos.getItems().get(i).getCbForma().getSelectionModel().getSelectedIndex() < 0) {
-                                    pagoval++;
-                                }
-                            }
-
-                        }
-
-                        if (fecha > 0) {
-                            Tools.AlertMessageWarning(window, "Venta", "Los valores ingresados en la fila fecha de pago no son validos.");
-                            return;
-                        }
-
-                        if (monto > 0) {
-                            Tools.AlertMessageWarning(window, "Venta", "Los valores ingresados en la fila monto no son númericos o son menores o igual a 0.");
-                            return;
-                        }
-
-                        if (distint > 0) {
-                            Tools.AlertMessageWarning(window, "Venta", "Las fechas de pago ingresas son desconcordantes.");
-                            return;
-                        }
-
-                        if (totalvl < total_venta) {
-                            Tools.AlertMessageWarning(window, "Venta", "El monto total de plazos es menor al monto total de la venta.");
-                            return;
-                        }
-
-                        if (fechavl > 0) {
-                            Tools.AlertMessageWarning(window, "Venta", "Una de las fechas o todas son menores qure la actual.");
-                            return;
-                        }
-
-                        if (pagoval > 0) {
-                            Tools.AlertMessageWarning(window, "Venta", "Hay plazos adelantados que necesitan tener la forma de pago.");
-                            return;
-                        }
-
-                        ventaTB.setFechaVencimiento(Tools.getDatePicker(tvListPlazos.getItems().get(tvListPlazos.getItems().size() - 1).getDpFecha()));
-                        ventaTB.setHoraVencimiento(Tools.getTime());
-                        ventaTB.setVentaCreditoTBs(new ArrayList<>(tvListPlazos.getItems()));
-                        ventaTB.setTipoCredito(1);
-                    }
-
-                    short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Está seguro de continuar?");
-                    if (confirmation == 1) {
-                        ResultTransaction result = VentaADO.registrarVentaCredito(ventaTB, privilegios);
-                        switch (result.getCode()) {
-                            case "register":
-                                short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta", "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");
-                                if (value == 1) {
-                                    ventaEstructuraController.resetVenta();
-                                    ventaEstructuraController.imprimirVenta(result.getResult());
-                                    Tools.Dispose(window);
-                                } else {
-                                    ventaEstructuraController.resetVenta();
-                                    Tools.Dispose(window);
-                                }
-                                break;
-                            case "nocantidades":
-                                Tools.AlertDialogMessage(window, Alert.AlertType.WARNING, "Venta", "No se puede completar la venta por que hay productos con stock inferior.", result.toStringArrayResult());
-                                break;
-                            case "error":
-                                Tools.AlertMessageError(window, "Venta", result.getResult());
-                                break;
-                            default:
-                                Tools.AlertMessageError(window, "Venta", result.getResult());
-                                break;
-                        }
-                    }
-
-                }
+                onEventCredito();
                 break;
+        }
+    }
 
-            case 2:
-                if (!estadoCobroAdelantado && !cbDepositoAdelantado.isSelected()) {
-                    Tools.AlertMessageWarning(window, "Venta", "El monto es menor que el total.");
-                    txtEfectivoAdelantado.requestFocus();
-                } else {
-                    ventaTB.setTipo(1);
-                    ventaTB.setEstado(4);
-                    ventaTB.setVuelto(vueltoAdelantado);
-                    ventaTB.setObservaciones("");
+    private void onEventContado() {
+        double montoActual = 0;
 
-                    ventaTB.setEfectivo(0);
-                    ventaTB.setTarjeta(0);
-                    ventaTB.setDeposito(0);
-                    ventaTB.setNumeroOperacion("");
-                    ventaTB.setTipoCredito(0);
+        if (vbContenedorMetodoPago.getChildren().isEmpty()) {
+            Tools.AlertMessageWarning(window, "Venta", "No hay metodos de pago para continuar.");
+            cbMetodoTransaccion.requestFocus();
+            return;
+        }
 
-                    if (cbDepositoAdelantado.isSelected()) {
-                        if (!Tools.isNumeric(txtDepositoAdelantado.getText())) {
-                            Tools.AlertMessageWarning(window, "Venta", "El monto del deposito tiene que ser numérico.");
-                            txtDepositoAdelantado.requestFocus();
-                            return;
-                        } else if (Tools.isText(txtNumOperacionAdelantado.getText().trim())) {
-                            Tools.AlertMessageWarning(window, "Venta", "Ingrese el número de Operación");
-                            txtNumOperacionAdelantado.requestFocus();
-                            return;
-                        } else {
-                            ventaTB.setDeposito(Double.parseDouble(txtDepositoAdelantado.getText().trim()));
-                            ventaTB.setNumeroOperacion(txtNumOperacionAdelantado.getText().trim());
-                        }
-                    } else {
-                        if (Tools.isNumeric(txtEfectivoAdelantado.getText()) && Double.parseDouble(txtEfectivoAdelantado.getText()) > 0) {
-                            ventaTB.setEfectivo(Double.parseDouble(txtEfectivoAdelantado.getText()));
-                        }
+        for (Node node : vbContenedorMetodoPago.getChildren()) {
+            HBox hbox = (HBox) node;
 
-                        if (Tools.isNumeric(txtTarjetaAdelantado.getText()) && Double.parseDouble(txtTarjetaAdelantado.getText()) > 0) {
-                            ventaTB.setTarjeta(Double.parseDouble(txtTarjetaAdelantado.getText()));
-                        }
-
-                        if (Tools.isNumeric(txtEfectivoAdelantado.getText()) && Tools.isNumeric(txtTarjetaAdelantado.getText())) {
-                            if ((Double.parseDouble(txtEfectivoAdelantado.getText())) >= total_venta) {
-                                Tools.AlertMessageWarning(window, "Venta", "Los valores ingresados no son correctos!!");
-                                return;
-                            }
-                            double efectivo = Double.parseDouble(txtEfectivoAdelantado.getText());
-                            double tarjeta = Double.parseDouble(txtTarjetaAdelantado.getText());
-                            if ((efectivo + tarjeta) != total_venta) {
-                                Tools.AlertMessageWarning(window, "Venta", " El monto a pagar no debe ser mayor al total!!");
-                                return;
-                            }
-                        }
-
-                        if (!Tools.isNumeric(txtEfectivoAdelantado.getText()) && Tools.isNumeric(txtTarjetaAdelantado.getText())) {
-                            if ((Double.parseDouble(txtTarjetaAdelantado.getText())) > total_venta) {
-                                Tools.AlertMessageWarning(window, "Venta", "El pago con tarjeta no debe ser mayor al total!!");
-                                return;
-                            }
-                        }
+            TextField txtMonto = null;
+            VBox vbMonto = (VBox) hbox.getChildren().get(0);
+            if (vbMonto != null) {
+                for (Node nodo : vbMonto.getChildren()) {
+                    if (nodo instanceof TextField) {
+                        txtMonto = (TextField) nodo;
+                        break;
                     }
+                }
+            }
 
-                    short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Esta seguro de continuar?");
-                    if (confirmation == 1) {
-                        ResultTransaction result = VentaADO.registrarVentaAdelantado(ventaTB);
-                        switch (result.getCode()) {
-                            case "register":
-                                short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta", "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");
-                                if (value == 1) {
-                                    ventaEstructuraController.resetVenta();
-                                    ventaEstructuraController.imprimirVenta(result.getResult());
-                                    Tools.Dispose(window);
-                                } else {
-                                    ventaEstructuraController.resetVenta();
-                                    Tools.Dispose(window);
-                                }
-                                break;
-                            case "nocantidades":
-                                Tools.AlertDialogMessage(window, Alert.AlertType.WARNING, "Venta", "No se puede completar la venta por que hay productos con stock inferior.", result.toStringArrayResult());
-                                break;
-                            case "error":
-                                Tools.AlertMessageError(window, "Venta", result.getResult());
-                                break;
-                            default:
-                                Tools.AlertMessageError(window, "Venta", result.getResult());
-                                break;
+            if (!Tools.isNumeric(txtMonto.getText().trim())) {
+                Tools.AlertMessageWarning(window, "Venta", "Ingrese el monto a pagar o quítelo.");
+                txtMonto.requestFocus();
+                return;
+            }
+
+            double monto = Double.parseDouble(txtMonto.getText().trim());
+
+            if (monto <= 0) {
+                Tools.AlertMessageWarning(window, "Venta", "El monto no debe ser menor a cero.");
+                txtMonto.requestFocus();
+                return;
+            }
+
+            montoActual += monto;
+        }
+
+        if (montoActual < totalVenta) {
+            Tools.AlertMessageWarning(window, "Venta",
+                    "Los montos ingresados deben ser igual o mayor al total de la venta.");
+
+            for (Node node : vbContenedorMetodoPago.getChildren()) {
+                HBox hbox = (HBox) node;
+                VBox vbMonto = (VBox) hbox.getChildren().get(0);
+                if (vbMonto != null) {
+                    if (!vbMonto.getChildren().isEmpty()) {
+                        ((TextField) vbMonto.getChildren().get(vbMonto.getChildren().size() - 1)).requestFocus();
+                    }
+                }
+            }
+
+            return;
+        }
+
+        if (vbContenedorMetodoPago.getChildren().size() > 1) {
+            if (montoActual != totalVenta) {
+                Tools.AlertMessageWarning(window, "Venta",
+                        "Si se eligen más de dos métodos de pago, no se podrá recibir vuelto o cambio.");
+                return;
+            }
+        }
+
+        List<IngresoTB> ingresoTBs = new ArrayList<>();
+
+        for (Node node : vbContenedorMetodoPago.getChildren()) {
+            HBox hbox = (HBox) node;
+
+            TextField txtMonto = null;
+            VBox vbMonto = (VBox) hbox.getChildren().get(0);
+            if (vbMonto != null) {
+                for (Node nodo : vbMonto.getChildren()) {
+                    if (nodo instanceof TextField) {
+                        txtMonto = (TextField) nodo;
+                        break;
+                    }
+                }
+            }
+
+            TextField txtOperacion = null;
+            VBox vbOperacion = (VBox) hbox.getChildren().get(1);
+            if (vbOperacion != null) {
+                HBox hbContenidoOperacion = (HBox) vbOperacion.getChildren().get(1);
+                if (hbContenidoOperacion != null) {
+                    for (Node nodo : hbContenidoOperacion.getChildren()) {
+                        if (nodo instanceof TextField) {
+                            txtOperacion = (TextField) nodo;
+                            break;
                         }
                     }
                 }
-                break;
+            }
+
+            double monto = Double.parseDouble(txtMonto.getText().trim());
+
+            IngresoTB ingresoTB = new IngresoTB();
+            ingresoTB.setIdBanco(hbox.getId());
+            ingresoTB.setMonto(monto);
+            ingresoTB.setVuelto(vueltoContado);
+            ingresoTB.setOperacion(txtOperacion.getText().trim());
+            ingresoTBs.add(ingresoTB);
+        }
+
+        ventaTB.setTipo(1);
+        ventaTB.setEstado(1);
+        ventaTB.setVuelto(0);
+        ventaTB.setObservaciones("");
+        ventaTB.setEfectivo(0);
+        ventaTB.setTarjeta(0);
+        ventaTB.setDeposito(0);
+        ventaTB.setNumeroOperacion("");
+        ventaTB.setTipoCredito(0);
+
+        generarResultado(ingresoTBs);
+    }
+
+    private void onEventCredito() {
+        if (rbCreditoVariable.isSelected() && txtFechaVencimiento.getValue() == null) {
+            Tools.AlertMessageWarning(window, "Venta", "Ingrese la fecha de vencimiento.");
+            txtFechaVencimiento.requestFocus();
+            return;
+        }
+
+        LocalDate now = LocalDate.now();
+
+        ventaTB.setTipo(2);
+        ventaTB.setEstado(2);
+        ventaTB.setVuelto(0);
+        ventaTB.setObservaciones("");
+
+        ventaTB.setEfectivo(0);
+        ventaTB.setTarjeta(0);
+        ventaTB.setDeposito(0);
+        ventaTB.setNumeroOperacion("");
+
+        if (rbCreditoVariable.isSelected()) {
+
+            LocalDate localDate = txtFechaVencimiento.getValue();
+            if (now.isAfter(localDate)) {
+                Tools.AlertMessageWarning(window, "Venta",
+                        "La fecha de pago debe ser posterior a la fecha de emisión");
+                return;
+            }
+
+            if (now.equals(localDate)) {
+                Tools.AlertMessageWarning(window, "Venta",
+                        "La fecha de pago debe ser posterior a la fecha de emisión.");
+                return;
+            }
+
+            ventaTB.setFechaVencimiento(Tools.getDatePicker(txtFechaVencimiento));
+            ventaTB.setHoraVencimiento(Tools.getTime());
+            ventaTB.setTipoCredito(0);
+        } else {
+            if (tvListPlazos.getItems().isEmpty()) {
+                Tools.AlertMessageWarning(window, "Venta", "No hay plazos a pagar en la tabla.");
+                return;
+            }
+
+            int fecha = 0;
+            int monto = 0;
+            int distint = 0;
+            int fechavl = 0;
+            int totalvl = 0;
+            int pagoval = 0;
+
+            for (int i = 0; i < tvListPlazos.getItems().size(); i++) {
+                if (tvListPlazos.getItems().get(i).getDpFecha().getValue() == null) {
+                    fecha++;
+                } else {
+                    LocalDate localDate = tvListPlazos.getItems().get(i).getDpFecha().getValue();
+                    if (now.isAfter(localDate)) {
+                        fechavl++;
+                    }
+
+                    if (i > 0) {
+                        LocalDate localDateBefore = tvListPlazos.getItems().get(i - 1).getDpFecha()
+                                .getValue();
+                        LocalDate localDateAfter = tvListPlazos.getItems().get(i).getDpFecha().getValue();
+
+                        if (localDateBefore.isAfter(localDateAfter)) {
+                            distint++;
+                        }
+                    }
+                }
+
+                if (!Tools.isNumeric(tvListPlazos.getItems().get(i).getTfMonto().getText())) {
+                    monto++;
+                }
+
+                if (Tools.isNumeric(tvListPlazos.getItems().get(i).getTfMonto().getText())
+                        && Double.parseDouble(tvListPlazos.getItems().get(i).getTfMonto().getText()) <= 0) {
+                    monto++;
+                }
+
+                if (Tools.isNumeric(tvListPlazos.getItems().get(i).getTfMonto().getText())) {
+                    totalvl += Double.parseDouble(tvListPlazos.getItems().get(i).getTfMonto().getText());
+                }
+
+                if (tvListPlazos.getItems().get(i).getCbMontoInicial().isSelected()) {
+                    if (tvListPlazos.getItems().get(i).getCbForma().getSelectionModel()
+                            .getSelectedIndex() < 0) {
+                        pagoval++;
+                    }
+                }
+
+            }
+
+            if (fecha > 0) {
+                Tools.AlertMessageWarning(window, "Venta",
+                        "Los valores ingresados en la fila fecha de pago no son validos.");
+                return;
+            }
+
+            if (monto > 0) {
+                Tools.AlertMessageWarning(window, "Venta",
+                        "Los valores ingresados en la fila monto no son númericos o son menores o igual a 0.");
+                return;
+            }
+
+            if (distint > 0) {
+                Tools.AlertMessageWarning(window, "Venta",
+                        "Las fechas de pago ingresas son desconcordantes.");
+                return;
+            }
+
+            if (totalvl < totalVenta) {
+                Tools.AlertMessageWarning(window, "Venta",
+                        "El monto total de plazos es menor al monto total de la venta.");
+                return;
+            }
+
+            if (fechavl > 0) {
+                Tools.AlertMessageWarning(window, "Venta",
+                        "Una de las fechas o todas son menores qure la actual.");
+                return;
+            }
+
+            if (pagoval > 0) {
+                Tools.AlertMessageWarning(window, "Venta",
+                        "Hay plazos adelantados que necesitan tener la forma de pago.");
+                return;
+            }
+
+            ventaTB.setFechaVencimiento(Tools.getDatePicker(
+                    tvListPlazos.getItems().get(tvListPlazos.getItems().size() - 1).getDpFecha()));
+            ventaTB.setHoraVencimiento(Tools.getTime());
+            ventaTB.setVentaCreditoTBs(new ArrayList<>(tvListPlazos.getItems()));
+            ventaTB.setTipoCredito(1);
+        }
+
+        List<IngresoTB> ingresoTBs = new ArrayList<>();
+        generarResultado(ingresoTBs);
+    }
+
+    private void generarResultado(List<IngresoTB> ingresoTBs) {
+        short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Está seguro de continuar?");
+        if (confirmation == 1) {
+            ResultTransaction result = VentaADO.registrarVenta(ventaTB, ingresoTBs,
+                    privilegios);
+            switch (result.getCode()) {
+                case "register":
+                    short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta",
+                            "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");
+                    if (value == 1) {
+                        ventaEstructuraController.resetVenta();
+                        ventaEstructuraController.imprimirVenta(result.getResult());
+                        Tools.Dispose(window);
+                    } else {
+                        ventaEstructuraController.resetVenta();
+                        Tools.Dispose(window);
+                    }
+                    break;
+                case "nocantidades":
+                    Tools.AlertDialogMessage(window, Alert.AlertType.WARNING, "Venta",
+                            "No se puede completar la venta por que hay productos con stock inferior.",
+                            result.toStringArrayResult());
+                    break;
+                case "error":
+                    Tools.AlertMessageError(window, "Venta", result.getResult());
+                    break;
+                default:
+                    Tools.AlertMessageError(window, "Venta", result.getResult());
+                    break;
+            }
         }
     }
 
@@ -655,181 +725,67 @@ public class FxVentaProcesoController implements Initializable {
     }
 
     @FXML
-    private void onKeyReleasedEfectivo(KeyEvent event) {
-        if (txtEfectivo.getText().isEmpty()) {
-            vueltoContado = total_venta;
-            TotalAPagarContado();
-            return;
-        }
-        if (Tools.isNumeric(txtEfectivo.getText())) {
-            TotalAPagarContado();
-        }
-    }
-
-    @FXML
-    private void onKeyTypedEfectivo(KeyEvent event) {
-        char c = event.getCharacter().charAt(0);
-        if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
-            event.consume();
-        }
-        if (c == '.' && txtEfectivo.getText().contains(".")) {
+    private void onKeyPressedAgregarMetodoPago(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            addMetodoPago();
             event.consume();
         }
     }
 
     @FXML
-    private void OnKeyReleasedTarjeta(KeyEvent event) {
-        if (txtTarjeta.getText().isEmpty()) {
-            vueltoContado = total_venta;
-            TotalAPagarContado();
-            return;
-        }
-        if (Tools.isNumeric(txtTarjeta.getText())) {
-            TotalAPagarContado();
-        }
-    }
-
-    @FXML
-    private void OnKeyTypedTarjeta(KeyEvent event) {
-        char c = event.getCharacter().charAt(0);
-        if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
-            event.consume();
-        }
-        if (c == '.' && txtTarjeta.getText().contains(".")) {
-            event.consume();
-        }
-    }
-
-    @FXML
-    private void onKeyReleasedEfectivoAdelantado(KeyEvent event) {
-        if (txtEfectivoAdelantado.getText().isEmpty()) {
-            vueltoAdelantado = total_venta;
-            TotalAPagarAdelantado();
-            return;
-        }
-        if (Tools.isNumeric(txtEfectivoAdelantado.getText())) {
-            TotalAPagarAdelantado();
-        }
-    }
-
-    @FXML
-    private void onKeyTypedEfectivoAdelantado(KeyEvent event) {
-        char c = event.getCharacter().charAt(0);
-        if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
-            event.consume();
-        }
-        if (c == '.' && txtEfectivoAdelantado.getText().contains(".")) {
-            event.consume();
-        }
-    }
-
-    @FXML
-    private void OnKeyReleasedTarjetaAdelantado(KeyEvent event) {
-        if (txtTarjetaAdelantado.getText().isEmpty()) {
-            vueltoAdelantado = total_venta;
-            TotalAPagarAdelantado();
-            return;
-        }
-        if (Tools.isNumeric(txtTarjetaAdelantado.getText())) {
-            TotalAPagarAdelantado();
-        }
-    }
-
-    @FXML
-    private void OnKeyTypedTarjetaAdelantado(KeyEvent event) {
-        char c = event.getCharacter().charAt(0);
-        if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
-            event.consume();
-        }
-        if (c == '.' && txtTarjetaAdelantado.getText().contains(".")) {
-            event.consume();
-        }
+    private void onActionAgregarMetodoPago(ActionEvent event) {
+        addMetodoPago();
     }
 
     @FXML
     private void onMouseClickedEfectivo(MouseEvent event) {
-        if (state_view_pago != 1 || state_view_pago != 2) {
-            vbPagoAdelantado.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
+        if (metodoVentaSelecciondo == 1) {
             vbCredito.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
             vbEfectivo.setStyle("-fx-background-color:  #007bff;-fx-cursor:hand;-fx-padding:  0.5em");
 
-            lblPagoAdelantado.setStyle("-fx-text-fill:#1a2226;");
             lblCredito.setStyle("-fx-text-fill:#1a2226;");
             lblEfectivo.setStyle("-fx-text-fill:white;");
 
-            vbViewPagoAdelantado.setVisible(false);
             vbViewCredito.setVisible(false);
             vbViewEfectivo.setVisible(true);
 
-            txtEfectivo.requestFocus();
+            if (!vbContenedorMetodoPago.getChildren().isEmpty()) {
+                HBox hbox = (HBox) vbContenedorMetodoPago.getChildren().get(0);
+                TextField primerTextField = null;
 
-            state_view_pago = 0;
+                VBox vbMonto = (VBox) hbox.getChildren().get(0);
+                if (vbMonto != null) {
+                    for (Node nodo : vbMonto.getChildren()) {
+                        if (nodo instanceof TextField) {
+                            primerTextField = (TextField) nodo;
+                            break;
+                        }
+                    }
+
+                }
+
+                if (primerTextField != null) {
+                    primerTextField.requestFocus();
+                }
+            }
+
+            metodoVentaSelecciondo = 0;
         }
     }
 
     @FXML
     private void onMouseClickedCredito(MouseEvent event) {
-        if (state_view_pago == 0 || state_view_pago == 2) {
+        if (metodoVentaSelecciondo == 0) {
             vbEfectivo.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
-            vbPagoAdelantado.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
             vbCredito.setStyle("-fx-background-color: #007bff;-fx-cursor:hand;-fx-padding:  0.5em");
 
             lblEfectivo.setStyle("-fx-text-fill:#1a2226;");
-            lblPagoAdelantado.setStyle("-fx-text-fill:#1a2226;");
             lblCredito.setStyle("-fx-text-fill:white;");
 
             vbViewEfectivo.setVisible(false);
-            vbViewPagoAdelantado.setVisible(false);
             vbViewCredito.setVisible(true);
 
-            state_view_pago = 1;
-        }
-    }
-
-    @FXML
-    private void onMouseClickedPagoAdelantado(MouseEvent event) {
-        if (state_view_pago == 0 || state_view_pago == 1) {
-            vbEfectivo.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
-            vbCredito.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
-            vbPagoAdelantado.setStyle("-fx-background-color: #007bff;-fx-cursor:hand;-fx-padding:  0.5em");
-
-            lblEfectivo.setStyle("-fx-text-fill:#1a2226;");
-            lblCredito.setStyle("-fx-text-fill:#1a2226;");
-            lblPagoAdelantado.setStyle("-fx-text-fill:white;");
-
-            vbViewEfectivo.setVisible(false);
-            vbViewCredito.setVisible(false);
-            vbViewPagoAdelantado.setVisible(true);
-
-            txtEfectivoAdelantado.requestFocus();
-
-            state_view_pago = 2;
-        }
-    }
-
-    @FXML
-    private void onActionDepostio(ActionEvent event) {
-        if (!cbDeposito.isSelected()) {
-            vbDepositoView.setVisible(false);
-            vbEfectivoView.setVisible(true);
-            txtEfectivo.requestFocus();
-        } else {
-            vbEfectivoView.setVisible(false);
-            vbDepositoView.setVisible(true);
-            txtNumOperacion.requestFocus();
-        }
-    }
-
-    @FXML
-    private void onActionDepositoAdelantado(ActionEvent event) {
-        if (!cbDepositoAdelantado.isSelected()) {
-            vbDepositoViewAdelantado.setVisible(false);
-            vbEfectivoViewAdelantado.setVisible(true);
-            txtEfectivoAdelantado.requestFocus();
-        } else {
-            vbEfectivoViewAdelantado.setVisible(false);
-            vbDepositoViewAdelantado.setVisible(true);
-            txtNumOperacionAdelantado.requestFocus();
+            metodoVentaSelecciondo = 1;
         }
     }
 

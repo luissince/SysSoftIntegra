@@ -248,11 +248,11 @@ public class FxCuentasPorPagarVisualizarController implements Initializable {
     private void onEventAmortizar() {
         try {
             fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_AMARTIZAR_PAGOS);
+            URL url = getClass().getResource(FilesRouters.FX_GENERAR_PAGO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
             //Controlller here
-            FxAmortizarPagosController controller = fXMLLoader.getController();
+            FxGenerarPagoController controller = fXMLLoader.getController();
             controller.setInitValues(compraTB);
             controller.setInitAmortizarPagosController(this);
             //

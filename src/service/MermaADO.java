@@ -17,7 +17,8 @@ public class MermaADO {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementMerma = null;
         PreparedStatement statementDetalle = null;
-        ResultSet resultSet = null;
+        ResultSet resultSetMerma = null;
+        ResultSet resultSetDetalle = null;
 
         try {
             dbf.dbConnect();
@@ -29,29 +30,29 @@ public class MermaADO {
             statementMerma.setInt(3, tipoMerma);
             statementMerma.setInt(4, posicionPagina);
             statementMerma.setInt(5, filasPorPagina);
-            resultSet = statementMerma.executeQuery();
+            resultSetMerma = statementMerma.executeQuery();
             ObservableList<MermaTB> empList = FXCollections.observableArrayList();
-            while (resultSet.next()) {
+            while (resultSetMerma.next()) {
                 MermaTB mermaTB = new MermaTB();
-                mermaTB.setId(resultSet.getRow() + posicionPagina);
-                mermaTB.setIdMerma(resultSet.getString("IdMerma"));
-                mermaTB.setCantidad(resultSet.getDouble("Cantidad"));
-                mermaTB.setCosto(resultSet.getDouble("Costo"));
-                mermaTB.setTipoMermaNombre(resultSet.getString("TipoMerma"));
+                mermaTB.setId(resultSetMerma.getRow() + posicionPagina);
+                mermaTB.setIdMerma(resultSetMerma.getString("IdMerma"));
+                mermaTB.setCantidad(resultSetMerma.getDouble("Cantidad"));
+                mermaTB.setCosto(resultSetMerma.getDouble("Costo"));
+                mermaTB.setTipoMermaNombre(resultSetMerma.getString("TipoMerma"));
 
                 ProduccionTB produccionTB = new ProduccionTB();
-                produccionTB.setFechaInicio(resultSet.getDate("FechaInico").toLocalDate()
+                produccionTB.setFechaInicio(resultSetMerma.getDate("FechaInico").toLocalDate()
                         .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                produccionTB.setHoraInicio(resultSet.getTime("HoraInicio").toLocalTime()
+                produccionTB.setHoraInicio(resultSetMerma.getTime("HoraInicio").toLocalTime()
                         .format(DateTimeFormatter.ofPattern("HH:mm:ss a")));
 
                 mermaTB.setProduccionTB(produccionTB);
 
                 SuministroTB suministroTB = new SuministroTB();
-                suministroTB.setIdSuministro(resultSet.getString("IdSuministro"));
-                suministroTB.setClave(resultSet.getString("Clave"));
-                suministroTB.setNombreMarca(resultSet.getString("NombreMarca"));
-                suministroTB.setUnidadCompraName(resultSet.getString("Unidad"));
+                suministroTB.setIdSuministro(resultSetMerma.getString("IdSuministro"));
+                suministroTB.setClave(resultSetMerma.getString("Clave"));
+                suministroTB.setNombreMarca(resultSetMerma.getString("NombreMarca"));
+                suministroTB.setUnidadCompraName(resultSetMerma.getString("Unidad"));
                 mermaTB.setSuministroTB(suministroTB);
 
                 empList.add(mermaTB);
@@ -62,10 +63,10 @@ public class MermaADO {
             statementDetalle.setInt(1, opcion);
             statementDetalle.setString(2, buscar);
             statementDetalle.setInt(3, tipoMerma);
-            resultSet = statementDetalle.executeQuery();
+            resultSetDetalle = statementDetalle.executeQuery();
             Integer cantidadTotal = 0;
-            if (resultSet.next()) {
-                cantidadTotal = resultSet.getInt("Total");
+            if (resultSetDetalle.next()) {
+                cantidadTotal = resultSetDetalle.getInt("Total");
             }
             objects[1] = cantidadTotal;
 
@@ -80,9 +81,13 @@ public class MermaADO {
                 if (statementDetalle != null) {
                     statementDetalle.close();
                 }
-                if (resultSet != null) {
-                    resultSet.close();
+                if (resultSetMerma != null) {
+                    resultSetMerma.close();
                 }
+                if (resultSetDetalle != null) {
+                    resultSetDetalle.close();
+                }
+
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
                 return ex.getLocalizedMessage();
@@ -96,7 +101,7 @@ public class MermaADO {
         ResultSet resultSet = null;
         try {
             dbf.dbConnect();
-            ArrayList<MermaTB> mermaTBs = new ArrayList();
+            ArrayList<MermaTB> mermaTBs = new ArrayList<>();
             statementMerma = dbf.getConnection().prepareStatement("{CALL Sp_Reporte_General_Merma(?,?,?)}");
             statementMerma.setInt(1, tipoMerma);
             statementMerma.setString(2, idSuministro);

@@ -443,7 +443,7 @@ public class FxBienvenidaController implements Initializable {
             monedaTB.setNombre(txtNombreMoneda.getText());
             monedaTB.setSimbolo(txtSimboloMoneda.getText());
             monedaTB.setAbreviado("");
-            monedaTB.setTipoCambio(Double.parseDouble(txtTipoCambioMoneda.getText()));
+            monedaTB.setTipoCambio(Double.valueOf(txtTipoCambioMoneda.getText()));
             monedaTB.setPredeterminado(true);
             monedaTB.setSistema(true);
 

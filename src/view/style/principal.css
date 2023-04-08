@@ -1,10 +1,10 @@
 @font-face {
-    src: url('Roboto-Medium.ttf'); 
-} 
+    src: url('Roboto-Medium.ttf');
+}
 
-@font-face { 
-    src: url('Roboto-Bold.ttf'); 
-} 
+@font-face {
+    src: url('Roboto-Bold.ttf');
+}
 
 @font-face {
 
@@ -12,50 +12,50 @@
 }
 
 @font-face {
-    -fx-font-family: 'Monospace'; 
-    src: url('Monospace.ttf'); 
-} 
+    -fx-font-family: 'Monospace';
+    src: url('Monospace.ttf');
+}
 
-@font-face {   
-    src: url('OpenSans-Regular.ttf'); 
-} 
+@font-face {
+    src: url('OpenSans-Regular.ttf');
+}
 
-@font-face {   
-    -fx-font-family: 'Qwitcher Grypen'; 
-    src: url('QwitcherGrypen-Regular.ttf'); 
-} 
+@font-face {
+    -fx-font-family: 'Qwitcher Grypen';
+    src: url('QwitcherGrypen-Regular.ttf');
+}
 
-@font-face {   
-    -fx-font-family: 'Qwitcher Grypen'; 
-    src: url('QwitcherGrypen-Bold.ttf'); 
-} 
+@font-face {
+    -fx-font-family: 'Qwitcher Grypen';
+    src: url('QwitcherGrypen-Bold.ttf');
+}
 
-@font-face {   
-    -fx-font-family: 'Dancing Script'; 
-    src: url('DancingScript-VariableFont_wght.ttf'); 
-} 
+@font-face {
+    -fx-font-family: 'Dancing Script';
+    src: url('DancingScript-VariableFont_wght.ttf');
+}
 
 .labelForm{
-    -fx-font-family: "Roboto";  
+    -fx-font-family: "Roboto";
     -fx-font-weight: normal;
     -fx-font-size: 1.0833333333333333em;/*13px*/
 }
 
 .labelBorder{
-    -fx-padding: 0.3333333333333333em 2.5em 0.3333333333333333em 2.5em;/*4px 30px 4px 30px*/  
-    -fx-font-family:"Roboto";  
+    -fx-padding: 0.3333333333333333em 2.5em 0.3333333333333333em 2.5em;/*4px 30px 4px 30px*/
+    -fx-font-family:"Roboto";
     -fx-font-weight: bold;
     -fx-font-size:1.0833333333333333em; /*13px*/
 }
 
 .labelQw{
-    -fx-font-family: "Qwitcher Grypen";  
+    -fx-font-family: "Qwitcher Grypen";
     -fx-font-weight: normal;
     -fx-font-size: 1.0833333333333333em;/*13px*/
 }
 
 .labelDs{
-    -fx-font-family: "Dancing Script";  
+    -fx-font-family: "Dancing Script";
     -fx-font-weight: normal;
     -fx-font-size: 1.0833333333333333em;/*13px*/
 }
@@ -68,91 +68,91 @@
 
 .labelRoboto10{
     -fx-font-size:0.8333333333333334em; /*10px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto12{
     -fx-font-size:1em; /*12px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto13{
     -fx-font-size:1.0833333333333333em; /*13px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto14{
     -fx-font-size:1.1666666666666667em; /*14px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto15{
     -fx-font-size:1.25em; /*15px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto16{
     -fx-font-size:1.3333333333333333em; /*16px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto17{
     -fx-font-size:1.4166666666666667em; /*17px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto18{
     -fx-font-size:1.5em; /*18px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto19{
     -fx-font-size:1.5833333333333333em; /*19px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto20{
     -fx-font-size:1.6666666666666667em; /*20px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto22{
     -fx-font-size:1.8333333333333333em; /*22px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
-} 
+}
 .labelRoboto24{
     -fx-font-size:2em;/*24px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto26{
     -fx-font-size:2.1666666666666665em; /*26px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto28{
     -fx-font-size:2.3333333333333335em; /*28px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
 .labelRoboto30{
     -fx-font-size:2.5em; /*30px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
@@ -164,14 +164,14 @@
  ******************************************************************************/
 .labelRobotoBold10{
     -fx-font-size:0.8333333333333334em; /*10px*/
-    -fx-font-family:"Roboto"; 
-    -fx-font-weight: bold; 
+    -fx-font-family:"Roboto";
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold12{
     -fx-font-size:1em; /*12px*/
     -fx-font-family:"Roboto";
-    -fx-font-weight: bold; 
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold13{
@@ -182,79 +182,79 @@
 .labelRobotoBold14{
     -fx-font-size:1.1666666666666667em; /*14px*/
     -fx-font-family:"Roboto";
-    -fx-font-weight: bold; 
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold15{
     -fx-font-size:1.25em; /*15px*/
     -fx-font-family:"Roboto";
-    -fx-font-weight: bold; 
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold16{
     -fx-font-size:1.3333333333333333em; /*16px*/
-    -fx-font-family:"Roboto"; 
-    -fx-font-weight: bold; 
+    -fx-font-family:"Roboto";
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold17{
     -fx-font-size:1.4166666666666667em; /*17px*/
-    -fx-font-family:"Roboto"; 
-    -fx-font-weight: bold; 
+    -fx-font-family:"Roboto";
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold18{
     -fx-font-size:1.5em; /*18px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold19{
     -fx-font-size:1.5833333333333333em; /*20px*/
     -fx-font-family:"Roboto";
-    -fx-font-weight: bold; 
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold20{
     -fx-font-size:1.6666666666666667em; /*20px*/
     -fx-font-family:"Roboto";
-    -fx-font-weight: bold; 
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold21{
     -fx-font-size:1.75em; /*21px*/
     -fx-font-family:"Roboto";
-    -fx-font-weight: bold; 
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold22{
     -fx-font-size:1.8333333333333333em; /*22px*/
     -fx-font-family:"Roboto";
-    -fx-font-weight: bold; 
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold24{
     -fx-font-size:2em;/*24px*/
-    -fx-font-family:"Roboto"; 
-    -fx-font-weight: bold; 
+    -fx-font-family:"Roboto";
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold26{
     -fx-font-size:2.1666666666666665em; /*26px*/
-    -fx-font-family:"Roboto"; 
-    -fx-font-weight: bold; 
+    -fx-font-family:"Roboto";
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold28{
     -fx-font-size:2.3333333333333335em; /*28px*/
-    -fx-font-family:"Roboto"; 
-    -fx-font-weight: bold; 
+    -fx-font-family:"Roboto";
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 .labelRobotoBold30{
     -fx-font-size:2.5em; /*30px*/
-    -fx-font-family:"Roboto"; 
-    -fx-font-weight: bold; 
+    -fx-font-family:"Roboto";
+    -fx-font-weight: bold;
     -fx-font-smoothing-type: gray;
 }
 
@@ -265,82 +265,82 @@
  ******************************************************************************/
 .labelOpenSansRegular10{
     -fx-font-size:0.8333333333333334em; /*10px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular11{
     -fx-font-size:0.9166666666666666em; /*11px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular12{
     -fx-font-size:1em; /*12px*/
-    -fx-font-family:"Open Regular"; 
+    -fx-font-family:"Open Regular";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular13{
     -fx-font-size:1.0833333333333333em; /*13px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular14{
     -fx-font-size:1.1666666666666667em; /*14px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular15{
     -fx-font-size:1.25em; /*15px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular16{
     -fx-font-size:1.3333333333333333em; /*16px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular17{
     -fx-font-size:1.4166666666666667em; /*17px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular18{
     -fx-font-size:1.5em; /*18px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular20{
     -fx-font-size:1.6666666666666667em; /*20px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular21{
     -fx-font-size:1.75em; /*21px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular22{
     -fx-font-size:1.8333333333333333em; /*22px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular24{
     -fx-font-size:2em;/*24px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular26{
     -fx-font-size:2.1666666666666665em; /*26px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular28{
     -fx-font-size:2.3333333333333335em; /*28px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 .labelOpenSansRegular30{
     -fx-font-size:2.5em; /*30px*/
-    -fx-font-family: "Open Sans"; 
+    -fx-font-family: "Open Sans";
     -fx-font-smoothing-type: lcd;
 }
 
@@ -402,7 +402,7 @@
 }
 .buttonMenuActivateText{
     -fx-font-size:1.25em; /*15px*/
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-smoothing-type: lcd;
     -fx-text-fill: #1a2226;
 }
@@ -417,8 +417,8 @@
     -fx-background-color:transparent;
     -fx-border-width: 0 0 2px 0;
     -fx-border-color: #020203;
-    -fx-font-size:1.0833333333333333em;/*13px*/ 
-    -fx-font-family:"Roboto"; 
+    -fx-font-size:1.0833333333333333em;/*13px*/
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-text-fill: #020203;
 }
@@ -443,7 +443,7 @@
     TEXT_COLOR: #020203;
     PROMPT_TEXT: #666666;
     HIGHLIGHT: ACCENT_COLOR;
-    HIGHLIGHT_TEXT: white; 
+    HIGHLIGHT_TEXT: white;
     GRAPHIC: #747474;
 }
 .text-field-normal{
@@ -452,8 +452,8 @@
     -fx-background-color: white, white,white,white;
     -fx-border-width:1;
     -fx-border-color: #999999;
-    -fx-font-size:1.0833333333333333em;/*13px */ 
-    -fx-font-family:"Roboto"; 
+    -fx-font-size:1.0833333333333333em;/*13px */
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-text-fill: TEXT_COLOR;
 }
@@ -939,9 +939,9 @@
     -fx-border-color: transparent;
     -fx-background-color: transparent;
     -fx-padding: 0.8333333333333334em 1.3333333333333333em 0.8333333333333334em 1.3333333333333333em;
-    -fx-font-family:"Roboto";  
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
-    -fx-font-size:1.25em ;/*15px*/ 
+    -fx-font-size:1.25em ;/*15px*/
 }
 .buttonTransparent:hover{
     -fx-background-color: #999999;
@@ -1074,7 +1074,7 @@
     -fx-background-color: transparent;
     -fx-alignment: CENTER;
     -fx-text-fill: rgb(241,241,241);
-    -fx-font-family:"Roboto";  
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-size: 1.0833333333333333em;/*13px*/
 }
@@ -1389,11 +1389,11 @@
 
 .table-view-principal .column-header .label{
     -fx-text-fill:  white;
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: bold;
     -fx-font-smoothing-type: lcd;
     -fx-font-weight: 100;
-    -fx-font-size: 1.0833333333333333em; /* 13px */
+    -fx-font-size: 1em; /* 12px */
     -fx-padding: 0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;/*8px 2px 8px 2px*/
     -fx-alignment: CENTER;
 }
@@ -1404,28 +1404,28 @@
 /***** Table View "body"  *****/
 
 .table-view-principal .table-cell {
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-size: 1em;/*12px*/
     -fx-font-weight: normal;
     -fx-alignment: CENTER_LEFT;
     -fx-padding: 0.6666666666666666em 0.3333333333333333em 0.6666666666666666em 0.3333333333333333em;  /*8px 4px 8px 4px*/
     -fx-text-fill: #020203;
-    
+
     -fx-background-color: transparent;
     -fx-border-color: transparent -fx-table-cell-border-color transparent transparent;
     -fx-border-width: 0.083333em; /* 1 */
 }
 
-.table-view-principal:row-selection .table-row-cell:filled:hover { 
+.table-view-principal:row-selection .table-row-cell:filled:hover {
     -fx-background-color: #cccccc;
     -fx-cursor:hand;
 }
 
-.table-view-principal:row-selection .table-row-cell:filled:selected:hover { 
+.table-view-principal:row-selection .table-row-cell:filled:selected:hover {
     -fx-background-color:   #ffc8e7;
 }
 
-.table-view-principal:row-selection .table-row-cell:filled:selected { 
+.table-view-principal:row-selection .table-row-cell:filled:selected {
     -fx-background-color:  #cccccc;
 }
 
@@ -1449,7 +1449,7 @@
  ******************************************************************************/
 
 .table-view-secundario{
-    -fx-background-color: transparent,transparent,transparent, transparent; 
+    -fx-background-color: transparent,transparent,transparent, transparent;
     -fx-background-radius: 5px;
     -fx-padding: 0;
     -fx-border-color: #cccccc;
@@ -1474,11 +1474,11 @@
 
 .table-view-secundario .column-header .label{
     -fx-text-fill: #1a2226;
-    -fx-font-family:"Roboto"; 
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
-    -fx-font-size: 1.0833333333333333em;/*13px*/   
+    -fx-font-size: 1em;/*12px*/
     -fx-alignment: center;
-    -fx-padding: 0.75em 0.3333333333333333em 0.75em 0.3333333333333333em;      
+    -fx-padding: 0.75em 0.3333333333333333em 0.75em 0.3333333333333333em;
 }
 
 .table-view-secundario .column-header:hover{
@@ -1504,12 +1504,12 @@
 }
 
 .table-view-secundario .column-header.table-column-selected {
-    -fx-background-color: white;   
+    -fx-background-color: white;
 }
 
 /*Header Sort Arrows */
 .table-view-secundario > .column-header-background .nested-column-header > .column-header > GridPane > .arrow {
-    -fx-padding: 0.5em 0.416667em 0.5em 0.416667em; 
+    -fx-padding: 0.5em 0.416667em 0.5em 0.416667em;
     -fx-shape: "M 15 4 L 15 24.0625 L 8.21875 17.28125 L 6.78125 18.71875 L 15.28125 27.21875 L 16 27.90625 L 16.71875 27.21875 L 25.21875 18.71875 L 23.78125 17.28125 L 17 24.0625 L 17 4 Z ";
     -fx-background-color: #111;
 }
@@ -1523,11 +1523,11 @@
 
 /****** Table View "body"  ******/
 
-.table-view-secundario .table-cell{   
+.table-view-secundario .table-cell{
     -fx-text-fill:#1a2226;
-    -fx-font-family:"Roboto";    
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
-    -fx-font-size: 1.0833333333333333em;/*13px*/   
+    -fx-font-size: 1em;/*12px*/
     -fx-padding: 0.75em 0.16666666666666666em 0.75em 0.16666666666666666em;
 }
 
@@ -1539,15 +1539,15 @@
     -fx-border-width: 0px;
 }
 
-.table-view-secundario:row-selection .table-row-cell:filled:hover { 
+.table-view-secundario:row-selection .table-row-cell:filled:hover {
     -fx-background-color: #cccccc;
 }
 
-.table-view-secundario:row-selection .table-row-cell:filled:selected:hover { 
+.table-view-secundario:row-selection .table-row-cell:filled:selected:hover {
     -fx-background-color: #00aff0;
 }
 
-.table-view-secundario:row-selection .table-row-cell:filled:selected { 
+.table-view-secundario:row-selection .table-row-cell:filled:selected {
     -fx-background-color: transparent;
 }
 
@@ -1566,8 +1566,8 @@
  ******************************************************************************/
 .date-picker{
     -fx-background-color: transparent, transparent, transparent, transparent;
-    -fx-font-size:1.0833333333333333em;/*13px*/ 
-    -fx-font-family:"Roboto"; 
+    -fx-font-size:1.0833333333333333em;/*13px*/
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-background-color:white;
     -fx-border-color:#999999;
@@ -1670,7 +1670,7 @@
 .date-picker:disabled{
     -fx-background-color: transparent, transparent, #eaeaea, transparent;
     -fx-text-fill: #adadad;
-    -fx-opacity: 1.0; 
+    -fx-opacity: 1.0;
 }
 
 /*******************************************************************************
@@ -1683,7 +1683,7 @@
     -fx-background-color: white, white, white, white;
     -fx-border-width:1;
     -fx-border-color: #999999;
-    -fx-font-family:"Roboto";  
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-size: 1.0833333333333333em;/*13px*/
     -fx-padding: 0.16666666666666666em 0.16666666666666666em 0.16666666666666666em 0.16666666666666666em; /*2px 2px 2px 2px*/
@@ -1704,7 +1704,7 @@
 }
 
 .combo-box.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
-    -fx-font-family:"Roboto";  
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-size: 1.0833333333333333em;/*13px*/
     -fx-padding: 0.5em;
@@ -1719,7 +1719,7 @@
     -fx-background-color: white;
 }
 
-.combo-box.combo-box-base > .arrow-button {    
+.combo-box.combo-box-base > .arrow-button {
     -fx-background-color: white;
     -fx-background-radius: 0;
 
@@ -1763,7 +1763,7 @@
     -fx-padding: 0.6666666666666666em;
     -fx-font-family: "Roboto";
     -fx-font-weight: normal;
-    -fx-font-size: 1.0833333333333333em;/*13px*/  
+    -fx-font-size: 1.0833333333333333em;/*13px*/
     -fx-text-fill: #020203;
 }
 /*
@@ -1800,7 +1800,7 @@
  *                                                                             *
  ******************************************************************************/
 
-.spinner {    
+.spinner {
     -fx-background-radius: 0, 0;
     -fx-background-color: transparent, transparent;
     -fx-border-width:1;
@@ -1821,8 +1821,8 @@
     -fx-background-color: transparent, white;
     -fx-border-width:1;
     -fx-border-color: transparent;
-    -fx-font-size:1.0833333333333333em;/*13px*/ 
-    -fx-font-family:"Roboto"; 
+    -fx-font-size:1.0833333333333333em;/*13px*/
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
 }
 
@@ -1931,8 +1931,8 @@
 
 .radio-button {
     -fx-text-fill: #020203;
-    -fx-font-size: 1.0833333333333333em;/*13px*/ 
-    -fx-font-family: "Roboto"; 
+    -fx-font-size: 1.0833333333333333em;/*13px*/
+    -fx-font-family: "Roboto";
     -fx-font-weight: normal;
     -fx-text-fill: #020203;
 }
@@ -1978,7 +1978,7 @@
 }
 
 /* focused */
-.radio-button:focused > .radio{ 
+.radio-button:focused > .radio{
     -fx-border-color: #007bff;
     -fx-effect: dropshadow(gaussian, rgba(0,123,255,0.5), 3, 1, 0, 0);
 }
@@ -2001,7 +2001,7 @@
 
 .check-box-contenido {
     -fx-text-fill:  #020203;
-    -fx-font-family:"Roboto";  
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-font-size: 1.0833333333333333em;/*13px*/
     -fx-cursor:hand;
@@ -2144,7 +2144,7 @@
 
 .check-box-ticket {
     -fx-text-fill:  #0f67a1;
-    -fx-font-family:"Roboto";  
+    -fx-font-family:"Roboto";
     -fx-font-weight: bold;
     -fx-font-size: 1.25em;/**/
 }
@@ -2284,7 +2284,7 @@
 
 .check-box-movimiento {
     -fx-text-fill:  #0f67a1;
-    -fx-font-family:"Roboto";  
+    -fx-font-family:"Roboto";
     -fx-font-weight: bold;
     -fx-font-size: 1.25em;/*15px*/
 }
@@ -2329,7 +2329,7 @@
 }
 
 .check-box-movimiento:disabled > .box
-{   
+{
     -fx-opacity: 0.95;
     -fx-background-color: #cccccc;
     -fx-border-color: #aaa;
@@ -2434,7 +2434,7 @@
     -fx-padding: 0.5em;/*6px*/
     -fx-margin:30px;
     -fx-font-size:1.0833333333333333em; /*13px*/
-    -fx-font-family:"Open Regular"; 
+    -fx-font-family:"Open Regular";
     -fx-font-weight: normal;
     -fx-font-smoothing-type: lcd;
 }
@@ -2461,60 +2461,60 @@
 
 .label-asignacion{
     -fx-max-width: Infinity;
-    -fx-background-color: #c6e2cc; 
-    -fx-background-radius: 0 2 2 0; 
-    -fx-font-weight: 700; 
+    -fx-background-color: #c6e2cc;
+    -fx-background-radius: 0 2 2 0;
+    -fx-font-weight: 700;
     -fx-border-color: #309c40;
-    -fx-border-width: 0 0 0 10; 
-    -fx-border-radius: 0 2 2 0; 
-    -fx-padding: 0.5em 1.666666em 0.5em 1.666666em; 
-    -fx-text-fill: #309c40; 
-    -fx-font-family: "Roboto"; 
+    -fx-border-width: 0 0 0 10;
+    -fx-border-radius: 0 2 2 0;
+    -fx-padding: 0.5em 1.666666em 0.5em 1.666666em;
+    -fx-text-fill: #309c40;
+    -fx-font-family: "Roboto";
     -fx-font-weight: normal;
     -fx-font-size: 1em;/*12px*/
 }
 
 .label-proceso{
     -fx-max-width: Infinity;
-    -fx-background-color: #F1948A; 
-    -fx-background-radius: 0 2 2 0; 
-    -fx-font-weight: 700; 
-    -fx-border-color: #990000; 
-    -fx-border-width: 0 0 0 10; 
-    -fx-border-radius: 0 2 2 0; 
-    -fx-padding: 0.5em 1.666666em 0.5em 1.666666em; 
-    -fx-text-fill: #990000; 
-    -fx-font-family: "Roboto"; 
+    -fx-background-color: #F1948A;
+    -fx-background-radius: 0 2 2 0;
+    -fx-font-weight: 700;
+    -fx-border-color: #990000;
+    -fx-border-width: 0 0 0 10;
+    -fx-border-radius: 0 2 2 0;
+    -fx-padding: 0.5em 1.666666em 0.5em 1.666666em;
+    -fx-text-fill: #990000;
+    -fx-font-family: "Roboto";
     -fx-font-weight: normal;
     -fx-font-size: 1em;/*12*/
 }
 
 .label-medio{
     -fx-max-width: Infinity;
-    -fx-background-color: #F9E434; 
-    -fx-background-radius: 0 2 2 0; 
-    -fx-font-weight: 700; 
-    -fx-border-color: #C4A900 ; 
-    -fx-border-width: 0 0 0 10; 
-    -fx-border-radius: 0 2 2 0; 
-    -fx-padding: 0.5em 1.666666em 0.5em 1.666666em; 
-    -fx-text-fill: #6D5F02 ; 
-    -fx-font-family: "Roboto"; 
+    -fx-background-color: #F9E434;
+    -fx-background-radius: 0 2 2 0;
+    -fx-font-weight: 700;
+    -fx-border-color: #C4A900 ;
+    -fx-border-width: 0 0 0 10;
+    -fx-border-radius: 0 2 2 0;
+    -fx-padding: 0.5em 1.666666em 0.5em 1.666666em;
+    -fx-text-fill: #6D5F02 ;
+    -fx-font-family: "Roboto";
     -fx-font-weight: normal;
     -fx-font-size: 1em;/*12px*/
 }
 
 .label-ultimo{
     -fx-max-width: Infinity;
-    -fx-background-color: #1c88e7; 
-    -fx-background-radius: 0 2 2 0; 
-    -fx-font-weight: 700; 
-    -fx-border-color: #1063ab; 
-    -fx-border-width: 0 0 0 10; 
-    -fx-border-radius: 0 2 2 0; 
-    -fx-padding: 0.5em 1.666666em 0.5em 1.666666em; 
-    -fx-text-fill: white; 
-    -fx-font-family: "Roboto"; 
+    -fx-background-color: #1c88e7;
+    -fx-background-radius: 0 2 2 0;
+    -fx-font-weight: 700;
+    -fx-border-color: #1063ab;
+    -fx-border-width: 0 0 0 10;
+    -fx-border-radius: 0 2 2 0;
+    -fx-padding: 0.5em 1.666666em 0.5em 1.666666em;
+    -fx-text-fill: white;
+    -fx-font-family: "Roboto";
     -fx-font-weight: normal;
     -fx-font-size: 1em;/*12px*/
 }
@@ -2548,7 +2548,7 @@
     -fx-background-image:url("/view/image/fondoanulado.jpg");
     -fx-background-repeat: stretch;
     -fx-background-position: center center;
-    -fx-background-size: 100%;  
+    -fx-background-size: 100%;
 }
 
 .buttonView{
@@ -2600,24 +2600,24 @@
 
 #btnImage{
     -fx-background-image: url('/view/image/reports.png"');
-    -fx-background-size:1.8333333333333333em; 
-    -fx-background-repeat: no-repeat; 
-    -fx-background-position: 90%; 
+    -fx-background-size:1.8333333333333333em;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 90%;
 }
 
-TextFieldTableCell > * { 
+TextFieldTableCell > * {
     -fx-padding: 0.5em 0.75em 0.5em 0.75em; /*6px 9px 6px 9px*/
     -fx-background-radius: 0, 0;
     -fx-background-color: white, white,white,white;
     -fx-border-width:1;
     -fx-border-color: #999999;
-    -fx-font-size:1.0833333333333333em;/*13px */ 
-    -fx-font-family:"Roboto"; 
+    -fx-font-size:1.0833333333333333em;/*13px */
+    -fx-font-family:"Roboto";
     -fx-font-weight: normal;
     -fx-text-fill:  #020203;
 }
 
-TextFieldTableCell > *:focused { 
+TextFieldTableCell > *:focused {
     -fx-border-color:  #007bff;
 }
 

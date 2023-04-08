@@ -9,7 +9,8 @@ import model.IngresoTB;
 
 public class IngresoADO {
 
-    public static Object ReporteGeneralIngresosEgresos(String fechaInicio, String fechaFinal, int usuario, String idUusuario) {
+    public static Object ReporteGeneralIngresosEgresos(String fechaInicio, String fechaFinal, int usuario,
+            String idUusuario) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -18,7 +19,8 @@ public class IngresoADO {
             dbf.dbConnect();
             ArrayList<IngresoTB> ingresoTBs = new ArrayList<>();
 
-            preparedStatement = dbf.getConnection().prepareStatement("{CALL Sp_Reporte_General_Ingresos_Egresos(?,?,?,?)}");
+            preparedStatement = dbf.getConnection()
+                    .prepareStatement("{CALL Sp_Reporte_General_Ingresos_Egresos(?,?,?,?)}");
             preparedStatement.setString(1, fechaInicio);
             preparedStatement.setString(2, fechaFinal);
             preparedStatement.setInt(3, usuario);
@@ -30,9 +32,9 @@ public class IngresoADO {
                 ingresoTB.setTransaccion(resultSet.getString("Transaccion"));
                 ingresoTB.setCantidad(resultSet.getInt("Cantidad"));
                 ingresoTB.setFormaIngreso(resultSet.getString("FormaIngreso"));
-                ingresoTB.setEfectivo(resultSet.getDouble("Efectivo"));
-                ingresoTB.setTarjeta(resultSet.getDouble("Tarjeta"));
-                ingresoTB.setDeposito(resultSet.getDouble("Deposito"));
+                // ingresoTB.setEfectivo(resultSet.getDouble("Efectivo"));
+                // ingresoTB.setTarjeta(resultSet.getDouble("Tarjeta"));
+                // ingresoTB.setDeposito(resultSet.getDouble("Deposito"));
                 ingresoTBs.add(ingresoTB);
             }
 

@@ -3,22 +3,23 @@ package model;
 public class IngresoTB {
 
     private int id;
-    private int idIngreso;
+    private String idIngreso;
     private String idProcedencia;
     private String idUsuario;
+    private String idBanco;
     private String detalle;
     private int procedencia;
     private String fecha;
     private String hora;
     private int forma;
     private double monto;
+    private double vuelto;
+    private String operacion;
     private EmpleadoTB empleadoTB;
     private String transaccion;
     private int cantidad;
     private String formaIngreso;
-    private double efectivo;
-    private double tarjeta;
-    private double deposito;
+    private BancoTB bancoTB;
 
     public IngresoTB() {
 
@@ -32,11 +33,11 @@ public class IngresoTB {
         this.id = id;
     }
 
-    public int getIdIngreso() {
+    public String getIdIngreso() {
         return idIngreso;
     }
 
-    public void setIdIngreso(int idIngreso) {
+    public void setIdIngreso(String idIngreso) {
         this.idIngreso = idIngreso;
     }
 
@@ -136,28 +137,36 @@ public class IngresoTB {
         this.formaIngreso = formaIngreso;
     }
 
-    public double getEfectivo() {
-        return efectivo;
+    public String getIdBanco() {
+        return idBanco;
     }
 
-    public void setEfectivo(double efectivo) {
-        this.efectivo = efectivo;
+    public void setIdBanco(String idBanco) {
+        this.idBanco = idBanco;
     }
 
-    public double getTarjeta() {
-        return tarjeta;
+    public double getVuelto() {
+        return vuelto;
     }
 
-    public void setTarjeta(double tarjeta) {
-        this.tarjeta = tarjeta;
+    public void setVuelto(double vuelto) {
+        this.vuelto = vuelto;
     }
 
-    public double getDeposito() {
-        return deposito;
+    public String getOperacion() {
+        return operacion;
     }
 
-    public void setDeposito(double deposito) {
-        this.deposito = deposito;
+    public void setOperacion(String operacion) {
+        this.operacion = operacion;
+    }
+
+    public BancoTB getBancoTB() {
+        return bancoTB;
+    }
+
+    public void setBancoTB(BancoTB bancoTB) {
+        this.bancoTB = bancoTB;
     }
 
 }

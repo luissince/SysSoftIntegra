@@ -117,8 +117,6 @@ public final class FilesRouters {
 
     public static final String FX_IMPRESORA = "/view/configuracion/impresoras/FxImpresora.fxml";
 
-    public static final String FX_GUIA_REMISION = "/view/operaciones/guiaremision/FxGuiaRemision.fxml";
-
     // --------------------------------------------------------------------------------------------------
     public static final String FX_TICKET = "/view/configuracion/tickets/FxTicket.fxml";
 
@@ -148,9 +146,7 @@ public final class FilesRouters {
 
     // --------------------------------------------------------------------------------------------------
     // PROCESO DE COMPRAS
-    // --------------------------------------------------------------------------------------------------
-    public static final String FX_AMARTIZAR_PAGOS = "/view/consultas/pagar/FxAmortizarPagos.fxml";
-
+    // --------------------------------------------------------------------------------------------------   
     public static final String FX_COMPRAS = "/view/operaciones/compras/FxCompras.fxml";
 
     public static final String FX_COMPRAS_DETALLE = "/view/consultas/compras/FxComprasDetalle.fxml";
@@ -165,7 +161,23 @@ public final class FilesRouters {
 
     public static final String FX_COMPRAS_CREDITO = "/view/operaciones/compras/FxComprasCredito.fxml";
 
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO CUENTAS POR COBRAR
+    // --------------------------------------------------------------------------------------------------
+    public static final String FX_CUENTAS_POR_COBRAR = "/view/consultas/cobrar/FxCuentasPorCobrar.fxml";
+
+    public static final String FX_CUENTAS_POR_COBRAR_VISUALIZAR = "/view/consultas/cobrar/FxCuentasPorCobrarVisualizar.fxml";
+
+    public static final String FX_GENERAR_COBRO = "/view/consultas/cobrar/FxGenerarCobro.fxml";
+
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO CUENTAS POR PAGAR
+    // --------------------------------------------------------------------------------------------------
+    public static final String FX_CUENTAS_POR_PAGAR = "/view/consultas/pagar/FxCuentasPorPagar.fxml";
+
     public static final String FX_CUENTAS_POR_PAGAR_VISUALIZAR = "/view/consultas/pagar/FxCuentasPorPagarVisualizar.fxml";
+
+    public static final String FX_GENERAR_PAGO = "/view/consultas/pagar/FxGenerarPago.fxml";
 
     // --------------------------------------------------------------------------------------------------
     public static final String FX_CAJA = "/view/operaciones/cortecaja/FxCaja.fxml";
@@ -180,10 +192,6 @@ public final class FilesRouters {
 
     public static final String FX_CAJA_CONSULTA = "/view/operaciones/cortecaja/FxCajaConsultas.fxml";
 
-    public static final String FX_CUENTAS_POR_COBRAR = "/view/consultas/pagar/FxCuentasPorCobrar.fxml";
-
-    public static final String FX_CUENTAS_POR_PAGAR = "/view/consultas/pagar/FxCuentasPorPagar.fxml";
-
     // --------------------------------------------------------------------------------------------------
     public static final String FX_IMPRIMIR = "/view/configuracion/impresoras/FxImprimir.fxml";
 
@@ -191,8 +199,6 @@ public final class FilesRouters {
     // --------------------------------------------------------------------------------------------------
 
     public static final String FX_VENTA = "/view/operaciones/venta/FxVenta.fxml";
-
-    public static final String FX_VENTA_ABONO_PROCESO = "/view/consultas/pagar/FxVentaAbonoProceso.fxml";
 
     public static final String FX_VENTA_DESCUENTO = "/view/operaciones/venta/FxVentaDescuento.fxml";
 
@@ -223,8 +229,6 @@ public final class FilesRouters {
     public static final String FX_AJUSTE_INVENTARIO = "/view/inventario/ajusteinventario/FxAjusteInventario.fxml";
 
     public static final String FX_AJUSTE_INVENTARIO_PROCESO = "/view/inventario/ajusteinventario/FxAjusteInventarioProceso.fxml";
-
-    public static final String FX_CUENTAS_POR_COBRAR_VISUALIZAR = "/view/consultas/pagar/FxCuentasPorCobrarVisualizar.fxml";
 
     // --------------------------------------------------------------------------------------------------
     // PROCESO DE ARTICULOS
@@ -371,11 +375,19 @@ public final class FilesRouters {
     public static final String FX_COTIZACION_REALIZADAS = "/view/operaciones/cotizacion/FxCotizacionRealizadas.fxml";
 
     public static final String FX_COTIZACION_PRODUCTO = "/view/operaciones/cotizacion/FxCotizacionProducto.fxml";
-    // ---------------------------------------------------------------------------------------------------
+
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO GUIA DE REMISION
+    // --------------------------------------------------------------------------------------------------    
     public static final String FX_GUIA_REMISION_DETALLE = "/view/operaciones/guiaremision/FxGuiaRemisionDetalle.fxml";
 
     public static final String FX_GUIA_REMISION_REALIZADAS = "/view/operaciones/guiaremision/FxGuiaRemisionRealizadas.fxml";
 
+    public static final String FX_GUIA_REMISION = "/view/operaciones/guiaremision/FxGuiaRemision.fxml";
+
+    // --------------------------------------------------------------------------------------------------
+    // OTROS PROCESO
+    // --------------------------------------------------------------------------------------------------  
     public static final String FX_VENTA_LISTA = "/view/operaciones/venta/FxVentaLista.fxml";
 
     public static final String FX_OPCIONES_IMPRIMIR = "/view/configuracion/impresoras/FxOpcionesImprimir.fxml";

@@ -403,8 +403,8 @@ public class CajaADO {
                         statementMovimientoBase.close();
                         statementMovimientoBase = dbf.getConnection().prepareStatement(
                                 "SELECT m.Monto AS VentaEfectivo FROM MovimientoCajaTB AS m \n"
-                                + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
-                                + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 2 AND v.IdNotaCredito IS NULL");
+                                        + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
+                                        + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 2 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ventaEfectivo = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
@@ -417,8 +417,8 @@ public class CajaADO {
 
                         statementMovimientoBase = dbf.getConnection().prepareStatement(
                                 "SELECT m.Monto AS VentaTarjeta FROM MovimientoCajaTB AS m \n"
-                                + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
-                                + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 3 AND v.IdNotaCredito IS NULL");
+                                        + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
+                                        + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 3 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ventaTarjeta = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
@@ -431,8 +431,8 @@ public class CajaADO {
 
                         statementMovimientoBase = dbf.getConnection().prepareStatement(
                                 "SELECT m.Monto AS Deposito FROM MovimientoCajaTB AS m \n"
-                                + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
-                                + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 6 AND v.IdNotaCredito IS NULL");
+                                        + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
+                                        + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 6 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ventaDeposito = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
@@ -445,8 +445,8 @@ public class CajaADO {
 
                         statementMovimientoBase = dbf.getConnection().prepareStatement(
                                 "SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m \n"
-                                + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
-                                + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 4 AND v.IdNotaCredito IS NULL");
+                                        + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
+                                        + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 4 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ingresoEfectivo = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
@@ -459,8 +459,8 @@ public class CajaADO {
 
                         statementMovimientoBase = dbf.getConnection().prepareStatement(
                                 "SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m \n"
-                                + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
-                                + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 7 AND v.IdNotaCredito IS NULL");
+                                        + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
+                                        + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 7 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ingresoTarjeta = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
@@ -473,8 +473,8 @@ public class CajaADO {
 
                         statementMovimientoBase = dbf.getConnection().prepareStatement(
                                 "SELECT m.Monto AS Ingresos FROM MovimientoCajaTB AS m \n"
-                                + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
-                                + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 8 AND v.IdNotaCredito IS NULL");
+                                        + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
+                                        + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 8 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double ingresoDeposito = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
@@ -487,8 +487,8 @@ public class CajaADO {
 
                         statementMovimientoBase = dbf.getConnection().prepareStatement(
                                 "SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m \n"
-                                + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
-                                + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 5 AND v.IdNotaCredito IS NULL");
+                                        + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
+                                        + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 5 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double salidaEfectivo = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
@@ -501,8 +501,8 @@ public class CajaADO {
 
                         statementMovimientoBase = dbf.getConnection().prepareStatement(
                                 "SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m \n"
-                                + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
-                                + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 9 AND v.IdNotaCredito IS NULL");
+                                        + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
+                                        + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 9 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double salidaTarjeta = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
@@ -515,8 +515,8 @@ public class CajaADO {
 
                         statementMovimientoBase = dbf.getConnection().prepareStatement(
                                 "SELECT m.Monto AS Salidas FROM MovimientoCajaTB AS m \n"
-                                + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
-                                + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 10 AND v.IdNotaCredito IS NULL");
+                                        + "LEFT JOIN NotaCreditoTB AS v ON m.IdProcedencia = v.IdVenta \n"
+                                        + "WHERE m.IdCaja = ? AND m.TipoMovimiento = 10 AND v.IdNotaCredito IS NULL");
                         statementMovimientoBase.setString(1, cajaTB.getIdCaja());
                         double salidaDeposito = 0;
                         try (ResultSet setMovimientoBase = statementMovimientoBase.executeQuery()) {
@@ -1119,9 +1119,9 @@ public class CajaADO {
                 ingresoTB.setTransaccion(resultSet.getString("Transaccion"));
                 ingresoTB.setCantidad(resultSet.getInt("Cantidad"));
                 ingresoTB.setFormaIngreso(resultSet.getString("FormaIngreso"));
-                ingresoTB.setEfectivo(resultSet.getDouble("Efectivo"));
-                ingresoTB.setTarjeta(resultSet.getDouble("Tarjeta"));
-                ingresoTB.setDeposito(resultSet.getDouble("Deposito"));
+                // ingresoTB.setEfectivo(resultSet.getDouble("Efectivo"));
+                // ingresoTB.setTarjeta(resultSet.getDouble("Tarjeta"));
+                // ingresoTB.setDeposito(resultSet.getDouble("Deposito"));
                 ingresoTBs.add(ingresoTB);
             }
 

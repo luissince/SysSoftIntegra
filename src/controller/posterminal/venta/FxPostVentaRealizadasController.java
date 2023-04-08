@@ -123,19 +123,21 @@ public class FxPostVentaRealizadasController implements Initializable {
         tcId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
         tcFechaVenta.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getFechaVenta() + "\n"
-                + cellData.getValue().getHoraVenta()
-        ));
+                        + cellData.getValue().getHoraVenta()));
         tcCliente.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getClienteTB().getNumeroDocumento() + "\n"
-                + cellData.getValue().getClienteTB().getInformacion()
-        ));
+                        + cellData.getValue().getClienteTB().getInformacion()));
         tcTipo.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getTipoName()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
         tcSerie.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getComprobanteName() + "\n"
-                + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()
-                + (cellData.getValue().getNotaCreditoTB() != null ? " (NOTA CREDITO: " + cellData.getValue().getNotaCreditoTB().getSerie() + "-" + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")" : "")));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
+                cellData.getValue().getTipoDocumentoTB().getNombre() + "\n"
+                        + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()
+                        + (cellData.getValue().getNotaCreditoTB() != null
+                                ? " (NOTA CREDITO: " + cellData.getValue().getNotaCreditoTB().getSerie() + "-"
+                                        + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")"
+                                : "")));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " "
+                + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcFechaVenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
@@ -144,7 +146,8 @@ public class FxPostVentaRealizadasController implements Initializable {
         tcTipo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
         tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
         tcTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
-        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+        tvList.setPlaceholder(
+                Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
     }
 
     public void loadPrivilegios(ObservableList<PrivilegioTB> privilegioTBs) {
@@ -181,12 +184,15 @@ public class FxPostVentaRealizadasController implements Initializable {
     public void loadInit() {
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
             paginacion = 1;
-            fillVentasTable((short) 0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal), cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(), cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
+            fillVentasTable((short) 0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                    cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
+                    cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
             opcion = 0;
         }
     }
 
-    private void fillVentasTable(short opcion, String value, String fechaInicial, String fechaFinal, int comprobante, int estado, String usuario) {
+    private void fillVentasTable(short opcion, String value, String fechaInicial, String fechaFinal, int comprobante,
+            int estado, String usuario) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -195,14 +201,15 @@ public class FxPostVentaRealizadasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return VentaADO.Listar_Ventas_Pos(opcion, value, fechaInicial, fechaFinal, comprobante, estado, usuario, (paginacion - 1) * 20, 20);
+                return VentaADO.Listar_Ventas_Pos(opcion, value, fechaInicial, fechaFinal, comprobante, estado, usuario,
+                        (paginacion - 1) * 20, 20);
             }
         };
         task.setOnSucceeded(w -> {
             Object object = task.getValue();
             if (object instanceof Object[]) {
                 Object[] objects = (Object[]) object;
-                ObservableList<VentaTB> ventaTBs =  (ObservableList<VentaTB>) objects[0];
+                ObservableList<VentaTB> ventaTBs = (ObservableList<VentaTB>) objects[0];
                 if (!ventaTBs.isEmpty()) {
                     tvList.setItems(ventaTBs);
                     totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));
@@ -210,7 +217,8 @@ public class FxPostVentaRealizadasController implements Initializable {
                     lblPaginaSiguiente.setText(totalPaginacion + "");
                     lblMotonTotal.setText(Tools.roundingValue((double) objects[2], 2));
                 } else {
-                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                    tvList.setPlaceholder(
+                            Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
                     lblPaginaActual.setText("0");
                     lblPaginaSiguiente.setText("0");
                     lblMotonTotal.setText(Tools.roundingValue(0, 2));
@@ -223,13 +231,15 @@ public class FxPostVentaRealizadasController implements Initializable {
         });
         task.setOnFailed(w -> {
             lblLoad.setVisible(false);
-            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
+            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(),
+                    "-fx-text-fill:#a70820;", false));
             lblMotonTotal.setText(Tools.roundingValue(0, 2));
         });
         task.setOnScheduled(w -> {
             lblLoad.setVisible(true);
             tvList.getItems().clear();
-            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            tvList.setPlaceholder(
+                    Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
             totalPaginacion = 0;
             lblMotonTotal.setText(Tools.roundingValue(0, 2));
         });
@@ -243,7 +253,7 @@ public class FxPostVentaRealizadasController implements Initializable {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             FXMLLoader fXMLLoader = new FXMLLoader(getClass().getResource(FilesRouters.FX_POS_VENTA_DETALLE));
             AnchorPane node = fXMLLoader.load();
-            //Controlller here
+            // Controlller here
             FxPostVentaDetalleController controller = fXMLLoader.getController();
             controller.setInitVentasController(this, fxPrincipalController);
             controller.setInitComponents(tvList.getSelectionModel().getSelectedItem().getIdVenta());
@@ -265,7 +275,7 @@ public class FxPostVentaRealizadasController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_EMPLEADO_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxEmpleadosListaController controller = fXMLLoader.getController();
             controller.setInitPostVentaRealizadasController(this);
             //
@@ -342,7 +352,8 @@ public class FxPostVentaRealizadasController implements Initializable {
             if (!Tools.isText(txtSearch.getText())) {
                 if (!lblLoad.isVisible()) {
                     paginacion = 1;
-                    fillVentasTable((short) (!buscarTodos ? 1 : 2), txtSearch.getText().trim(), "", "", 0, 0, idEmpleado);
+                    fillVentasTable((short) (!buscarTodos ? 1 : 2), txtSearch.getText().trim(), "", "", 0, 0,
+                            idEmpleado);
                     opcion = 1;
                 }
             }
@@ -416,7 +427,8 @@ public class FxPostVentaRealizadasController implements Initializable {
                 Tools.actualDate(Tools.getDate(), dtFechaFinal);
                 if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
                     paginacion = 1;
-                    fillVentasTable((short) 0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
+                    fillVentasTable((short) 0, "", Tools.getDatePicker(dtFechaInicial),
+                            Tools.getDatePicker(dtFechaFinal),
                             cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
                             cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
                     opcion = 0;
@@ -539,8 +551,7 @@ public class FxPostVentaRealizadasController implements Initializable {
         this.idEmpleado = idEmpleado;
     }
 
-   
     public void setContent(FxPrincipalController fxPrincipalController) {
-        this.fxPrincipalController=fxPrincipalController;
+        this.fxPrincipalController = fxPrincipalController;
     }
 }

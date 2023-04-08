@@ -2,7 +2,6 @@ package model;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
-import service.ModalidadTrasladoTB;
 
 public class GuiaRemisionTB {
 

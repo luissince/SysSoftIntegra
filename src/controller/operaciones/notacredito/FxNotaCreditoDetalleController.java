@@ -128,19 +128,24 @@ public class FxNotaCreditoDetalleController implements Initializable {
                 NotaCreditoTB notaCreditoTB = (NotaCreditoTB) object;
 
                 lblFechaRegistro.setText(notaCreditoTB.getFechaRegistro() + " " + notaCreditoTB.getHoraRegistro());
-                lblCliente.setText(notaCreditoTB.getClienteTB().getNumeroDocumento() + " - " + notaCreditoTB.getClienteTB().getInformacion());
-                lblClienteCelulares.setText(notaCreditoTB.getClienteTB().getTelefono() + " - " + notaCreditoTB.getClienteTB().getTelefono());
+                lblCliente.setText(notaCreditoTB.getClienteTB().getNumeroDocumento() + " - "
+                        + notaCreditoTB.getClienteTB().getInformacion());
+                lblClienteCelulares.setText(notaCreditoTB.getClienteTB().getTelefono() + " - "
+                        + notaCreditoTB.getClienteTB().getTelefono());
                 lbCorreoElectronico.setText(notaCreditoTB.getClienteTB().getEmail());
                 lbDireccion.setText(notaCreditoTB.getClienteTB().getDireccion());
 
                 lblNotaCredito.setText(notaCreditoTB.getNombreComprobante());
-                lblNotaCreditoSerieNumeracion.setText(notaCreditoTB.getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getNumeracion()));
+                lblNotaCreditoSerieNumeracion
+                        .setText(notaCreditoTB.getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getNumeracion()));
 
-                lblComprobanteReferencia.setText(notaCreditoTB.getVentaTB().getComprobanteName());
-                lblSerieNumeracionReferencia.setText(notaCreditoTB.getVentaTB().getSerie() + "-" + Tools.formatNumber(notaCreditoTB.getVentaTB().getNumeracion()));
+                lblComprobanteReferencia.setText(notaCreditoTB.getVentaTB().getTipoDocumentoTB().getNombre());
+                lblSerieNumeracionReferencia.setText(notaCreditoTB.getVentaTB().getSerie() + "-"
+                        + Tools.formatNumber(notaCreditoTB.getVentaTB().getNumeracion()));
                 lblMotivoAnulacion.setText(notaCreditoTB.getNombreMotivo());
 
-                fillNotaCreditoDetalle(notaCreditoTB.getNotaCreditoDetalleTBs(), notaCreditoTB.getMonedaTB().getSimbolo());
+                fillNotaCreditoDetalle(notaCreditoTB.getNotaCreditoDetalleTBs(),
+                        notaCreditoTB.getMonedaTB().getSimbolo());
 
                 spBody.setDisable(false);
                 hbLoad.setVisible(false);
@@ -160,14 +165,32 @@ public class FxNotaCreditoDetalleController implements Initializable {
 
     private void fillNotaCreditoDetalle(ArrayList<NotaCreditoDetalleTB> creditoDetalleTBs, String simbolo) {
         for (int i = 0; i < creditoDetalleTBs.size(); i++) {
-            gpList.add(addElementGridPane("l1" + (i + 1), creditoDetalleTBs.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
-            gpList.add(addElementGridPane("l2" + (i + 1), creditoDetalleTBs.get(i).getSuministroTB().getClave() + "\n" + creditoDetalleTBs.get(i).getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
-            gpList.add(addElementGridPane("l3" + (i + 1), Tools.roundingValue(creditoDetalleTBs.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpList.add(addElementGridPane("l4" + (i + 1), creditoDetalleTBs.get(i).getSuministroTB().getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
-            gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(creditoDetalleTBs.get(i).getImpuestoTB().getValor(), 2) + "%", Pos.CENTER_RIGHT), 4, (i + 1));
-            gpList.add(addElementGridPane("l6" + (i + 1), simbolo + " " + Tools.roundingValue(creditoDetalleTBs.get(i).getPrecio(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpList.add(addElementGridPane("l7" + (i + 1), Tools.roundingValue(creditoDetalleTBs.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPane("l8" + (i + 1), simbolo + " " + Tools.roundingValue(creditoDetalleTBs.get(i).getCantidad() * (creditoDetalleTBs.get(i).getPrecio() - creditoDetalleTBs.get(i).getDescuento()), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpList.add(addElementGridPane("l1" + (i + 1), creditoDetalleTBs.get(i).getId() + "", Pos.CENTER), 0,
+                    (i + 1));
+            gpList.add(
+                    addElementGridPane("l2" + (i + 1),
+                            creditoDetalleTBs.get(i).getSuministroTB().getClave() + "\n"
+                                    + creditoDetalleTBs.get(i).getSuministroTB().getNombreMarca(),
+                            Pos.CENTER_LEFT),
+                    1, (i + 1));
+            gpList.add(addElementGridPane("l3" + (i + 1),
+                    Tools.roundingValue(creditoDetalleTBs.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
+            gpList.add(addElementGridPane("l4" + (i + 1),
+                    creditoDetalleTBs.get(i).getSuministroTB().getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
+            gpList.add(addElementGridPane("l5" + (i + 1),
+                    Tools.roundingValue(creditoDetalleTBs.get(i).getImpuestoTB().getValor(), 2) + "%",
+                    Pos.CENTER_RIGHT), 4, (i + 1));
+            gpList.add(addElementGridPane("l6" + (i + 1),
+                    simbolo + " " + Tools.roundingValue(creditoDetalleTBs.get(i).getPrecio(), 2), Pos.CENTER_RIGHT), 5,
+                    (i + 1));
+            gpList.add(addElementGridPane("l7" + (i + 1),
+                    Tools.roundingValue(creditoDetalleTBs.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
+            gpList.add(addElementGridPane("l8" + (i + 1),
+                    simbolo + " "
+                            + Tools.roundingValue(creditoDetalleTBs.get(i).getCantidad()
+                                    * (creditoDetalleTBs.get(i).getPrecio() - creditoDetalleTBs.get(i).getDescuento()),
+                                    2),
+                    Pos.CENTER_RIGHT), 7, (i + 1));
         }
         calculateTotales(creditoDetalleTBs, simbolo);
     }
@@ -205,7 +228,8 @@ public class FxNotaCreditoDetalleController implements Initializable {
         Label label = new Label(nombre);
         label.setId(id);
         label.getStyleClass().add("labelRoboto13");
-        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
+        label.setStyle(
+                "-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.setAlignment(pos);
         label.setWrapText(true);
         label.setPrefWidth(Control.USE_COMPUTED_SIZE);
@@ -266,7 +290,8 @@ public class FxNotaCreditoDetalleController implements Initializable {
         closeWindow();
     }
 
-    public void setInitNotaCreditoRealizadasController(FxNotaCreditoRealizadasController creditoRealizadasController, FxPrincipalController fxPrincipalController) {
+    public void setInitNotaCreditoRealizadasController(FxNotaCreditoRealizadasController creditoRealizadasController,
+            FxPrincipalController fxPrincipalController) {
         this.creditoRealizadasController = creditoRealizadasController;
         this.fxPrincipalController = fxPrincipalController;
     }

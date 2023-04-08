@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a8fcc85-bb64-405d-8ebb-a9f118fce454">
-	<property name="ireport.zoom" value="1.5000000000000295"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="96"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="style1" mode="Opaque" backcolor="#CCCCCC" fill="Solid" isBold="true"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
@@ -56,7 +56,7 @@
 	<title>
 		<band height="209" splitType="Stretch">
 			<staticText>
-				<reportElement x="8" y="94" width="527" height="101" uuid="fc63a68f-87f7-4b0f-af58-0595cfcb8b6e"/>
+				<reportElement x="8" y="94" width="537" height="101" uuid="fc63a68f-87f7-4b0f-af58-0595cfcb8b6e"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -83,7 +83,7 @@
 				<text><![CDATA[D.N.I./R.U.C.:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="8" y="177" width="100" height="12" forecolor="#000000" backcolor="#020203" uuid="e4b9e70d-8b1c-4a30-83b7-8bae8d155ddc"/>
+				<reportElement mode="Transparent" x="8" y="174" width="100" height="12" forecolor="#000000" backcolor="#020203" uuid="e4b9e70d-8b1c-4a30-83b7-8bae8d155ddc"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 					<paragraph leftIndent="5"/>
@@ -91,7 +91,7 @@
 				<text><![CDATA[CELULAR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="255" y="177" width="97" height="12" forecolor="#000000" backcolor="#020203" uuid="b63ce981-d651-435a-a071-ee53f10a05fe"/>
+				<reportElement mode="Transparent" x="255" y="174" width="97" height="12" forecolor="#000000" backcolor="#020203" uuid="b63ce981-d651-435a-a071-ee53f10a05fe"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true" isStrikeThrough="false"/>
 					<paragraph leftIndent="5"/>
@@ -107,7 +107,7 @@
 				<text><![CDATA[DIRECCIÓN:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="8" y="164" width="100" height="12" forecolor="#000000" backcolor="#020203" uuid="f2047b4d-ec13-4186-ad75-7ba0f188d961"/>
+				<reportElement mode="Transparent" x="8" y="162" width="100" height="12" forecolor="#000000" backcolor="#020203" uuid="f2047b4d-ec13-4186-ad75-7ba0f188d961"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true" isStrikeThrough="false"/>
 					<paragraph leftIndent="5"/>
@@ -135,7 +135,7 @@
 				<textFieldExpression><![CDATA[$P{DIRECCION}+"\n"+$P{EMAIL}+"\n"+$P{TELEFONOCELULAR}+"\n"+$P{PAGINAWEB}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement mode="Transparent" x="386" y="31" width="149" height="23" forecolor="#000000" backcolor="#FE3152" uuid="5cfb7879-9434-491a-81b6-6c56a0c89bec"/>
+				<reportElement mode="Transparent" x="397" y="29" width="149" height="23" forecolor="#000000" backcolor="#FE3152" uuid="5cfb7879-9434-491a-81b6-6c56a0c89bec"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.0"/>
@@ -149,7 +149,7 @@
 				<textFieldExpression><![CDATA[$P{NOMBREDOCUMENTO}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement mode="Transparent" x="386" y="54" width="149" height="24" forecolor="#000000" backcolor="#FE3152" uuid="e442535a-430b-40df-ad6a-497f23e3e044"/>
+				<reportElement mode="Transparent" x="397" y="52" width="149" height="24" forecolor="#000000" backcolor="#FE3152" uuid="e442535a-430b-40df-ad6a-497f23e3e044"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.0"/>
@@ -163,7 +163,7 @@
 				<textFieldExpression><![CDATA[$P{NUMERODOCUMENTO}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement mode="Transparent" x="386" y="15" width="149" height="16" forecolor="#000000" backcolor="#FE3152" uuid="6e4ea618-1286-43c4-b399-09e990636954"/>
+				<reportElement mode="Transparent" x="397" y="13" width="149" height="16" forecolor="#000000" backcolor="#FE3152" uuid="6e4ea618-1286-43c4-b399-09e990636954"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -233,7 +233,7 @@
 				<textFieldExpression><![CDATA[$P{DIRECCION_CLIENTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="108" y="177" width="147" height="12" forecolor="#020203" uuid="25e7b9d2-cc4e-4b48-83ef-f8775c5ce4eb"/>
+				<reportElement x="108" y="174" width="147" height="12" forecolor="#020203" uuid="25e7b9d2-cc4e-4b48-83ef-f8775c5ce4eb"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>
@@ -241,7 +241,7 @@
 				<textFieldExpression><![CDATA[$P{CELULAR_CLIENTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="352" y="177" width="172" height="12" forecolor="#020203" uuid="86554e06-d189-4ba8-84be-dc69a15a2d51"/>
+				<reportElement x="352" y="174" width="172" height="12" forecolor="#020203" uuid="86554e06-d189-4ba8-84be-dc69a15a2d51"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>
@@ -249,7 +249,7 @@
 				<textFieldExpression><![CDATA[$P{EMAIL_CLIENTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="108" y="164" width="416" height="12" forecolor="#020203" uuid="676d16b0-74bf-4d43-94f2-78bcf3c60a5c"/>
+				<reportElement x="108" y="162" width="416" height="12" forecolor="#020203" uuid="676d16b0-74bf-4d43-94f2-78bcf3c60a5c"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 					<paragraph leftIndent="5"/>

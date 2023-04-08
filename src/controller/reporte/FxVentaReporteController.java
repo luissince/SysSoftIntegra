@@ -138,7 +138,7 @@ public class FxVentaReporteController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_CLIENTE_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxClienteListaController controller = fXMLLoader.getController();
             controller.setInitVentaReporteController(this);
             //
@@ -159,7 +159,7 @@ public class FxVentaReporteController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_EMPLEADO_LISTA);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxEmpleadosListaController controller = fXMLLoader.getController();
             controller.setInitVentaReporteController(this);
             //
@@ -179,7 +179,8 @@ public class FxVentaReporteController implements Initializable {
                 1,
                 Tools.getDatePicker(dpFechaInicial),
                 Tools.getDatePicker(dpFechaFinal),
-                cbDocumentosSeleccionar.isSelected() ? 0 : cbDocumentos.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
+                cbDocumentosSeleccionar.isSelected() ? 0
+                        : cbDocumentos.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
                 idCliente,
                 idEmpleado,
                 cbTipoPagoSeleccionar.isSelected() ? 0 : rbContado.isSelected() ? 1 : 2,
@@ -222,7 +223,7 @@ public class FxVentaReporteController implements Initializable {
 
                 if (vt.getNotaCreditoTB() == null && vt.getEstado() != 3) {
                     if (vt.getTipo() == 2 || vt.getTipo() == 2 && vt.getEstado() == 1) {
-//                        efectivo += vt.getTotal();
+                        // efectivo += vt.getTotal();
                     } else if (vt.getEstado() == 1 || vt.getEstado() == 4) {
                         if (vt.getFormaName().equalsIgnoreCase("EFECTIVO")) {
                             efectivo += vt.getTotal();
@@ -239,28 +240,44 @@ public class FxVentaReporteController implements Initializable {
 
             }
 
-            Map map = new HashMap();
-            map.put("PERIODO", dpFechaInicial.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")) + " - " + dpFechaFinal.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")));
-            map.put("DOCUMENTO", cbDocumentosSeleccionar.isSelected() ? "TODOS" : cbDocumentos.getSelectionModel().getSelectedItem().getNombre());
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("PERIODO", dpFechaInicial.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")) + " - "
+                    + dpFechaFinal.getValue().format(DateTimeFormatter.ofPattern("dd/MM/YYYY")));
+            map.put("DOCUMENTO", cbDocumentosSeleccionar.isSelected() ? "TODOS"
+                    : cbDocumentos.getSelectionModel().getSelectedItem().getNombre());
             map.put("ORDEN", "TODOS");
             map.put("CLIENTE", cbClientesSeleccionar.isSelected() ? "TODOS" : txtClientes.getText().toUpperCase());
-            map.put("TIPO", cbTipoPagoSeleccionar.isSelected() ? "TODOS" : rbContado.isSelected() ? "CONTADO" : "CRÉDITO");
-            map.put("METODO", cbMetodoPagoSeleccionar.isSelected() ? "TODOS" : rbEfectivo.isSelected() ? "EFECTIVO" : rbTarjeta.isSelected() ? "TARJETA" : rbMixto.isSelected() ? "MIXTO" : "DEPÓSITO");
+            map.put("TIPO",
+                    cbTipoPagoSeleccionar.isSelected() ? "TODOS" : rbContado.isSelected() ? "CONTADO" : "CRÉDITO");
+            map.put("METODO",
+                    cbMetodoPagoSeleccionar.isSelected() ? "TODOS"
+                            : rbEfectivo.isSelected() ? "EFECTIVO"
+                                    : rbTarjeta.isSelected() ? "TARJETA" : rbMixto.isSelected() ? "MIXTO" : "DEPÓSITO");
 
             map.put("VENDEDOR", cbVendedoresSeleccionar.isSelected() ? "TODOS" : txtVendedores.getText().toUpperCase());
 
-            map.put("TOTALCREDITO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(totalcredito, 2));
-            map.put("TOTALCONTADO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(totalcontado, 2));
+            // map.put("TOTALCREDITO", Session.MONEDA_SIMBOLO + " " +
+            // Tools.roundingValue(totalcredito, 2));
+            // map.put("TOTALCONTADO", Session.MONEDA_SIMBOLO + " " +
+            // Tools.roundingValue(totalcontado, 2));
 
-            map.put("TOTAANULADO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(totalanulado, 2));
-            map.put("TOTALCREDITOCOBRADO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(totalcreditopagado, 2));
+            // map.put("TOTAANULADO", Session.MONEDA_SIMBOLO + " " +
+            // Tools.roundingValue(totalanulado, 2));
+            // map.put("TOTALCREDITOCOBRADO", Session.MONEDA_SIMBOLO + " " +
+            // Tools.roundingValue(totalcreditopagado, 2));
 
-            map.put("EFECTIVO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(efectivo, 2));
-            map.put("TARJETA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(tarjeta, 2));
-            map.put("MIXTO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(mixto, 2));
-            map.put("DEPOSITO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(deposito, 2));
+            // map.put("EFECTIVO", Session.MONEDA_SIMBOLO + " " +
+            // Tools.roundingValue(efectivo, 2));
+            // map.put("TARJETA", Session.MONEDA_SIMBOLO + " " +
+            // Tools.roundingValue(tarjeta, 2));
+            // map.put("MIXTO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(mixto,
+            // 2));
+            // map.put("DEPOSITO", Session.MONEDA_SIMBOLO + " " +
+            // Tools.roundingValue(deposito, 2));
 
-            JasperPrint jasperPrint = JasperFillManager.fillReport(FxVentaReporteController.class.getResourceAsStream("/report/VentaGeneral.jasper"), map, new JRBeanCollectionDataSource(list));
+            JasperPrint jasperPrint = JasperFillManager.fillReport(
+                    FxVentaReporteController.class.getResourceAsStream("/report/VentaGeneral.jasper"), map,
+                    new JRBeanCollectionDataSource(list));
             return jasperPrint;
         } else {
             return (String) object;
@@ -269,13 +286,18 @@ public class FxVentaReporteController implements Initializable {
 
     private void openViewVisualizar() {
         if (!cbDocumentosSeleccionar.isSelected() && cbDocumentos.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(window, "Reporte General de Ventas", "Seleccione un documento para generar el reporte.");
+            Tools.AlertMessageWarning(window, "Reporte General de Ventas",
+                    "Seleccione un documento para generar el reporte.");
             cbDocumentos.requestFocus();
-        } else if (!cbClientesSeleccionar.isSelected() && idCliente.equalsIgnoreCase("") && txtClientes.getText().isEmpty()) {
-            Tools.AlertMessageWarning(window, "Reporte General de Ventas", "Ingrese un cliente para generar el reporte.");
+        } else if (!cbClientesSeleccionar.isSelected() && idCliente.equalsIgnoreCase("")
+                && txtClientes.getText().isEmpty()) {
+            Tools.AlertMessageWarning(window, "Reporte General de Ventas",
+                    "Ingrese un cliente para generar el reporte.");
             btnClientes.requestFocus();
-        } else if (!cbVendedoresSeleccionar.isSelected() && idEmpleado.equalsIgnoreCase("") && txtVendedores.getText().isEmpty()) {
-            Tools.AlertMessageWarning(window, "Reporte General de Ventas", "Ingrese un empleado para generar el reporte.");
+        } else if (!cbVendedoresSeleccionar.isSelected() && idEmpleado.equalsIgnoreCase("")
+                && txtVendedores.getText().isEmpty()) {
+            Tools.AlertMessageWarning(window, "Reporte General de Ventas",
+                    "Ingrese un empleado para generar el reporte.");
             btnVendedor.requestFocus();
         } else {
             ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
@@ -305,9 +327,10 @@ public class FxVentaReporteController implements Initializable {
                         URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
                         FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                         Parent parent = fXMLLoader.load(url.openStream());
-                        //Controlller here
+                        // Controlller here
                         FxReportViewController controller = fXMLLoader.getController();
-                        controller.setFileName("Lista de Ventas Libre del " + Tools.getDatePicker(dpFechaInicial) + " al " + Tools.getDatePicker(dpFechaFinal));
+                        controller.setFileName("Lista de Ventas Libre del " + Tools.getDatePicker(dpFechaInicial)
+                                + " al " + Tools.getDatePicker(dpFechaFinal));
                         controller.setJasperPrint((JasperPrint) object);
                         controller.show();
                         Stage stage = WindowStage.StageLoader(parent, "Reporte General de Ventas Libres");
@@ -338,7 +361,8 @@ public class FxVentaReporteController implements Initializable {
                 Tools.showAlertNotification(
                         "/view/image/warning_large.png",
                         "Generar Vista",
-                        Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
+                        Tools.newLineString(
+                                "Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             });
@@ -360,22 +384,27 @@ public class FxVentaReporteController implements Initializable {
 
     private void onEventPdf() {
         if (!cbDocumentosSeleccionar.isSelected() && cbDocumentos.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(window, "Reporte General de Ventas", "Seleccione un documento para generar el reporte.");
+            Tools.AlertMessageWarning(window, "Reporte General de Ventas",
+                    "Seleccione un documento para generar el reporte.");
             cbDocumentos.requestFocus();
-        } else if (!cbClientesSeleccionar.isSelected() && idCliente.equalsIgnoreCase("") && txtClientes.getText().isEmpty()) {
-            Tools.AlertMessageWarning(window, "Reporte General de Ventas", "Ingrese un cliente para generar el reporte.");
+        } else if (!cbClientesSeleccionar.isSelected() && idCliente.equalsIgnoreCase("")
+                && txtClientes.getText().isEmpty()) {
+            Tools.AlertMessageWarning(window, "Reporte General de Ventas",
+                    "Ingrese un cliente para generar el reporte.");
             btnClientes.requestFocus();
-        } else if (!cbVendedoresSeleccionar.isSelected() && idEmpleado.equalsIgnoreCase("") && txtVendedores.getText().isEmpty()) {
-            Tools.AlertMessageWarning(window, "Reporte General de Ventas", "Ingrese un empleado para generar el reporte.");
+        } else if (!cbVendedoresSeleccionar.isSelected() && idEmpleado.equalsIgnoreCase("")
+                && txtVendedores.getText().isEmpty()) {
+            Tools.AlertMessageWarning(window, "Reporte General de Ventas",
+                    "Ingrese un empleado para generar el reporte.");
             btnVendedor.requestFocus();
         } else {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
             fileChooser.setTitle("Reporte de Ventas");
-            fileChooser.setInitialFileName("Lista de Ventas Libre del " + Tools.getDatePicker(dpFechaInicial) + " al " + Tools.getDatePicker(dpFechaFinal));
+            fileChooser.setInitialFileName("Lista de Ventas Libre del " + Tools.getDatePicker(dpFechaInicial) + " al "
+                    + Tools.getDatePicker(dpFechaFinal));
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("PDF Documento", Arrays.asList("*.pdf", "*.PDF"))
-            );
+                    new FileChooser.ExtensionFilter("PDF Documento", Arrays.asList("*.pdf", "*.PDF")));
             File file = fileChooser.showSaveDialog(window.getScene().getWindow());
             if (file != null) {
                 file = new File(file.getAbsolutePath());
@@ -388,30 +417,36 @@ public class FxVentaReporteController implements Initializable {
 
     private void onEventGenerateExcel() {
         if (!cbDocumentosSeleccionar.isSelected() && cbDocumentos.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(window, "Reporte General de Ventas", "Seleccione un documento para generar el reporte.");
+            Tools.AlertMessageWarning(window, "Reporte General de Ventas",
+                    "Seleccione un documento para generar el reporte.");
             cbDocumentos.requestFocus();
-        } else if (!cbClientesSeleccionar.isSelected() && idCliente.equalsIgnoreCase("") && txtClientes.getText().isEmpty()) {
-            Tools.AlertMessageWarning(window, "Reporte General de Ventas", "Ingrese un cliente para generar el reporte.");
+        } else if (!cbClientesSeleccionar.isSelected() && idCliente.equalsIgnoreCase("")
+                && txtClientes.getText().isEmpty()) {
+            Tools.AlertMessageWarning(window, "Reporte General de Ventas",
+                    "Ingrese un cliente para generar el reporte.");
             btnClientes.requestFocus();
-        } else if (!cbVendedoresSeleccionar.isSelected() && idEmpleado.equalsIgnoreCase("") && txtVendedores.getText().isEmpty()) {
-            Tools.AlertMessageWarning(window, "Reporte General de Ventas", "Ingrese un empleado para generar el reporte.");
+        } else if (!cbVendedoresSeleccionar.isSelected() && idEmpleado.equalsIgnoreCase("")
+                && txtVendedores.getText().isEmpty()) {
+            Tools.AlertMessageWarning(window, "Reporte General de Ventas",
+                    "Ingrese un empleado para generar el reporte.");
             btnVendedor.requestFocus();
         } else {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
             fileChooser.setTitle("Reporte de Ventas");
-            fileChooser.setInitialFileName("Lista de Ventas Libre del " + Tools.getDatePicker(dpFechaInicial) + " al " + Tools.getDatePicker(dpFechaFinal));
+            fileChooser.setInitialFileName("Lista de Ventas Libre del " + Tools.getDatePicker(dpFechaInicial) + " al "
+                    + Tools.getDatePicker(dpFechaFinal));
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Libro de Excel (*.xlsx)", "*.xlsx"),
-                    new FileChooser.ExtensionFilter("Libro de Excel(1997-2003) (*.xls)", "*.xls")
-            );
+                    new FileChooser.ExtensionFilter("Libro de Excel(1997-2003) (*.xls)", "*.xls"));
             File file = fileChooser.showSaveDialog(window.getScene().getWindow());
             if (file != null) {
                 file = new File(file.getAbsolutePath());
                 if (file.getName().endsWith("xls") || file.getName().endsWith("xlsx")) {
                     onEventExcel(file);
                 } else {
-                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.WARNING, "Exportar", "Elija un formato valido", false);
+                    Tools.AlertMessage(window.getScene().getWindow(), Alert.AlertType.WARNING, "Exportar",
+                            "Elija un formato valido", false);
                 }
             }
         }
@@ -431,7 +466,8 @@ public class FxVentaReporteController implements Initializable {
                         1,
                         Tools.getDatePicker(dpFechaInicial),
                         Tools.getDatePicker(dpFechaFinal),
-                        cbDocumentosSeleccionar.isSelected() ? 0 : cbDocumentos.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
+                        cbDocumentosSeleccionar.isSelected() ? 0
+                                : cbDocumentos.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
                         idCliente,
                         idEmpleado,
                         cbTipoPagoSeleccionar.isSelected() ? 0 : rbContado.isSelected() ? 1 : 2,
@@ -458,7 +494,8 @@ public class FxVentaReporteController implements Initializable {
                         CellStyle cellStyleHeader = workbook.createCellStyle();
                         cellStyleHeader.setFont(font);
                         cellStyleHeader.setFillForegroundColor(IndexedColors.WHITE.getIndex());
-                        String header[] = {"Id", "Fecha", "Documento", "Cliente", "Comprobante", "Serie", "Numeración", "Tipo de Venta", "Metodo Cobro", "Estado", "Importe"};
+                        String header[] = { "Id", "Fecha", "Documento", "Cliente", "Comprobante", "Serie", "Numeración",
+                                "Tipo de Venta", "Metodo Cobro", "Estado", "Importe" };
 
                         Row headerRow = sheet.createRow(0);
                         for (int i = 0; i < header.length; i++) {
@@ -470,7 +507,8 @@ public class FxVentaReporteController implements Initializable {
 
                         CellStyle cellStyle = workbook.createCellStyle();
                         for (int i = 0; i < list.size(); i++) {
-                            if (list.get(i).getEstadoName().equalsIgnoreCase("ANULADO") || list.get(i).getNotaCreditoTB() != null) {
+                            if (list.get(i).getEstadoName().equalsIgnoreCase("ANULADO")
+                                    || list.get(i).getNotaCreditoTB() != null) {
                                 Font fontRed = workbook.createFont();
                                 fontRed.setColor(HSSFColor.RED.index);
                                 cellStyle = workbook.createCellStyle();
@@ -510,7 +548,7 @@ public class FxVentaReporteController implements Initializable {
 
                             Cell cell5 = row.createCell(4);
                             cell5.setCellStyle(cellStyle);
-                            cell5.setCellValue(list.get(i).getComprobanteName());
+                            cell5.setCellValue(list.get(i).getTipoDocumentoTB().getNombre());
                             cell5.setCellType(Cell.CELL_TYPE_STRING);
                             sheet.autoSizeColumn(cell5.getColumnIndex());
 
@@ -572,7 +610,8 @@ public class FxVentaReporteController implements Initializable {
                 Tools.showAlertNotification(
                         "/view/image/information_large.png",
                         "Generar Excel",
-                        Tools.newLineString("Se completo la creación del excel correctamente en la ruta " + file.getAbsolutePath()),
+                        Tools.newLineString(
+                                "Se completo la creación del excel correctamente en la ruta " + file.getAbsolutePath()),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else {
@@ -589,7 +628,8 @@ public class FxVentaReporteController implements Initializable {
             Tools.showAlertNotification(
                     "/view/image/warning_large.png",
                     "Generar Excel",
-                    Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });
@@ -638,7 +678,8 @@ public class FxVentaReporteController implements Initializable {
                 Tools.showAlertNotification(
                         "/view/image/information_large.png",
                         "Generar PDF",
-                        Tools.newLineString("Se completó la creación del pdf correctamente en la ruta " + file.getAbsolutePath()),
+                        Tools.newLineString(
+                                "Se completó la creación del pdf correctamente en la ruta " + file.getAbsolutePath()),
                         Duration.seconds(10),
                         Pos.BOTTOM_RIGHT);
             } else {
@@ -655,7 +696,8 @@ public class FxVentaReporteController implements Initializable {
             Tools.showAlertNotification(
                     "/view/image/warning_large.png",
                     "Generar PDF",
-                    Tools.newLineString("Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
+                    Tools.newLineString(
+                            "Se produjo un problema en el momento de generar, intente nuevamente o comuníquese con su proveedor del sistema."),
                     Duration.seconds(10),
                     Pos.BOTTOM_RIGHT);
         });

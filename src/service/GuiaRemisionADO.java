@@ -14,6 +14,7 @@ import model.ConductorTB;
 import model.DetalleTB;
 import model.GuiaRemisionDetalleTB;
 import model.GuiaRemisionTB;
+import model.ModalidadTrasladoTB;
 import model.TipoDocumentoTB;
 import model.UbigeoTB;
 import model.VehiculoTB;
@@ -402,14 +403,16 @@ public class GuiaRemisionADO {
             dbf.dbConnect();
             dbf.getConnection().setAutoCommit(false);
 
-            statementValidar = dbf.getConnection().prepareStatement("SELECT * FROM GuiaRemisionTB WHERE IdGuiaRemision = ? AND Estado = 3");
+            statementValidar = dbf.getConnection()
+                    .prepareStatement("SELECT * FROM GuiaRemisionTB WHERE IdGuiaRemision = ? AND Estado = 3");
             statementValidar.setString(1, idGuiaRemision);
             if (statementValidar.executeQuery().next()) {
                 dbf.getConnection().rollback();
                 return "La guía de remisión ya se encuentra anulada.";
             }
 
-            statementEliminar = dbf.getConnection().prepareStatement("UPDATE GuiaRemisionTB SET Estado = 3 WHERE IdGuiaRemision = ?");
+            statementEliminar = dbf.getConnection()
+                    .prepareStatement("UPDATE GuiaRemisionTB SET Estado = 3 WHERE IdGuiaRemision = ?");
             statementEliminar.setString(1, idGuiaRemision);
             statementEliminar.addBatch();
 

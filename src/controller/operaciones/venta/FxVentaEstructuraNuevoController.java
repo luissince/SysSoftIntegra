@@ -194,7 +194,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             }
 
             if (cbComprobante.getSelectionModel().getSelectedIndex() >= 0) {
-                String[] array = ComprobanteADO.GetSerieNumeracionEspecifico(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento()).split("-");
+                String[] array = ComprobanteADO.GetSerieNumeracionEspecifico(
+                        cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento()).split("-");
                 lblSerie.setText(array[0]);
                 lblNumeracion.setText(array[1]);
             }
@@ -249,7 +250,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             btnVentas.setDisable(true);
         }
 
-        vender_con_cantidades_negativas = privilegioTBs.get(34).getIdPrivilegio() != 0 && !privilegioTBs.get(34).isEstado();
+        vender_con_cantidades_negativas = privilegioTBs.get(34).getIdPrivilegio() != 0
+                && !privilegioTBs.get(34).isEstado();
 
         if (privilegioTBs.get(36).getIdPrivilegio() != 0 && !privilegioTBs.get(36).isEstado()) {
             mostrarUltimasVentas = true;
@@ -313,23 +315,27 @@ public class FxVentaEstructuraNuevoController implements Initializable {
                         lblProducto.setPrefWidth(dpi * 1.3);
                         vBox.getChildren().add(lblProducto);
 
-                        Label lblMarca = new Label(Tools.isText(tvList1.getMarcaName()) ? "No Marca" : tvList1.getMarcaName());
+                        Label lblMarca = new Label(
+                                Tools.isText(tvList1.getMarcaName()) ? "No Marca" : tvList1.getMarcaName());
                         lblMarca.getStyleClass().add("labelOpenSansRegular13");
                         lblMarca.setTextFill(Color.web("#1a2226"));
                         vBox.getChildren().add(lblMarca);
 
                         Label lblCantidad = new Label(Tools.roundingValue(tvList1.getCantidad(), 2));
                         lblCantidad.getStyleClass().add("labelRobotoBold17");
-                        lblCantidad.setTextFill(tvList1.getCantidad() <= 0 ? Color.web("#e40000") : Color.web("#117cee"));
+                        lblCantidad
+                                .setTextFill(tvList1.getCantidad() <= 0 ? Color.web("#e40000") : Color.web("#117cee"));
                         vBox.getChildren().add(lblCantidad);
 
-                        Label lblTotalProducto = new Label(Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(tvList1.getPrecioVentaGeneral(), 2));
+                        Label lblTotalProducto = new Label(
+                                Session.MONEDA_SIMBOLO + " " + Tools.roundingValue(tvList1.getPrecioVentaGeneral(), 2));
                         lblTotalProducto.getStyleClass().add("labelRobotoBold19");
                         lblTotalProducto.setTextFill(Color.web("#009a1e"));
                         lblTotalProducto.maxWidth(Double.MAX_VALUE);
                         vBox.getChildren().add(lblTotalProducto);
 
-                        vBox.setStyle("-fx-spacing: 0.4166666666666667em;-fx-padding: 0.4166666666666667em;-fx-border-color: #0478b2;-fx-border-width:2px;-fx-background-color:transparent;");
+                        vBox.setStyle(
+                                "-fx-spacing: 0.4166666666666667em;-fx-padding: 0.4166666666666667em;-fx-border-color: #0478b2;-fx-border-width:2px;-fx-background-color:transparent;");
                         vBox.setAlignment(Pos.TOP_CENTER);
                         vBox.setMinWidth(Control.USE_COMPUTED_SIZE);
                         vBox.setPrefWidth(dpi * 1.5);
@@ -413,7 +419,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
 
     private void addElementListView(SuministroTB a) {
         if (vender_con_cantidades_negativas && a.getCantidad() <= 0) {
-            Tools.AlertMessageWarning(vbWindow, "Producto", "No puede agregar el producto ya que tiene la cantidad menor que 0.");
+            Tools.AlertMessageWarning(vbWindow, "Producto",
+                    "No puede agregar el producto ya que tiene la cantidad menor que 0.");
             return;
         }
         SuministroTB suministroTB = new SuministroTB();
@@ -448,7 +455,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
     private void addProducto(SuministroTB suministroTB) {
         if (validateDuplicate(suministroTB)) {
             for (int i = 0; i < lvProductoAgregados.getItems().size(); i++) {
-                if (lvProductoAgregados.getItems().get(i).getSuministroTB().getIdSuministro().equalsIgnoreCase(suministroTB.getIdSuministro())) {
+                if (lvProductoAgregados.getItems().get(i).getSuministroTB().getIdSuministro()
+                        .equalsIgnoreCase(suministroTB.getIdSuministro())) {
                     BbItemProducto bbItemProducto = lvProductoAgregados.getItems().get(i);
                     bbItemProducto.getSuministroTB().setCantidad(bbItemProducto.getSuministroTB().getCantidad() + 1);
                     bbItemProducto.getChildren().clear();
@@ -469,7 +477,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
     private boolean validateDuplicate(SuministroTB suministroTB) {
         boolean ret = false;
         for (int i = 0; i < lvProductoAgregados.getItems().size(); i++) {
-            if (lvProductoAgregados.getItems().get(i).getSuministroTB().getIdSuministro().equals(suministroTB.getIdSuministro())) {
+            if (lvProductoAgregados.getItems().get(i).getSuministroTB().getIdSuministro()
+                    .equals(suministroTB.getIdSuministro())) {
                 ret = true;
                 break;
             }
@@ -528,11 +537,14 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         importeNetoTotal = 0;
 
         lvProductoAgregados.getItems().forEach(suministroTB -> {
-            double importeBruto = suministroTB.getSuministroTB().getPrecioVentaGeneral() * suministroTB.getSuministroTB().getCantidad();
+            double importeBruto = suministroTB.getSuministroTB().getPrecioVentaGeneral()
+                    * suministroTB.getSuministroTB().getCantidad();
             double descuento = suministroTB.getSuministroTB().getDescuento();
             double subImporteBruto = importeBruto - descuento;
-            double subImporteNeto = Tools.calculateTaxBruto(suministroTB.getSuministroTB().getImpuestoTB().getValor(), subImporteBruto);
-            double impuesto = Tools.calculateTax(suministroTB.getSuministroTB().getImpuestoTB().getValor(), subImporteNeto);
+            double subImporteNeto = Tools.calculateTaxBruto(suministroTB.getSuministroTB().getImpuestoTB().getValor(),
+                    subImporteBruto);
+            double impuesto = Tools.calculateTax(suministroTB.getSuministroTB().getImpuestoTB().getValor(),
+                    subImporteNeto);
             double importeNeto = subImporteNeto + impuesto;
 
             importeBrutoTotal += importeBruto;
@@ -572,14 +584,19 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         String numeroDocumento;
         String informacion;
         String celular;
-//        String email;
+        // String email;
         String direccion;
 
-        numeroDocumento = txtNumeroDocumento.getText().trim().length() == 0 ? "" : txtNumeroDocumento.getText().trim().toUpperCase();
-        informacion = txtDatosCliente.getText().trim().length() == 0 ? "" : txtDatosCliente.getText().trim().toUpperCase();
-        celular = txtCelularCliente.getText().trim().length() == 0 ? "" : txtCelularCliente.getText().trim().toUpperCase();
-//        email = txtCorreoElectronico.getText().trim().length() == 0 ? "" : txtCorreoElectronico.getText().trim().toUpperCase();
-        direccion = txtDireccionCliente.getText().trim().length() == 0 ? "" : txtDireccionCliente.getText().trim().toUpperCase();
+        numeroDocumento = txtNumeroDocumento.getText().trim().length() == 0 ? ""
+                : txtNumeroDocumento.getText().trim().toUpperCase();
+        informacion = txtDatosCliente.getText().trim().length() == 0 ? ""
+                : txtDatosCliente.getText().trim().toUpperCase();
+        celular = txtCelularCliente.getText().trim().length() == 0 ? ""
+                : txtCelularCliente.getText().trim().toUpperCase();
+        // email = txtCorreoElectronico.getText().trim().length() == 0 ? "" :
+        // txtCorreoElectronico.getText().trim().toUpperCase();
+        direccion = txtDireccionCliente.getText().trim().length() == 0 ? ""
+                : txtDireccionCliente.getText().trim().toUpperCase();
 
         ObservableList<SuministroTB> observableList = FXCollections.observableArrayList();
         lvProductoAgregados.getItems().forEach(o -> observableList.add(o.getSuministroTB()));
@@ -612,7 +629,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_VENTA_DETALLE_PRODUCTO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxVentaDetalleProductoController controller = fXMLLoader.getController();
             controller.loadData(index, bbItemProducto);
             controller.setInitVentaEstructuraNuevoController(this);
@@ -641,8 +658,10 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             } else if (!Tools.isNumeric(txtNumeroDocumento.getText().trim())) {
                 Tools.AlertMessageWarning(vbWindow, "Ventas", "Ingrese el número del documento del cliente.");
                 txtNumeroDocumento.requestFocus();
-            } else if (cbComprobante.getSelectionModel().getSelectedItem().isCampo() && txtNumeroDocumento.getText().length() != cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo()) {
-                Tools.AlertMessageWarning(vbWindow, "Ventas", "El número de documento tiene que tener " + cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo() + " caracteres.");
+            } else if (cbComprobante.getSelectionModel().getSelectedItem().isCampo() && txtNumeroDocumento.getText()
+                    .length() != cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo()) {
+                Tools.AlertMessageWarning(vbWindow, "Ventas", "El número de documento tiene que tener "
+                        + cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo() + " caracteres.");
                 txtNumeroDocumento.requestFocus();
             } else if (Tools.isText(txtDatosCliente.getText())) {
                 Tools.AlertMessageWarning(vbWindow, "Ventas", "Ingrese los datos del cliente.");
@@ -657,7 +676,11 @@ public class FxVentaEstructuraNuevoController implements Initializable {
                 VentaTB ventaTB = new VentaTB();
                 ventaTB.setVendedor(Session.USER_ID);
                 ventaTB.setIdComprobante(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento());
-                ventaTB.setComprobanteName(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
+
+                TipoDocumentoTB tipoDocumentoTB = new TipoDocumentoTB();
+                tipoDocumentoTB.setNombre(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
+                ventaTB.setTipoDocumentoTB(tipoDocumentoTB);
+
                 ventaTB.setSerie(lblSerie.getText());
                 ventaTB.setNumeracion(lblNumeracion.getText());
                 ventaTB.setFechaVenta(Tools.getDate());
@@ -687,11 +710,12 @@ public class FxVentaEstructuraNuevoController implements Initializable {
                 URL url = getClass().getResource(FilesRouters.FX_VENTA_PROCESO_NUEVO);
                 FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                 Parent parent = fXMLLoader.load(url.openStream());
-                //Controlller here
+                // Controlller here
                 FxVentaProcesoNuevoController controller = fXMLLoader.getController();
                 controller.setInitVentaEstructuraNuevoController(this);
                 //
-                Stage stage = WindowStage.StageLoaderModal(parent, "Completar la venta", vbWindow.getScene().getWindow());
+                Stage stage = WindowStage.StageLoaderModal(parent, "Completar la venta",
+                        vbWindow.getScene().getWindow());
                 stage.setResizable(false);
                 stage.sizeToScene();
                 stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
@@ -808,23 +832,26 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         Task<Object[]> task = new Task<Object[]>() {
             @Override
             public Object[] call() throws Exception {
-                Object resultCliente = ClienteADO.GetSearchClienteNumeroDocumento((short) 2, txtNumeroDocumento.getText().trim());
+                Object resultCliente = ClienteADO.GetSearchClienteNumeroDocumento((short) 2,
+                        txtNumeroDocumento.getText().trim());
                 String resultApi = apiSunat.getUrlSunatApisPeru(txtNumeroDocumento.getText().trim());
 
                 if (resultApi.equalsIgnoreCase("200") && !Tools.isText(apiSunat.getJsonURL())) {
                     JSONObject sONObject = Json.obtenerObjetoJSON(apiSunat.getJsonURL());
                     if (sONObject == null) {
-                        throw new Exception("No se pudo parcear le formato de resultado, intente en un par de minutos.");
+                        throw new Exception(
+                                "No se pudo parcear le formato de resultado, intente en un par de minutos.");
                     }
 
                     if (resultCliente instanceof ClienteTB) {
-                        return new Object[]{"client-exists", resultCliente};
+                        return new Object[] { "client-exists", resultCliente };
                     } else {
-                        return new Object[]{"client-no-exists", ""};
+                        return new Object[] { "client-no-exists", "" };
                     }
                 }
 
-                throw new Exception("Se produjo un error al buscar al cliente intente\n nuevamente, si persiste el problema comuniquese con su \nproveedor del sistema.");
+                throw new Exception(
+                        "Se produjo un error al buscar al cliente intente\n nuevamente, si persiste el problema comuniquese con su \nproveedor del sistema.");
             }
         };
 
@@ -933,23 +960,26 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         Task<Object[]> task = new Task<Object[]>() {
             @Override
             public Object[] call() throws Exception {
-                Object resultCliente = ClienteADO.GetSearchClienteNumeroDocumento((short) 2, txtNumeroDocumento.getText().trim());
+                Object resultCliente = ClienteADO.GetSearchClienteNumeroDocumento((short) 2,
+                        txtNumeroDocumento.getText().trim());
                 String resultApi = apiSunat.getUrlReniecApisPeru(txtNumeroDocumento.getText().trim());
 
                 if (resultApi.equalsIgnoreCase("200") && !Tools.isText(apiSunat.getJsonURL())) {
                     JSONObject sONObject = Json.obtenerObjetoJSON(apiSunat.getJsonURL());
                     if (sONObject == null) {
-                        throw new Exception("No se pudo parcear le formato de resultado, intente en un par de minutos.");
+                        throw new Exception(
+                                "No se pudo parcear le formato de resultado, intente en un par de minutos.");
                     }
 
                     if (resultCliente instanceof ClienteTB) {
-                        return new Object[]{"client-exists", resultCliente};
+                        return new Object[] { "client-exists", resultCliente };
                     } else {
-                        return new Object[]{"client-no-exists", ""};
+                        return new Object[] { "client-no-exists", "" };
                     }
                 }
 
-                throw new Exception("Se produjo un error al buscar al cliente intente\n nuevamente, si persiste el problema comuniquese con su \nproveedor del sistema.");
+                throw new Exception(
+                        "Se produjo un error al buscar al cliente intente\n nuevamente, si persiste el problema comuniquese con su \nproveedor del sistema.");
             }
         };
 
@@ -1010,8 +1040,10 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             if (sONObject.get("dni") != null) {
                 txtNumeroDocumento.setText(sONObject.get("dni").toString());
             }
-            if (sONObject.get("apellidoPaterno") != null && sONObject.get("apellidoMaterno") != null && sONObject.get("nombres") != null) {
-                txtDatosCliente.setText(sONObject.get("apellidoPaterno").toString() + " " + sONObject.get("apellidoMaterno").toString() + " " + sONObject.get("nombres").toString());
+            if (sONObject.get("apellidoPaterno") != null && sONObject.get("apellidoMaterno") != null
+                    && sONObject.get("nombres") != null) {
+                txtDatosCliente.setText(sONObject.get("apellidoPaterno").toString() + " "
+                        + sONObject.get("apellidoMaterno").toString() + " " + sONObject.get("nombres").toString());
             }
             if (stateClient.equals("client-exists")) {
                 ClienteTB clienteTB = (ClienteTB) result[1];
@@ -1064,7 +1096,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_PROCESO_MODAL);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxSuministrosProcesoModalController controller = fXMLLoader.getController();
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", vbWindow.getScene().getWindow());
@@ -1084,9 +1116,9 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_VENTA_MOVIMIENTO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
-//            FxVentaMovimientoController controller = fXMLLoader.getController();
-//            controller.setInitVentaEstructuraController(this);
+            // Controlller here
+            // FxVentaMovimientoController controller = fXMLLoader.getController();
+            // controller.setInitVentaEstructuraController(this);
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Movimiento de caja", vbWindow.getScene().getWindow());
             stage.setResizable(false);
@@ -1104,7 +1136,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_VENTA_MOSTRAR);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxVentaMostrarController controller = fXMLLoader.getController();
             controller.setMostrarUltimasVentas(mostrarUltimasVentas);
             //
@@ -1297,7 +1329,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
     private void onMouseClickedProductosAgregados(MouseEvent event) {
         if (event.getClickCount() == 2) {
             if (lvProductoAgregados.getSelectionModel().getSelectedIndex() >= 0) {
-                openWindowDetalleProducto(lvProductoAgregados.getSelectionModel().getSelectedIndex(), lvProductoAgregados.getSelectionModel().getSelectedItem());
+                openWindowDetalleProducto(lvProductoAgregados.getSelectionModel().getSelectedIndex(),
+                        lvProductoAgregados.getSelectionModel().getSelectedItem());
                 event.consume();
             }
         }
@@ -1307,7 +1340,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
     private void onKeyPressedProductosAgregados(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             if (lvProductoAgregados.getSelectionModel().getSelectedIndex() >= 0) {
-                openWindowDetalleProducto(lvProductoAgregados.getSelectionModel().getSelectedIndex(), lvProductoAgregados.getSelectionModel().getSelectedItem());
+                openWindowDetalleProducto(lvProductoAgregados.getSelectionModel().getSelectedIndex(),
+                        lvProductoAgregados.getSelectionModel().getSelectedItem());
             }
         }
     }
@@ -1315,7 +1349,8 @@ public class FxVentaEstructuraNuevoController implements Initializable {
     @FXML
     private void onActionComprobante(ActionEvent event) {
         if (cbComprobante.getSelectionModel().getSelectedIndex() >= 0) {
-            String[] array = ComprobanteADO.GetSerieNumeracionEspecifico(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento()).split("-");
+            String[] array = ComprobanteADO.GetSerieNumeracionEspecifico(
+                    cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento()).split("-");
             lblSerie.setText(array[0]);
             lblNumeracion.setText(array[1]);
         }
