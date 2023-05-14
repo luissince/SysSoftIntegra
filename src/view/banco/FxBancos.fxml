@@ -117,7 +117,7 @@
                               <Font name="Calibri" size="14.0" />
                            </font>
                            <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../image/left.png" />
                                  </image>
@@ -144,7 +144,7 @@
                               <Font name="Calibri" size="14.0" />
                            </font>
                            <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../image/right.png" />
                                  </image>

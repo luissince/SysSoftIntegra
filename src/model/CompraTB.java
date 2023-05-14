@@ -46,6 +46,7 @@ public class CompraTB {
     
     private ArrayList<CompraCreditoTB> compraCreditoTBs;
     private ArrayList<DetalleCompraTB> detalleCompraTBs;
+    private ArrayList<EgresoTB> egresoTBs;
     
     private HBox hbOpciones;
 
@@ -343,6 +344,14 @@ public class CompraTB {
 
     public void setDetalleCompraTBs(ArrayList<DetalleCompraTB> detalleCompraTBs) {
         this.detalleCompraTBs = detalleCompraTBs;
+    }
+
+    public ArrayList<EgresoTB> getEgresoTBs() {
+        return egresoTBs;
+    }
+
+    public void setEgresoTBs(ArrayList<EgresoTB> egresoTBs) {
+        this.egresoTBs = egresoTBs;
     }
 
     public HBox getHbOpciones() {

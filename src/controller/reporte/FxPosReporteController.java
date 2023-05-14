@@ -130,7 +130,7 @@ public class FxPosReporteController implements Initializable {
         rbDeposito.setToggleGroup(groupMetodoPago);
 
         cbDocumentos.getItems().clear();
-        TipoDocumentoADO.GetDocumentoCombBoxVentas().forEach(e -> cbDocumentos.getItems().add(e));
+        TipoDocumentoADO.obtenerComprobantesParaVenta().forEach(e -> cbDocumentos.getItems().add(e));
         idCliente = idEmpleado = "";
     }
 

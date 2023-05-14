@@ -479,7 +479,7 @@ public class EmpleadoADO {
 
     public static ArrayList<String> CountSuministros(long sleep) throws InterruptedException {
         DBUtil dbf = new DBUtil();
-        ArrayList<String> arrayList = new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<>();
 
         PreparedStatement statementValidation = null;
         try {

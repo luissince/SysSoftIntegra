@@ -65,6 +65,10 @@ public class FxVentaProcesoController implements Initializable {
     @FXML
     private VBox vbViewEfectivo;
     @FXML
+    private VBox vbPagoAdelantado;
+    @FXML
+    private Label lblPagoAdelantado;
+    @FXML
     private Label lblEfectivo;
     @FXML
     private Label lblCredito;
@@ -108,6 +112,8 @@ public class FxVentaProcesoController implements Initializable {
     private Label lblVueltoContado;
 
     private FxVentaEstructuraController ventaEstructuraController;
+
+    private FxVentaEstructuraNuevoController ventaEstructuraNuevoController;
 
     private ConvertMonedaCadena monedaCadena;
 
@@ -158,6 +164,78 @@ public class FxVentaProcesoController implements Initializable {
         tcForma.setCellValueFactory(new PropertyValueFactory<>("cbForma"));
         tvListPlazos.setPlaceholder(
                 Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+    }
+
+    public void loadInitComponents(VentaTB ventaTB, boolean provilegios) {
+        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<ObservableList<BancoTB>> task = new Task<ObservableList<BancoTB>>() {
+            @Override
+            public ObservableList<BancoTB> call() throws Exception {
+                Object result = BancoADO.ObtenerListarBancos();
+                if (result instanceof ObservableList<?>) {
+                    return (ObservableList<BancoTB>) result;
+                } else {
+                    throw new Exception("El objeto devuelto por el método no es una lista observable de bancos.");
+                }
+            }
+        };
+
+        task.setOnScheduled(e -> {
+            hbLoadProcesando.setVisible(true);
+            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
+            btnCancelarProceso.setText("Cancelar Proceso");
+            if (btnCancelarProceso.getOnAction() != null) {
+                btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
+            }
+            btnCancelarProceso.setOnAction(event -> {
+                if (task.isRunning()) {
+                    task.cancel();
+                }
+                Tools.Dispose(window);
+            });
+        });
+
+        task.setOnFailed(e -> {
+            lblTextoProceso.setText(task.getException().getMessage());
+            btnCancelarProceso.setText("Cerrar Vista");
+        });
+
+        task.setOnSucceeded(e -> {
+            ObservableList<BancoTB> bancos = task.getValue();
+            cbMetodoTransaccion.getItems().addAll(bancos);
+
+            Optional<BancoTB> bancoConFormaPago1 = bancos.stream().filter(b -> b.getFormaPago() == 1).findFirst();
+            bancoConFormaPago1.ifPresent(this::generarMetodoPago);
+
+            this.ventaTB = ventaTB;
+            totalVenta = Double.parseDouble(Tools.roundingValue(ventaTB.getTotal(), 2));
+
+            lblTotal.setText(
+                    "TOTAL A PAGAR: " + ventaTB.getMonedaTB().getSimbolo() + " "
+                            + Tools.roundingValue(totalVenta, 2));
+
+            lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " "
+                    + Tools.roundingValue(vueltoContado, 2));
+
+            lblMonedaLetras.setText(
+                    monedaCadena.Convertir(Tools.roundingValue(totalVenta, 2), true,
+                            ventaTB.getMonedaTB().getNombre()));
+
+            hbContenido.setDisable(false);
+            this.privilegios = provilegios;
+
+            hbLoadProcesando.setVisible(false);
+        });
+
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
     }
 
     private void addPlazos() {
@@ -307,78 +385,6 @@ public class FxVentaProcesoController implements Initializable {
         txtMonto.requestFocus();
     }
 
-    public void loadInitComponents(VentaTB ventaTB, boolean provilegios) {
-        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
-            Thread t = new Thread(runnable);
-            t.setDaemon(true);
-            return t;
-        });
-
-        Task<ObservableList<BancoTB>> task = new Task<ObservableList<BancoTB>>() {
-            @Override
-            public ObservableList<BancoTB> call() throws Exception {
-                Object result = BancoADO.ObtenerListarBancos();
-                if (result instanceof ObservableList<?>) {
-                    return (ObservableList<BancoTB>) result;
-                } else {
-                    throw new Exception("El objeto devuelto por el método no es una lista observable de bancos.");
-                }
-            }
-        };
-
-        task.setOnScheduled(e -> {
-            hbLoadProcesando.setVisible(true);
-            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
-            btnCancelarProceso.setText("Cancelar Proceso");
-            if (btnCancelarProceso.getOnAction() != null) {
-                btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
-            }
-            btnCancelarProceso.setOnAction(event -> {
-                if (task.isRunning()) {
-                    task.cancel();
-                }
-                Tools.Dispose(window);
-            });
-        });
-
-        task.setOnFailed(e -> {
-            lblTextoProceso.setText(task.getException().getMessage());
-            btnCancelarProceso.setText("Cerrar Vista");
-        });
-
-        task.setOnSucceeded(e -> {
-            ObservableList<BancoTB> bancos = task.getValue();
-            cbMetodoTransaccion.getItems().addAll(bancos);
-
-            Optional<BancoTB> bancoConFormaPago1 = bancos.stream().filter(b -> b.getFormaPago() == 1).findFirst();
-            bancoConFormaPago1.ifPresent(this::generarMetodoPago);
-
-            this.ventaTB = ventaTB;
-            totalVenta = Double.parseDouble(Tools.roundingValue(ventaTB.getTotal(), 2));
-
-            lblTotal.setText(
-                    "TOTAL A PAGAR: " + ventaTB.getMonedaTB().getSimbolo() + " "
-                            + Tools.roundingValue(totalVenta, 2));
-
-            lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " "
-                    + Tools.roundingValue(vueltoContado, 2));
-
-            lblMonedaLetras.setText(
-                    monedaCadena.Convertir(Tools.roundingValue(totalVenta, 2), true,
-                            ventaTB.getMonedaTB().getNombre()));
-
-            hbContenido.setDisable(false);
-            this.privilegios = provilegios;
-
-            hbLoadProcesando.setVisible(false);
-        });
-
-        exec.execute(task);
-        if (!exec.isShutdown()) {
-            exec.shutdown();
-        }
-    }
-
     private void generarVuelto() {
         double montoActual = 0;
 
@@ -414,15 +420,18 @@ public class FxVentaProcesoController implements Initializable {
     private void onEventAceptar() {
         switch (metodoVentaSelecciondo) {
             case 0:
-                onEventContado();
+                onEventContado(1, 1);
                 break;
             case 1:
                 onEventCredito();
                 break;
+            case 2:
+                onEventContado(1, 4);
+                break;
         }
     }
 
-    private void onEventContado() {
+    private void onEventContado(int tipo, int estado) {
         double montoActual = 0;
 
         if (vbContenedorMetodoPago.getChildren().isEmpty()) {
@@ -521,14 +530,14 @@ public class FxVentaProcesoController implements Initializable {
 
             IngresoTB ingresoTB = new IngresoTB();
             ingresoTB.setIdBanco(hbox.getId());
-            ingresoTB.setMonto(monto);
+            ingresoTB.setMonto(monto - vueltoContado);
             ingresoTB.setVuelto(vueltoContado);
             ingresoTB.setOperacion(txtOperacion.getText().trim());
             ingresoTBs.add(ingresoTB);
         }
 
-        ventaTB.setTipo(1);
-        ventaTB.setEstado(1);
+        ventaTB.setTipo(tipo);
+        ventaTB.setEstado(estado);
         ventaTB.setVuelto(0);
         ventaTB.setObservaciones("");
         ventaTB.setEfectivo(0);
@@ -689,11 +698,20 @@ public class FxVentaProcesoController implements Initializable {
                     short value = Tools.AlertMessage(window.getScene().getWindow(), "Venta",
                             "Se realizó la venta con éxito, ¿Desea imprimir el comprobante?");
                     if (value == 1) {
-                        ventaEstructuraController.resetVenta();
-                        ventaEstructuraController.imprimirVenta(result.getResult());
+                        if (ventaEstructuraController != null) {
+                            ventaEstructuraController.resetVenta();
+                            ventaEstructuraController.imprimirVenta(result.getResult());
+                        } else if (ventaEstructuraNuevoController != null) {
+                            ventaEstructuraNuevoController.resetVenta();
+                            ventaEstructuraNuevoController.imprimirVenta(result.getResult());
+                        }
                         Tools.Dispose(window);
                     } else {
-                        ventaEstructuraController.resetVenta();
+                        if (ventaEstructuraController != null) {
+                            ventaEstructuraController.resetVenta();
+                        } else if (ventaEstructuraNuevoController != null) {
+                            ventaEstructuraNuevoController.resetVenta();
+                        }
                         Tools.Dispose(window);
                     }
                     break;
@@ -739,10 +757,12 @@ public class FxVentaProcesoController implements Initializable {
 
     @FXML
     private void onMouseClickedEfectivo(MouseEvent event) {
-        if (metodoVentaSelecciondo == 1) {
+        if (metodoVentaSelecciondo != 1 || metodoVentaSelecciondo != 2) {
             vbCredito.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
+            vbPagoAdelantado.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
             vbEfectivo.setStyle("-fx-background-color:  #007bff;-fx-cursor:hand;-fx-padding:  0.5em");
 
+            lblPagoAdelantado.setStyle("-fx-text-fill:#1a2226;");
             lblCredito.setStyle("-fx-text-fill:#1a2226;");
             lblEfectivo.setStyle("-fx-text-fill:white;");
 
@@ -775,17 +795,57 @@ public class FxVentaProcesoController implements Initializable {
 
     @FXML
     private void onMouseClickedCredito(MouseEvent event) {
-        if (metodoVentaSelecciondo == 0) {
+        if (metodoVentaSelecciondo != 0 || metodoVentaSelecciondo != 2) {
             vbEfectivo.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
+            vbPagoAdelantado.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
             vbCredito.setStyle("-fx-background-color: #007bff;-fx-cursor:hand;-fx-padding:  0.5em");
 
             lblEfectivo.setStyle("-fx-text-fill:#1a2226;");
+            lblPagoAdelantado.setStyle("-fx-text-fill:#1a2226;");
             lblCredito.setStyle("-fx-text-fill:white;");
 
             vbViewEfectivo.setVisible(false);
             vbViewCredito.setVisible(true);
 
             metodoVentaSelecciondo = 1;
+        }
+    }
+
+    @FXML
+    private void onMouseClickedPagoAdelantado(MouseEvent event) {
+        if (metodoVentaSelecciondo != 0 || metodoVentaSelecciondo != 1) {
+            vbEfectivo.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
+            vbCredito.setStyle("-fx-background-color: white;-fx-cursor:hand;-fx-padding:  0.5em;");
+            vbPagoAdelantado.setStyle("-fx-background-color: #007bff;-fx-cursor:hand;-fx-padding:  0.5em");
+
+            lblEfectivo.setStyle("-fx-text-fill:#1a2226;");
+            lblCredito.setStyle("-fx-text-fill:#1a2226;");
+            lblPagoAdelantado.setStyle("-fx-text-fill:white;");
+
+            vbViewCredito.setVisible(false);
+            vbViewEfectivo.setVisible(true);
+
+            if (!vbContenedorMetodoPago.getChildren().isEmpty()) {
+                HBox hbox = (HBox) vbContenedorMetodoPago.getChildren().get(0);
+                TextField primerTextField = null;
+
+                VBox vbMonto = (VBox) hbox.getChildren().get(0);
+                if (vbMonto != null) {
+                    for (Node nodo : vbMonto.getChildren()) {
+                        if (nodo instanceof TextField) {
+                            primerTextField = (TextField) nodo;
+                            break;
+                        }
+                    }
+
+                }
+
+                if (primerTextField != null) {
+                    primerTextField.requestFocus();
+                }
+            }
+
+            metodoVentaSelecciondo = 2;
         }
     }
 
@@ -814,6 +874,10 @@ public class FxVentaProcesoController implements Initializable {
 
     public void setInitVentaEstructuraController(FxVentaEstructuraController ventaEstructuraController) {
         this.ventaEstructuraController = ventaEstructuraController;
+    }
+
+    public void setInitVentaEstructuraNuevoController(FxVentaEstructuraNuevoController ventaEstructuraNuevoController) {
+        this.ventaEstructuraNuevoController = ventaEstructuraNuevoController;
     }
 
 }

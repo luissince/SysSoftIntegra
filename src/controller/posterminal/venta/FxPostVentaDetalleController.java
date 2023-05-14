@@ -125,7 +125,7 @@ public class FxPostVentaDetalleController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return VentaADO.Obtener_Venta_ById(idVenta);
+                return VentaADO.obtenerVentaById(idVenta);
             }
         };
 

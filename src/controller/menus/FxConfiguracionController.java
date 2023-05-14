@@ -1,5 +1,6 @@
 package controller.menus;
 
+import controller.banco.FxBancosController;
 import controller.configuracion.almacen.FxAlmacenController;
 import controller.configuracion.comprobante.FxTipoDocumentoController;
 import controller.configuracion.empleados.FxEmpleadosController;
@@ -12,6 +13,8 @@ import controller.configuracion.roles.FxRolesController;
 import controller.configuracion.tablasbasicas.FxDetalleMantenimientoController;
 import controller.configuracion.tickets.FxTicketController;
 import controller.tools.FilesRouters;
+import controller.tools.Tools;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -58,12 +61,14 @@ public class FxConfiguracionController implements Initializable {
     private VBox btnImpresora;
     @FXML
     private VBox btnAlmacen;
+    @FXML
+    private VBox btnBancos;
     /*
-    Objectos de la ventana principal y venta que agrega al os hijos
+     * Objectos de la ventana principal y venta que agrega al os hijos
      */
     private FxPrincipalController fxPrincipalController;
-    /*            
-    Controller empresa
+    /*
+     * Controller empresa
      */
     private FXMLLoader fXMLEmpresa;
 
@@ -71,7 +76,7 @@ public class FxConfiguracionController implements Initializable {
 
     private FxMiEmpresaController controllerMiEmpresa;
     /*
-    Controller tablas básicas
+     * Controller tablas básicas
      */
     private FXMLLoader fXMLTablasBasicas;
 
@@ -79,7 +84,7 @@ public class FxConfiguracionController implements Initializable {
 
     private FxDetalleMantenimientoController controllerTablasBasicas;
     /*
-    Controller privilegios
+     * Controller privilegios
      */
     private FXMLLoader fXMLTablasRoles;
 
@@ -88,7 +93,7 @@ public class FxConfiguracionController implements Initializable {
     private FxRolesController controllerRoles;
 
     /*
-    Controller empleado
+     * Controller empleado
      */
     private FXMLLoader fXMLEmpleado;
 
@@ -97,7 +102,7 @@ public class FxConfiguracionController implements Initializable {
     private FxEmpleadosController controllerEmpleado;
 
     /*
-    Controller moneda
+     * Controller moneda
      */
     private FXMLLoader fXMLMoneda;
 
@@ -106,7 +111,7 @@ public class FxConfiguracionController implements Initializable {
     private FxMonedaController controllerMoneda;
 
     /*
-    Controller moneda
+     * Controller moneda
      */
     private FXMLLoader fXMLImpuesto;
 
@@ -115,7 +120,7 @@ public class FxConfiguracionController implements Initializable {
     private FxImpuestoController controllerImpuesto;
 
     /*
-    Controller ticket
+     * Controller ticket
      */
     private FXMLLoader fXMLTicket;
 
@@ -123,7 +128,7 @@ public class FxConfiguracionController implements Initializable {
 
     private FxTicketController controllerTicket;
     /*
-    Controller etiquetas
+     * Controller etiquetas
      */
     private FXMLLoader fXMLEtiquetas;
 
@@ -131,7 +136,7 @@ public class FxConfiguracionController implements Initializable {
 
     private FxEtiquetasController controllerEtiqueta;
     /*
-    Controller impresora
+     * Controller impresora
      */
     private FXMLLoader fXMLImpresora;
 
@@ -139,7 +144,7 @@ public class FxConfiguracionController implements Initializable {
 
     private FxImpresoraController controllerImpresora;
     /*
-    Controller impresora
+     * Controller impresora
      */
     private FXMLLoader fXMLTipoDocumento;
 
@@ -147,13 +152,22 @@ public class FxConfiguracionController implements Initializable {
 
     private FxTipoDocumentoController controllerTipoDocumento;
     /*
-    Controller almacen
+     * Controller almacen
      */
     private FXMLLoader fXMLAlmacen;
 
     private VBox nodeAlmacen;
 
     private FxAlmacenController controllerAlmacen;
+
+    /*
+     * Controller banco consultas
+     */
+    private FXMLLoader fXMLBancos;
+
+    private HBox nodeBancos;
+
+    private FxBancosController bancosController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -201,13 +215,23 @@ public class FxConfiguracionController implements Initializable {
             fXMLAlmacen = new FXMLLoader(getClass().getResource(FilesRouters.FX_ALMACEN_CONFIGURACION));
             nodeAlmacen = fXMLAlmacen.load();
             controllerAlmacen = fXMLAlmacen.getController();
+
+            fXMLBancos = new FXMLLoader(getClass().getResource(FilesRouters.FX_BANCOS));
+            nodeBancos = fXMLBancos.load();
+            bancosController = fXMLBancos.getController();
         } catch (IOException ex) {
             System.out.println("Error en Configuración Controller:" + ex.getLocalizedMessage());
         }
     }
 
     public void loadSubMenus(ObservableList<SubMenusTB> subMenusTBs) {
-//        subMenusTBs.forEach(e->Tools.println(e.getNombre()));
+        Tools.println("configuración:");
+        int count = 0;
+        for (SubMenusTB sb : subMenusTBs) {
+            count++;
+            Tools.println(count + "-" + sb.getNombre());
+        }
+
         if (subMenusTBs.get(0).getIdSubMenu() != 0 && !subMenusTBs.get(0).isEstado()) {
             hbOperacionesUno.getChildren().remove(btnEmpresa);
         } else {
@@ -262,7 +286,6 @@ public class FxConfiguracionController implements Initializable {
         if (subMenusTBs.get(10).getIdSubMenu() != 0 && !subMenusTBs.get(10).isEstado()) {
             hbOperacionesDos.getChildren().remove(btnAlmacen);
         }
-
     }
 
     private void openWindowTablasBasicas() {
@@ -354,7 +377,8 @@ public class FxConfiguracionController implements Initializable {
         AnchorPane.setRightAnchor(nodeEtiqueta, 0d);
         AnchorPane.setBottomAnchor(nodeEtiqueta, 0d);
         fxPrincipalController.getVbContent().getChildren().add(nodeEtiqueta);
-        //controllerEtiqueta.loadEtiqueta(0, new File("./archivos/etiqueta.json").getAbsolutePath());
+        // controllerEtiqueta.loadEtiqueta(0, new
+        // File("./archivos/etiqueta.json").getAbsolutePath());
     }
 
     private void openWindowImpresora() {
@@ -375,6 +399,17 @@ public class FxConfiguracionController implements Initializable {
         AnchorPane.setRightAnchor(nodeAlmacen, 0d);
         AnchorPane.setBottomAnchor(nodeAlmacen, 0d);
         fxPrincipalController.getVbContent().getChildren().add(nodeAlmacen);
+    }
+
+    private void openWindowBancos() {
+        bancosController.setContent(fxPrincipalController);
+        fxPrincipalController.getVbContent().getChildren().clear();
+        AnchorPane.setLeftAnchor(nodeBancos, 0d);
+        AnchorPane.setTopAnchor(nodeBancos, 0d);
+        AnchorPane.setRightAnchor(nodeBancos, 0d);
+        AnchorPane.setBottomAnchor(nodeBancos, 0d);
+        fxPrincipalController.getVbContent().getChildren().add(nodeBancos);
+        bancosController.loadTableViewBanco("");
     }
 
     @FXML
@@ -507,6 +542,18 @@ public class FxConfiguracionController implements Initializable {
     @FXML
     private void onActionAlmacen(ActionEvent event) {
         openWindowAlmacen();
+    }
+
+    @FXML
+    private void onKeyPressedBanco(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowBancos();
+        }
+    }
+
+    @FXML
+    private void onActionBanco(ActionEvent event) {
+        openWindowBancos();
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

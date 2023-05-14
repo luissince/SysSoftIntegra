@@ -1,4 +1,4 @@
-package controller.operaciones.cotizacion;
+package controller.consultas.cotizacion;
 
 import controller.menus.FxPrincipalController;
 import controller.tools.FilesRouters;
@@ -73,12 +73,17 @@ public class FxCotizacionRealizadasController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
-        tcFecha.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFechaCotizacion() + "\n" + cellData.getValue().getHoraCotizacion()));
-        tcCliente.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento() + "\n" + cellData.getValue().getClienteTB().getInformacion()));
-        tcCotizacion.setCellValueFactory(cellData -> Bindings.concat("COTIZACIÓN\n N° - " + Tools.formatNumber(cellData.getValue().getIdCotizacion())));
+        tcFecha.setCellValueFactory(cellData -> Bindings
+                .concat(cellData.getValue().getFechaCotizacion() + "\n" + cellData.getValue().getHoraCotizacion()));
+        tcCliente
+                .setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento()
+                        + "\n" + cellData.getValue().getClienteTB().getInformacion()));
+        tcCotizacion.setCellValueFactory(cellData -> Bindings
+                .concat("COTIZACIÓN\n N° - " + Tools.formatNumber(cellData.getValue().getIdCotizacion())));
         tcObservacion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getObservaciones()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("lblEstado"));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " " + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
+        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " "
+                + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
         tcFecha.prefWidthProperty().bind(tvList.widthProperty().multiply(0.13));
@@ -87,7 +92,8 @@ public class FxCotizacionRealizadasController implements Initializable {
         tcObservacion.prefWidthProperty().bind(tvList.widthProperty().multiply(0.20));
         tcEstado.prefWidthProperty().bind(tvList.widthProperty().multiply(0.11));
         tcTotal.prefWidthProperty().bind(tvList.widthProperty().multiply(0.14));
-        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+        tvList.setPlaceholder(
+                Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         Tools.actualDate(Tools.getDate(), dtFechaInicial);
         Tools.actualDate(Tools.getDate(), dtFechaFinal);
@@ -114,7 +120,8 @@ public class FxCotizacionRealizadasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CotizacionADO.Listar_Cotizacion(opcion, buscar, fechaInicio, fechaFinal, (paginacion - 1) * 10, 10);
+                return CotizacionADO.Listar_Cotizacion(opcion, buscar, fechaInicio, fechaFinal, (paginacion - 1) * 10,
+                        10);
             }
         };
         task.setOnSucceeded(w -> {
@@ -128,7 +135,8 @@ public class FxCotizacionRealizadasController implements Initializable {
                     lblPaginaActual.setText(paginacion + "");
                     lblPaginaSiguiente.setText(totalPaginacion + "");
                 } else {
-                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                    tvList.setPlaceholder(
+                            Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
                     lblPaginaActual.setText("0");
                     lblPaginaSiguiente.setText("0");
                 }
@@ -139,12 +147,14 @@ public class FxCotizacionRealizadasController implements Initializable {
         });
         task.setOnFailed(w -> {
             lblLoad.setVisible(false);
-            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
+            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(),
+                    "-fx-text-fill:#a70820;", false));
         });
         task.setOnScheduled(w -> {
             lblLoad.setVisible(true);
             tvList.getItems().clear();
-            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            tvList.setPlaceholder(
+                    Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
             totalPaginacion = 0;
         });
         exec.execute(task);
@@ -157,7 +167,7 @@ public class FxCotizacionRealizadasController implements Initializable {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             FXMLLoader fXMLLoader = new FXMLLoader(getClass().getResource(FilesRouters.FX_COTIZACION_DETALLE));
             AnchorPane node = fXMLLoader.load();
-            //Controlller here
+            // Controlller here
             FxCotizacionDetalleController controller = fXMLLoader.getController();
             controller.setInitCotizacionesRealizadasController(this, principalController);
             //
@@ -188,12 +198,14 @@ public class FxCotizacionRealizadasController implements Initializable {
         short value = Tools.AlertMessageConfirmation(hbWindow, "Cotización", "¿Está seguro de eliminar la cotización.");
         if (value == 1) {
             if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-                String result = CotizacionADO.removeCotizacionById(tvList.getSelectionModel().getSelectedItem().getIdCotizacion());
+                String result = CotizacionADO
+                        .removeCotizacionById(tvList.getSelectionModel().getSelectedItem().getIdCotizacion());
                 if (result.equalsIgnoreCase("deleted")) {
                     Tools.AlertMessageInformation(hbWindow, "Cotización", "Se eliminó correctamente la cotización.");
                     loadInit();
                 } else if (result.equalsIgnoreCase("noid")) {
-                    Tools.AlertMessageWarning(hbWindow, "Cotización", "No puedo encontrar la cotización a eliminar, intente nuevamente.");
+                    Tools.AlertMessageWarning(hbWindow, "Cotización",
+                            "No puedo encontrar la cotización a eliminar, intente nuevamente.");
                 } else {
                     Tools.AlertMessageError(hbWindow, "Cotización", result);
                 }

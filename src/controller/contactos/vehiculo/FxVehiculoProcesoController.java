@@ -64,7 +64,7 @@ public class FxVehiculoProcesoController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() throws Exception {
-                Object listTipoDocumento = DetalleADO.GetDetailId("0018");// ENTIDAD EMISORA PARA VEHÍCULOS PERÚ
+                Object listTipoDocumento = DetalleADO.obtenerDetallePorIdMantenimiento("0018");// ENTIDAD EMISORA PARA VEHÍCULOS PERÚ
                 if (listTipoDocumento instanceof ObservableList) {
                     return listTipoDocumento;
                 } else {

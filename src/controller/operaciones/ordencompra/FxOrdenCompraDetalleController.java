@@ -107,7 +107,7 @@ public class FxOrdenCompraDetalleController implements Initializable {
                 Object result = OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
                 if(result instanceof OrdenCompraTB){
                     OrdenCompraTB ordenCompraTB = (OrdenCompraTB) result;
-                    ordenCompraTB.setMonedaTBs(MonedaADO.GetMonedasComboBox());
+                    ordenCompraTB.setMonedaTBs(MonedaADO.ObtenerListaMonedas());
                     return ordenCompraTB;
                 }else{
                     return result;

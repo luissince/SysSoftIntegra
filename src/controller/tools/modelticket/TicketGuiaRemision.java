@@ -124,7 +124,7 @@ public class TicketGuiaRemision {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object object = GuiaRemisionADO.ObtenerGuiaRemisionById(idGuiaRemision);
+                Object object = GuiaRemisionADO.obtenerGuiaRemisionById(idGuiaRemision);
                 if (object instanceof GuiaRemisionTB) {
                     try {
                         GuiaRemisionTB guiaRemisionTB = (GuiaRemisionTB) object;
@@ -225,20 +225,19 @@ public class TicketGuiaRemision {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<JasperPrint> task = new Task<JasperPrint>() {
             @Override
-            public Object call() {
-                Object object = GuiaRemisionADO.ObtenerGuiaRemisionById(idGuiaRemision);
+            public JasperPrint call() throws Exception {
+                Object object = GuiaRemisionADO.obtenerGuiaRemisionById(idGuiaRemision);
                 if (object instanceof GuiaRemisionTB) {
                     try {
                         GuiaRemisionTB guiaRemisionTB = (GuiaRemisionTB) object;
                         return reporte4AGuiaRemision(guiaRemisionTB);
                     } catch (JRException | IOException ex) {
-                        Tools.println(ex.getLocalizedMessage());
-                        return ex.getMessage();
+                        throw new Exception(ex.getLocalizedMessage());
                     }
                 } else {
-                    return object;
+                    throw new Exception("");
                 }
             }
         };
@@ -252,7 +251,7 @@ public class TicketGuiaRemision {
         task.setOnFailed(w -> {
             Tools.println(task.getException().getMessage());
             Tools.println(task.getMessage());
-            Tools.showAlertNotification("/view/image/warning_large.png",
+            Tools.showAlertNotification("/view/image/error_large.png",
                     "Generando reporte",
                     Tools.newLineString("Se produjo un problema al generar."),
                     Duration.seconds(10),
@@ -260,35 +259,26 @@ public class TicketGuiaRemision {
         });
         task.setOnSucceeded(w -> {
             try {
-                Object object = task.getValue();
-                if (object instanceof JasperPrint) {
-                    Tools.showAlertNotification("/view/image/succes_large.png",
-                            "Reporte",
-                            Tools.newLineString("Se genero correctamente el reporte de venta."),
-                            Duration.seconds(5),
-                            Pos.BOTTOM_RIGHT);
+                Tools.showAlertNotification("/view/image/succes_large.png",
+                        "Reporte",
+                        Tools.newLineString("Se genero correctamente el reporte de venta."),
+                        Duration.seconds(5),
+                        Pos.BOTTOM_RIGHT);
 
-                    URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
-                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                    Parent parent = fXMLLoader.load(url.openStream());
-                    // Controlller here
-                    FxReportViewController controller = fXMLLoader.getController();
-                    controller.setJasperPrint((JasperPrint) object);
-                    controller.show();
-                    Stage stage = WindowStage.StageLoader(parent, "Guia de remisión");
-                    stage.setResizable(true);
-                    stage.show();
-                    stage.requestFocus();
+                URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
+                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                Parent parent = fXMLLoader.load(url.openStream());
+                // Controlller here
+                FxReportViewController controller = fXMLLoader.getController();
+                controller.setJasperPrint(task.getValue());
+                controller.show();
+                Stage stage = WindowStage.StageLoader(parent, "Guia de remisión");
+                stage.setResizable(true);
+                stage.show();
+                stage.requestFocus();
 
-                } else {
-                    Tools.showAlertNotification("/view/image/error_large.png",
-                            "Reporte",
-                            Tools.newLineString((String) object),
-                            Duration.seconds(10),
-                            Pos.BOTTOM_RIGHT);
-                }
             } catch (IOException ex) {
-                Tools.showAlertNotification("/view/image/error_large.png",
+                Tools.showAlertNotification("/view/image/warning_large.png",
                         "Reporte",
                         Tools.newLineString(ex.getLocalizedMessage()),
                         Duration.seconds(10),
@@ -349,7 +339,7 @@ public class TicketGuiaRemision {
 
         map.put("NOMBRE_COMERCIAL", Session.COMPANY_RAZON_SOCIAL);
 
-        map.put("NOMBRE_CLIENTE",  guiaRemisionTB.getClienteTB().getInformacion());
+        map.put("NOMBRE_CLIENTE", guiaRemisionTB.getClienteTB().getInformacion());
         map.put("RUC_CLIENTE", guiaRemisionTB.getClienteTB().getNumeroDocumento());
 
         map.put("DATOS_TRANSPORTISTA",

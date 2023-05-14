@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -13,13 +12,13 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="spWindow" fitToWidth="true" styleClass="scroll-pane-secundario" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.guiaremision.FxGuiaRemisionController">
-   <content>
-      <VBox style="-fx-background-color: white;">
+<AnchorPane fx:id="apWindow" focusTraversable="true" onKeyReleased="#onKeyReleasedWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.guiaremision.FxGuiaRemisionController">
+   <children>
+      <VBox fx:id="vbBody" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0  0 2px 0; -fx-border-color: #3c8dbc; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
                <children>
@@ -32,19 +31,11 @@
                         </ImageView>
                      </graphic>
                   </Label>
-                  <Label fx:id="lblLoad" contentDisplay="RIGHT" styleClass="labelNormal" text="Cargando..." textFill="#1a2226" textOverrun="CLIP" visible="false">
-                     <font>
-                        <Font name="Roboto" size="14.0" />
-                     </font>
-                     <graphic>
-                        <ProgressIndicator prefHeight="30.0" prefWidth="30.0" style="-fx-progress-color: #23283a;" />
-                     </graphic>
-                  </Label>
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 0 0 1px 0;">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onActionToRegister" onKeyPressed="#onKeyPressedToRegister" styleClass="buttonLightDefault" text="Guardar">
+                  <Button fx:id="btnRegistrar" mnemonicParsing="false" onAction="#onActionToRegister" onKeyPressed="#onKeyPressedToRegister" styleClass="buttonLightDefault" text="Registrar (F1)">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -53,16 +44,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#onActionReload" onKeyPressed="#onKeyPressedReload" styleClass="buttonLight" text="Recargar">
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../image/reload.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onActionVentas" onKeyPressed="#onKeyPressedVentas" styleClass="buttonLight" text="Ventas">
+                  <Button mnemonicParsing="false" onAction="#onActionVentas" onKeyPressed="#onKeyPressedVentas" styleClass="buttonLight" text="Ventas (F2)">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -71,422 +53,448 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionGuias" onKeyPressed="#onKeyPressedGuias" styleClass="buttonLight" text="Guias (F3)">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/guia_remision.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onActionReload" onKeyPressed="#onKeyPressedReload" styleClass="buttonLight" text="Limpiar (F5)">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/escoba.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </children>
             </HBox>
-            <HBox alignment="CENTER" style="-fx-background-color: #e7e6e6; -fx-padding: 0.8333333333333334em;">
-               <children>
-                  <VBox style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: #cccccc;">
+            <ScrollPane fx:id="apScrollPane" fitToWidth="true" focusTraversable="false" styleClass="scroll-pane-secundario">
+               <content>
+                  <VBox style="-fx-background-color: white;">
                      <children>
-                        <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                        <HBox alignment="CENTER" style="-fx-background-color: #e7e6e6; -fx-padding: 0.8333333333333334em;">
                            <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                              <VBox style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: #cccccc;">
                                  <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Documento Guia de Remisión:" textFill="#020203">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../image/asterisk.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Label>
-                                    <HBox VBox.vgrow="ALWAYS">
+                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
                                        <children>
-                                          <ComboBox fx:id="cbDocumentoGuia" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="- Seleccionar -" HBox.hgrow="ALWAYS" />
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Documento Guia de Remisión:" textFill="#020203">
+                                                   <graphic>
+                                                      <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/asterisk.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Label>
+                                                <HBox VBox.vgrow="ALWAYS">
+                                                   <children>
+                                                      <ComboBox fx:id="cbDocumentoGuia" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="- Seleccionar -" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
                                        </children>
                                     </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-border-color: #e5e5e5; -fx-border-width: 0px 0px 1px 0px;">
-                           <children>
-                              <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="1" textFill="WHITE" />
-                                    <Label styleClass="labelRobotoBold14" text="Cliente" textFill="#020203" />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </HBox>
-                        <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
-                           <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Selecciona un Cliente:" textFill="#020203">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../image/asterisk.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Label>
-                                    <HBox VBox.vgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-border-color: #e5e5e5; -fx-border-width: 0px 0px 1px 0px;">
                                        <children>
-                                          <ComboBox fx:id="cbCliente" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese el Cliente" HBox.hgrow="ALWAYS" />
-                                          <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionToClient" onKeyPressed="#onKeyPressedToClient" styleClass="buttonLight" text="Agregar Nuevo Cliente">
-                                             <graphic>
-                                                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../../image/client.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
+                                          <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="1" textFill="WHITE" />
+                                                <Label styleClass="labelRobotoBold14" text="Cliente" textFill="#020203" />
+                                             </children>
+                                          </HBox>
                                        </children>
                                     </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
-                           <children>
-                              <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="2" textFill="WHITE" />
-                              <Label styleClass="labelRobotoBold14" text="Modalidad de Traslado" textFill="#020203" />
-                           </children>
-                        </HBox>
-                        <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                           <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <RadioButton fx:id="rbPublico" mnemonicParsing="false" onAction="#onActionModalidadTraslado" selected="true" text="Público" />
-                                 </children>
-                              </VBox>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <RadioButton fx:id="rbPrivado" mnemonicParsing="false" onAction="#onActionModalidadTraslado" text="Privado" />
-                                 </children>
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
-                           <children>
-                              <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="3" textFill="WHITE" />
-                              <Label styleClass="labelRobotoBold14" text="Datos de Traslado" textFill="#020203" />
-                           </children>
-                        </HBox>
-                        <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                           <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Motivo del Traslado:" textFill="#020203">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../image/asterisk.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Label>
-                                    <ComboBox fx:id="cbMotivoTraslado" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Seleccione" VBox.vgrow="ALWAYS" />
-                                 </children>
-                              </VBox>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Fecha Inicial de Traslado:" textFill="#020203">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../image/asterisk.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Label>
-                                    <DatePicker fx:id="dtFechaTraslado" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="00/00/0000" VBox.vgrow="ALWAYS" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                           <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Tipo de Peso de la Carga:" textFill="#020203">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../image/asterisk.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Label>
-                                    <ComboBox fx:id="cbTipoPesoCarga" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Seleccione" VBox.vgrow="ALWAYS" />
-                                 </children>
-                              </VBox>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Peso de la Carga:" textFill="#020203">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../image/asterisk.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Label>
-                                    <TextField fx:id="txtPesoCarga" maxHeight="1.7976931348623157E308" onKeyTyped="#onKeyTypedPesoCarga" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese en Kilogramos" styleClass="text-field-normal" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
-                           <children>
-                              <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="4" textFill="WHITE" />
-                              <Label styleClass="labelRobotoBold14" text="Datos del Transporte Privado" textFill="#020203" />
-                           </children>
-                        </HBox>
-                        <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                           <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Selecciona un Vehículo:" textFill="#020203">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../image/asterisk.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Label>
-                                    <HBox VBox.vgrow="ALWAYS">
+                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
                                        <children>
-                                          <ComboBox fx:id="cbVehiculo" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Buscar vehículo" HBox.hgrow="ALWAYS" />
-                                          <Button fx:id="btnAgregarVehiculo" disable="true" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionVehiculo" onKeyPressed="#onKeyPressedVehiculo" styleClass="buttonLight" text="Agregar Vehículo">
-                                             <graphic>
-                                                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../../image/client.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Selecciona un Cliente:" textFill="#020203">
+                                                   <graphic>
+                                                      <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/asterisk.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Label>
+                                                <HBox VBox.vgrow="ALWAYS">
+                                                   <children>
+                                                      <ComboBox fx:id="cbCliente" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese el Cliente" HBox.hgrow="ALWAYS" />
+                                                      <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionToClient" onKeyPressed="#onKeyPressedToClient" styleClass="buttonLight" text="Agregar Nuevo Cliente">
+                                                         <graphic>
+                                                            <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/client.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Button>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
                                        </children>
                                     </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
-                           <children>
-                              <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="5" textFill="WHITE" />
-                              <Label styleClass="labelRobotoBold14" text="Datos del Conductor Privado" textFill="#020203" />
-                           </children>
-                        </HBox>
-                        <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                           <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Selecciona un Conductor (DNI):" textFill="#020203">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../image/asterisk.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Label>
-                                    <HBox VBox.vgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
                                        <children>
-                                          <ComboBox fx:id="cbConductor" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Buscar conductor" HBox.hgrow="ALWAYS" />
-                                          <Button fx:id="btnAgregarConductor" disable="true" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionConductor" onKeyPressed="#onKeyPressedConductor" styleClass="buttonLight" text="Agregar Conductor">
-                                             <graphic>
-                                                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../../image/client.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
+                                          <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="2" textFill="WHITE" />
+                                          <Label styleClass="labelRobotoBold14" text="Modalidad de Traslado" textFill="#020203" />
                                        </children>
                                     </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
-                           <children>
-                              <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="6" textFill="WHITE" />
-                              <Label styleClass="labelRobotoBold14" text="Datos de la Empresa a Transportar - Pública" textFill="#020203" />
-                           </children>
-                        </HBox>
-                        <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                           <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Selecciona una Empresa (RUC):" textFill="#020203">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../image/asterisk.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Label>
-                                    <HBox VBox.vgrow="ALWAYS">
+                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
                                        <children>
-                                          <ComboBox fx:id="cbEmpresa" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Buscar transporte público" HBox.hgrow="ALWAYS" />
-                                          <Button fx:id="btnAgregarEmpresa" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionConductor" onKeyPressed="#onKeyPressedConductor" styleClass="buttonLight" text="Agregar Empresa">
-                                             <graphic>
-                                                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../../image/client.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <RadioButton fx:id="rbPublico" mnemonicParsing="false" onAction="#onActionModalidadTraslado" selected="true" text="Público" />
+                                             </children>
+                                          </VBox>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <RadioButton fx:id="rbPrivado" mnemonicParsing="false" onAction="#onActionModalidadTraslado" text="Privado" />
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </VBox>
                                        </children>
                                     </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox>
-                           <children>
-                              <VBox HBox.hgrow="ALWAYS">
-                                 <children>
+                                    <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
+                                       <children>
+                                          <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="3" textFill="WHITE" />
+                                          <Label styleClass="labelRobotoBold14" text="Datos de Traslado" textFill="#020203" />
+                                       </children>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                                       <children>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Motivo del Traslado:" textFill="#020203">
+                                                   <graphic>
+                                                      <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/asterisk.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Label>
+                                                <ComboBox fx:id="cbMotivoTraslado" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Seleccione" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Fecha Inicial de Traslado:" textFill="#020203">
+                                                   <graphic>
+                                                      <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/asterisk.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Label>
+                                                <DatePicker fx:id="dtFechaTraslado" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="00/00/0000" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                                       <children>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Tipo de Peso de la Carga:" textFill="#020203">
+                                                   <graphic>
+                                                      <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/asterisk.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Label>
+                                                <ComboBox fx:id="cbTipoPesoCarga" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Seleccione" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Peso de la Carga:" textFill="#020203">
+                                                   <graphic>
+                                                      <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/asterisk.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Label>
+                                                <TextField fx:id="txtPesoCarga" maxHeight="1.7976931348623157E308" onKeyTyped="#onKeyTypedPesoCarga" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese en Kilogramos" styleClass="text-field-normal" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
+                                       <children>
+                                          <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="4" textFill="WHITE" />
+                                          <Label styleClass="labelRobotoBold14" text="Datos del Transporte Privado" textFill="#020203" />
+                                       </children>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                                       <children>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Selecciona un Vehículo:" textFill="#020203">
+                                                   <graphic>
+                                                      <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/asterisk.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Label>
+                                                <HBox VBox.vgrow="ALWAYS">
+                                                   <children>
+                                                      <ComboBox fx:id="cbVehiculo" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Buscar vehículo" HBox.hgrow="ALWAYS" />
+                                                      <Button fx:id="btnAgregarVehiculo" disable="true" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionVehiculo" onKeyPressed="#onKeyPressedVehiculo" styleClass="buttonLight" text="Agregar Vehículo">
+                                                         <graphic>
+                                                            <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/client.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Button>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
+                                       <children>
+                                          <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="5" textFill="WHITE" />
+                                          <Label styleClass="labelRobotoBold14" text="Datos del Conductor Privado" textFill="#020203" />
+                                       </children>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                                       <children>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Selecciona un Conductor (DNI):" textFill="#020203">
+                                                   <graphic>
+                                                      <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/asterisk.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Label>
+                                                <HBox VBox.vgrow="ALWAYS">
+                                                   <children>
+                                                      <ComboBox fx:id="cbConductor" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Buscar conductor" HBox.hgrow="ALWAYS" />
+                                                      <Button fx:id="btnAgregarConductor" disable="true" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionConductor" onKeyPressed="#onKeyPressedConductor" styleClass="buttonLight" text="Agregar Conductor">
+                                                         <graphic>
+                                                            <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/client.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Button>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
                                     <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
                                        <children>
                                           <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="6" textFill="WHITE" />
-                                          <Label styleClass="labelRobotoBold14" text="Punto de partida" textFill="#020203" />
+                                          <Label styleClass="labelRobotoBold14" text="Datos de la Empresa a Transportar - Pública" textFill="#020203" />
                                        </children>
                                     </HBox>
-                                    <VBox style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
                                        <children>
-                                          <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Dirección:" textFill="#020203">
-                                             <graphic>
-                                                <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../../image/asterisk.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Label>
-                                          <TextField fx:id="txtDireccionPartida" maxHeight="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese la Dirección de Partida" styleClass="text-field-normal" />
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Selecciona una Empresa (RUC):" textFill="#020203">
+                                                   <graphic>
+                                                      <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/asterisk.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Label>
+                                                <HBox VBox.vgrow="ALWAYS">
+                                                   <children>
+                                                      <ComboBox fx:id="cbEmpresa" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Buscar transporte público" HBox.hgrow="ALWAYS" />
+                                                      <Button fx:id="btnAgregarEmpresa" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionConductor" onKeyPressed="#onKeyPressedConductor" styleClass="buttonLight" text="Agregar Empresa">
+                                                         <graphic>
+                                                            <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/client.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Button>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
                                        </children>
-                                    </VBox>
-                                    <VBox style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                                    </HBox>
+                                    <HBox>
                                        <children>
-                                          <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Ubigeo:" textFill="#020203">
-                                             <graphic>
-                                                <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../../image/asterisk.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Label>
-                                          <ComboBox fx:id="cbUbigeoPartida" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese el Ubigeo de Partida" VBox.vgrow="ALWAYS" />
+                                          <VBox HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
+                                                   <children>
+                                                      <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="6" textFill="WHITE" />
+                                                      <Label styleClass="labelRobotoBold14" text="Punto de partida" textFill="#020203" />
+                                                   </children>
+                                                </HBox>
+                                                <VBox style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                                                   <children>
+                                                      <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Dirección:" textFill="#020203">
+                                                         <graphic>
+                                                            <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/asterisk.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Label>
+                                                      <TextField fx:id="txtDireccionPartida" maxHeight="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese la Dirección de Partida" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                                                   <children>
+                                                      <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Ubigeo:" textFill="#020203">
+                                                         <graphic>
+                                                            <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/asterisk.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Label>
+                                                      <ComboBox fx:id="cbUbigeoPartida" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese el Ubigeo de Partida" VBox.vgrow="ALWAYS" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </VBox>
+                                          <VBox HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
+                                                   <children>
+                                                      <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="7" textFill="WHITE" />
+                                                      <Label styleClass="labelRobotoBold14" text="Punto de llegada" textFill="#020203" />
+                                                   </children>
+                                                </HBox>
+                                                <VBox style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                                                   <children>
+                                                      <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Dirección:" textFill="#020203">
+                                                         <graphic>
+                                                            <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/asterisk.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Label>
+                                                      <TextField fx:id="txtDireccionLlegada" maxHeight="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese la Dirección de Llegada" styleClass="text-field-normal" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                                                   <children>
+                                                      <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Ubigeo:" textFill="#020203">
+                                                         <graphic>
+                                                            <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/asterisk.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Label>
+                                                      <ComboBox fx:id="cbUbigeoLlegada" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese el Ubigeo de Llegada" VBox.vgrow="ALWAYS" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </VBox>
                                        </children>
-                                    </VBox>
-                                 </children>
-                              </VBox>
-                              <VBox HBox.hgrow="ALWAYS">
-                                 <children>
+                                    </HBox>
                                     <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
                                        <children>
-                                          <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="7" textFill="WHITE" />
-                                          <Label styleClass="labelRobotoBold14" text="Punto de llegada" textFill="#020203" />
+                                          <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="8" textFill="WHITE" />
+                                          <Label styleClass="labelRobotoBold14" text="Documento de Referencia" textFill="#020203" />
                                        </children>
                                     </HBox>
-                                    <VBox style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
+                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
                                        <children>
-                                          <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Dirección:" textFill="#020203">
-                                             <graphic>
-                                                <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../../image/asterisk.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Label>
-                                          <TextField fx:id="txtDireccionLlegada" maxHeight="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese la Dirección de Llegada" styleClass="text-field-normal" />
-                                       </children>
-                                    </VBox>
-                                    <VBox style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;">
-                                       <children>
-                                          <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Ubigeo:" textFill="#020203">
-                                             <graphic>
-                                                <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../../image/asterisk.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Label>
-                                          <ComboBox fx:id="cbUbigeoLlegada" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Ingrese el Ubigeo de Llegada" VBox.vgrow="ALWAYS" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
-                           <children>
-                              <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="8" textFill="WHITE" />
-                              <Label styleClass="labelRobotoBold14" text="Documento de Referencia" textFill="#020203" />
-                           </children>
-                        </HBox>
-                        <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                           <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Tipo de Comprobante:" textFill="#020203" />
-                                    <ComboBox fx:id="cbTipoComprobante" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Seleccione" VBox.vgrow="ALWAYS" />
-                                 </children>
-                              </VBox>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Serie:" textFill="#020203" />
-                                    <TextField fx:id="txtSerieFactura" disable="true" maxHeight="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="xxxx" styleClass="text-field-normal" />
-                                 </children>
-                              </VBox>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Número:" textFill="#020203" />
-                                    <TextField fx:id="txtNumeracionFactura" disable="true" maxHeight="1.7976931348623157E308" onKeyTyped="#onKeyTypedNumeracion" prefHeight="30.0" prefWidth="220.0" promptText="xxxxxxxx" styleClass="text-field-normal" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
-                           <children>
-                              <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="9" textFill="WHITE" />
-                              <Label styleClass="labelRobotoBold14" text="Detalle de Guía de Remisión" textFill="#020203" />
-                           </children>
-                        </HBox>
-                        <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                           <children>
-                              <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Button mnemonicParsing="false" onAction="#onActionAgregar" onKeyPressed="#onKeyPressedAgregar" styleClass="buttonLight" text="Agregar">
-                                             <graphic>
-                                                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../../image/plus.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Tipo de Comprobante:" textFill="#020203" />
+                                                <ComboBox fx:id="cbTipoComprobante" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="Seleccione" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Serie:" textFill="#020203" />
+                                                <TextField fx:id="txtSerieFactura" disable="true" maxHeight="1.7976931348623157E308" prefHeight="30.0" prefWidth="220.0" promptText="xxxx" styleClass="text-field-normal" />
+                                             </children>
+                                          </VBox>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label contentDisplay="RIGHT" styleClass="labelRoboto14" text="Número:" textFill="#020203" />
+                                                <TextField fx:id="txtNumeracionFactura" disable="true" maxHeight="1.7976931348623157E308" onKeyTyped="#onKeyTypedNumeracion" prefHeight="30.0" prefWidth="220.0" promptText="xxxxxxxx" styleClass="text-field-normal" />
+                                             </children>
+                                          </VBox>
                                        </children>
                                     </HBox>
-                                    <HBox VBox.vgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #999999; -fx-border-width: 0px 0px 1px 0px;">
                                        <children>
-                                          <TableView fx:id="tvList" prefHeight="360.0" prefWidth="930.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
-                                            <columns>
-                                                <TableColumn fx:id="tcCodigo" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Código" />
-                                              <TableColumn fx:id="tcDescripcion" prefWidth="360.0" style="-fx-alignment: CENTER;" text="Descripción" />
-                                                <TableColumn fx:id="tcMedida" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Und/Medida" />
-                                                <TableColumn fx:id="tcCantidad" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Cantidad" />
-                                                <TableColumn fx:id="tcPeso" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Peso(Kg)" />
-                                                <TableColumn fx:id="tcOpcion" style="-fx-alignment: CENTER;" text="Quitar" />
-                                            </columns>
-                                          </TableView>
+                                          <Label alignment="CENTER" style="-fx-background-color: rgb(63,81,181); -fx-padding: 5px 9px; -fx-background-radius: 100px; -fx-border-radius: 300px;" styleClass="labelRobotoBold13" text="9" textFill="WHITE" />
+                                          <Label styleClass="labelRobotoBold14" text="Detalle de Guía de Remisión" textFill="#020203" />
+                                       </children>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+                                       <children>
+                                          <VBox style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <HBox alignment="CENTER_RIGHT">
+                                                   <children>
+                                                      <Button mnemonicParsing="false" onAction="#onActionAgregar" onKeyPressed="#onKeyPressedAgregar" styleClass="buttonLight" text="Agregar">
+                                                         <graphic>
+                                                            <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/plus.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Button>
+                                                   </children>
+                                                </HBox>
+                                                <HBox VBox.vgrow="ALWAYS">
+                                                   <children>
+                                                      <TableView fx:id="tvList" prefHeight="360.0" prefWidth="930.0" styleClass="table-view-principal" HBox.hgrow="ALWAYS">
+                                                        <columns>
+                                                            <TableColumn fx:id="tcCodigo" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Código" />
+                                                          <TableColumn fx:id="tcDescripcion" prefWidth="360.0" style="-fx-alignment: CENTER;" text="Descripción" />
+                                                            <TableColumn fx:id="tcMedida" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Und/Medida" />
+                                                            <TableColumn fx:id="tcCantidad" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Cantidad" />
+                                                            <TableColumn fx:id="tcPeso" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Peso(Kg)" />
+                                                            <TableColumn fx:id="tcOpcion" style="-fx-alignment: CENTER;" text="Quitar" />
+                                                        </columns>
+                                                      </TableView>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
                                        </children>
                                     </HBox>
                                  </children>
@@ -495,9 +503,35 @@
                         </HBox>
                      </children>
                   </VBox>
-               </children>
-            </HBox>
+               </content>
+            </ScrollPane>
          </children>
       </VBox>
-   </content>
-</ScrollPane>
+      <HBox fx:id="hbLoad" alignment="CENTER" focusTraversable="true" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em;">
+               <children>
+                  <Label fx:id="lblMessageLoad" contentDisplay="TOP" styleClass="labelRobotoBold17" text="Cargando datos..." textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/load.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <Button fx:id="btnAceptarLoad" mnemonicParsing="false" styleClass="buttonLight" text="Aceptar" visible="false">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/accept.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

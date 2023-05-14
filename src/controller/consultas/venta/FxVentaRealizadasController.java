@@ -1,4 +1,4 @@
-package controller.operaciones.venta;
+package controller.consultas.venta;
 
 import controller.configuracion.empleados.FxEmpleadosListaController;
 import controller.menus.FxPrincipalController;
@@ -113,7 +113,7 @@ public class FxVentaRealizadasController implements Initializable {
         cbEstado.getSelectionModel().select(0);
 
         cbComprobante.getItems().add(new TipoDocumentoTB(0, "TODOS"));
-        cbComprobante.getItems().addAll(TipoDocumentoADO.GetDocumentoCombBoxVentas());
+        cbComprobante.getItems().addAll(TipoDocumentoADO.obtenerComprobantesParaVenta());
         cbComprobante.getSelectionModel().select(0);
 
         idEmpleado = Session.USER_ID;
@@ -257,7 +257,7 @@ public class FxVentaRealizadasController implements Initializable {
             // Controlller here
             FxVentaDetalleController controller = fXMLLoader.getController();
             controller.setInitVentasController(this, fxPrincipalController);
-            controller.setInitComponents(tvList.getSelectionModel().getSelectedItem().getIdVenta());
+            controller.loadInitComponents(tvList.getSelectionModel().getSelectedItem().getIdVenta());
             //
             fxPrincipalController.getVbContent().getChildren().clear();
             AnchorPane.setLeftAnchor(node, 0d);
@@ -294,9 +294,11 @@ public class FxVentaRealizadasController implements Initializable {
     private void onEventPaginacion() {
         switch (opcion) {
             case 0:
-                fillVentasTable(0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
-                        cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
-                        cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
+                String fechaInicio = Tools.getDatePicker(dtFechaInicial);
+                String fechaFinal = Tools.getDatePicker(dtFechaFinal);
+                int idTipoDocumento = cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento();
+                int idDetalle = cbEstado.getSelectionModel().getSelectedItem().getIdDetalle();
+                fillVentasTable(0, "", fechaInicio, fechaFinal, idTipoDocumento, idDetalle, idEmpleado);
                 break;
             case 1:
                 fillVentasTable((!buscarTodos ? 1 : 2), txtSearch.getText().trim(), "", "", 0, 0, idEmpleado);
@@ -365,9 +367,11 @@ public class FxVentaRealizadasController implements Initializable {
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
             if (!lblLoad.isVisible()) {
                 paginacion = 1;
-                fillVentasTable(0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
-                        cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
-                        cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
+                String fechaInicio = Tools.getDatePicker(dtFechaInicial);
+                String fechaFinal = Tools.getDatePicker(dtFechaFinal);
+                int idTipoDocumento = cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento();
+                int idDetalle = cbEstado.getSelectionModel().getSelectedItem().getIdDetalle();
+                fillVentasTable(0, "", fechaInicio, fechaFinal, idTipoDocumento, idDetalle, idEmpleado);
                 opcion = 0;
             }
         }
@@ -378,9 +382,11 @@ public class FxVentaRealizadasController implements Initializable {
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
             if (!lblLoad.isVisible()) {
                 paginacion = 1;
-                fillVentasTable(0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
-                        cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
-                        cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
+                String fechaInicio = Tools.getDatePicker(dtFechaInicial);
+                String fechaFinal = Tools.getDatePicker(dtFechaFinal);
+                int idTipoDocumento = cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento();
+                int idDetalle = cbEstado.getSelectionModel().getSelectedItem().getIdDetalle();
+                fillVentasTable(0, "", fechaInicio, fechaFinal, idTipoDocumento, idDetalle, idEmpleado);
                 opcion = 0;
             }
         }
@@ -427,9 +433,11 @@ public class FxVentaRealizadasController implements Initializable {
                 Tools.actualDate(Tools.getDate(), dtFechaFinal);
                 if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
                     paginacion = 1;
-                    fillVentasTable(0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
-                            cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
-                            cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
+                    String fechaInicio = Tools.getDatePicker(dtFechaInicial);
+                    String fechaFinal = Tools.getDatePicker(dtFechaFinal);
+                    int idTipoDocumento = cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento();
+                    int idDetalle = cbEstado.getSelectionModel().getSelectedItem().getIdDetalle();
+                    fillVentasTable(0, "", fechaInicio, fechaFinal, idTipoDocumento, idDetalle, idEmpleado);
                     opcion = 0;
                 }
             }
@@ -444,9 +452,11 @@ public class FxVentaRealizadasController implements Initializable {
             Tools.actualDate(Tools.getDate(), dtFechaFinal);
             if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
                 paginacion = 1;
-                fillVentasTable(0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
-                        cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
-                        cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
+                String fechaInicio = Tools.getDatePicker(dtFechaInicial);
+                String fechaFinal = Tools.getDatePicker(dtFechaFinal);
+                int idTipoDocumento = cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento();
+                int idDetalle = cbEstado.getSelectionModel().getSelectedItem().getIdDetalle();
+                fillVentasTable(0, "", fechaInicio, fechaFinal, idTipoDocumento, idDetalle, idEmpleado);
                 opcion = 0;
             }
         }
@@ -457,9 +467,11 @@ public class FxVentaRealizadasController implements Initializable {
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
             if (!lblLoad.isVisible()) {
                 paginacion = 1;
-                fillVentasTable(0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
-                        cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
-                        cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
+                String fechaInicio = Tools.getDatePicker(dtFechaInicial);
+                String fechaFinal = Tools.getDatePicker(dtFechaFinal);
+                int idTipoDocumento = cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento();
+                int idDetalle = cbEstado.getSelectionModel().getSelectedItem().getIdDetalle();
+                fillVentasTable(0, "", fechaInicio, fechaFinal, idTipoDocumento, idDetalle, idEmpleado);
                 opcion = 0;
             }
         }
@@ -470,9 +482,11 @@ public class FxVentaRealizadasController implements Initializable {
         if (dtFechaInicial.getValue() != null && dtFechaFinal.getValue() != null) {
             if (!lblLoad.isVisible()) {
                 paginacion = 1;
-                fillVentasTable(0, "", Tools.getDatePicker(dtFechaInicial), Tools.getDatePicker(dtFechaFinal),
-                        cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento(),
-                        cbEstado.getSelectionModel().getSelectedItem().getIdDetalle(), idEmpleado);
+                String fechaInicio = Tools.getDatePicker(dtFechaInicial);
+                String fechaFinal = Tools.getDatePicker(dtFechaFinal);
+                int idTipoDocumento = cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento();
+                int idDetalle = cbEstado.getSelectionModel().getSelectedItem().getIdDetalle();
+                fillVentasTable(0, "", fechaInicio, fechaFinal, idTipoDocumento, idDetalle, idEmpleado);
                 opcion = 0;
             }
         }

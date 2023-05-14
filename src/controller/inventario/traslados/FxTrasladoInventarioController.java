@@ -115,7 +115,7 @@ public class FxTrasladoInventarioController implements Initializable {
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         txtPartida.setText(Session.COMPANY_DOMICILIO);
-        cbMotivoTraslado.getItems().addAll(DetalleADO.GetDetailId("0017"));
+        cbMotivoTraslado.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0017"));
         filterCbAlmacen();
         idVenta = "";
     }
@@ -390,7 +390,7 @@ public class FxTrasladoInventarioController implements Initializable {
             txtPartida.setText(cbAlmacenOrigin.getSelectionModel().getSelectedItem().getDireccion());
         }
         cbMotivoTraslado.getItems().clear();
-        cbMotivoTraslado.getItems().addAll(DetalleADO.GetDetailId("0017"));
+        cbMotivoTraslado.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0017"));
         idVenta = "";
         txtObservacion.clear();
         btnProducto.setDisable(false);

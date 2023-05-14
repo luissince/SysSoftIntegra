@@ -4,11 +4,10 @@ package model;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-
 public class GuiaRemisionDetalleTB {
-    
+
     private int id;
-    private int idGuiaRemision;
+    private String idGuiaRemision;
     private String idSuministro;
     private String codigo;
     private String descripcion;
@@ -23,7 +22,7 @@ public class GuiaRemisionDetalleTB {
     private Button btnRemover;
 
     public GuiaRemisionDetalleTB() {
-        
+
     }
 
     public int getId() {
@@ -34,11 +33,11 @@ public class GuiaRemisionDetalleTB {
         this.id = id;
     }
 
-    public int getIdGuiaRemision() {
+    public String getIdGuiaRemision() {
         return idGuiaRemision;
     }
 
-    public void setIdGuiaRemision(int idGuiaRemision) {
+    public void setIdGuiaRemision(String idGuiaRemision) {
         this.idGuiaRemision = idGuiaRemision;
     }
 
@@ -138,6 +137,4 @@ public class GuiaRemisionDetalleTB {
         this.btnRemover = btnRemover;
     }
 
-    
-    
 }

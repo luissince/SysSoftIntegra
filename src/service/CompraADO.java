@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -20,6 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import model.AlmacenTB;
+import model.BancoTB;
 import model.CompraCreditoTB;
 import model.CompraTB;
 import model.DetalleCompraTB;
@@ -35,6 +38,318 @@ import model.SuministroTB;
 
 public class CompraADO {
 
+    public static String registrarCompra(CompraTB compraTB, List<EgresoTB> egresoTBs) {
+        DBUtil dbf = new DBUtil();
+
+        CallableStatement callableObtenerCodigoCompra = null;
+        CallableStatement callableObtenerCodigoEgreso = null;
+        PreparedStatement prepareRegistrarCompra = null;
+        PreparedStatement prepareRegistrarEgreso = null;
+        PreparedStatement prepareRegistrarDetalleCompra = null;
+        PreparedStatement prepareActualizarCosto = null;
+        PreparedStatement prepareActualizarCantidad = null;
+        PreparedStatement prepareActualizarCantidadAlmacen = null;
+        PreparedStatement prepareRegistrarKardex = null;
+        PreparedStatement prepareActualizarSuministroPrecio = null;
+        PreparedStatement prepareRegistrarPrecio = null;
+        PreparedStatement prepareBorrarPrecio = null;
+
+        try {
+            dbf.dbConnect();
+            dbf.getConnection().setAutoCommit(false);
+
+            callableObtenerCodigoCompra = dbf.getConnection().prepareCall("{? = call Fc_Compra_Codigo_Alfanumerico()}");
+            callableObtenerCodigoCompra.registerOutParameter(1, java.sql.Types.VARCHAR);
+            callableObtenerCodigoCompra.execute();
+            String idCompra = callableObtenerCodigoCompra.getString(1);
+
+            callableObtenerCodigoEgreso = dbf.getConnection().prepareCall("{? = call Fc_Egreso_Codigo_Alfanumerico()}");
+            callableObtenerCodigoEgreso.registerOutParameter(1, java.sql.Types.VARCHAR);
+            callableObtenerCodigoEgreso.execute();
+            String idEgreso = callableObtenerCodigoEgreso.getString(1);
+
+            prepareRegistrarCompra = dbf.getConnection().prepareStatement("INSERT INTO "
+                    + "CompraTB("
+                    + "IdCompra,"
+                    + "Proveedor,"
+                    + "Comprobante,"
+                    + "Serie,"
+                    + "Numeracion,"
+                    + "TipoMoneda,"
+                    + "FechaCompra,"
+                    + "HoraCompra,"
+                    + "FechaVencimiento,"
+                    + "HoraVencimiento,"
+                    + "Observaciones,"
+                    + "Notas,"
+                    + "TipoCompra,"
+                    + "Efectivo,"
+                    + "Tarjeta,"
+                    + "Deposito,"
+                    + "EstadoCompra,"
+                    + "Usuario,"
+                    + "IdAlmacen) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+            prepareRegistrarCompra.setString(1, idCompra);
+            prepareRegistrarCompra.setString(2, compraTB.getIdProveedor());
+            prepareRegistrarCompra.setInt(3, compraTB.getIdComprobante());
+            prepareRegistrarCompra.setString(4, compraTB.getSerie());
+            prepareRegistrarCompra.setString(5, compraTB.getNumeracion());
+            prepareRegistrarCompra.setInt(6, compraTB.getIdMoneda());
+            prepareRegistrarCompra.setString(7, compraTB.getFechaCompra());
+            prepareRegistrarCompra.setString(8, compraTB.getHoraCompra());
+            prepareRegistrarCompra.setString(9, compraTB.getFechaVencimiento());
+            prepareRegistrarCompra.setString(10, compraTB.getHoraVencimiento());
+            prepareRegistrarCompra.setString(11, compraTB.getObservaciones());
+            prepareRegistrarCompra.setString(12, compraTB.getNotas());
+            prepareRegistrarCompra.setInt(13, compraTB.getTipo());
+            prepareRegistrarCompra.setBoolean(14, compraTB.getEfectivo());
+            prepareRegistrarCompra.setBoolean(15, compraTB.getTarjeta());
+            prepareRegistrarCompra.setBoolean(16, compraTB.getDeposito());
+            prepareRegistrarCompra.setInt(17, compraTB.getEstado());
+            prepareRegistrarCompra.setString(18, compraTB.getUsuario());
+            prepareRegistrarCompra.setInt(19, compraTB.getIdAlmacen());
+            prepareRegistrarCompra.addBatch();
+
+            prepareRegistrarEgreso = dbf.getConnection().prepareStatement("INSERT INTO EgresoTB\n"
+                    + "(IdEgreso,\n"
+                    + "IdProcedencia,\n"
+                    + "IdUsuario,\n"
+                    + "IdCliente,\n"
+                    + "IdBanco,\n"
+                    + "Detalle,\n"
+                    + "Procedencia,\n"
+                    + "Fecha,\n"
+                    + "Hora,\n"
+                    + "Forma,\n"
+                    + "Monto,\n"
+                    + "Vuelto,\n"
+                    + "Operacion)\n"
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+            for (EgresoTB egresoTB : egresoTBs) {
+                prepareRegistrarEgreso.setString(1, idEgreso);
+                prepareRegistrarEgreso.setString(2, idCompra);
+                prepareRegistrarEgreso.setString(3, egresoTB.getIdUsuario());
+                prepareRegistrarEgreso.setString(4, egresoTB.getIdCliente());
+                prepareRegistrarEgreso.setString(5, egresoTB.getIdBanco());
+                prepareRegistrarEgreso.setString(6, egresoTB.getDetalle());
+                prepareRegistrarEgreso.setInt(7, egresoTB.getProcedencia());
+                prepareRegistrarEgreso.setString(8, egresoTB.getFecha());
+                prepareRegistrarEgreso.setString(9, egresoTB.getHora());
+                prepareRegistrarEgreso.setInt(10, egresoTB.getForma());
+                prepareRegistrarEgreso.setDouble(11, egresoTB.getMonto());
+                prepareRegistrarEgreso.setDouble(12, egresoTB.getVuelto());
+                prepareRegistrarEgreso.setString(13, egresoTB.getOperacion());
+                prepareRegistrarEgreso.addBatch();
+
+                // Obtener el número de ingreso actual
+                String prefijo = "EG";
+                String numeroIngreso = idEgreso.replace(prefijo, "");
+                int incremental = Integer.parseInt(numeroIngreso) + 1;
+
+                // Generar el nuevo ID de ingreso con ceros delante
+                idEgreso = prefijo + String.format("%04d", incremental);
+            }
+
+            prepareRegistrarDetalleCompra = dbf.getConnection().prepareStatement("INSERT INTO "
+                    + "DetalleCompraTB("
+                    + "IdCompra,"
+                    + "IdArticulo,"
+                    + "Cantidad,"
+                    + "PrecioCompra,"
+                    + "Descuento,"
+                    + "IdImpuesto,"
+                    + "NombreImpuesto,"
+                    + "ValorImpuesto,"
+                    + "Importe,"
+                    + "Descripcion)"
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+
+            prepareActualizarCosto = dbf.getConnection().prepareStatement("UPDATE SuministroTB SET "
+                    + "PrecioCompra = ? "
+                    + "WHERE IdSuministro = ?");
+
+            prepareActualizarCantidad = dbf.getConnection()
+                    .prepareStatement("UPDATE SuministroTB SET "
+                            + "Cantidad = Cantidad + ? "
+                            + "WHERE IdSuministro = ?");
+
+            prepareActualizarCantidadAlmacen = dbf.getConnection().prepareStatement("UPDATE CantidadTB SET "
+                    + "Cantidad = Cantidad + ? "
+                    + "WHERE IdAlmacen = ? AND IdSuministro = ?");
+
+            prepareRegistrarKardex = dbf.getConnection().prepareStatement("INSERT INTO "
+                    + "KardexSuministroTB("
+                    + "IdSuministro,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "Tipo,"
+                    + "Movimiento,"
+                    + "Detalle,"
+                    + "Cantidad, "
+                    + "Costo, "
+                    + "Total,"
+                    + "IdAlmacen) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+
+            prepareActualizarSuministroPrecio = dbf.getConnection().prepareStatement(
+                    "UPDATE SuministroTB SET "
+                    + "Impuesto=?, "
+                    + "PrecioVentaGeneral=?, "
+                    + "TipoPrecio=? "
+                    + "WHERE IdSuministro = ?");
+
+            prepareRegistrarPrecio = dbf.getConnection().prepareStatement(
+                    "INSERT INTO PreciosTB("
+                    + "IdArticulo, "
+                    + "IdSuministro, "
+                    + "Nombre, "
+                    + "Valor, "
+                    + "Factor,"
+                    + "Estado) "
+                    + "VALUES(?,?,?,?,?,?)");
+
+            prepareBorrarPrecio = dbf.getConnection()
+                    .prepareStatement("DELETE FROM PreciosTB WHERE IdSuministro = ?");
+
+            for (DetalleCompraTB dc : compraTB.getDetalleCompraTBs()) {
+                prepareRegistrarDetalleCompra.setString(1, idCompra);
+                prepareRegistrarDetalleCompra.setString(2, dc.getIdSuministro());
+                prepareRegistrarDetalleCompra.setDouble(3, dc.getCantidad());
+                prepareRegistrarDetalleCompra.setDouble(4, dc.getPrecioCompra());
+                prepareRegistrarDetalleCompra.setDouble(5, dc.getDescuento());
+
+                prepareRegistrarDetalleCompra.setInt(6, dc.getIdImpuesto());
+                prepareRegistrarDetalleCompra.setString(7, dc.getImpuestoTB().getNombre());
+                prepareRegistrarDetalleCompra.setDouble(8, dc.getImpuestoTB().getValor());
+                prepareRegistrarDetalleCompra.setDouble(9, dc.getPrecioCompra() * dc.getCantidad());
+                prepareRegistrarDetalleCompra.setString(10, dc.getDescripcion());
+                prepareRegistrarDetalleCompra.addBatch();
+
+                if (compraTB.isActualizarAlmacen()) {
+                    prepareActualizarCosto.setDouble(1, dc.getPrecioCompra());
+                    prepareActualizarCosto.setString(2, dc.getIdSuministro());
+                    prepareActualizarCosto.addBatch();
+                }
+                // ---------------------------------------------------------------------
+                if (compraTB.getIdAlmacen() == 0) {
+                    prepareActualizarCantidad.setDouble(1, dc.getCantidad());
+                    prepareActualizarCantidad.setString(2, dc.getIdSuministro());
+                    prepareActualizarCantidad.addBatch();
+                } else {
+                    prepareActualizarCantidadAlmacen.setDouble(1, dc.getCantidad());
+                    prepareActualizarCantidadAlmacen.setInt(2, compraTB.getIdAlmacen());
+                    prepareActualizarCantidadAlmacen.setString(3, dc.getIdSuministro());
+                    prepareActualizarCantidadAlmacen.addBatch();
+                }
+
+                String detalleKardex = "COMPRA CON SERIE Y NUMERACIÓN: " + compraTB.getSerie().toUpperCase() + "-"
+                        + compraTB.getNumeracion().toUpperCase();
+
+                prepareRegistrarKardex.setString(1, dc.getIdSuministro());
+                prepareRegistrarKardex.setString(2, Tools.getDate());
+                prepareRegistrarKardex.setString(3, Tools.getTime());
+                prepareRegistrarKardex.setShort(4, (short) 1);
+                prepareRegistrarKardex.setInt(5, 2);
+                prepareRegistrarKardex.setString(6, detalleKardex);
+                prepareRegistrarKardex.setDouble(7, dc.getCantidad());
+                prepareRegistrarKardex.setDouble(8, dc.getPrecioCompra());
+                prepareRegistrarKardex.setDouble(9, dc.getCantidad() * dc.getPrecioCompra());
+                prepareRegistrarKardex.setInt(10, compraTB.getIdAlmacen());
+                prepareRegistrarKardex.addBatch();
+
+                if (!dc.isCambiarPrecio()) {
+                    prepareActualizarSuministroPrecio.setInt(1, dc.getSuministroTB().getIdImpuesto());
+                    prepareActualizarSuministroPrecio.setDouble(2, dc.getSuministroTB().getPrecioVentaGeneral());
+                    prepareActualizarSuministroPrecio.setBoolean(3, dc.getSuministroTB().isTipoPrecio());
+                    prepareActualizarSuministroPrecio.setString(4, dc.getIdSuministro());
+                    prepareActualizarSuministroPrecio.addBatch();
+
+                    prepareBorrarPrecio.setString(1, dc.getIdSuministro());
+                    prepareBorrarPrecio.addBatch();
+
+                    for (PreciosTB t : dc.getSuministroTB().getPreciosTBs()) {
+                        prepareRegistrarPrecio.setString(1, "");
+                        prepareRegistrarPrecio.setString(2, dc.getIdSuministro());
+                        prepareRegistrarPrecio.setString(3, t.getNombre());
+                        prepareRegistrarPrecio.setDouble(4, t.getValor());
+                        prepareRegistrarPrecio.setDouble(5, t.getFactor() <= 0 ? 1 : t.getFactor());
+                        prepareRegistrarPrecio.setBoolean(6, true);
+                        prepareRegistrarPrecio.addBatch();
+                    }
+                }
+
+            }
+
+            prepareRegistrarCompra.executeBatch();
+            prepareRegistrarEgreso.executeBatch();
+            prepareRegistrarDetalleCompra.executeBatch();
+            prepareActualizarCosto.executeBatch();
+            prepareActualizarCantidad.executeBatch();
+            prepareActualizarCantidadAlmacen.executeBatch();
+            prepareRegistrarKardex.executeBatch();
+            prepareActualizarSuministroPrecio.executeBatch();
+            prepareBorrarPrecio.executeBatch();
+            prepareRegistrarPrecio.executeBatch();
+
+            dbf.getConnection().commit();
+            return "register";
+        } catch (SQLException | ClassNotFoundException ex) {
+            try {
+                dbf.getConnection().rollback();
+                return ex.getLocalizedMessage();
+            } catch (SQLException ex1) {
+                return ex1.getLocalizedMessage();
+            }
+        } finally {
+            try {
+                if (callableObtenerCodigoCompra != null) {
+                    callableObtenerCodigoCompra.close();
+                }
+                if (callableObtenerCodigoEgreso != null) {
+                    callableObtenerCodigoEgreso.close();
+                }
+                if (prepareRegistrarCompra != null) {
+                    prepareRegistrarCompra.close();
+                }
+                if (prepareRegistrarEgreso != null) {
+                    prepareRegistrarEgreso.close();
+                }
+                if (prepareRegistrarDetalleCompra != null) {
+                    prepareRegistrarDetalleCompra.close();
+                }
+                if (prepareActualizarCosto != null) {
+                    prepareActualizarCosto.close();
+                }
+                if (prepareActualizarCantidad != null) {
+                    prepareActualizarCantidad.close();
+                }
+                if (prepareActualizarCantidadAlmacen != null) {
+                    prepareActualizarCantidadAlmacen.close();
+                }
+                if (prepareRegistrarKardex != null) {
+                    prepareRegistrarKardex.close();
+                }
+                if (prepareActualizarSuministroPrecio != null) {
+                    prepareActualizarSuministroPrecio.close();
+                }
+                if (prepareRegistrarPrecio != null) {
+                    prepareRegistrarPrecio.close();
+                }
+                if (prepareBorrarPrecio != null) {
+                    prepareBorrarPrecio.close();
+                }
+
+                dbf.dbDisconnect();
+            } catch (SQLException ex) {
+
+            }
+        }
+    }
+
+    @Deprecated
     public static String Compra_Contado(EgresoTB egresoTB, MovimientoCajaTB movimientoCajaTB, CompraTB compraTB,
             TableView<DetalleCompraTB> tableView, ObservableList<LoteTB> loteTBs) {
         DBUtil dbf = new DBUtil();
@@ -171,17 +486,17 @@ public class CompraADO {
             // preparedBancoHistorial.addBatch();
             // }
             egreso = dbf.getConnection().prepareStatement(
-                    "INSERT INTO EgresoTB(\n" +
-                            "IdEgreso,\n" +
-                            "IdProcedencia,\n" +
-                            "IdUsuario,\n" +
-                            "Detalle,\n" +
-                            "Procedencia,\n" +
-                            "Fecha,\n" +
-                            "Hora,\n" +
-                            "Forma,\n" +
-                            "Monto)\n" +
-                            "VALUES(?,?,?,?,?,?,?,?,?)");
+                    "INSERT INTO EgresoTB(\n"
+                    + "IdEgreso,\n"
+                    + "IdProcedencia,\n"
+                    + "IdUsuario,\n"
+                    + "Detalle,\n"
+                    + "Procedencia,\n"
+                    + "Fecha,\n"
+                    + "Hora,\n"
+                    + "Forma,\n"
+                    + "Monto)\n"
+                    + "VALUES(?,?,?,?,?,?,?,?,?)");
             if (egresoTB != null) {
                 egreso.setString(1, id_egreso);
                 egreso.setString(2, id_compra);
@@ -403,6 +718,7 @@ public class CompraADO {
 
     }
 
+    @Deprecated
     public static String Compra_Credito(CompraTB compraTB, TableView<DetalleCompraTB> tableView,
             ObservableList<LoteTB> loteTBs) {
         DBUtil dbf = new DBUtil();
@@ -674,7 +990,7 @@ public class CompraADO {
         }
     }
 
-    public static Object Listar_Compras_Realizadas(int opcion, String value, String fechaInicial, String fechaFinal,
+    public static Object listaComprasDetalle(int opcion, String value, String fechaInicial, String fechaFinal,
             int comprobante, int estadoCompra, int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
@@ -721,7 +1037,7 @@ public class CompraADO {
                 label.getStyleClass()
                         .add(compraTB.getEstado() == 1 ? "label-asignacion"
                                 : compraTB.getEstado() == 2 ? "label-medio"
-                                        : compraTB.getEstado() == 3 ? "label-proceso" : "label-ultimo");
+                                : compraTB.getEstado() == 3 ? "label-proceso" : "label-ultimo");
                 compraTB.setEstadoLabel(label);
 
                 MonedaTB monedaTB = new MonedaTB();
@@ -766,13 +1082,14 @@ public class CompraADO {
         }
     }
 
-    public static Object Obtener_Compra_ById(String idCompra) {
+    public static Object obtenerCompraPorId(String idCompra) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedCompra = null;
         PreparedStatement preparedProveedor = null;
         PreparedStatement preparedDetalleCompra = null;
         PreparedStatement preparedCredito = null;
         PreparedStatement preparedPrecio = null;
+        PreparedStatement preparedEgresos = null;
         ResultSet resultSet = null;
 
         try {
@@ -782,6 +1099,7 @@ public class CompraADO {
             resultSet = preparedCompra.executeQuery();
 
             if (resultSet.next()) {
+                // compra
                 CompraTB compraTB = new CompraTB();
                 compraTB.setIdCompra(idCompra);
                 compraTB.setFechaCompra(resultSet.getDate("FechaCompra").toLocalDate()
@@ -805,13 +1123,13 @@ public class CompraADO {
                 compraTB.setNotas(resultSet.getString("Notas"));
                 compraTB.setIdAlmacen(resultSet.getInt("IdAlmacen"));
 
-                // almacen start
+                // almacen
                 AlmacenTB almacenTB = new AlmacenTB();
                 almacenTB.setIdAlmacen(resultSet.getInt("IdAlmacen"));
                 almacenTB.setNombre(resultSet.getString("AlmacenNombre"));
                 compraTB.setAlmacenTB(almacenTB);
 
-                // proveedor start
+                // proveedor
                 ProveedorTB proveedorTB = new ProveedorTB();
                 proveedorTB.setIdProveedor(resultSet.getString("IdProveedor"));
                 proveedorTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
@@ -822,35 +1140,37 @@ public class CompraADO {
                 proveedorTB.setEmail(resultSet.getString("Email"));
                 compraTB.setProveedorTB(proveedorTB);
 
-                // moneda start
+                // moneda 
                 MonedaTB monedaTB = new MonedaTB();
                 monedaTB.setNombre(resultSet.getString("Moneda"));
                 monedaTB.setAbreviado(resultSet.getString("Abreviado"));
                 monedaTB.setSimbolo(resultSet.getString("Simbolo"));
                 compraTB.setMonedaTB(monedaTB);
 
+                /**
+                 *
+                 */
+                ArrayList<DetalleCompraTB> empList = new ArrayList();
                 preparedDetalleCompra = dbf.getConnection().prepareStatement("{call Sp_Listar_Detalle_Compra(?)}");
                 preparedDetalleCompra.setString(1, idCompra);
                 resultSet = preparedDetalleCompra.executeQuery();
-                ArrayList<DetalleCompraTB> empList = new ArrayList();
                 while (resultSet.next()) {
                     DetalleCompraTB detalleCompraTB = new DetalleCompraTB();
                     detalleCompraTB.setId(resultSet.getRow());
                     detalleCompraTB.setIdSuministro(resultSet.getString("IdSuministro"));
-
-                    //
                     detalleCompraTB.setCantidad(resultSet.getDouble("Cantidad"));
                     detalleCompraTB.setPrecioCompra(resultSet.getDouble("PrecioCompra"));
                     detalleCompraTB.setDescuento(resultSet.getDouble("Descuento"));
                     detalleCompraTB.setIdImpuesto(resultSet.getInt("IdImpuesto"));
 
+                    // impuesto
                     ImpuestoTB impuestoTB = new ImpuestoTB();
                     impuestoTB.setIdImpuesto(resultSet.getInt("IdImpuesto"));
                     impuestoTB.setNombre(resultSet.getString("NombreImpuesto"));
                     impuestoTB.setValor(resultSet.getDouble("ValorImpuesto"));
                     detalleCompraTB.setImpuestoTB(impuestoTB);
 
-                    // SUMINISTRO
+                    // suministro
                     SuministroTB suministroTB = new SuministroTB();
                     suministroTB.setClave(resultSet.getString("Clave"));
                     suministroTB.setNombreMarca(resultSet.getString("NombreMarca"));
@@ -872,6 +1192,7 @@ public class CompraADO {
                     suministroTB.setImpuestoTB(new ImpuestoTB(rsEmps.getInt("IdImpuesto"), rsEmps.getString("Nombre"),
                             rsEmps.getDouble("Valor")));
 
+                    // 
                     ArrayList<PreciosTB> preciosTBs = new ArrayList();
                     preparedPrecio = dbf.getConnection()
                             .prepareStatement("SELECT * FROM PreciosTB WHERE IdSuministro = ?");
@@ -948,10 +1269,13 @@ public class CompraADO {
                 }
                 compraTB.setDetalleCompraTBs(empList);
 
+                /**
+                 *
+                 */
+                ArrayList<CompraCreditoTB> listComprasCredito = new ArrayList();
                 preparedCredito = dbf.getConnection().prepareStatement("{call Sp_Listar_Detalle_Compra_Credito(?)}");
                 preparedCredito.setString(1, idCompra);
                 resultSet = preparedCredito.executeQuery();
-                ArrayList<CompraCreditoTB> listComprasCredito = new ArrayList();
                 while (resultSet.next()) {
                     CompraCreditoTB creditoTB = new CompraCreditoTB();
                     creditoTB.setMonto(resultSet.getDouble("Monto"));
@@ -963,6 +1287,45 @@ public class CompraADO {
                     listComprasCredito.add(creditoTB);
                 }
                 compraTB.setCompraCreditoTBs(listComprasCredito);
+
+                /**
+                 * Obtener la lista de egresos o gastos asocados a la compra
+                 *
+                 * @idCompra
+                 */
+                ArrayList<EgresoTB> egresoTBs = new ArrayList<>();
+                preparedEgresos = dbf.getConnection().prepareStatement("select \n"
+                        + "e.IdEgreso,\n"
+                        + "b.NombreCuenta,\n"
+                        + "e.Detalle,\n"
+                        + "e.Fecha,\n"
+                        + "e.Hora,\n"
+                        + "e.Monto,\n"
+                        + "e.Vuelto \n"
+                        + "from \n"
+                        + "EgresoTB as e\n"
+                        + "inner join Banco as b on e.IdBanco = b.IdBanco\n"
+                        + "where e.IdProcedencia = ?");
+                preparedEgresos.setString(1, idCompra);
+                resultSet = preparedEgresos.executeQuery();
+                while (resultSet.next()) {
+                    EgresoTB egresoTB = new EgresoTB();
+                    egresoTB.setId(resultSet.getRow());
+                    egresoTB.setIdEgreso(resultSet.getString("IdEgreso"));
+
+                    BancoTB bancoTB = new BancoTB();
+                    bancoTB.setNombreCuenta(resultSet.getString("NombreCuenta"));
+                    egresoTB.setBancoTB(bancoTB);
+
+                    egresoTB.setDetalle(resultSet.getString("Detalle"));
+                    egresoTB.setFecha(resultSet.getDate("Fecha").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    egresoTB.setHora(resultSet.getTime("Hora").toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+                    egresoTB.setMonto(resultSet.getDouble("Monto"));
+                    egresoTB.setVuelto(resultSet.getDouble("Vuelto"));
+
+                    egresoTBs.add(egresoTB);
+                }
+                compraTB.setEgresoTBs(egresoTBs);
 
                 return compraTB;
             } else {
@@ -992,6 +1355,9 @@ public class CompraADO {
                 if (preparedPrecio != null) {
                     preparedPrecio.close();
                 }
+                if (preparedEgresos != null) {
+                    preparedEgresos.close();
+                }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
                 return ex.getLocalizedMessage();
@@ -1000,19 +1366,20 @@ public class CompraADO {
 
     }
 
-    public static String CancelarCompraProducto(CompraTB compraTB, String observacion) {
+    public static String anularCompra(CompraTB compraTB, String observacion) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementValidate = null;
         PreparedStatement statementCompra = null;
         PreparedStatement statementCantidad = null;
         PreparedStatement statementIngreso = null;
-        PreparedStatement statementMovimientoCaja = null;
         PreparedStatement statementSuministro = null;
         PreparedStatement statementSuministroKardex = null;
         try {
             dbf.dbConnect();
 
             dbf.getConnection().setAutoCommit(false);
+
+            // Comprueba si la compra ya ha sido anulada
             statementValidate = dbf.getConnection()
                     .prepareStatement("SELECT * FROM CompraTB WHERE IdCompra = ? AND EstadoCompra = ?");
             statementValidate.setString(1, compraTB.getIdCompra());
@@ -1020,100 +1387,87 @@ public class CompraADO {
             if (statementValidate.executeQuery().next()) {
                 dbf.getConnection().rollback();
                 return "cancel";
-            } else {
-                statementValidate = dbf.getConnection()
-                        .prepareStatement("SELECT * FROM CompraCreditoTB WHERE IdCompra = ?");
-                statementValidate.setString(1, compraTB.getIdCompra());
-                if (statementValidate.executeQuery().next()) {
-                    dbf.getConnection().rollback();
-                    return "credito";
-                } else {
-
-                    statementCompra = dbf.getConnection().prepareStatement(
-                            "UPDATE CompraTB SET EstadoCompra = ?,Observaciones = ? WHERE IdCompra = ?");
-                    statementCompra.setInt(1, 3);
-                    statementCompra.setString(2, observacion);
-                    statementCompra.setString(3, compraTB.getIdCompra());
-                    statementCompra.addBatch();
-
-                    statementIngreso = dbf.getConnection()
-                            .prepareStatement("DELETE FROM IngresoTB WHERE IdProcedencia = ?");
-                    statementIngreso.setString(1, compraTB.getIdCompra());
-                    statementIngreso.addBatch();
-
-                    statementMovimientoCaja = dbf.getConnection()
-                            .prepareStatement("DELETE FROM MovimientoCajaTB WHERE IdProcedencia = ?");
-                    statementMovimientoCaja.setString(1, compraTB.getIdCompra());
-                    statementMovimientoCaja.addBatch();
-
-                    statementSuministro = dbf.getConnection()
-                            .prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
-
-                    statementSuministroKardex = dbf.getConnection().prepareStatement("INSERT INTO KardexSuministroTB("
-                            + "IdSuministro,"
-                            + "Fecha,"
-                            + "Hora,"
-                            + "Tipo,"
-                            + "Movimiento,"
-                            + "Detalle,"
-                            + "Cantidad, "
-                            + "Costo, "
-                            + "Total,"
-                            + "IdAlmacen) "
-                            + "VALUES(?,?,?,?,?,?,?,?,?,?)");
-
-                    statementCantidad = dbf.getConnection().prepareStatement(
-                            "UPDATE CantidadTB SET Cantidad = Cantidad - ? WHERE IdAlmacen = ? AND IdSuministro = ?");
-
-                    for (DetalleCompraTB detalleCompraTB : compraTB.getDetalleCompraTBs()) {
-                        if (compraTB.getIdAlmacen() == 0) {
-                            statementSuministro.setDouble(1, detalleCompraTB.getCantidad());
-                            statementSuministro.setString(2, detalleCompraTB.getIdSuministro());
-                            statementSuministro.addBatch();
-
-                            statementSuministroKardex.setString(1, detalleCompraTB.getIdSuministro());
-                            statementSuministroKardex.setString(2, Tools.getDate());
-                            statementSuministroKardex.setString(3, Tools.getTime());
-                            statementSuministroKardex.setShort(4, (short) 2);
-                            statementSuministroKardex.setInt(5, 1);
-                            statementSuministroKardex.setString(6, "COMPRA CANCELADA");
-                            statementSuministroKardex.setDouble(7, detalleCompraTB.getCantidad());
-                            statementSuministroKardex.setDouble(8, detalleCompraTB.getPrecioCompra());
-                            statementSuministroKardex.setDouble(9,
-                                    detalleCompraTB.getCantidad() * detalleCompraTB.getPrecioCompra());
-                            statementSuministroKardex.setInt(10, compraTB.getIdAlmacen());
-                            statementSuministroKardex.addBatch();
-                        } else {
-                            statementCantidad.setDouble(1, detalleCompraTB.getCantidad());
-                            statementCantidad.setInt(2, compraTB.getIdAlmacen());
-                            statementCantidad.setString(3, detalleCompraTB.getIdSuministro());
-                            statementCantidad.addBatch();
-
-                            statementSuministroKardex.setString(1, detalleCompraTB.getIdSuministro());
-                            statementSuministroKardex.setString(2, Tools.getDate());
-                            statementSuministroKardex.setString(3, Tools.getTime());
-                            statementSuministroKardex.setShort(4, (short) 2);
-                            statementSuministroKardex.setInt(5, 1);
-                            statementSuministroKardex.setString(6, "CANCELAR COMPRA");
-                            statementSuministroKardex.setDouble(7, detalleCompraTB.getCantidad());
-                            statementSuministroKardex.setDouble(8, detalleCompraTB.getPrecioCompra());
-                            statementSuministroKardex.setDouble(9,
-                                    detalleCompraTB.getCantidad() * detalleCompraTB.getPrecioCompra());
-                            statementSuministroKardex.setInt(10, compraTB.getIdAlmacen());
-                            statementSuministroKardex.addBatch();
-                        }
-                    }
-
-                    statementCompra.executeBatch();
-                    statementIngreso.executeBatch();
-                    statementMovimientoCaja.executeBatch();
-                    statementSuministro.executeBatch();
-                    statementCantidad.executeBatch();
-                    statementSuministroKardex.executeBatch();
-                    dbf.getConnection().commit();
-                    return "updated";
-                }
             }
+
+            // Comprueba si la compra tiene ligados creditos
+            statementValidate = dbf.getConnection()
+                    .prepareStatement("SELECT * FROM CompraCreditoTB WHERE IdCompra = ?");
+            statementValidate.setString(1, compraTB.getIdCompra());
+            if (statementValidate.executeQuery().next()) {
+                dbf.getConnection().rollback();
+                return "credito";
+            }
+
+            // Cambiar el estado de la compra a anulado
+            statementCompra = dbf.getConnection().prepareStatement(
+                    "UPDATE CompraTB SET EstadoCompra = ?,Observaciones = ? WHERE IdCompra = ?");
+            statementCompra.setInt(1, 3);
+            statementCompra.setString(2, observacion);
+            statementCompra.setString(3, compraTB.getIdCompra());
+            statementCompra.addBatch();
+
+            // Anulado el egreso
+            statementIngreso = dbf.getConnection()
+                    .prepareStatement("UPDATE EgresoTB SET Estado = 0 WHERE IdProcedencia = ?");
+            statementIngreso.setString(1, compraTB.getIdCompra());
+            statementIngreso.addBatch();
+
+            // Menora la cantidad del suministro
+            statementSuministro = dbf.getConnection()
+                    .prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad - ? WHERE IdSuministro = ?");
+
+            // Actualiza la cantidad de almacen
+            statementCantidad = dbf.getConnection().prepareStatement(
+                    "UPDATE CantidadTB SET Cantidad = Cantidad - ? WHERE IdAlmacen = ? AND IdSuministro = ?");
+
+            // Insertar al nuevo registro del kardex
+            statementSuministroKardex = dbf.getConnection().prepareStatement("INSERT INTO KardexSuministroTB("
+                    + "IdSuministro,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "Tipo,"
+                    + "Movimiento,"
+                    + "Detalle,"
+                    + "Cantidad, "
+                    + "Costo, "
+                    + "Total,"
+                    + "IdAlmacen) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+
+            //
+            for (DetalleCompraTB detalleCompraTB : compraTB.getDetalleCompraTBs()) {
+                if (compraTB.getIdAlmacen() == 0) {
+                    statementSuministro.setDouble(1, detalleCompraTB.getCantidad());
+                    statementSuministro.setString(2, detalleCompraTB.getIdSuministro());
+                    statementSuministro.addBatch();
+                } else {
+                    statementCantidad.setDouble(1, detalleCompraTB.getCantidad());
+                    statementCantidad.setInt(2, compraTB.getIdAlmacen());
+                    statementCantidad.setString(3, detalleCompraTB.getIdSuministro());
+                    statementCantidad.addBatch();
+                }
+
+                statementSuministroKardex.setString(1, detalleCompraTB.getIdSuministro());
+                statementSuministroKardex.setString(2, Tools.getDate());
+                statementSuministroKardex.setString(3, Tools.getTime());
+                statementSuministroKardex.setShort(4, (short) 2);
+                statementSuministroKardex.setInt(5, 1);
+                statementSuministroKardex.setString(6, "COMPRA CANCELADA");
+                statementSuministroKardex.setDouble(7, detalleCompraTB.getCantidad());
+                statementSuministroKardex.setDouble(8, detalleCompraTB.getPrecioCompra());
+                statementSuministroKardex.setDouble(9,
+                        detalleCompraTB.getCantidad() * detalleCompraTB.getPrecioCompra());
+                statementSuministroKardex.setInt(10, compraTB.getIdAlmacen());
+                statementSuministroKardex.addBatch();
+            }
+
+            statementCompra.executeBatch();
+            statementIngreso.executeBatch();
+            statementSuministro.executeBatch();
+            statementCantidad.executeBatch();
+            statementSuministroKardex.executeBatch();
+            dbf.getConnection().commit();
+            return "updated";
         } catch (SQLException | ClassNotFoundException ex) {
             try {
                 dbf.getConnection().rollback();
@@ -1139,9 +1493,6 @@ public class CompraADO {
                 }
                 if (statementCantidad != null) {
                     statementCantidad.close();
-                }
-                if (statementMovimientoCaja != null) {
-                    statementMovimientoCaja.close();
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
@@ -1331,8 +1682,7 @@ public class CompraADO {
 
                     statementEgreso = dbf.getConnection().prepareStatement(
                             "INSERT INTO IngresoTB(IdIngreso,IdProcedencia,IdUsuario,Detalle,Procedencia,Fecha,Hora,Forma,Monto)\n"
-                                    +
-                                    "VALUES(?,?,?,?,?,?,?,?,?)");
+                            + "VALUES(?,?,?,?,?,?,?,?,?)");
                     if (egresoTB != null) {
                         statementEgreso.setString(1, id_egreso);
                         statementEgreso.setString(2, idCompraCreditoCredito);
@@ -1626,7 +1976,7 @@ public class CompraADO {
                 label.getStyleClass()
                         .add(compraTB.getEstado() == 1 ? "label-asignacion"
                                 : compraTB.getEstado() == 2 ? "label-medio"
-                                        : compraTB.getEstado() == 3 ? "label-proceso" : "label-ultimo");
+                                : compraTB.getEstado() == 3 ? "label-proceso" : "label-ultimo");
 
                 compraTB.setEstadoLabel(label);
 

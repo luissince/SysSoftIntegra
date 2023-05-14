@@ -112,7 +112,7 @@ public class FxPostVentaRealizadasController implements Initializable {
         cbEstado.getSelectionModel().select(0);
 
         cbComprobante.getItems().add(new TipoDocumentoTB(0, "TODOS"));
-        cbComprobante.getItems().addAll(TipoDocumentoADO.GetDocumentoCombBoxVentas());
+        cbComprobante.getItems().addAll(TipoDocumentoADO.obtenerComprobantesParaVenta());
         cbComprobante.getSelectionModel().select(0);
 
         idEmpleado = Session.USER_ID;

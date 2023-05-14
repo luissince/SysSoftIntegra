@@ -177,6 +177,42 @@
                               </Text>
                            </children>
                         </VBox>
+                        <VBox fx:id="btnIngresos" alignment="CENTER">
+                           <children>
+                              <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionIngreso" onKeyPressed="#onKeyPressedIngreso" styleClass="buttonTransparent" text="Ingresos" textFill="#020203">
+                                 <graphic>
+                                    <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/ingresos.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Consultas">
+                                 <font>
+                                    <Font name="Roboto" size="14.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </VBox>
+                        <VBox fx:id="btnEgresos" alignment="CENTER">
+                           <children>
+                              <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionEgreso" onKeyPressed="#onKeyPressedEgreso" styleClass="buttonTransparent" text="Gastos" textFill="#020203">
+                                 <graphic>
+                                    <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+                                       <image>
+                                          <Image url="@../image/egreso.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Consultas">
+                                 <font>
+                                    <Font name="Roboto" size="14.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </VBox>
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />

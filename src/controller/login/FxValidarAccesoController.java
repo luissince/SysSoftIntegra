@@ -1,7 +1,7 @@
 
 package controller.login;
 
-import controller.operaciones.venta.FxVentaRealizadasController;
+import controller.consultas.venta.FxVentaRealizadasController;
 import controller.tools.Tools;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,19 +22,19 @@ public class FxValidarAccesoController implements Initializable {
     private Text lblComprobante;
     @FXML
     private TextField txtClave;
-    
+
     private FxVentaRealizadasController ventaRealizadasController;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-    }    
-    
-    private void validarAcceso(){
-        if(Tools.isText(txtClave.getText())){
+
+    }
+
+    private void validarAcceso() {
+        if (Tools.isText(txtClave.getText())) {
             Tools.AlertMessageWarning(apWindow, "Validar Acceso", "Ingrese la clave para continuar.");
-        }else{
-                
+        } else {
+
         }
     }
 
@@ -45,10 +45,9 @@ public class FxValidarAccesoController implements Initializable {
 
     @FXML
     private void onKeyPressedAceptar(KeyEvent event) {
-        if(event.getCode() == KeyCode.ENTER){
+        if (event.getCode() == KeyCode.ENTER) {
             validarAcceso();
         }
     }
-    
-    
+
 }

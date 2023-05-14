@@ -98,8 +98,8 @@ public class FxClienteProcesoController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() throws Exception {
-                Object listTipoDocumento = DetalleADO.GetDetailId("0003");
-                Object listMotivoTraslado = DetalleADO.GetDetailId("0017");
+                Object listTipoDocumento = DetalleADO.obtenerDetallePorIdMantenimiento("0003");
+                Object listMotivoTraslado = DetalleADO.obtenerDetallePorIdMantenimiento("0017");
 
                 if (listTipoDocumento instanceof ObservableList
                         && listMotivoTraslado instanceof ObservableList) {
@@ -216,8 +216,8 @@ public class FxClienteProcesoController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() throws Exception {
-                Object listTipoDocumento = DetalleADO.GetDetailId("0003");// se establece las diferente opciones
-                Object listMotivoTraslado = DetalleADO.GetDetailId("0017");
+                Object listTipoDocumento = DetalleADO.obtenerDetallePorIdMantenimiento("0003");// se establece las diferente opciones
+                Object listMotivoTraslado = DetalleADO.obtenerDetallePorIdMantenimiento("0017");
                 Object cliente = ClienteADO.GetByIdCliente(idCliente);
                 if (listTipoDocumento instanceof ObservableList
                         && listMotivoTraslado instanceof ObservableListBase

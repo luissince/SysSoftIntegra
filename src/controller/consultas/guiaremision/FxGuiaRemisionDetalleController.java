@@ -1,4 +1,4 @@
-package controller.operaciones.guiaremision;
+package controller.consultas.guiaremision;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
@@ -99,7 +99,7 @@ public class FxGuiaRemisionDetalleController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return GuiaRemisionADO.ObtenerGuiaRemisionById(idGuiaRemision);
+                return GuiaRemisionADO.obtenerGuiaRemisionById(idGuiaRemision);
             }
         };
         task.setOnSucceeded(e -> {

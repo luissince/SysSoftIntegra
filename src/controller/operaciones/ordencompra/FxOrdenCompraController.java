@@ -149,7 +149,7 @@ public class FxOrdenCompraController implements Initializable {
 
         loadComboBoxProveedor();
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.GetMonedasComboBox());
+        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
         for (int i = 0; i < cbMoneda.getItems().size(); i++) {
             if (cbMoneda.getItems().get(i).isPredeterminado()) {
                 cbMoneda.getSelectionModel().select(i);
@@ -525,7 +525,7 @@ public class FxOrdenCompraController implements Initializable {
         lblProceso.setTextFill(Color.web("#0060e8"));
         txtObservacion.clear();
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.GetMonedasComboBox());
+        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
         for (int i = 0; i < cbMoneda.getItems().size(); i++) {
             if (cbMoneda.getItems().get(i).isPredeterminado()) {
                 cbMoneda.getSelectionModel().select(i);

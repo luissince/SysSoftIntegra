@@ -28,12 +28,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.CompraTB;
 import model.DetalleCompraTB;
+import model.EgresoTB;
 import service.CompraADO;
 
 public class FxComprasDetalleController implements Initializable {
@@ -63,7 +63,9 @@ public class FxComprasDetalleController implements Initializable {
     @FXML
     private Label lblComprobante;
     @FXML
-    private GridPane gpList;
+    private GridPane gpListCompraDetalle;
+    @FXML
+    private GridPane gpListEgresos;
     @FXML
     private Label lblDescuento;
     @FXML
@@ -81,10 +83,6 @@ public class FxComprasDetalleController implements Initializable {
     @FXML
     private Label lblTotalCompra;
     @FXML
-    private VBox vbCondicion;
-    @FXML
-    private Label lblMetodoPago;
-    @FXML
     private Label lblAlmacen;
     @FXML
     private HBox hbLoad;
@@ -92,6 +90,8 @@ public class FxComprasDetalleController implements Initializable {
     private Label lblMessageLoad;
     @FXML
     private Button btnAceptarLoad;
+    @FXML
+    private Label lblEgresos;
 
     private FxComprasRealizadasController comprascontroller;
 
@@ -110,7 +110,7 @@ public class FxComprasDetalleController implements Initializable {
         fxOpcionesImprimirController.loadTicketCompra(apWindow);
     }
 
-    public void setLoadDetalle(String idCompra) {
+    public void loadInitComponents(String idCompra) {
         this.idCompra = idCompra;
 
         ExecutorService executor = Executors.newCachedThreadPool((runnable) -> {
@@ -122,7 +122,7 @@ public class FxComprasDetalleController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return CompraADO.Obtener_Compra_ById(idCompra);
+                return CompraADO.obtenerCompraPorId(idCompra);
             }
         };
 
@@ -165,29 +165,13 @@ public class FxComprasDetalleController implements Initializable {
                     lblEstado.setTextFill(Color.web("#990000"));
                 }
 
-                vbCondicion.getChildren().clear();
-                switch (compraTB.getTipo()) {
-                    case 2:
-                        lblMetodoPago.setText("COMPRA AL CRÉDITO - PAGOS REALIZADOS");
-                        if (!compraTB.getCompraCreditoTBs().isEmpty()) {
-                            for (int i = 0; i < compraTB.getCompraCreditoTBs().size(); i++) {
-                                vbCondicion.getChildren().add(adddElementCondicion("Pago el " + compraTB.getCompraCreditoTBs().get(i).getFechaPago() + " por " + compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(compraTB.getCompraCreditoTBs().get(i).getMonto(), 2)));
-                            }
-                        } else {
-                            vbCondicion.getChildren().add(adddElementCondicion("NO HAY PAGOS ECHOS"));
-                        }
+                gpListCompraDetalle.getChildren().clear();
+                createHeadTableDetalleCompra();
+                createBodyTableDetalleCompra(compraTB.getDetalleCompraTBs());
 
-                        break;
-                    case 1:
-                        lblMetodoPago.setText("COMPRA AL CONTADO");
-                        vbCondicion.getChildren().add(adddElementCondicion(lblTotalCompra.getText()));
-                        break;
-                    default:
-                        lblMetodoPago.setText("COMPRA ANULADA");
-                        break;
-                }
-
-                fillArticlesTable(compraTB.getDetalleCompraTBs(), compraTB.getMonedaTB().getSimbolo());
+                gpListEgresos.getChildren().clear();
+                createHeadTableEgreso();
+                createBodyTableEgreso(compraTB.getEgresoTBs());
 
                 spBody.setDisable(false);
                 hbLoad.setVisible(false);
@@ -204,18 +188,77 @@ public class FxComprasDetalleController implements Initializable {
         }
     }
 
-    private void fillArticlesTable(ArrayList<DetalleCompraTB> compraTBs, String simbolo) {
+    private void createHeadTableDetalleCompra() {
+        gpListCompraDetalle.add(addHeadGridPane("N°"), 0, 0);
+        gpListCompraDetalle.add(addHeadGridPane("Descripción"), 1, 0);
+        gpListCompraDetalle.add(addHeadGridPane("Precio"), 2, 0);
+        gpListCompraDetalle.add(addHeadGridPane("Descuento"), 3, 0);
+        gpListCompraDetalle.add(addHeadGridPane("Impuesto %"), 4, 0);
+        gpListCompraDetalle.add(addHeadGridPane("Cantidad"), 5, 0);
+        gpListCompraDetalle.add(addHeadGridPane("Unidad"), 6, 0);
+        gpListCompraDetalle.add(addHeadGridPane("Importe"), 7, 0);
+    }
+
+    private void createBodyTableDetalleCompra(ArrayList<DetalleCompraTB> compraTBs) {
         for (int i = 0; i < compraTBs.size(); i++) {
-            gpList.add(addElementGridPane("l1" + (i + 1), compraTBs.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
-            gpList.add(addElementGridPane("l2" + (i + 1), compraTBs.get(i).getSuministroTB().getClave() + "\n" + compraTBs.get(i).getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
-            gpList.add(addElementGridPane("l3" + (i + 1), simbolo + " " + Tools.roundingValue(compraTBs.get(i).getPrecioCompra(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpList.add(addElementGridPane("l4" + (i + 1), Tools.roundingValue(compraTBs.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
-            gpList.add(addElementGridPane("l5" + (i + 1), compraTBs.get(i).getImpuestoTB().getNombre(), Pos.CENTER_RIGHT), 4, (i + 1));
-            gpList.add(addElementGridPane("l6" + (i + 1), Tools.roundingValue(compraTBs.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpList.add(addElementGridPane("l7" + (i + 1), compraTBs.get(i).getSuministroTB().getUnidadCompraName(), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPane("l8" + (i + 1), simbolo + " " + Tools.roundingValue(compraTBs.get(i).getCantidad() * (compraTBs.get(i).getPrecioCompra() - compraTBs.get(i).getDescuento()), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            DetalleCompraTB detalleCompraTB = compraTBs.get(i);
+            gpListCompraDetalle.add(addElementGridPane("l1" + (i + 1), detalleCompraTB.getId() + "", Pos.CENTER), 0, (i + 1));
+            gpListCompraDetalle.add(addElementGridPane("l2" + (i + 1), detalleCompraTB.getSuministroTB().getClave() + "\n" + detalleCompraTB.getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
+            gpListCompraDetalle.add(addElementGridPane("l3" + (i + 1), compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(detalleCompraTB.getPrecioCompra(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
+            gpListCompraDetalle.add(addElementGridPane("l4" + (i + 1), Tools.roundingValue(detalleCompraTB.getDescuento(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
+            gpListCompraDetalle.add(addElementGridPane("l5" + (i + 1), detalleCompraTB.getImpuestoTB().getNombre(), Pos.CENTER_RIGHT), 4, (i + 1));
+            gpListCompraDetalle.add(addElementGridPane("l6" + (i + 1), Tools.roundingValue(detalleCompraTB.getCantidad(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
+            gpListCompraDetalle.add(addElementGridPane("l7" + (i + 1), detalleCompraTB.getSuministroTB().getUnidadCompraName(), Pos.CENTER_RIGHT), 6, (i + 1));
+            gpListCompraDetalle.add(addElementGridPane("l8" + (i + 1), compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(detalleCompraTB.getCantidad() * (detalleCompraTB.getPrecioCompra() - detalleCompraTB.getDescuento()), 2), Pos.CENTER_RIGHT), 7, (i + 1));
         }
-        calcularTotales(compraTBs, simbolo);
+        calcularTotales(compraTBs);
+    }
+
+    private void createHeadTableEgreso() {
+        gpListEgresos.add(addHeadGridPane("N°"), 0, 0);
+        gpListEgresos.add(addHeadGridPane("Fecha"), 1, 0);
+        gpListEgresos.add(addHeadGridPane("Banco"), 2, 0);
+        gpListEgresos.add(addHeadGridPane("Detalle"), 3, 0);
+        gpListEgresos.add(addHeadGridPane("Monto"), 4, 0);
+        gpListEgresos.add(addHeadGridPane("Vuelto"), 5, 0);
+    }
+
+    private void createBodyTableEgreso(ArrayList<EgresoTB> egresoTBs) {
+        if (egresoTBs.isEmpty()) {
+            Label titulo = addElementGridPane("l1", "No hay salidas para mostrar.", Pos.CENTER);
+            gpListEgresos.add(titulo, 0, 1);
+            GridPane.setRowSpan(titulo, GridPane.REMAINING);
+            GridPane.setColumnSpan(titulo, GridPane.REMAINING);
+            lblEgresos.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(0, 2));
+        } else {
+            double suma = 0;
+            for (int i = 0; i < egresoTBs.size(); i++) {
+                EgresoTB egresoTB = egresoTBs.get(i);
+                gpListEgresos.add(addElementGridPane("l1" + (i + 1), egresoTB.getId() + "", Pos.CENTER), 0, (i + 1));
+                gpListEgresos.add(addElementGridPane("l2" + (i + 1), egresoTB.getFecha() + "\n" + egresoTB.getHora(), Pos.CENTER_LEFT), 1, (i + 1));
+                gpListEgresos.add(addElementGridPane("l3" + (i + 1), egresoTB.getBancoTB().getNombreCuenta(), Pos.CENTER_LEFT), 2, (i + 1));
+                gpListEgresos.add(addElementGridPane("l4" + (i + 1), egresoTB.getDetalle(), Pos.CENTER_LEFT), 3, (i + 1));
+                gpListEgresos.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(egresoTB.getMonto(), 2), Pos.CENTER_RIGHT), 4, (i + 1));
+                gpListEgresos.add(addElementGridPane("l6" + (i + 1), Tools.roundingValue(egresoTB.getVuelto(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
+                suma += egresoTB.getMonto();
+            }
+            lblEgresos.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(suma, 2));
+        }
+    }
+
+    private Label addHeadGridPane(String nombre) {
+        Label label = new Label(nombre);
+        label.setTextFill(Color.web("#FFFFFF"));
+        label.getStyleClass().add("labelRoboto13");
+        label.setStyle(
+                "-fx-background-color:  #020203;-fx-padding:  0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;-fx-font-weight:100;");
+        label.setAlignment(Pos.CENTER);
+        label.setWrapText(true);
+        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
+        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxHeight(Double.MAX_VALUE);
+        return label;
     }
 
     private Label addElementGridPane(String id, String nombre, Pos pos) {
@@ -232,7 +275,7 @@ public class FxComprasDetalleController implements Initializable {
         return label;
     }
 
-    private void calcularTotales(ArrayList<DetalleCompraTB> compraTBs, String simbolo) {
+    private void calcularTotales(ArrayList<DetalleCompraTB> compraTBs) {
         double importeBrutoTotal = 0;
         double descuentoTotal = 0;
         double subImporteNetoTotal = 0;
@@ -254,18 +297,11 @@ public class FxComprasDetalleController implements Initializable {
             importeNetoTotal += importeNeto;
         }
 
-        lblImporteBruto.setText(simbolo + " " + Tools.roundingValue(importeBrutoTotal, 2));
-        lblDescuento.setText(simbolo + " " + Tools.roundingValue(descuentoTotal, 2));
-        lblSubImporteNeto.setText(simbolo + " " + Tools.roundingValue(subImporteNetoTotal, 2));
-        lblImpuesto.setText(simbolo + " " + Tools.roundingValue(impuestoTotal, 2));
-        lblImporteNeto.setText(simbolo + " " + Tools.roundingValue(importeNetoTotal, 2));
-    }
-
-    private Text adddElementCondicion(String value) {
-        Text txtTitulo = new Text(value);
-        txtTitulo.getStyleClass().add("labelRoboto13");
-        txtTitulo.setStyle("-fx-fill:#020203");
-        return txtTitulo;
+        lblImporteBruto.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeBrutoTotal, 2));
+        lblDescuento.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(descuentoTotal, 2));
+        lblSubImporteNeto.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(subImporteNetoTotal, 2));
+        lblImpuesto.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
+        lblImporteNeto.setText(compraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNetoTotal, 2));
     }
 
     private void onEventReporte() {

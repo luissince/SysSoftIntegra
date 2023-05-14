@@ -16,7 +16,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -49,13 +48,18 @@ public class FxOperacionesController implements Initializable {
     private VBox btnNotaCredito;
     @FXML
     private VBox btnPedido;
+    @FXML
+    private VBox btnIngresos;
+    @FXML
+    private VBox btnEgresos;
+
     /*
-    Objectos de la ventana principal y venta que agrega a los hijos
+     * Objectos de la ventana principal y venta que agrega a los hijos
      */
     private FxPrincipalController fxPrincipalController;
 
     /*
-    Controller ventas
+     * Controller ventas
      */
     private FXMLLoader fXMLVentaOld;
 
@@ -64,7 +68,7 @@ public class FxOperacionesController implements Initializable {
     private FxVentaController controllerVentaOld;
 
     /*
-    Controller ventas nueva
+     * Controller ventas nueva
      */
     private FXMLLoader fXMLVentaNew;
 
@@ -73,7 +77,7 @@ public class FxOperacionesController implements Initializable {
     private FxVentaController controllerVentaNew;
 
     /*
-    Controller compra
+     * Controller compra
      */
     private FXMLLoader fXMLCompra;
 
@@ -82,7 +86,7 @@ public class FxOperacionesController implements Initializable {
     private FxComprasController controllerCompras;
 
     /*
-    Controller compra
+     * Controller compra
      */
     private FXMLLoader fXMLCotizacion;
 
@@ -91,16 +95,16 @@ public class FxOperacionesController implements Initializable {
     private FxCotizacionController controllerCotizacion;
 
     /*
-    Controller guia remision
+     * Controller guia remision
      */
     private FXMLLoader fXMLGuiaRemision;
 
-    private ScrollPane nodeGuiaRemision;
+    private AnchorPane nodeGuiaRemision;
 
     private FxGuiaRemisionController controllerGuiaRemision;
 
     /*
-    Controller corte de caja
+     * Controller corte de caja
      */
     private FXMLLoader fXMLNotaCredito;
 
@@ -109,7 +113,7 @@ public class FxOperacionesController implements Initializable {
     private FxNotaCreditoController controllerNotaCredito;
 
     /*
-    Controller orden de compra
+     * Controller orden de compra
      */
     private FXMLLoader fXMLOrdenCompra;
 
@@ -162,7 +166,8 @@ public class FxOperacionesController implements Initializable {
             hbOperacionesUno.getChildren().remove(btnVentas);
             hbOperacionesUno.getChildren().remove(btnNewVentas);
         } else {
-            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL, subMenusTBs.get(0).getIdSubMenu());
+            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL,
+                    subMenusTBs.get(0).getIdSubMenu());
             controllerVentaOld.loadPrivilegios(privilegioTBs);
             controllerVentaNew.loadPrivilegios(privilegioTBs);
         }
@@ -170,7 +175,8 @@ public class FxOperacionesController implements Initializable {
         if (subMenusTBs.get(1).getIdSubMenu() != 0 && !subMenusTBs.get(1).isEstado()) {
             hbOperacionesUno.getChildren().remove(btnCompras);
         } else {
-            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL, subMenusTBs.get(1).getIdSubMenu());
+            ObservableList<PrivilegioTB> privilegioTBs = MenuADO.GetPrivilegios(Session.USER_ROL,
+                    subMenusTBs.get(1).getIdSubMenu());
             controllerCompras.loadPrivilegios(privilegioTBs);
         }
 
@@ -349,6 +355,30 @@ public class FxOperacionesController implements Initializable {
     @FXML
     private void onActioOrdenCompra(ActionEvent event) {
         openWindowOrdenCompra();
+    }
+
+    @FXML
+    private void onKeyPressedIngreso(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+
+        }
+    }
+
+    @FXML
+    private void onActionIngreso(ActionEvent event) {
+
+    }
+
+    @FXML
+    private void onKeyPressedEgreso(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+
+        }
+    }
+
+    @FXML
+    private void onActionEgreso(ActionEvent event) {
+
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

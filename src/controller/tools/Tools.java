@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventType;
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -30,6 +31,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -46,7 +48,7 @@ import javax.imageio.ImageIO;
 import org.controlsfx.control.Notifications;
 
 public class Tools {
-    
+
     private static final Pattern p = Pattern.compile("[0-9]+");
 
     public static short AlertMessageConfirmation(Node node, String title, String value) {
@@ -222,7 +224,7 @@ public class Tools {
         }
 
         Formatter formatter = new Formatter();
-        return String.valueOf(formatter.format("%06d", Integer.parseInt(numero)));
+        return String.valueOf(formatter.format("%06d", Integer.valueOf(numero)));
     }
 
     public static String formatNumber(int numero) {
@@ -240,7 +242,7 @@ public class Tools {
         }
         boolean resultado;
         try {
-            Double.parseDouble(cadena);
+            Double.valueOf(cadena);
             resultado = true;
         } catch (NumberFormatException ex) {
             resultado = false;
@@ -476,5 +478,19 @@ public class Tools {
             }
         }
         return format;
+    }
+
+    public static void scrollTo(ScrollPane scrollPane, Node node) {
+        // Obtener las coordenadas del nodo hijo en relación a la vista del ScrollPane
+        Bounds bounds = node.localToScene(node.getBoundsInLocal());
+        Bounds scrollBounds = scrollPane.sceneToLocal(bounds);
+
+        // Desplazar el contenido del ScrollPane para asegurarse de que el nodo hijo sea visible
+        double hValue = Math.max(0, Math.min(1, (scrollBounds.getMinX() - 20) / (scrollPane.getContent().getBoundsInLocal().getWidth() - scrollBounds.getWidth())));
+        double vValue = Math.max(0, Math.min(1, (scrollBounds.getMinY() - 20) / (scrollPane.getContent().getBoundsInLocal().getHeight() - scrollBounds.getHeight())));
+        scrollPane.setHvalue(hValue);
+        scrollPane.setVvalue(vValue);
+        
+        node.requestFocus();
     }
 }

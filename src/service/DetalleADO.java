@@ -162,7 +162,7 @@ public class DetalleADO {
         return result;
     }
 
-    public static ObservableList<DetalleTB> GetDetailId(String value) {
+    public static ObservableList<DetalleTB> obtenerDetallePorIdMantenimiento(String value) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;

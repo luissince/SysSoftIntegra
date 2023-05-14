@@ -200,7 +200,7 @@ public class FxSuministrosController implements Initializable {
     private void filtercbCategoria() {
         SearchComboBox<DetalleTB> searchComboBoxCategoria = new SearchComboBox<>(cbCategoria, true);
         searchComboBoxCategoria.setFilter((item, text) -> item.getNombre().toLowerCase().contains(text.toLowerCase()));
-        searchComboBoxCategoria.getComboBox().getItems().addAll(DetalleADO.GetDetailId("0006"));
+        searchComboBoxCategoria.getComboBox().getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0006"));
 
         searchComboBoxCategoria.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             switch (t.getCode()) {
@@ -242,7 +242,7 @@ public class FxSuministrosController implements Initializable {
 
         SearchComboBox<DetalleTB> searchComboBoxMarca = new SearchComboBox<>(cbMarca, true);
         searchComboBoxMarca.setFilter((item, text) -> item.getNombre().toLowerCase().contains(text.toLowerCase()));
-        searchComboBoxMarca.getComboBox().getItems().addAll(DetalleADO.GetDetailId("0007"));
+        searchComboBoxMarca.getComboBox().getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0007"));
         
         searchComboBoxMarca.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             switch (t.getCode()) {

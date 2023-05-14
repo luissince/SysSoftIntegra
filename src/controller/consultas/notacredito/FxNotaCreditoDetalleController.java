@@ -1,4 +1,4 @@
-package controller.operaciones.notacredito;
+package controller.consultas.notacredito;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;

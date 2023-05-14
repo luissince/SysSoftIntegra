@@ -12,6 +12,9 @@ import java.awt.print.Book;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -106,7 +109,7 @@ public class TicketCompra {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object object = CompraADO.Obtener_Compra_ById(idCompra);
+                Object object = CompraADO.obtenerCompraPorId(idCompra);
                 if (object instanceof CompraTB) {
                     try {
                         CompraTB compraTB = (CompraTB) object;
@@ -358,7 +361,81 @@ public class TicketCompra {
         }
     }
 
-    private JasperPrint reportA4(CompraTB compraTB) throws JRException, WriterException, UnsupportedEncodingException {
+    public void mostrarReporte(String idCompra) {
+        ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+        Task<JasperPrint> task = new Task<JasperPrint>() {
+            @Override
+            public JasperPrint call() throws Exception {
+                Object object = CompraADO.obtenerCompraPorId(idCompra);
+                if (object instanceof CompraTB) {
+                    try {
+                        return reportA4((CompraTB) object);
+                    } catch (JRException | WriterException | FileNotFoundException | UnsupportedEncodingException ex) {
+                        throw new Exception(ex.getLocalizedMessage());
+                    }
+                } else {
+                    throw new Exception((String) object);
+                }
+            }
+        };
+        task.setOnScheduled(w -> {
+            Tools.showAlertNotification("/view/image/information_large.png",
+                    "Generando reporte",
+                    Tools.newLineString("Se envió los datos para generar el reporte."),
+                    Duration.seconds(5),
+                    Pos.BOTTOM_RIGHT);
+        });
+        task.setOnFailed(w -> {
+            Tools.showAlertNotification("/view/image/warning_large.png",
+                    "Generando reporte",
+                    Tools.newLineString("Se produjo un problema al generar."),
+                    Duration.seconds(10),
+                    Pos.BOTTOM_RIGHT);
+        });
+        task.setOnSucceeded(w -> {
+            try {
+                JasperPrint result = task.getValue();
+
+                Tools.showAlertNotification("/view/image/succes_large.png",
+                        "Generando reporte",
+                        Tools.newLineString("Se generó correctamente el reporte."),
+                        Duration.seconds(5),
+                        Pos.BOTTOM_RIGHT);
+
+                URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
+                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+                Parent parent = fXMLLoader.load(url.openStream());
+                // Controlller here
+                FxReportViewController controller = fXMLLoader.getController();
+                controller.setFileName(fileName);
+                controller.setJasperPrint((JasperPrint) result);
+                controller.show();
+                Stage stage = WindowStage.StageLoader(parent, fileName);
+                stage.setResizable(true);
+                stage.show();
+                stage.requestFocus();
+
+            } catch (IOException ex) {
+                Tools.showAlertNotification("/view/image/error_large.png",
+                        "Generando reporte",
+                        Tools.newLineString(ex.getLocalizedMessage()),
+                        Duration.seconds(10),
+                        Pos.BOTTOM_RIGHT);
+            }
+
+        });
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
+    }
+
+    private JasperPrint reportA4(CompraTB compraTB)
+            throws JRException, WriterException, UnsupportedEncodingException, FileNotFoundException {
         double importeBrutoTotal = 0;
         double descuentoTotal = 0;
         double subImporteNetoTotal = 0;
@@ -395,14 +472,19 @@ public class TicketCompra {
         String json = new String(array.toJSONString().getBytes(), "UTF-8");
         ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(json.getBytes());
 
-        InputStream dir = getClass().getResourceAsStream("/report/CompraRealizada.jasper");
+        File archivoc = new File("./report/CompraRealizada.jasper");
+        InputStream dir = new FileInputStream(archivoc.getPath());
+
+        // InputStream dir =
+        // getClass().getResourceAsStream("/report/CompraRealizada.jasper");
+
         InputStream icon = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
         InputStream logo = getClass().getResourceAsStream(FilesRouters.IMAGE_LOGO);
         if (Session.COMPANY_IMAGE != null) {
             logo = new ByteArrayInputStream(Session.COMPANY_IMAGE);
         }
 
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("LOGO", logo);
         map.put("ICON", icon);
         map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
@@ -440,83 +522,4 @@ public class TicketCompra {
         return jasperPrint;
     }
 
-    public void mostrarReporte(String idCompra) {
-        ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
-            Thread t = new Thread(runnable);
-            t.setDaemon(true);
-            return t;
-        });
-        Task<Object> task = new Task<Object>() {
-            @Override
-            public Object call() {
-                Object object = CompraADO.Obtener_Compra_ById(idCompra);
-                if (object instanceof CompraTB) {
-                    try {
-                        return reportA4((CompraTB) object);
-                    } catch (JRException | WriterException | UnsupportedEncodingException ex) {
-                        return ex.getLocalizedMessage();
-                    }
-                } else {
-                    return (String) object;
-                }
-            }
-        };
-        task.setOnScheduled(w -> {
-            Tools.showAlertNotification("/view/image/information_large.png",
-                    "Generando reporte",
-                    Tools.newLineString("Se envió los datos para generar el reporte."),
-                    Duration.seconds(5),
-                    Pos.BOTTOM_RIGHT);
-        });
-        task.setOnFailed(w -> {
-            Tools.showAlertNotification("/view/image/warning_large.png",
-                    "Generando reporte",
-                    Tools.newLineString("Se produjo un problema al generar."),
-                    Duration.seconds(10),
-                    Pos.BOTTOM_RIGHT);
-        });
-        task.setOnSucceeded(w -> {
-            try {
-                Object result = task.getValue();
-                if (result instanceof JasperPrint) {
-                    Tools.showAlertNotification("/view/image/succes_large.png",
-                            "Generando reporte",
-                            Tools.newLineString("Se generó correctamente el reporte."),
-                            Duration.seconds(5),
-                            Pos.BOTTOM_RIGHT);
-
-                    URL url = getClass().getResource(FilesRouters.FX_REPORTE_VIEW);
-                    FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                    Parent parent = fXMLLoader.load(url.openStream());
-                    // Controlller here
-                    FxReportViewController controller = fXMLLoader.getController();
-                    controller.setFileName(fileName);
-                    controller.setJasperPrint((JasperPrint) result);
-                    controller.show();
-                    Stage stage = WindowStage.StageLoader(parent, fileName);
-                    stage.setResizable(true);
-                    stage.show();
-                    stage.requestFocus();
-
-                } else {
-                    Tools.showAlertNotification("/view/image/warning_large.png",
-                            "Generando reporte",
-                            Tools.newLineString((String) result),
-                            Duration.seconds(10),
-                            Pos.BOTTOM_RIGHT);
-                }
-            } catch (IOException ex) {
-                Tools.showAlertNotification("/view/image/error_large.png",
-                        "Generando reporte",
-                        Tools.newLineString(ex.getLocalizedMessage()),
-                        Duration.seconds(10),
-                        Pos.BOTTOM_RIGHT);
-            }
-
-        });
-        exec.execute(task);
-        if (!exec.isShutdown()) {
-            exec.shutdown();
-        }
-    }
 }

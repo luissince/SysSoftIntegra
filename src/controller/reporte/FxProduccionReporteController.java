@@ -98,7 +98,7 @@ public class FxProduccionReporteController implements Initializable {
         Tools.actualDate(Tools.getDate(), dpFechaInicial);
         Tools.actualDate(Tools.getDate(), dpFechaFinal);
         cbEstado.getItems().addAll("COMPLETADO", "EN PRODUCCIÓN", "ANULADO");
-        cbTipoMerma.getItems().addAll(DetalleADO.GetDetailId("0020"));
+        cbTipoMerma.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0020"));
         idEmpleado = idProductoMerma = "";
     }
 

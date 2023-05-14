@@ -65,6 +65,19 @@
                                     </Label>
                                  </children>
                               </VBox>
+                              <VBox fx:id="vbPagoAdelantado" alignment="CENTER" minWidth="200.0" onMouseClicked="#onMouseClickedPagoAdelantado" style="-fx-cursor: hand; -fx-padding: 0.5em;">
+                                 <children>
+                                    <Label fx:id="lblPagoAdelantado" alignment="CENTER" contentDisplay="TOP" styleClass="labelRoboto13" text="Pago adelantado" textFill="#020203">
+                                       <graphic>
+                                          <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/presupuesto.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Label>
+                                 </children>
+                              </VBox>
                            </children>
                         </HBox>
                         <HBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">

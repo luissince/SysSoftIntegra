@@ -85,7 +85,7 @@ public class FxConductorProcesoController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() throws Exception {
-                Object listTipoDocumento = DetalleADO.GetDetailId("0003");// CARGA TIPO DE DOCUMENTO
+                Object listTipoDocumento = DetalleADO.obtenerDetallePorIdMantenimiento("0003");// CARGA TIPO DE DOCUMENTO
                 if (listTipoDocumento instanceof ObservableList) {
                     return listTipoDocumento;
                 } else {

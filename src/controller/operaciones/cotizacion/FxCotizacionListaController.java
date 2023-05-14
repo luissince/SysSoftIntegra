@@ -176,7 +176,7 @@ public class FxCotizacionListaController implements Initializable {
             }
         } else if (cotizacionController != null) {
             if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-                cotizacionController.resetVenta();
+                cotizacionController.resetCotizacion();
                 Tools.Dispose(apWindow);
                 cotizacionController.loadCotizacion(tvList.getSelectionModel().getSelectedItem().getIdCotizacion());
             }

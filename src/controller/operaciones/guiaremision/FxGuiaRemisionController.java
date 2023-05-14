@@ -14,6 +14,7 @@ import controller.tools.Tools;
 import controller.tools.WindowStage;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -41,6 +42,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.ClienteTB;
 import model.ConductorTB;
@@ -66,9 +71,13 @@ import service.VentaADO;
 public class FxGuiaRemisionController implements Initializable {
 
     @FXML
-    private ScrollPane spWindow;
+    private AnchorPane apWindow;
     @FXML
-    private Label lblLoad;
+    private VBox vbBody;
+    @FXML
+    private ScrollPane apScrollPane;
+    @FXML
+    private Button btnRegistrar;
     @FXML
     private ComboBox<TipoDocumentoTB> cbDocumentoGuia;
     @FXML
@@ -125,8 +134,22 @@ public class FxGuiaRemisionController implements Initializable {
     private Button btnAgregarVehiculo;
     @FXML
     private Button btnAgregarConductor;
+    @FXML
+    private HBox hbLoad;
+    @FXML
+    private Label lblMessageLoad;
+    @FXML
+    private Button btnAceptarLoad;
 
     private FxPrincipalController fxPrincipalController;
+
+    private final ImageView loadImage = new ImageView(new Image("/view/image/load.gif"));
+
+    private final ImageView warningImage = new ImageView(new Image("/view/image/warning_large.png"));
+
+    private String idGuiaRemision;
+
+    private String horaTraslado;
 
     private String idVenta;
 
@@ -153,13 +176,22 @@ public class FxGuiaRemisionController implements Initializable {
         rbPublico.setToggleGroup(groupModalidad);
         rbPrivado.setToggleGroup(groupModalidad);
 
+        loadImage.setFitWidth(120);
+        loadImage.setFitHeight(120);
+
+        warningImage.setFitWidth(120);
+        warningImage.setFitHeight(120);
+
+        apScrollPane.setOnKeyPressed(event -> {
+            apWindow.requestFocus();
+        });
+
         loadCliente();
         loadVehiculo();
         loadConductor();
         loadEmpresa();
         loadUbigeoPartida();
         loadUbigeoLlegada();
-        loadComponents();
     }
 
     private void loadCliente() {
@@ -476,7 +508,7 @@ public class FxGuiaRemisionController implements Initializable {
                 });
     }
 
-    private void loadComponents() {
+    public void loadGuiaRemisionById(String idGuiaRemision) {
         ExecutorService executor = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -485,53 +517,303 @@ public class FxGuiaRemisionController implements Initializable {
 
         Task<Object> task = new Task<Object>() {
             @Override
-            protected Object call() {
-                return new Object[]{
-                    TipoDocumentoADO.GetTipoDocumentoGuiaRemision(),
-                    DetalleADO.GetDetailId("0017"),
-                    DetalleADO.GetDetailId("0018"),
-                    DetalleADO.GetDetailId("0021"),
-                    TipoDocumentoADO.GetDocumentoCombBoxVentas(),
-                    EmpresaADO.GetEmpresa()
+            protected Object call() throws Exception {
+                Object tipoComprobanteGuia = TipoDocumentoADO.obtenerComprobantesParaGuiaRemision();
+                ObservableList<DetalleTB> motivoTraslado = DetalleADO.obtenerDetallePorIdMantenimiento("0017");
+                ObservableList<DetalleTB> pesoCarga = DetalleADO.obtenerDetallePorIdMantenimiento("0021");
+                List<TipoDocumentoTB> tipoComprobanteVenta = TipoDocumentoADO.obtenerComprobantesParaVenta();
+                Object guiaRemision = GuiaRemisionADO.obtenerGuiaRemisionParaEditar(idGuiaRemision);
+
+                if (tipoComprobanteGuia instanceof String) {
+                    throw new Exception((String) tipoComprobanteGuia);
+                }
+
+                if (guiaRemision instanceof String) {
+                    throw new Exception((String) guiaRemision);
+                }
+
+                return new Object[] {
+                        tipoComprobanteGuia,
+                        motivoTraslado,
+                        pesoCarga,
+                        tipoComprobanteVenta,
+                        guiaRemision
                 };
             }
         };
 
         task.setOnScheduled(e -> {
-            lblLoad.setVisible(true);
+            resetGuiaRemision();
+
+            vbBody.setDisable(true);
+            hbLoad.setVisible(true);
+            btnAceptarLoad.setVisible(false);
+            lblMessageLoad.setText("Cargando información...");
+            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+            lblMessageLoad.setGraphic(loadImage);
         });
 
         task.setOnFailed(e -> {
-            lblLoad.setVisible(false);
+            btnAceptarLoad.setVisible(true);
+            btnAceptarLoad.setOnAction(event -> {
+                vbBody.setDisable(false);
+                hbLoad.setVisible(false);
+                resetGuiaRemision();
+            });
+            btnAceptarLoad.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    vbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    resetGuiaRemision();
+                }
+                event.consume();
+            });
+
+            lblMessageLoad.setText(task.getException().getLocalizedMessage());
+            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+            lblMessageLoad.setGraphic(warningImage);
         });
 
         task.setOnSucceeded(e -> {
             Object[] result = (Object[]) task.getValue();
 
-            cbDocumentoGuia.getItems().clear();
-            cbDocumentoGuia.getItems().addAll((ArrayList<TipoDocumentoTB>) result[0]);
+            ArrayList<TipoDocumentoTB> tipoComprobanteGuia = (ArrayList<TipoDocumentoTB>) result[0];
+            ObservableList<DetalleTB> motivoTraslado = (ObservableList<DetalleTB>) result[1];
+            ObservableList<DetalleTB> pesoCarga = (ObservableList<DetalleTB>) result[2];
+            List<TipoDocumentoTB> tipoComprobanteVenta = (List<TipoDocumentoTB>) result[3];
+            GuiaRemisionTB guiaRemision = (GuiaRemisionTB) result[4];
 
-            cbMotivoTraslado.getItems().clear();
-            cbMotivoTraslado.getItems().addAll((ObservableList<DetalleTB>) result[1]);
+            this.idGuiaRemision = guiaRemision.getIdGuiaRemision();
 
+            // Cargar los comprobantes para la guía
+            cbDocumentoGuia.getItems().addAll(tipoComprobanteGuia);
+
+            // Carga los motivos de traslado para la guía
+            cbMotivoTraslado.getItems().addAll(motivoTraslado);
+
+            // Carga los tipos de peso para el traslado de la guía
+            cbTipoPesoCarga.getItems().addAll(pesoCarga);
+
+            // Carga los tipos de comprobantes
+            cbTipoComprobante.getItems().addAll(tipoComprobanteVenta);
+
+            for (TipoDocumentoTB dc : cbDocumentoGuia.getItems()) {
+                if (dc.getIdTipoDocumento() == guiaRemision.getIdComprobante()) {
+                    cbDocumentoGuia.getSelectionModel().select(dc);
+                    break;
+                }
+            }
+
+            cbCliente.getItems().add(guiaRemision.getClienteTB());
+            if (!cbCliente.getItems().isEmpty()) {
+                cbCliente.getSelectionModel().select(0);
+            }
+
+            if (guiaRemision.getIdModalidadTraslado().equals("MT0001")) {
+                rbPublico.setSelected(true);
+
+                cbVehiculo.setDisable(true);
+                btnAgregarVehiculo.setDisable(true);
+                cbConductor.setDisable(true);
+                btnAgregarConductor.setDisable(true);
+
+                cbEmpresa.setDisable(false);
+                btnAgregarEmpresa.setDisable(false);
+            } else {
+                rbPrivado.setSelected(true);
+
+                cbVehiculo.setDisable(false);
+                btnAgregarVehiculo.setDisable(false);
+                cbConductor.setDisable(false);
+                btnAgregarConductor.setDisable(false);
+
+                cbEmpresa.setDisable(true);
+                btnAgregarEmpresa.setDisable(true);
+            }
+
+            for (DetalleTB mt : cbMotivoTraslado.getItems()) {
+                if (mt.getIdDetalle() == guiaRemision.getIdMotivoTraslado()) {
+                    cbMotivoTraslado.getSelectionModel().select(mt);
+                    break;
+                }
+            }
+
+            LocalDate localDate = LocalDate.parse(guiaRemision.getFechaTraslado());
+            dtFechaTraslado.setValue(localDate);
+            horaTraslado = guiaRemision.getHoraTraslado();
+
+            for (DetalleTB pc : cbTipoPesoCarga.getItems()) {
+                if (pc.getIdDetalle() == guiaRemision.getIdPesoCarga()) {
+                    cbTipoPesoCarga.getSelectionModel().select(pc);
+                    break;
+                }
+            }
+
+            txtPesoCarga.setText(Tools.roundingValue(guiaRemision.getPesoCarga(), 2));
+
+            if (guiaRemision.getVehiculoTB() != null) {
+                cbVehiculo.getItems().add(guiaRemision.getVehiculoTB());
+                if (!cbVehiculo.getItems().isEmpty()) {
+                    cbVehiculo.getSelectionModel().select(0);
+                }
+            }
+
+            if (rbPrivado.isSelected() && guiaRemision.getConductorTB() != null) {
+                cbConductor.getItems().add(guiaRemision.getConductorTB());
+                if (!cbConductor.getItems().isEmpty()) {
+                    cbConductor.getSelectionModel().select(0);
+                }
+            }
+
+            if (rbPublico.isSelected() && guiaRemision.getConductorTB() != null) {
+                cbEmpresa.getItems().add(guiaRemision.getConductorTB());
+                if (!cbEmpresa.getItems().isEmpty()) {
+                    cbEmpresa.getSelectionModel().select(0);
+                }
+            }
+
+            txtDireccionPartida.setText(guiaRemision.getDireccionPartida());
+            cbUbigeoPartida.getItems().add(guiaRemision.getUbigeoPartidaTB());
+            if (!cbUbigeoPartida.getItems().isEmpty()) {
+                cbUbigeoPartida.getSelectionModel().select(0);
+            }
+
+            txtDireccionLlegada.setText(guiaRemision.getDireccionLlegada());
+            cbUbigeoLlegada.getItems().add(guiaRemision.getUbigeoLlegadaTB());
+            if (!cbUbigeoLlegada.getItems().isEmpty()) {
+                cbUbigeoLlegada.getSelectionModel().select(0);
+            }
+
+            for (TipoDocumentoTB tdv : cbTipoComprobante.getItems()) {
+                if (tdv.getIdTipoDocumento() == guiaRemision.getVentaTB().getIdComprobante()) {
+                    cbTipoComprobante.getSelectionModel().select(tdv);
+                    break;
+                }
+            }
+            txtSerieFactura.setText(guiaRemision.getVentaTB().getSerie());
+            txtNumeracionFactura.setText(guiaRemision.getVentaTB().getNumeracion());
+
+            for (GuiaRemisionDetalleTB guiaRemisionDetalle : guiaRemision.getGuiaRemisionDetalle()) {
+                addProducto(guiaRemisionDetalle);
+            }
+
+            btnRegistrar.setText("Editar (F1)");
+            btnRegistrar.getStyleClass().clear();
+            btnRegistrar.getStyleClass().add("buttonLightWarning");
+            vbBody.setDisable(false);
+            hbLoad.setVisible(false);
+        });
+
+        executor.execute(task);
+        if (!executor.isShutdown()) {
+            executor.shutdown();
+        }
+    }
+
+    public void loadVentaById(String idVenta) {
+        ExecutorService executor = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<Object> task = new Task<Object>() {
+            @Override
+            protected Object call() throws Exception {
+                Object tipoComprobanteGuia = TipoDocumentoADO.obtenerComprobantesParaGuiaRemision();
+                ObservableList<DetalleTB> motivoTraslado = DetalleADO.obtenerDetallePorIdMantenimiento("0017");
+                ObservableList<DetalleTB> pesoCarga = DetalleADO.obtenerDetallePorIdMantenimiento("0021");
+                List<TipoDocumentoTB> tipoComprobanteVenta = TipoDocumentoADO.obtenerComprobantesParaVenta();
+                EmpresaTB empresaTB = EmpresaADO.obtenerEmpresa();
+                Object venta = VentaADO.obtenerVentaById(idVenta);
+
+                if (tipoComprobanteGuia instanceof String) {
+                    throw new Exception((String) tipoComprobanteGuia);
+                }
+
+                if (empresaTB == null) {
+                    throw new Exception("No se puedo cargar los datos de la empresa.");
+                }
+
+                if (venta instanceof String) {
+                    throw new Exception((String) venta);
+                }
+
+                return new Object[] {
+                        tipoComprobanteGuia,
+                        motivoTraslado,
+                        pesoCarga,
+                        tipoComprobanteVenta,
+                        empresaTB,
+                        venta
+                };
+            }
+        };
+
+        task.setOnScheduled(e -> {
+            resetGuiaRemision();
+
+            vbBody.setDisable(true);
+            hbLoad.setVisible(true);
+            btnAceptarLoad.setVisible(false);
+            lblMessageLoad.setText("Cargando información...");
+            lblMessageLoad.setTextFill(Color.web("#ffffff"));
+            lblMessageLoad.setGraphic(loadImage);
+        });
+
+        task.setOnFailed(e -> {
+            btnAceptarLoad.setVisible(true);
+            btnAceptarLoad.setOnAction(event -> {
+                vbBody.setDisable(false);
+                hbLoad.setVisible(false);
+                resetGuiaRemision();
+            });
+
+            btnAceptarLoad.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    vbBody.setDisable(false);
+                    hbLoad.setVisible(false);
+                    resetGuiaRemision();
+                }
+                event.consume();
+            });
+
+            lblMessageLoad.setText(task.getException().getLocalizedMessage());
+            lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
+            lblMessageLoad.setGraphic(warningImage);
+        });
+
+        task.setOnSucceeded(e -> {
+            Object[] result = (Object[]) task.getValue();
+
+            ArrayList<TipoDocumentoTB> tipoComprobanteGuia = (ArrayList<TipoDocumentoTB>) result[0];
+            ObservableList<DetalleTB> motivoTraslado = (ObservableList<DetalleTB>) result[1];
+            ObservableList<DetalleTB> pesoCarga = (ObservableList<DetalleTB>) result[2];
+            List<TipoDocumentoTB> tipoComprobanteVenta = (List<TipoDocumentoTB>) result[3];
+            EmpresaTB empresaTB = (EmpresaTB) result[4];
+            VentaTB ventaTB = (VentaTB) result[5];
+
+            // Cargar los comprobantes para la guía
+            cbDocumentoGuia.getItems().addAll(tipoComprobanteGuia);
+
+            if (cbDocumentoGuia.getItems().size() == 1) {
+                cbDocumentoGuia.getSelectionModel().select(0);
+            }
+
+            // Carga los motivos de traslado para la guía
+            cbMotivoTraslado.getItems().addAll(motivoTraslado);
+
+            // Define al fecha de traslado por la actual
             Tools.actualDate(Tools.getDate(), dtFechaTraslado);
-            cbTipoPesoCarga.getItems().clear();
-            txtPesoCarga.setText("");
 
-            txtDireccionPartida.setText("");
-            txtDireccionLlegada.setText("");
+            // Carga los tipos de peso para el traslado de la guía
+            cbTipoPesoCarga.getItems().addAll(pesoCarga);
 
-            cbTipoPesoCarga.getItems().addAll((ObservableList<DetalleTB>) result[3]);
+            // Carga los tipos de comprobantes
+            cbTipoComprobante.getItems().addAll(tipoComprobanteVenta);
 
-            cbTipoComprobante.getItems().clear();
-            cbTipoComprobante.getItems().addAll((List<TipoDocumentoTB>) result[4]);
-            txtSerieFactura.setText("");
-            txtNumeracionFactura.setText("");
-
-            EmpresaTB empresaTB = (EmpresaTB) result[5];
-
+            // Cargar información de la empresa
             txtDireccionPartida.setText(empresaTB.getDomicilio());
-            cbUbigeoPartida.getItems().clear();
             if (empresaTB.getUbigeoTB().getIdUbigeo() > 0) {
                 cbUbigeoPartida.getItems().add(empresaTB.getUbigeoTB());
                 if (!cbUbigeoPartida.getItems().isEmpty()) {
@@ -539,11 +821,49 @@ public class FxGuiaRemisionController implements Initializable {
                 }
             }
 
-            cbUbigeoLlegada.getItems().clear();
-            tvList.getItems().clear();
+            // Cargar información del la venta
+            ArrayList<SuministroTB> empList = ventaTB.getSuministroTBs();
+            ClienteTB clienteTB = ventaTB.getClienteTB();
 
-            lblLoad.setVisible(false);
+            for (int i = 0; i < cbTipoComprobante.getItems().size(); i++) {
+                if (cbTipoComprobante.getItems().get(i).getIdTipoDocumento() == ventaTB.getIdComprobante()) {
+                    cbTipoComprobante.getSelectionModel().select(i);
+                    break;
+                }
+            }
+            txtSerieFactura.setText(ventaTB.getSerie());
+            txtNumeracionFactura.setText(ventaTB.getNumeracion());
+            cbCliente.getItems().clear();
+            cbCliente.getItems().add(clienteTB);
+            if (!cbCliente.getItems().isEmpty()) {
+                cbCliente.getSelectionModel().select(0);
+            }
+
+            for (int i = 0; i < cbMotivoTraslado.getItems().size(); i++) {
+                if (cbMotivoTraslado.getItems().get(i).getIdDetalle() == clienteTB.getIdMotivoTraslado()) {
+                    cbMotivoTraslado.getSelectionModel().select(i);
+                    break;
+                }
+            }
+
+            txtDireccionLlegada.setText(clienteTB.getDireccion());
+            cbUbigeoLlegada.getItems().clear();
+            if (clienteTB.getUbigeoTB().getIdUbigeo() > 0) {
+                cbUbigeoLlegada.getItems().add(clienteTB.getUbigeoTB());
+                if (!cbUbigeoLlegada.getItems().isEmpty()) {
+                    cbUbigeoLlegada.getSelectionModel().select(0);
+                }
+            }
+
+            tvList.getItems().clear();
+            empList.forEach((suministro) -> addProducto(suministro));
+
+            this.idVenta = idVenta;
+
+            vbBody.setDisable(false);
+            hbLoad.setVisible(false);
         });
+
         executor.execute(task);
         if (!executor.isShutdown()) {
             executor.shutdown();
@@ -612,6 +932,7 @@ public class FxGuiaRemisionController implements Initializable {
         btnRemover.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 tvList.getItems().remove(guiaRemisionDetalleTB);
+                event.consume();
             }
         });
 
@@ -625,122 +946,94 @@ public class FxGuiaRemisionController implements Initializable {
         tvList.getItems().add(guiaRemisionDetalleTB);
     }
 
-    private void onEventCliente() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_CLIENTE_PROCESO);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            // Controlller here
-            FxClienteProcesoController controller = fXMLLoader.getController();
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Cliente", spWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.setOnShown(w -> controller.loadAddCliente());
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println("Cliente controller en openWindowAddCliente()" + ex.getLocalizedMessage());
-        }
+    public void addProducto(GuiaRemisionDetalleTB guiaRemisionDetalle) {
+        GuiaRemisionDetalleTB guiaRemisionDetalleTB = new GuiaRemisionDetalleTB();
+        guiaRemisionDetalleTB.setIdSuministro(guiaRemisionDetalle.getIdSuministro());
+        guiaRemisionDetalleTB.setCodigo(guiaRemisionDetalle.getCodigo());
+        guiaRemisionDetalleTB.setCantidad(guiaRemisionDetalle.getCantidad());
+        guiaRemisionDetalleTB.setDescripcion(guiaRemisionDetalle.getDescripcion());
+        guiaRemisionDetalleTB.setUnidad(guiaRemisionDetalle.getUnidad());
+        guiaRemisionDetalleTB.setPeso(0);
+
+        TextField txtCodigo = new TextField(guiaRemisionDetalleTB.getCodigo());
+        txtCodigo.getStyleClass().add("text-field-normal");
+
+        TextField txtDescripcion = new TextField(guiaRemisionDetalleTB.getDescripcion());
+        txtDescripcion.getStyleClass().add("text-field-normal");
+
+        TextField txtUnidad = new TextField(guiaRemisionDetalleTB.getUnidad());
+        txtUnidad.getStyleClass().add("text-field-normal");
+
+        TextField txtCantidad = new TextField(Tools.roundingValue(guiaRemisionDetalleTB.getCantidad(), 0));
+        txtCantidad.getStyleClass().add("text-field-normal");
+        txtCantidad.setOnKeyTyped(event -> {
+            char c = event.getCharacter().charAt(0);
+            if ((c < '0' || c > '9') && (c != '\b')) {
+                event.consume();
+            }
+        });
+
+        TextField txtPeso = new TextField(Tools.roundingValue(guiaRemisionDetalleTB.getPeso(), 2));
+        txtPeso.getStyleClass().add("text-field-normal");
+        txtPeso.setOnKeyTyped(event -> {
+            char c = event.getCharacter().charAt(0);
+            if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+                event.consume();
+            }
+            if (c == '.' && txtPeso.getText().contains(".")) {
+                event.consume();
+            }
+        });
+
+        Button btnRemover = new Button();
+        btnRemover.getStyleClass().add("buttonDark");
+        ImageView view = new ImageView(new Image("/view/image/remove.png"));
+        view.setFitWidth(22);
+        view.setFitHeight(22);
+        btnRemover.setGraphic(view);
+        btnRemover.setOnAction(event -> {
+            tvList.getItems().remove(guiaRemisionDetalleTB);
+        });
+        btnRemover.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                tvList.getItems().remove(guiaRemisionDetalleTB);
+                event.consume();
+            }
+        });
+
+        guiaRemisionDetalleTB.setTxtCodigo(txtCodigo);
+        guiaRemisionDetalleTB.setTxtDescripcion(txtDescripcion);
+        guiaRemisionDetalleTB.setTxtUnidad(txtUnidad);
+        guiaRemisionDetalleTB.setTxtCantidad(txtCantidad);
+        guiaRemisionDetalleTB.setTxtPeso(txtPeso);
+        guiaRemisionDetalleTB.setBtnRemover(btnRemover);
+
+        tvList.getItems().add(guiaRemisionDetalleTB);
     }
 
-    private void openWindowSuministro() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_LISTA);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            // Controlller here
-            FxSuministrosListaController controller = fXMLLoader.getController();
-            controller.setInitGuiaRemisionController(this);
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto",
-                    spWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.show();
-            controller.fillSuministrosTable((short) 0, "");
-        } catch (IOException ex) {
-            System.out.println("openWindowArticulos():" + ex.getLocalizedMessage());
-        }
+    private void onEventCliente() throws IOException {
+        fxPrincipalController.openFondoModal();
+        URL url = getClass().getResource(FilesRouters.FX_CLIENTE_PROCESO);
+        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+        Parent parent = fXMLLoader.load(url.openStream());
+        // Controlller here
+        FxClienteProcesoController controller = fXMLLoader.getController();
+        //
+        Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Cliente", apWindow.getScene().getWindow());
+        stage.setResizable(false);
+        stage.sizeToScene();
+        stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.setOnShown(w -> controller.loadAddCliente());
+        stage.show();
     }
 
-    private void openWindowVentas() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_VENTA_LISTA);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            // Controlller here
-            FxVentaListaController controller = fXMLLoader.getController();
-            controller.setInitGuiaRemisionController(this);
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione una venta", spWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.show();
-            controller.loadInit();
-        } catch (IOException ex) {
-            System.out.println("openWindowArticulos():" + ex.getLocalizedMessage());
-        }
-    }
-
-    private void openWindowConductor() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_CONDUCTOR_PROCESO);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            // Controlller here
-            FxConductorProcesoController controller = fXMLLoader.getController();
-            controller.setInitGuiaRemisionController(this);
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Registrar un conductor",
-                    spWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.setOnShown(w -> {
-                controller.loadAddConductor();
-            });
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println("openWindowArticulos():" + ex.getLocalizedMessage());
-        }
-    }
-
-    private void openWindowVehiculo() {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_VEHICLO_PROCESO);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            // Controlller here
-            FxVehiculoProcesoController controller = fXMLLoader.getController();
-            controller.setInitGuiaRemisionController(this);
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Registrar un vehículo",
-                    spWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.setOnShown(w -> controller.loadAddConductor());
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println("openWindowArticulos():" + ex.getLocalizedMessage());
-        }
-    }
-
-    private void onEventGuardar() {
+    private void onEventGuardar() throws IOException {
         /**
          * Tipo de guia de remision
          */
         if (cbDocumentoGuia.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el documento guía usar.");
-            cbDocumentoGuia.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Seleccione el documento guía usar.");
+            Tools.scrollTo(apScrollPane, cbDocumentoGuia);
             return;
         }
 
@@ -748,8 +1041,8 @@ public class FxGuiaRemisionController implements Initializable {
          * Datos del cliente
          */
         if (cbCliente.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione un cliente.");
-            cbCliente.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Seleccione un cliente.");
+            Tools.scrollTo(apScrollPane, cbCliente);
             return;
         }
 
@@ -757,26 +1050,26 @@ public class FxGuiaRemisionController implements Initializable {
          * Datos del traslado
          */
         if (cbMotivoTraslado.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el motivo del traslado.");
-            cbMotivoTraslado.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Seleccione el motivo del traslado.");
+            Tools.scrollTo(apScrollPane, cbMotivoTraslado);
             return;
         }
 
         if (dtFechaTraslado.getValue() == null) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese la fecha de traslado.");
-            dtFechaTraslado.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Ingrese la fecha de traslado.");
+            Tools.scrollTo(apScrollPane, dtFechaTraslado);
             return;
         }
 
         if (cbTipoPesoCarga.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el tipo de peso.");
-            cbTipoPesoCarga.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Seleccione el tipo de peso.");
+            Tools.scrollTo(apScrollPane, cbTipoPesoCarga);
             return;
         }
 
         if (Tools.isText(txtPesoCarga.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese el peso total.");
-            txtPesoCarga.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Ingrese el peso total.");
+            Tools.scrollTo(apScrollPane, txtPesoCarga);
             return;
         }
 
@@ -784,8 +1077,8 @@ public class FxGuiaRemisionController implements Initializable {
          * Datos del transporte privado
          */
         if (rbPrivado.isSelected() && cbVehiculo.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el vehículo.");
-            cbVehiculo.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Seleccione el vehículo.");
+            Tools.scrollTo(apScrollPane, cbVehiculo);
             return;
         }
 
@@ -793,8 +1086,8 @@ public class FxGuiaRemisionController implements Initializable {
          * Datos del conductor
          */
         if (rbPrivado.isSelected() && cbConductor.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el conductor.");
-            cbConductor.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Seleccione el conductor.");
+            Tools.scrollTo(apScrollPane, cbConductor);
             return;
         }
 
@@ -802,8 +1095,8 @@ public class FxGuiaRemisionController implements Initializable {
          * Datos del empresa - conductor
          */
         if (rbPublico.isSelected() && cbEmpresa.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el conductor.");
-            cbEmpresa.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Seleccione el conductor.");
+            Tools.scrollTo(apScrollPane, cbEmpresa);
             return;
         }
 
@@ -811,26 +1104,26 @@ public class FxGuiaRemisionController implements Initializable {
          * Dirección de la partida y punto de llegada
          */
         if (Tools.isText(txtDireccionPartida.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese la dirección de partida.");
-            txtDireccionPartida.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Ingrese la dirección de partida.");
+            Tools.scrollTo(apScrollPane, txtDireccionPartida);
             return;
         }
 
         if (cbUbigeoPartida.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el ubigeo de partida.");
-            cbUbigeoPartida.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Seleccione el ubigeo de partida.");
+            Tools.scrollTo(apScrollPane, cbUbigeoPartida);
             return;
         }
 
         if (Tools.isText(txtDireccionLlegada.getText())) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Ingrese la dirección de llegada.");
-            txtDireccionLlegada.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Ingrese la dirección de llegada.");
+            Tools.scrollTo(apScrollPane, txtDireccionLlegada);
             return;
         }
 
         if (cbUbigeoLlegada.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Seleccione el ubigeo de llegada.");
-            cbUbigeoLlegada.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Seleccione el ubigeo de llegada.");
+            Tools.scrollTo(apScrollPane, cbUbigeoLlegada);
             return;
         }
 
@@ -838,14 +1131,15 @@ public class FxGuiaRemisionController implements Initializable {
          * Detalle de la guía de remisión
          */
         if (tvList.getItems().isEmpty()) {
-            Tools.AlertMessageWarning(spWindow, "Guía de Remisión", "Agregar productos a lista.");
-            tvList.requestFocus();
+            Tools.AlertMessageWarning(apWindow, "Guía de Remisión", "Agregar productos a lista.");
+            Tools.scrollTo(apScrollPane, tvList);
             return;
         }
 
-        short value = Tools.AlertMessageConfirmation(spWindow, "Guia Remisión", "¿Está seguro de continuar?");
+        short value = Tools.AlertMessageConfirmation(apWindow, "Guia Remisión", "¿Está seguro de continuar?");
         if (value == 1) {
             GuiaRemisionTB guiaRemisionTB = new GuiaRemisionTB();
+            guiaRemisionTB.setIdGuiaRemision(idGuiaRemision);
             guiaRemisionTB
                     .setIdComprobante(cbDocumentoGuia.getSelectionModel().getSelectedItem().getIdTipoDocumento());
 
@@ -863,6 +1157,7 @@ public class FxGuiaRemisionController implements Initializable {
             guiaRemisionTB
                     .setIdMotivoTraslado(cbMotivoTraslado.getSelectionModel().getSelectedItem().getIdDetalle());
             guiaRemisionTB.setFechaTraslado(Tools.getDatePicker(dtFechaTraslado));
+            guiaRemisionTB.setHoraTraslado(horaTraslado);
             guiaRemisionTB.setIdPesoCarga(cbTipoPesoCarga.getSelectionModel().getSelectedItem().getIdDetalle());
             guiaRemisionTB.setPesoCarga(Double.parseDouble(txtPesoCarga.getText()));
 
@@ -901,139 +1196,203 @@ public class FxGuiaRemisionController implements Initializable {
              */
             guiaRemisionTB.setGuiaRemisionDetalle(tvList.getItems());
 
-            String[] result = GuiaRemisionADO.InsertarGuiaRemision(guiaRemisionTB).split("/");
-            if (result[0].equalsIgnoreCase("register")) {
-                openModalImpresion(result[1]);
-                reset();
+            if (guiaRemisionTB.getIdGuiaRemision() == "") {
+                /*
+                 * Proceso de registro de la guía de remisión
+                 */
+                String[] result = GuiaRemisionADO.registrarGuiaRemision(guiaRemisionTB).split("/");
+                if (result[0].equalsIgnoreCase("register")) {
+                    openModalImpresion(result[1]);
+                    resetGuiaRemision();
+                } else {
+                    Tools.AlertMessageError(apWindow, "Guia Remisión", result[0]);
+                }
             } else {
-                Tools.AlertMessageError(spWindow, "Guia Remisión", result[0]);
+                /*
+                 * Proceso de actualización de la guía de remisión
+                 */
+                String[] result = GuiaRemisionADO.actualizarGuiaRemision(guiaRemisionTB).split("/");
+                if (result[0].equalsIgnoreCase("updated")) {
+                    openModalImpresion(result[1]);
+                    resetGuiaRemision();
+                } else {
+                    Tools.AlertMessageError(apWindow, "Guia Remisión", result[0]);
+                }
             }
-
         }
     }
 
-    private void openModalImpresion(String idGuiaRemision) {
-        try {
-            fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_OPCIONES_IMPRIMIR);
-            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-            Parent parent = fXMLLoader.load(url.openStream());
-            // Controlller here
-            FxOpcionesImprimirController controller = fXMLLoader.getController();
-            controller.loadTicketGuiaRemision(controller.getApWindow());
-            controller.setIdGuiaRemision(idGuiaRemision);
-            //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Imprimir", spWindow.getScene().getWindow());
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println("Controller Modal Impresión: " + ex.getLocalizedMessage());
-        }
-    }
+    /**
+     * Funcion encargada de limpiar
+     * todos los campos de la guía de remisión
+     */
+    private void resetGuiaRemision() {
+        // Limpiar los tipos de documento
+        cbDocumentoGuia.getItems().clear();
 
-    private void reset() {
-        cbDocumentoGuia.getSelectionModel().select(null);
+        // Limpiar los clientes
         cbCliente.getItems().clear();
-        cbMotivoTraslado.getSelectionModel().select(null);
-        Tools.actualDate(Tools.getDate(), dtFechaTraslado);
-        cbTipoPesoCarga.getSelectionModel().select(null);
-        cbTipoPesoCarga.getSelectionModel().select(null);
-        txtPesoCarga.clear();
 
+        // Define a su estado inicial la modalidad de traslado
         rbPublico.setSelected(true);
         cbVehiculo.setDisable(true);
+
+        // Limpiar los motivos de traslado
+        cbMotivoTraslado.getItems().clear();
+
+        // Define la fecha actual como traslado
+        Tools.actualDate(Tools.getDate(), dtFechaTraslado);
+
+        // Limpiar el tipo de paso
+        cbTipoPesoCarga.getItems().clear();
+
+        // Limpiar el campo peso carga
+        txtPesoCarga.clear();
+
+        // Define a su estado inicial el vehículo
+        cbVehiculo.getItems().clear();
+        cbVehiculo.setDisable(true);
         btnAgregarVehiculo.setDisable(true);
+
+        // Define a su estado inicial el conductor
+        cbConductor.getItems().clear();
         cbConductor.setDisable(true);
         btnAgregarConductor.setDisable(true);
 
-        cbEmpresa.setDisable(false);
-        btnAgregarEmpresa.setDisable(true);
-
-        cbVehiculo.getItems().clear();
-        cbConductor.getItems().clear();
+        // Limpiar los datos de la empresa
         cbEmpresa.getItems().clear();
-        
-        
+        cbEmpresa.setDisable(false);
+        btnAgregarEmpresa.setDisable(false);
+
+        // Limpiar los campos de dirección de partida
+        txtDireccionPartida.clear();
+        cbUbigeoPartida.getItems().clear();
+
+        // Limpiar los campos de la dirección de llegada
         txtDireccionLlegada.clear();
         cbUbigeoLlegada.getItems().clear();
-        
-        cbTipoComprobante.getSelectionModel().select(null);
+
+        // Limpiar los campos de la venta asociada
+        cbTipoComprobante.getItems().clear();
         txtSerieFactura.clear();
         txtNumeracionFactura.clear();
         tvList.getItems().clear();
+
+        idGuiaRemision = "";
         idVenta = "";
+
+        btnRegistrar.setText("Registrar (F1)");
+        btnRegistrar.getStyleClass().clear();
+        btnRegistrar.getStyleClass().add("buttonLightDefault");
+
     }
 
-    public void loadVentaById(String idVenta) {
-        this.idVenta = idVenta;
-        ExecutorService executor = Executors.newCachedThreadPool((runnable) -> {
-            Thread t = new Thread(runnable);
-            t.setDaemon(true);
-            return t;
+    private void openWindowSuministro() throws IOException {
+        fxPrincipalController.openFondoModal();
+        URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_LISTA);
+        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+        Parent parent = fXMLLoader.load(url.openStream());
+        // Controlller here
+        FxSuministrosListaController controller = fXMLLoader.getController();
+        controller.setInitGuiaRemisionController(this);
+        //
+        Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione un Producto",
+                apWindow.getScene().getWindow());
+        stage.setResizable(false);
+        stage.sizeToScene();
+        stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.show();
+        controller.fillSuministrosTable((short) 0, "");
+    }
+
+    private void openWindowVentas() throws IOException {
+        fxPrincipalController.openFondoModal();
+        URL url = getClass().getResource(FilesRouters.FX_VENTA_LISTA);
+        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+        Parent parent = fXMLLoader.load(url.openStream());
+        // Controlller here
+        FxVentaListaController controller = fXMLLoader.getController();
+        controller.setInitGuiaRemisionController(this);
+        //
+        Stage stage = WindowStage.StageLoaderModal(parent, "Seleccione una venta", apWindow.getScene().getWindow());
+        stage.setResizable(false);
+        stage.sizeToScene();
+        stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.show();
+        controller.loadInit();
+    }
+
+    private void openWindowConductor() throws IOException {
+        fxPrincipalController.openFondoModal();
+        URL url = getClass().getResource(FilesRouters.FX_CONDUCTOR_PROCESO);
+        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+        Parent parent = fXMLLoader.load(url.openStream());
+        // Controlller here
+        FxConductorProcesoController controller = fXMLLoader.getController();
+        controller.setInitGuiaRemisionController(this);
+        //
+        Stage stage = WindowStage.StageLoaderModal(parent, "Registrar un conductor",
+                apWindow.getScene().getWindow());
+        stage.setResizable(false);
+        stage.sizeToScene();
+        stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.setOnShown(w -> {
+            controller.loadAddConductor();
         });
+        stage.show();
+    }
 
-        Task<Object> task = new Task<Object>() {
-            @Override
-            protected Object call() {
-                return VentaADO.Obtener_Venta_ById(idVenta);
-            }
-        };
-        task.setOnSucceeded(e -> {
-            Object object = task.getValue();
-            if (object instanceof VentaTB) {
-                VentaTB ventaTB = (VentaTB) object;
-                ArrayList<SuministroTB> empList = ventaTB.getSuministroTBs();
-                ClienteTB clienteTB = ventaTB.getClienteTB();
+    private void openWindowVehiculo() throws IOException {
+        fxPrincipalController.openFondoModal();
+        URL url = getClass().getResource(FilesRouters.FX_VEHICLO_PROCESO);
+        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+        Parent parent = fXMLLoader.load(url.openStream());
+        // Controlller here
+        FxVehiculoProcesoController controller = fXMLLoader.getController();
+        controller.setInitGuiaRemisionController(this);
+        //
+        Stage stage = WindowStage.StageLoaderModal(parent, "Registrar un vehículo",
+                apWindow.getScene().getWindow());
+        stage.setResizable(false);
+        stage.sizeToScene();
+        stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.setOnShown(w -> controller.loadAddConductor());
+        stage.show();
+    }
 
-                for (int i = 0; i < cbTipoComprobante.getItems().size(); i++) {
-                    if (cbTipoComprobante.getItems().get(i).getIdTipoDocumento() == ventaTB.getIdComprobante()) {
-                        cbTipoComprobante.getSelectionModel().select(i);
-                        break;
-                    }
-                }
-                txtSerieFactura.setText(ventaTB.getSerie());
-                txtNumeracionFactura.setText(ventaTB.getNumeracion());
-                cbCliente.getItems().clear();
-                cbCliente.getItems().add(clienteTB);
-                if (!cbCliente.getItems().isEmpty()) {
-                    cbCliente.getSelectionModel().select(0);
-                }
+    private void openWindowGuiaRemision() throws IOException {
+        fxPrincipalController.openFondoModal();
+        URL url = getClass().getResource(FilesRouters.FX_GUIA_REMISION_LISTA);
+        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+        Parent parent = fXMLLoader.load(url.openStream());
+        // Controlller here
+        FxGuiaRemisionListaController controller = fXMLLoader.getController();
+        controller.setInitGuiaRemisionController(this);
+        //
+        Stage stage = WindowStage.StageLoaderModal(parent, "Mostrar Guías de Remisión",
+                apWindow.getScene().getWindow());
+        stage.setResizable(false);
+        stage.sizeToScene();
+        stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.setOnShown(w -> controller.loadInit());
+        stage.show();
+    }
 
-                for (int i = 0; i < cbMotivoTraslado.getItems().size(); i++) {
-                    if (cbMotivoTraslado.getItems().get(i).getIdDetalle() == clienteTB.getIdMotivoTraslado()) {
-                        cbMotivoTraslado.getSelectionModel().select(i);
-                        break;
-                    }
-                }
-
-                txtDireccionLlegada.setText(clienteTB.getDireccion());
-                cbUbigeoLlegada.getItems().clear();
-                if (clienteTB.getUbigeoTB().getIdUbigeo() > 0) {
-                    cbUbigeoLlegada.getItems().add(clienteTB.getUbigeoTB());
-                    if (!cbUbigeoLlegada.getItems().isEmpty()) {
-                        cbUbigeoLlegada.getSelectionModel().select(0);
-                    }
-                }
-
-                tvList.getItems().clear();
-                empList.forEach((suministro) -> addProducto(suministro));
-                lblLoad.setVisible(false);
-            } else {
-                lblLoad.setVisible(false);
-            }
-        });
-        task.setOnScheduled(e -> {
-            lblLoad.setVisible(true);
-        });
-        task.setOnFailed(e -> {
-            lblLoad.setVisible(false);
-        });
-        executor.execute(task);
-        if (!executor.isShutdown()) {
-            executor.shutdown();
-        }
+    private void openModalImpresion(String idGuiaRemision) throws IOException {
+        fxPrincipalController.openFondoModal();
+        URL url = getClass().getResource(FilesRouters.FX_OPCIONES_IMPRIMIR);
+        FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+        Parent parent = fXMLLoader.load(url.openStream());
+        // Controlller here
+        FxOpcionesImprimirController controller = fXMLLoader.getController();
+        controller.loadTicketGuiaRemision(controller.getApWindow());
+        controller.setIdGuiaRemision(idGuiaRemision);
+        //
+        Stage stage = WindowStage.StageLoaderModal(parent, "Imprimir", apWindow.getScene().getWindow());
+        stage.setResizable(false);
+        stage.sizeToScene();
+        stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+        stage.show();
     }
 
     @FXML
@@ -1056,86 +1415,103 @@ public class FxGuiaRemisionController implements Initializable {
     }
 
     @FXML
-    private void onKeyPressedToRegister(KeyEvent event) {
+    private void onKeyPressedToRegister(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             onEventGuardar();
+            event.consume();
         }
     }
 
     @FXML
-    private void onActionToRegister(ActionEvent event) {
+    private void onActionToRegister(ActionEvent event) throws IOException {
         onEventGuardar();
     }
 
     @FXML
-    private void onKeyPressedToClient(KeyEvent event) {
+    private void onKeyPressedToClient(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             onEventCliente();
+            event.consume();
         }
     }
 
     @FXML
-    private void onActionToClient(ActionEvent event) {
+    private void onActionToClient(ActionEvent event) throws IOException {
         onEventCliente();
     }
 
     @FXML
     private void onKeyPressedReload(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            loadComponents();
+            resetGuiaRemision();
+            event.consume();
         }
     }
 
     @FXML
     private void onActionReload(ActionEvent event) {
-        loadComponents();
+        resetGuiaRemision();
     }
 
     @FXML
-    private void onKeyPressedAgregar(KeyEvent event) {
+    private void onKeyPressedAgregar(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             openWindowSuministro();
         }
     }
 
     @FXML
-    private void onActionAgregar(ActionEvent event) {
+    private void onActionAgregar(ActionEvent event) throws IOException {
         openWindowSuministro();
     }
 
     @FXML
-    private void onKeyPressedVentas(KeyEvent event) {
+    private void onKeyPressedVentas(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             openWindowVentas();
+            event.consume();
         }
     }
 
     @FXML
-    private void onActionVentas(ActionEvent event) {
+    private void onActionVentas(ActionEvent event) throws IOException {
         openWindowVentas();
     }
 
     @FXML
-    private void onKeyPressedVehiculo(KeyEvent event) {
+    private void onKeyPressedGuias(KeyEvent event) throws IOException {
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowGuiaRemision();
+            event.consume();
+        }
+    }
+
+    @FXML
+    private void onActionGuias(ActionEvent event) throws IOException {
+        openWindowGuiaRemision();
+    }
+
+    @FXML
+    private void onKeyPressedVehiculo(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             openWindowVehiculo();
         }
     }
 
     @FXML
-    private void onActionVehiculo(ActionEvent event) {
+    private void onActionVehiculo(ActionEvent event) throws IOException {
         openWindowVehiculo();
     }
 
     @FXML
-    private void onKeyPressedConductor(KeyEvent event) {
+    private void onKeyPressedConductor(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             openWindowConductor();
         }
     }
 
     @FXML
-    private void onActionConductor(ActionEvent event) {
+    private void onActionConductor(ActionEvent event) throws IOException {
         openWindowConductor();
     }
 
@@ -1157,6 +1533,32 @@ public class FxGuiaRemisionController implements Initializable {
 
             cbEmpresa.setDisable(true);
             btnAgregarEmpresa.setDisable(true);
+        }
+    }
+
+    @FXML
+    private void onKeyReleasedWindow(KeyEvent event) throws IOException {
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case F1:
+                    onEventGuardar();
+                    event.consume();
+                    break;
+                case F2:
+                    openWindowVentas();
+                    event.consume();
+                    break;
+                case F3:
+                    openWindowGuiaRemision();
+                    event.consume();
+                    break;
+                case F5:
+                    resetGuiaRemision();
+                    event.consume();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

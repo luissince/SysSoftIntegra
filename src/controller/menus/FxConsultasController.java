@@ -3,13 +3,13 @@ package controller.menus;
 import controller.banco.FxBancosController;
 import controller.consultas.compras.FxComprasRealizadasController;
 import controller.consultas.cobrar.FxCuentasPorCobrarController;
+import controller.consultas.cotizacion.FxCotizacionRealizadasController;
+import controller.consultas.guiaremision.FxGuiaRemisionRealizadasController;
+import controller.consultas.notacredito.FxNotaCreditoRealizadasController;
 import controller.consultas.pagar.FxCuentasPorPagarController;
+import controller.consultas.venta.FxVentaRealizadasController;
 import controller.operaciones.cortecaja.FxCajaConsultasController;
-import controller.operaciones.cotizacion.FxCotizacionRealizadasController;
-import controller.operaciones.guiaremision.FxGuiaRemisionRealizadasController;
-import controller.operaciones.notacredito.FxNotaCreditoRealizadasController;
 import controller.operaciones.ordencompra.FxOrdenCompraRealizadasController;
-import controller.operaciones.venta.FxVentaRealizadasController;
 import controller.tools.FilesRouters;
 import controller.tools.Session;
 import java.io.IOException;
@@ -49,8 +49,7 @@ public class FxConsultasController implements Initializable {
     private VBox btnCuentasPorCobrar;
     @FXML
     private VBox btnCuentasPorPagar;
-    @FXML
-    private VBox btnBancos;
+    // private VBox btnBancos;
     @FXML
     private VBox btnCotizaciones;
     @FXML
@@ -59,6 +58,11 @@ public class FxConsultasController implements Initializable {
     private VBox btnNotaCredito;
     @FXML
     private VBox btnPedidos;
+    @FXML
+    private VBox btnIngresos;
+    @FXML
+    private VBox btnEgresos;
+
     /*
      * Objectos de la ventana principal y venta que agrega al os hijos
      */
@@ -130,11 +134,11 @@ public class FxConsultasController implements Initializable {
     /*
      * Controller banco consultas
      */
-    private FXMLLoader fXMLBancos;
+    // private FXMLLoader fXMLBancos;
 
-    private HBox nodeBancos;
+    // private HBox nodeBancos;
 
-    private FxBancosController bancosController;
+    // private FxBancosController bancosController;
 
     /*
      * Controller notacredito consultas
@@ -185,9 +189,9 @@ public class FxConsultasController implements Initializable {
             nodeCuentasPorPagar = fXMLCuentasPorPagar.load();
             controlleCuentasPorPagar = fXMLCuentasPorPagar.getController();
 
-            fXMLBancos = new FXMLLoader(getClass().getResource(FilesRouters.FX_BANCOS));
-            nodeBancos = fXMLBancos.load();
-            bancosController = fXMLBancos.getController();
+            // fXMLBancos = new FXMLLoader(getClass().getResource(FilesRouters.FX_BANCOS));
+            // nodeBancos = fXMLBancos.load();
+            // bancosController = fXMLBancos.getController();
 
             fXMLNotaCredito = new FXMLLoader(getClass().getResource(FilesRouters.FX_NOTA_CREDITO_REALIZADOS));
             nodeNotaCredito = fXMLNotaCredito.load();
@@ -244,9 +248,12 @@ public class FxConsultasController implements Initializable {
             hbOperacionesDos.getChildren().remove(btnNotaCredito);
         }
 
-        if (subMenusTBs.get(9).getIdSubMenu() != 0 && !subMenusTBs.get(9).isEstado()) {
-            hbOperacionesDos.getChildren().remove(btnBancos);
-        }
+        /**
+         * if (subMenusTBs.get(9).getIdSubMenu() != 0 && !subMenusTBs.get(9).isEstado())
+         * {
+         * hbOperacionesDos.getChildren().remove(btnBancos);
+         * }
+         */
 
     }
 
@@ -324,16 +331,18 @@ public class FxConsultasController implements Initializable {
         fxPrincipalController.getVbContent().getChildren().add(nodeCuentasPorPagar);
     }
 
-    private void openWindowBancos() {
-        bancosController.setContent(fxPrincipalController);
-        fxPrincipalController.getVbContent().getChildren().clear();
-        AnchorPane.setLeftAnchor(nodeBancos, 0d);
-        AnchorPane.setTopAnchor(nodeBancos, 0d);
-        AnchorPane.setRightAnchor(nodeBancos, 0d);
-        AnchorPane.setBottomAnchor(nodeBancos, 0d);
-        fxPrincipalController.getVbContent().getChildren().add(nodeBancos);
-        bancosController.loadTableViewBanco("");
-    }
+    /*
+     * private void openWindowBancos() {
+     * bancosController.setContent(fxPrincipalController);
+     * fxPrincipalController.getVbContent().getChildren().clear();
+     * AnchorPane.setLeftAnchor(nodeBancos, 0d);
+     * AnchorPane.setTopAnchor(nodeBancos, 0d);
+     * AnchorPane.setRightAnchor(nodeBancos, 0d);
+     * AnchorPane.setBottomAnchor(nodeBancos, 0d);
+     * fxPrincipalController.getVbContent().getChildren().add(nodeBancos);
+     * bancosController.loadTableViewBanco("");
+     * }
+     */
 
     private void openWindowNotaCredito() {
         notaCreditoController.setContent(fxPrincipalController);
@@ -451,17 +460,19 @@ public class FxConsultasController implements Initializable {
         openWindowNotaCredito();
     }
 
-    @FXML
-    private void onKeyPressedBanco(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            openWindowBancos();
-        }
-    }
+    /*
+     * private void onKeyPressedBanco(KeyEvent event) {
+     * if (event.getCode() == KeyCode.ENTER) {
+     * openWindowBancos();
+     * }
+     * }
+     */
 
-    @FXML
-    private void onActionBanco(ActionEvent event) {
-        openWindowBancos();
-    }
+    /*
+     * private void onActionBanco(ActionEvent event) {
+     * openWindowBancos();
+     * }
+     */
 
     @FXML
     private void onKeyPressedOrdenCompra(KeyEvent event) {
@@ -473,6 +484,30 @@ public class FxConsultasController implements Initializable {
     @FXML
     private void onActionOrdenCompra(ActionEvent event) {
         openWindowOrdenCompra();
+    }
+
+    @FXML
+    private void onKeyPressedIngreso(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+
+        }
+    }
+
+    @FXML
+    private void onActionIngreso(ActionEvent event) {
+
+    }
+
+    @FXML
+    private void onKeyPressedEgreso(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+
+        }
+    }
+
+    @FXML
+    private void onActionEgreso(ActionEvent event) {
+
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

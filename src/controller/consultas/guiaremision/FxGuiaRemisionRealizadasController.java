@@ -1,4 +1,4 @@
-package controller.operaciones.guiaremision;
+package controller.consultas.guiaremision;
 
 import controller.menus.FxPrincipalController;
 import controller.tools.FilesRouters;
@@ -79,15 +79,15 @@ public class FxGuiaRemisionRealizadasController implements Initializable {
                 .concat(cellData.getValue().getFechaRegistro() + "\n" + cellData.getValue().getHoraRegistro()));
         tcComprobante
                 .setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getTipoDocumentoTB().getNombre()
-                + "\n" + cellData.getValue().getSerie() + "-"
-                + Tools.formatNumber(cellData.getValue().getNumeracion())));
+                        + "\n" + cellData.getValue().getSerie() + "-"
+                        + Tools.formatNumber(cellData.getValue().getNumeracion())));
         tcReferencia.setCellValueFactory(
                 cellData -> Bindings.concat(cellData.getValue().getVentaTB().getTipoDocumentoTB().getNombre() + "\n"
                         + cellData.getValue().getVentaTB().getSerie() + "-"
                         + Tools.formatNumber(cellData.getValue().getVentaTB().getNumeracion())));
         tcCliente
                 .setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento()
-                + "\n" + cellData.getValue().getClienteTB().getInformacion()));
+                        + "\n" + cellData.getValue().getClienteTB().getInformacion()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.05));
@@ -118,7 +118,7 @@ public class FxGuiaRemisionRealizadasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return GuiaRemisionADO.CargarGuiaRemision(opcion, buscar, fechaInicio, fechaFinal,
+                return GuiaRemisionADO.listarGuiaRemision(opcion, buscar, fechaInicio, fechaFinal,
                         (paginacion - 1) * 20, 20);
             }
         };
@@ -196,14 +196,16 @@ public class FxGuiaRemisionRealizadasController implements Initializable {
     }
 
     private void onEventEliminar() {
-        short value = Tools.AlertMessageConfirmation(hbWindow, "Guía Remisión", "¿Está seguro de eliminar la guía remisión.");
-        if (value == 1) {            
+        short value = Tools.AlertMessageConfirmation(hbWindow, "Guía Remisión",
+                "¿Está seguro de eliminar la guía remisión.");
+        if (value == 1) {
             if (tvList.getSelectionModel().getSelectedIndex() < 0) {
                 Tools.AlertMessageWarning(hbWindow, "Guía Remisión", "Seleccione una guía de remisión para anular.");
                 return;
             }
 
-            String result = GuiaRemisionADO.removeGuiaRemisionById(tvList.getSelectionModel().getSelectedItem().getIdGuiaRemision());
+            String result = GuiaRemisionADO
+                    .removeGuiaRemisionById(tvList.getSelectionModel().getSelectedItem().getIdGuiaRemision());
             if (result.equalsIgnoreCase("deleted")) {
                 Tools.AlertMessageInformation(hbWindow, "Guía Remisión", "Se anuló correctamente la guía remisión.");
                 loadInit();

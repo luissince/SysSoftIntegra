@@ -79,7 +79,7 @@ public class FxMermaController implements Initializable {
         tcCantidad.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
-        cbTipoMerma.getItems().addAll(DetalleADO.GetDetailId("0020"));
+        cbTipoMerma.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0020"));
         loadInit();
     }
 

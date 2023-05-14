@@ -1,7 +1,9 @@
-package controller.operaciones.venta;
+package controller.consultas.venta;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
+import controller.operaciones.venta.FxVentaLlevarController;
+import controller.operaciones.venta.FxVentaLlevarControllerHistorial;
 import controller.tools.FilesRouters;
 import controller.tools.Tools;
 import controller.tools.WindowStage;
@@ -11,8 +13,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -87,6 +87,8 @@ public class FxVentaDetalleController implements Initializable {
     private Label lblMessageLoad;
     @FXML
     private Button btnAceptarLoad;
+    @FXML
+    private Label lblIngresos;
 
     private FxPrincipalController principalController;
 
@@ -107,7 +109,7 @@ public class FxVentaDetalleController implements Initializable {
         opcionesImprimirController.loadTicketVentaDetalle(apWindow);
     }
 
-    public void setInitComponents(String idVenta) {
+    public void loadInitComponents(String idVenta) {
         this.idVenta = idVenta;
 
         ExecutorService executor = Executors.newCachedThreadPool((runnable) -> {
@@ -119,7 +121,7 @@ public class FxVentaDetalleController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return VentaADO.Obtener_Venta_ById(idVenta);
+                return VentaADO.obtenerVentaById(idVenta);
             }
         };
 
@@ -228,18 +230,19 @@ public class FxVentaDetalleController implements Initializable {
             gpListVetanDetalle.add(addElementGridPaneLabel("l8" + (i + 1),
                     Tools.roundingValue(suministroTB.getDescuento(), 2), Pos.CENTER_RIGHT), 7, (i + 1));
             gpListVetanDetalle.add(addElementGridPaneLabel("l9" + (i + 1),
-                    ventaTB.getMonedaTB().getSimbolo() + "" + Tools
-                            .roundingValue(suministroTB.getPrecioVentaGeneral() * suministroTB.getCantidad(), 2),
+                    ventaTB.getMonedaTB().getSimbolo() + ""
+                            + Tools.roundingValue(suministroTB.getPrecioVentaGeneral() * suministroTB.getCantidad(), 2),
                     Pos.CENTER_RIGHT), 8, (i + 1));
-            gpListVetanDetalle.add(suministroTB.getEstadoName().equalsIgnoreCase("C")
-                    ? addElementGridPaneLabel("l10" + (i + 1), "COMPLETADO", Pos.CENTER_LEFT)
-                    : addElementGridPaneButtonLlevar("l11" + (i + 1),
-                            "LLEVAR \n" + Tools.roundingValue(suministroTB.getPorLlevar(), 2),
-                            suministroTB.getIdSuministro(), suministroTB.getCostoCompra(), Pos.CENTER_LEFT),
+            gpListVetanDetalle.add(
+                    suministroTB.getEstadoName().equalsIgnoreCase("C")
+                            ? addElementGridPaneLabel("l10" + (i + 1), "COMPLETADO", Pos.CENTER_LEFT)
+                            : addElementGridPaneButtonLlevar("l11" + (i + 1),
+                                    "LLEVAR \n" + Tools.roundingValue(suministroTB.getPorLlevar(), 2),
+                                    suministroTB.getIdSuministro(), suministroTB.getCostoCompra(), Pos.CENTER_LEFT),
                     9, (i + 1));
             gpListVetanDetalle.add(
-                    addElementGridPaneButtonHistorial("l12" + (i + 1), "HISTORIAL", suministroTB, Pos.CENTER_LEFT),
-                    10, (i + 1));
+                    addElementGridPaneButtonHistorial("l12" + (i + 1), "HISTORIAL", suministroTB, Pos.CENTER_LEFT), 10,
+                    (i + 1));
         }
         calcularTotales();
     }
@@ -253,24 +256,23 @@ public class FxVentaDetalleController implements Initializable {
         gpListIngresos.add(addHeadGridPane("Vuelto"), 5, 0);
     }
 
-    private void createBodyTableIngresos(ArrayList<IngresoTB> empList) {
-        if (empList.isEmpty()) {
+    private void createBodyTableIngresos(ArrayList<IngresoTB> ingresoTBs) {
+        if (ingresoTBs.isEmpty()) {
             Label titulo = addElementGridPaneLabel("l1", "No hay ingresos para mostrar.", Pos.CENTER);
             gpListIngresos.add(titulo, 0, 1);
             GridPane.setRowSpan(titulo, GridPane.REMAINING);
             GridPane.setColumnSpan(titulo, GridPane.REMAINING);
-
+            lblIngresos.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(0, 2));
         } else {
-            for (int i = 0; i < empList.size(); i++) {
-                IngresoTB ingresoTB = empList.get(i);
+            double suma = 0;
+            for (int i = 0; i < ingresoTBs.size(); i++) {
+                IngresoTB ingresoTB = ingresoTBs.get(i);
                 gpListIngresos.add(addElementGridPaneLabel("l1" + (i + 1), ingresoTB.getId() + "", Pos.CENTER), 0,
                         (i + 1));
                 gpListIngresos.add(addElementGridPaneLabel("l2" + (i + 1),
-                        ingresoTB.getFecha() + "\n" + ingresoTB.getHora(), Pos.CENTER), 1, (i + 1));
-                gpListIngresos.add(
-                        addElementGridPaneLabel("l3" + (i + 1), ingresoTB.getBancoTB().getNombreCuenta(),
-                                Pos.CENTER_LEFT),
-                        2, (i + 1));
+                        ingresoTB.getFecha() + "\n" + ingresoTB.getHora(), Pos.CENTER_LEFT), 1, (i + 1));
+                gpListIngresos.add(addElementGridPaneLabel("l3" + (i + 1), ingresoTB.getBancoTB().getNombreCuenta(),
+                        Pos.CENTER_LEFT), 2, (i + 1));
                 gpListIngresos.add(addElementGridPaneLabel("l4" + (i + 1), ingresoTB.getDetalle(), Pos.CENTER_LEFT), 3,
                         (i + 1));
                 gpListIngresos.add(addElementGridPaneLabel("l5" + (i + 1),
@@ -279,8 +281,9 @@ public class FxVentaDetalleController implements Initializable {
                 gpListIngresos.add(addElementGridPaneLabel("l6" + (i + 1),
                         ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(ingresoTB.getVuelto(), 2),
                         Pos.CENTER_LEFT), 5, (i + 1));
-
+                suma += ingresoTB.getMonto();
             }
+            lblIngresos.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(suma, 2));
         }
     }
 

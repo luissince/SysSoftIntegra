@@ -128,7 +128,7 @@ public class FxVentaReporteController implements Initializable {
         rbDeposito.setToggleGroup(groupMetodoPago);
 
         cbDocumentos.getItems().clear();
-        cbDocumentos.getItems().addAll(TipoDocumentoADO.GetDocumentoCombBoxVentas());
+        cbDocumentos.getItems().addAll(TipoDocumentoADO.obtenerComprobantesParaVenta());
         idCliente = idEmpleado = "";
     }
 

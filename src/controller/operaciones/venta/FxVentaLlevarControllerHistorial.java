@@ -1,6 +1,7 @@
 package controller.operaciones.venta;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
+import controller.consultas.venta.FxVentaDetalleController;
 import controller.tools.Tools;
 import java.net.URL;
 import java.util.ResourceBundle;

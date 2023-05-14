@@ -71,7 +71,7 @@ public class FxEmpleadosProcesoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
         cbTipoDocumento.getItems().addAll(DetalleADO.Get_Detail_IdName("1", "0003", "RUC"));
-        cbSexo.getItems().addAll(DetalleADO.GetDetailId("0004"));
+        cbSexo.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0004"));
         cbRol.getItems().addAll(RolADO.RolList());
         cbEstado.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0001", ""));
         cbEstado.getSelectionModel().select(0);

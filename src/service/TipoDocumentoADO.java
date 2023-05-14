@@ -1,5 +1,6 @@
 package service;
 
+import controller.tools.Tools;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -332,7 +333,7 @@ public class TipoDocumentoADO {
         return result;
     }
 
-    public static List<TipoDocumentoTB> GetDocumentoCombBoxVentas() {
+    public static List<TipoDocumentoTB> obtenerComprobantesParaVenta() {
         DBUtil dbf = new DBUtil();
         List<TipoDocumentoTB> list = new ArrayList<>();
 
@@ -372,7 +373,7 @@ public class TipoDocumentoADO {
         return list;
     }
 
-    public static Object GetTipoDocumentoGuiaRemision() {
+    public static Object obtenerComprobantesParaGuiaRemision() {
         DBUtil dbf = new DBUtil();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -386,10 +387,10 @@ public class TipoDocumentoADO {
                 TipoDocumentoTB documentoTB = new TipoDocumentoTB();
                 documentoTB.setIdTipoDocumento(resultSet.getInt("IdTipoDocumento"));
                 documentoTB.setNombre(resultSet.getString("Nombre"));
-                documentoTBs.add(documentoTB);
+                documentoTBs.add(documentoTB); 
             }
             return documentoTBs;
-        } catch (SQLException | ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {            
             return ex.getLocalizedMessage();
         } finally {
             try {

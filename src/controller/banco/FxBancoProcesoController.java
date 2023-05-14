@@ -57,7 +57,7 @@ public class FxBancoProcesoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
         cbMoneda.getItems().add(new MonedaTB(0, "Seleccione..."));
-        cbMoneda.getItems().addAll(MonedaADO.GetMonedasComboBox());
+        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
         cbMoneda.getSelectionModel().select(0);
         idBanco = "";
         ToggleGroup group = new ToggleGroup();

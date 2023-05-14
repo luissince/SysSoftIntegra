@@ -1,4 +1,4 @@
-package controller.operaciones.cotizacion;
+package controller.consultas.cotizacion;
 
 import controller.configuracion.impresoras.FxOpcionesImprimirController;
 import controller.menus.FxPrincipalController;
@@ -121,12 +121,15 @@ public class FxCotizacionDetalleController implements Initializable {
                 CotizacionTB cotizacionTB = (CotizacionTB) object;
                 lblNumero.setText("N° - " + Tools.formatNumber(cotizacionTB.getIdCotizacion()));
                 lblFechaCotizacion.setText(cotizacionTB.getFechaCotizacion() + " " + cotizacionTB.getHoraCotizacion());
-                lblCliente.setText(cotizacionTB.getClienteTB().getNumeroDocumento() + " " + cotizacionTB.getClienteTB().getInformacion());
-                lblCelularTelefono.setText(Tools.textShow("TEL.: ", cotizacionTB.getClienteTB().getTelefono()) + " " + Tools.textShow(" CEL.: ", cotizacionTB.getClienteTB().getCelular()));
+                lblCliente.setText(cotizacionTB.getClienteTB().getNumeroDocumento() + " "
+                        + cotizacionTB.getClienteTB().getInformacion());
+                lblCelularTelefono.setText(Tools.textShow("TEL.: ", cotizacionTB.getClienteTB().getTelefono()) + " "
+                        + Tools.textShow(" CEL.: ", cotizacionTB.getClienteTB().getCelular()));
                 lbCorreoElectronico.setText(cotizacionTB.getClienteTB().getEmail());
                 lbDireccion.setText(cotizacionTB.getClienteTB().getDireccion());
                 lblObservaciones.setText(cotizacionTB.getObservaciones());
-                lblVendedor.setText(cotizacionTB.getEmpleadoTB().getApellidos() + ", " + cotizacionTB.getEmpleadoTB().getNombres());
+                lblVendedor.setText(
+                        cotizacionTB.getEmpleadoTB().getApellidos() + ", " + cotizacionTB.getEmpleadoTB().getNombres());
 
                 fillTableDetalle(cotizacionTB.getCotizacionDetalleTBs(), cotizacionTB.getMonedaTB().getSimbolo());
 
@@ -148,13 +151,27 @@ public class FxCotizacionDetalleController implements Initializable {
     private void fillTableDetalle(ArrayList<CotizacionDetalleTB> empList, String simbolo) {
         for (int i = 0; i < empList.size(); i++) {
             gpList.add(addElementGridPane("l1" + (i + 1), empList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
-            gpList.add(addElementGridPane("l2" + (i + 1), empList.get(i).getSuministroTB().getClave() + "\n" + empList.get(i).getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
-            gpList.add(addElementGridPane("l3" + (i + 1), Tools.roundingValue(empList.get(i).getCantidad(), 2), Pos.CENTER_RIGHT), 2, (i + 1));
-            gpList.add(addElementGridPane("l4" + (i + 1), empList.get(i).getSuministroTB().getUnidadCompraName(), Pos.CENTER_LEFT), 3, (i + 1));
-            gpList.add(addElementGridPane("l5" + (i + 1), Tools.roundingValue(empList.get(i).getImpuestoTB().getValor(), 2) + "%", Pos.CENTER_RIGHT), 4, (i + 1));
-            gpList.add(addElementGridPane("l6" + (i + 1), simbolo + "" + Tools.roundingValue(empList.get(i).getPrecio(), 2), Pos.CENTER_RIGHT), 5, (i + 1));
-            gpList.add(addElementGridPane("l7" + (i + 1), Tools.roundingValue(empList.get(i).getDescuento(), 2), Pos.CENTER_RIGHT), 6, (i + 1));
-            gpList.add(addElementGridPane("l8" + (i + 1), simbolo + "" + Tools.roundingValue(empList.get(i).getCantidad() * (empList.get(i).getPrecio() - empList.get(i).getDescuento()), 2), Pos.CENTER_RIGHT), 7, (i + 1));
+            gpList.add(addElementGridPane("l2" + (i + 1), empList.get(i).getSuministroTB().getClave() + "\n"
+                    + empList.get(i).getSuministroTB().getNombreMarca(), Pos.CENTER_LEFT), 1, (i + 1));
+            gpList.add(addElementGridPane("l3" + (i + 1), Tools.roundingValue(empList.get(i).getCantidad(), 2),
+                    Pos.CENTER_RIGHT), 2, (i + 1));
+            gpList.add(addElementGridPane("l4" + (i + 1), empList.get(i).getSuministroTB().getUnidadCompraName(),
+                    Pos.CENTER_LEFT), 3, (i + 1));
+            gpList.add(
+                    addElementGridPane("l5" + (i + 1),
+                            Tools.roundingValue(empList.get(i).getImpuestoTB().getValor(), 2) + "%", Pos.CENTER_RIGHT),
+                    4, (i + 1));
+            gpList.add(
+                    addElementGridPane("l6" + (i + 1),
+                            simbolo + "" + Tools.roundingValue(empList.get(i).getPrecio(), 2), Pos.CENTER_RIGHT),
+                    5, (i + 1));
+            gpList.add(addElementGridPane("l7" + (i + 1), Tools.roundingValue(empList.get(i).getDescuento(), 2),
+                    Pos.CENTER_RIGHT), 6, (i + 1));
+            gpList.add(addElementGridPane("l8" + (i + 1),
+                    simbolo + ""
+                            + Tools.roundingValue(empList.get(i).getCantidad()
+                                    * (empList.get(i).getPrecio() - empList.get(i).getDescuento()), 2),
+                    Pos.CENTER_RIGHT), 7, (i + 1));
         }
         calculateTotales(empList, simbolo);
     }
@@ -162,7 +179,8 @@ public class FxCotizacionDetalleController implements Initializable {
     private Label addElementGridPane(String id, String nombre, Pos pos) {
         Label label = new Label(nombre);
         label.setId(id);
-        label.setStyle("-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
+        label.setStyle(
+                "-fx-text-fill:#020203;-fx-background-color: #dddddd;-fx-padding: 0.4166666666666667em 0.8333333333333334em 0.4166666666666667em 0.8333333333333334em;");
         label.getStyleClass().add("labelRoboto13");
         label.setAlignment(pos);
         label.setWrapText(true);
@@ -253,7 +271,8 @@ public class FxCotizacionDetalleController implements Initializable {
         closeWindow();
     }
 
-    public void setInitCotizacionesRealizadasController(FxCotizacionRealizadasController cotizacionRealizadasController, FxPrincipalController fxPrincipalController) {
+    public void setInitCotizacionesRealizadasController(FxCotizacionRealizadasController cotizacionRealizadasController,
+            FxPrincipalController fxPrincipalController) {
         this.cotizacionRealizadasController = cotizacionRealizadasController;
         this.fxPrincipalController = fxPrincipalController;
     }

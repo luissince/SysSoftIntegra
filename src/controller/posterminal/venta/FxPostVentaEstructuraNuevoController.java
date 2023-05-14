@@ -186,7 +186,7 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
 
     private void loadDataComponent() {
         cbComprobante.getItems().clear();
-        TipoDocumentoADO.GetDocumentoCombBoxVentas().forEach(e -> cbComprobante.getItems().add(e));
+        TipoDocumentoADO.obtenerComprobantesParaVenta().forEach(e -> cbComprobante.getItems().add(e));
         if (!cbComprobante.getItems().isEmpty()) {
             for (int i = 0; i < cbComprobante.getItems().size(); i++) {
                 if (cbComprobante.getItems().get(i).isPredeterminado()) {
@@ -204,7 +204,7 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
         }
 
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.GetMonedasComboBox());
+        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
 
         if (!cbMoneda.getItems().isEmpty()) {
             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
@@ -217,7 +217,7 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
         }
 
         cbTipoDocumento.getItems().clear();
-        cbTipoDocumento.getItems().addAll(DetalleADO.GetDetailId("0003"));
+        cbTipoDocumento.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0003"));
 
         idCliente = Session.CLIENTE_ID;
         txtNumeroDocumento.setText(Session.CLIENTE_NUMERO_DOCUMENTO);

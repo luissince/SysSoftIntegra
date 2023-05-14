@@ -1,6 +1,6 @@
 package controller.configuracion.empleados;
 
-import controller.operaciones.venta.FxVentaRealizadasController;
+import controller.consultas.venta.FxVentaRealizadasController;
 import controller.posterminal.venta.FxPostVentaRealizadasController;
 import controller.reporte.FxIngresosEgresosController;
 import controller.reporte.FxPosReporteController;

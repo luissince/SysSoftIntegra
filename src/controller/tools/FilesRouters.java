@@ -146,7 +146,7 @@ public final class FilesRouters {
 
     // --------------------------------------------------------------------------------------------------
     // PROCESO DE COMPRAS
-    // --------------------------------------------------------------------------------------------------   
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_COMPRAS = "/view/operaciones/compras/FxCompras.fxml";
 
     public static final String FX_COMPRAS_DETALLE = "/view/consultas/compras/FxComprasDetalle.fxml";
@@ -202,9 +202,9 @@ public final class FilesRouters {
 
     public static final String FX_VENTA_DESCUENTO = "/view/operaciones/venta/FxVentaDescuento.fxml";
 
-    public static final String FX_VENTA_DETALLE = "/view/operaciones/venta/FxVentaDetalle.fxml";
+    public static final String FX_VENTA_DETALLE = "/view/consultas/venta/FxVentaDetalle.fxml";
 
-    public static final String FX_VENTA_DEVOLUCION = "/view/operaciones/venta/FxVentaDevolucion.fxml";
+    public static final String FX_VENTA_DEVOLUCION = "/view/consultas/venta/FxVentaDevolucion.fxml";
 
     public static final String FX_VENTA_ESTRUCTURA = "/view/operaciones/venta/FxVentaEstructura.fxml";
 
@@ -224,11 +224,7 @@ public final class FilesRouters {
 
     public static final String FX_VENTA_PROCESO_NUEVO = "/view/operaciones/venta/FxVentaProcesoNuevo.fxml";
 
-    public static final String FX_VENTA_REALIZADAS = "/view/operaciones/venta/FxVentaRealizadas.fxml";
-
-    public static final String FX_AJUSTE_INVENTARIO = "/view/inventario/ajusteinventario/FxAjusteInventario.fxml";
-
-    public static final String FX_AJUSTE_INVENTARIO_PROCESO = "/view/inventario/ajusteinventario/FxAjusteInventarioProceso.fxml";
+    public static final String FX_VENTA_REALIZADAS = "/view/consultas/venta/FxVentaRealizadas.fxml";
 
     // --------------------------------------------------------------------------------------------------
     // PROCESO DE ARTICULOS
@@ -238,6 +234,10 @@ public final class FilesRouters {
     public static final String FX_CODIGO_BARRAS = "/view/inventario/suministros/FxCodigoBarras.fxml";
 
     public static final String FX_REPORTE_OPCION = "/view/inventario/FxReporteOpcion.fxml";
+
+    public static final String FX_AJUSTE_INVENTARIO = "/view/inventario/ajusteinventario/FxAjusteInventario.fxml";
+
+    public static final String FX_AJUSTE_INVENTARIO_PROCESO = "/view/inventario/ajusteinventario/FxAjusteInventarioProceso.fxml";
 
     // --------------------------------------------------------------------------------------------------
     public static final String FX_INVENTARIO_INICIAL = "/view/inventario/inventarioinicial/FxInventarioInicial.fxml";
@@ -370,33 +370,38 @@ public final class FilesRouters {
 
     public static final String FX_COTIZACION_LISTA = "/view/operaciones/cotizacion/FxCotizacionLista.fxml";
 
-    public static final String FX_COTIZACION_DETALLE = "/view/operaciones/cotizacion/FxCotizacionDetalle.fxml";
+    public static final String FX_COTIZACION_DETALLE = "/view/consultas/cotizacion/FxCotizacionDetalle.fxml";
 
-    public static final String FX_COTIZACION_REALIZADAS = "/view/operaciones/cotizacion/FxCotizacionRealizadas.fxml";
+    public static final String FX_COTIZACION_REALIZADAS = "/view/consultas/cotizacion/FxCotizacionRealizadas.fxml";
 
     public static final String FX_COTIZACION_PRODUCTO = "/view/operaciones/cotizacion/FxCotizacionProducto.fxml";
 
     // --------------------------------------------------------------------------------------------------
     // PROCESO GUIA DE REMISION
-    // --------------------------------------------------------------------------------------------------    
-    public static final String FX_GUIA_REMISION_DETALLE = "/view/operaciones/guiaremision/FxGuiaRemisionDetalle.fxml";
+    // --------------------------------------------------------------------------------------------------
+    public static final String FX_GUIA_REMISION_DETALLE = "/view/consultas/guiaremision/FxGuiaRemisionDetalle.fxml";
 
-    public static final String FX_GUIA_REMISION_REALIZADAS = "/view/operaciones/guiaremision/FxGuiaRemisionRealizadas.fxml";
+    public static final String FX_GUIA_REMISION_REALIZADAS = "/view/consultas/guiaremision/FxGuiaRemisionRealizadas.fxml";
 
     public static final String FX_GUIA_REMISION = "/view/operaciones/guiaremision/FxGuiaRemision.fxml";
 
+    public static final String FX_GUIA_REMISION_LISTA = "/view/operaciones/guiaremision/FxGuiaRemisionLista.fxml";
+
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO NOTA DE CREDITO
+    // --------------------------------------------------------------------------------------------------
+    public static final String FX_NOTA_CREDITO = "/view/operaciones/notacredito/FxNotaCredito.fxml";
+
+    public static final String FX_NOTA_CREDITO_REALIZADOS = "/view/consultas/notacredito/FxNotaCreditoRealizadas.fxml";
+
+    public static final String FX_NOTA_CREDITO_DETALLE = "/view/consultas/notacredito/FxNotaCreditoDetalle.fxml";
+
     // --------------------------------------------------------------------------------------------------
     // OTROS PROCESO
-    // --------------------------------------------------------------------------------------------------  
+    // --------------------------------------------------------------------------------------------------
     public static final String FX_VENTA_LISTA = "/view/operaciones/venta/FxVentaLista.fxml";
 
     public static final String FX_OPCIONES_IMPRIMIR = "/view/configuracion/impresoras/FxOpcionesImprimir.fxml";
-
-    public static final String FX_NOTA_CREDITO = "/view/operaciones/notacredito/FxNotaCredito.fxml";
-
-    public static final String FX_NOTA_CREDITO_REALIZADOS = "/view/operaciones/notacredito/FxNotaCreditoRealizadas.fxml";
-
-    public static final String FX_NOTA_CREDITO_DETALLE = "/view/operaciones/notacredito/FxNotaCreditoDetalle.fxml";
 
     public static final String FX_VENTA_LLEVAR = "/view/operaciones/venta/FxVentaLlevar.fxml";
 

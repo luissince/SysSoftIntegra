@@ -383,7 +383,7 @@ public class SplashScreen extends Preloader {
                             Session.TICKET_NOTA_CREDITO_RUTA = "";
                         }
 
-                        EmpresaTB list = EmpresaADO.GetEmpresa();
+                        EmpresaTB list = EmpresaADO.obtenerEmpresa();
                         if (list != null) {
                             Session.COMPANY_REPRESENTANTE = list.getNombre();
                             Session.COMPANY_RAZON_SOCIAL = list.getRazonSocial();

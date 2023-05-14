@@ -144,7 +144,7 @@ public class EmpresaADO {
         return false;
     }
 
-    public static EmpresaTB GetEmpresa() {
+    public static EmpresaTB obtenerEmpresa() {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;

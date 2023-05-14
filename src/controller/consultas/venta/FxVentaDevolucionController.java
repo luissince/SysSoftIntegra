@@ -1,5 +1,6 @@
-package controller.operaciones.venta;
+package controller.consultas.venta;
 
+import controller.operaciones.venta.FxVentaMostrarController;
 import controller.tools.Tools;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -59,7 +60,8 @@ public class FxVentaDevolucionController implements Initializable {
             Tools.AlertMessageWarning(window, "Detalle de venta", "Ingrese un comentario.");
             txtObservacion.requestFocus();
         } else {
-            short validate = Tools.AlertMessageConfirmation(window, "Detalle de ventas", "¿Está seguro de anular la venta?");
+            short validate = Tools.AlertMessageConfirmation(window, "Detalle de ventas",
+                    "¿Está seguro de anular la venta?");
             if (validate == 1) {
 
                 ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
@@ -71,7 +73,7 @@ public class FxVentaDevolucionController implements Initializable {
                 Task<String> task = new Task<String>() {
                     @Override
                     public String call() {
-                        return VentaADO.Anular_Venta_ById(ventaTB.getIdVenta(), ventaTB.getSuministroTBs(), txtObservacion.getText().trim());
+                        return VentaADO.anularVenta(ventaTB, txtObservacion.getText().trim());
                     }
                 };
 
@@ -83,9 +85,11 @@ public class FxVentaDevolucionController implements Initializable {
                     } else if (result.equalsIgnoreCase("scrambled")) {
                         Tools.AlertMessageWarning(window, "Detalle de venta", "Ya está anulada la venta.");
                     } else if (result.equalsIgnoreCase("nodate")) {
-                        Tools.AlertMessageWarning(window, "Detalle de venta", "No se puede anular la venta porque la fecha es distinta a la fecha de emisión.");
+                        Tools.AlertMessageWarning(window, "Detalle de venta",
+                                "No se puede anular la venta porque la fecha es distinta a la fecha de emisión.");
                     } else if (result.equalsIgnoreCase("ventacredito")) {
-                        Tools.AlertMessageWarning(window, "Detalle de venta", "No se puede anular la venta porque tiene asociados abonos.");
+                        Tools.AlertMessageWarning(window, "Detalle de venta",
+                                "No se puede anular la venta porque tiene asociados abonos.");
                     } else {
                         Tools.AlertMessageError(window, "Detalle de ventas", result);
                     }

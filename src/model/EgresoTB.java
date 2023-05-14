@@ -1,20 +1,23 @@
-
 package model;
 
-
 public class EgresoTB {
-    
+
     private int id;
     private String idEgreso;
     private String idProcedencia;
     private String idUsuario;
     private String idCliente;
+    private String idBanco;
     private String detalle;
     private int procedencia;
     private String fecha;
     private String hora;
     private int forma;
     private double monto;
+    private double vuelto;
+    private String operacion;
+    
+    private BancoTB bancoTB;
 
     public EgresoTB() {
     }
@@ -57,6 +60,14 @@ public class EgresoTB {
 
     public void setIdCliente(String idCliente) {
         this.idCliente = idCliente;
+    }
+
+    public String getIdBanco() {
+        return idBanco;
+    }
+
+    public void setIdBanco(String idBanco) {
+        this.idBanco = idBanco;
     }
 
     public String getDetalle() {
@@ -106,7 +117,29 @@ public class EgresoTB {
     public void setMonto(double monto) {
         this.monto = monto;
     }
-    
-    
-    
+
+    public double getVuelto() {
+        return vuelto;
+    }
+
+    public void setVuelto(double vuelto) {
+        this.vuelto = vuelto;
+    }
+
+    public String getOperacion() {
+        return operacion;
+    }
+
+    public void setOperacion(String operacion) {
+        this.operacion = operacion;
+    }
+
+    public BancoTB getBancoTB() {
+        return bancoTB;
+    }
+
+    public void setBancoTB(BancoTB bancoTB) {
+        this.bancoTB = bancoTB;
+    }
+
 }

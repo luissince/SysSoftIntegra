@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -10,103 +12,89 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.cobrar.FxVentaAbonoProcesoController">
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.cobrar.FxGenerarCobroController">
    <children>
-      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox fx:id="vbContenido" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em; -fx-border-width: 0px0px 1px 0px; -fx-border-color: #3c8dbc; -fx-border-width: 0px 0px 1px 0px;">
+            <VBox alignment="CENTER" style="-fx-spacing: 0.3333333333333333em; -fx-padding: 0.5em;">
                <children>
-                  <Label styleClass="labelRobotoBold16" text="Cobrar" textFill="#020203">
-                     <graphic>
-                        <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../image/presupuesto.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Label>
+                  <Label fx:id="lblTotal" styleClass="labelRobotoBold16" text="TOTAL A COBRAR M. 00.00" textFill="#020203" />
+                  <Label fx:id="lblMonedaLetras" styleClass="labelRoboto15" text="( CIEN/ 100 MONEDA )" textFill="#020203" />
+               </children>
+            </VBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <Separator HBox.hgrow="ALWAYS" />
+                  <Label styleClass="labelOpenSansRegular13" textFill="#020203" />
+                  <Separator HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
-            <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.5em;">
+            <HBox alignment="TOP_CENTER">
                <children>
-                  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                  <AnchorPane prefHeight="350.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefWidth="160.0" styleClass="labelRoboto13" text="Monto:" textFill="#020203">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../image/billetes.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Label>
+                        <VBox fx:id="vbViewEfectivo" alignment="CENTER" layoutX="10.0" layoutY="10.0" style="-fx-padding: 0.6666666666666666em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ScrollPane fitToWidth="true" styleClass="scroll-pane-primary" VBox.vgrow="ALWAYS">
+                                 <content>
+                                    <VBox style="-fx-padding: 0.6666666666666666em; -fx-spacing: 0.6666666666666666em;">
+                                       <children>
+                                          <HBox style="-fx-spacing: 0.5em;">
+                                             <children>
+                                                <VBox alignment="BOTTOM_LEFT" style="-fx-spacing: 0.5333333333333333em;" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label alignment="CENTER" styleClass="labelOpenSansRegular13" text="Método de pago" textFill="#020203" />
+                                                      <HBox>
+                                                         <children>
+                                                            <ComboBox fx:id="cbMetodoTransaccion" prefHeight="30.0" prefWidth="260.0" promptText="Seleccione" HBox.hgrow="ALWAYS" />
+                                                            <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionAgregarMetodoPago" onKeyPressed="#onKeyPressedAgregarMetodoPago" prefHeight="30.0" styleClass="buttonLight" text="Agregar">
+                                                               <graphic>
+                                                                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../../image/plus.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="BOTTOM_CENTER">
+                                                   <children>
+                                                      <Label fx:id="lblVueltoContadoNombre" contentDisplay="TOP" styleClass="labelRoboto17" text="n.v." textFill="#020203" />
+                                                      <Label fx:id="lblVueltoContado" alignment="CENTER" contentDisplay="CENTER" styleClass="labelRobotoBold19" text="M. 00.00" textFill="#0754b9" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <VBox fx:id="vbContenedorMetodoPago" alignment="CENTER" style="-fx-spacing: 0.6666666666666666em;" />
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
-                  <TextField fx:id="txtMonto" onAction="#onActionAceptar" onKeyTyped="#onKeyTypedMonto" prefHeight="30.0" prefWidth="320.0" styleClass="text-field-normal" />
+                  </AnchorPane>
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.5em;">
                <children>
                   <VBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefWidth="160.0" styleClass="labelRoboto13" text="Observación:" textFill="#020203">
+                        <Label maxWidth="1.7976931348623157E308" prefWidth="160.0" styleClass="labelRoboto13" text="Observación:" textFill="#020203">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../image/edit.png" />
                                  </image>
                               </ImageView>
-                           </graphic></Label>
+                           </graphic>
+                        </Label>
                      </children>
                   </VBox>
                   <TextField fx:id="txtObservacion" onAction="#onActionAceptar" prefHeight="30.0" prefWidth="320.0" styleClass="text-field-normal" text="N/D" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.5em;">
-               <children>
-                  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                     <children>
-                        <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefWidth="160.0" styleClass="labelRoboto13" text="Cobrar por:" textFill="#020203">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../image/choose_movement.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Label>
-                     </children>
-                  </VBox>
-                  <HBox alignment="CENTER_LEFT" prefWidth="320.0" style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                     <children>
-                        <RadioButton fx:id="rbCaja" mnemonicParsing="false" selected="true" text="Caja" />
-                        <RadioButton fx:id="rbIngreso" mnemonicParsing="false" text="Ingreso" />
-                     </children>
-                  </HBox>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.5em;">
-               <children>
-                  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                     <children>
-                        <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefWidth="160.0" styleClass="labelRoboto13" text="Forma de Cobro:" textFill="#020203">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../image/options.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Label>
-                     </children>
-                  </VBox>
-                  <HBox alignment="CENTER_LEFT" prefWidth="320.0" style="-fx-spacing: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
-                     <children>
-                        <RadioButton fx:id="rbEfectivo" mnemonicParsing="false" selected="true" text="Efectivo" />
-                        <RadioButton fx:id="rbTarjeta" mnemonicParsing="false" text="Tarjeta" />
-                        <RadioButton fx:id="rbDeposito" mnemonicParsing="false" text="Deposito" />
-                     </children>
-                  </HBox>
                </children>
             </HBox>
             <HBox alignment="CENTER" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 1px 0px 0px 0px;">
@@ -133,5 +121,23 @@
             </HBox>
          </children>
       </VBox>
+      <HBox fx:id="hbLoadProcesando" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="lblTextoProceso" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefWidth="100.0" style="-fx-text-fill: white;" styleClass="labelRoboto13" text="CARGANDO INFORMACIÓN..." textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="btnCancelarProceso" mnemonicParsing="false" styleClass="buttonLightError" text="Cancelar Proceso">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/load.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

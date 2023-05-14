@@ -99,9 +99,9 @@ public class FxVentaUtilidadesController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Tools.actualDate(Tools.getDate(), dpFechaInicial);
         Tools.actualDate(Tools.getDate(), dpFechaFinal);
-        cbCategorias.getItems().addAll(DetalleADO.GetDetailId("0006"));
-        cbMarcas.getItems().addAll(DetalleADO.GetDetailId("0007"));
-        cbPresentacion.getItems().addAll(DetalleADO.GetDetailId("0008"));
+        cbCategorias.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0006"));
+        cbMarcas.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0007"));
+        cbPresentacion.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0008"));
         //0013
         idSuministro = "";
     }

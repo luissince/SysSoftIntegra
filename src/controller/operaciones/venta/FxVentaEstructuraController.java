@@ -244,7 +244,7 @@ public class FxVentaEstructuraController implements Initializable {
 
     private void loadDataComponent() {
         cbComprobante.getItems().clear();
-        cbComprobante.getItems().addAll(TipoDocumentoADO.GetDocumentoCombBoxVentas());
+        cbComprobante.getItems().addAll(TipoDocumentoADO.obtenerComprobantesParaVenta());
 
         if (!cbComprobante.getItems().isEmpty()) {
             for (int i = 0; i < cbComprobante.getItems().size(); i++) {
@@ -263,7 +263,7 @@ public class FxVentaEstructuraController implements Initializable {
         }
 
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.GetMonedasComboBox());
+        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
 
         if (!cbMoneda.getItems().isEmpty()) {
             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
@@ -276,7 +276,7 @@ public class FxVentaEstructuraController implements Initializable {
         }
 
         cbTipoDocumento.getItems().clear();
-        cbTipoDocumento.getItems().addAll(DetalleADO.GetDetailId("0003"));
+        cbTipoDocumento.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0003"));
 
         idCotizacion = "";
 
@@ -1133,7 +1133,7 @@ public class FxVentaEstructuraController implements Initializable {
         Task<VentaTB> task = new Task<VentaTB>() {
             @Override
             public VentaTB call() throws Exception {
-                Object result = VentaADO.Obtener_Venta_ById(idVenta);
+                Object result = VentaADO.obtenerVentaById(idVenta);
                 if (result instanceof VentaTB) {
                     return (VentaTB) result;
                 }
@@ -1252,7 +1252,7 @@ public class FxVentaEstructuraController implements Initializable {
         Task<VentaTB> task = new Task<VentaTB>() {
             @Override
             public VentaTB call() throws Exception {
-                Object result = VentaADO.Obtener_Venta_ById(idVenta);
+                Object result = VentaADO.obtenerVentaById(idVenta);
 
                 if (result instanceof VentaTB) {
                     return (VentaTB) result;

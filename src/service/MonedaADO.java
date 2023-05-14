@@ -313,7 +313,7 @@ public class MonedaADO {
         }
     }
 
-    public static ArrayList<MonedaTB> GetMonedasComboBox() {
+    public static ArrayList<MonedaTB> ObtenerListaMonedas() {
         DBUtil dbf = new DBUtil();
         ArrayList<MonedaTB> list = new ArrayList<>();
         PreparedStatement statement = null;

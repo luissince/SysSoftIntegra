@@ -42,14 +42,14 @@ public class FxComprasCancelarController implements Initializable {
         } else {
             short value = Tools.AlertMessageConfirmation(apWindow, "Detalle de la compra", "¿Está seguro de continuar?");
             if (value == 1) {
-                String result = CompraADO.CancelarCompraProducto(comprasDetalleController.getCompraTB(), txtObservacion.getText().toUpperCase());
+                String result = CompraADO.anularCompra(comprasDetalleController.getCompraTB(), txtObservacion.getText().toUpperCase());
                 if (result.equalsIgnoreCase("cancel")) {
                     Tools.AlertMessageWarning(apWindow, "Detalle de la compra", "La compra ya se encuentra anulada.");
                     Tools.Dispose(apWindow);
                 } else if (result.equalsIgnoreCase("updated")) {
                     Tools.AlertMessageInformation(apWindow, "Detalle de la compra", "Se completo correctamente los cambios.");
                     Tools.Dispose(apWindow);
-                    comprasDetalleController.setLoadDetalle(comprasDetalleController.getCompraTB().getIdCompra());
+                    comprasDetalleController.loadInitComponents(comprasDetalleController.getCompraTB().getIdCompra());
                 } else if (result.equalsIgnoreCase("credito")) {
                     Tools.AlertMessageWarning(apWindow, "Detalle de la compra", "No se puede eliminar la compra porque tiene ligado un historial de crédito.");
                     Tools.Dispose(apWindow);

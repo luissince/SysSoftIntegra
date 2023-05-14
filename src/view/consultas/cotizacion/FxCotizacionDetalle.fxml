@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="apWindow" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.operaciones.notacredito.FxNotaCreditoDetalleController">
+<AnchorPane fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.cotizacion.FxCotizacionDetalleController">
    <children>
       <ScrollPane fx:id="spBody" fitToWidth="true" styleClass="scroll-pane-secundario" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <content>
@@ -26,18 +26,18 @@
                      <children>
                         <Label onMouseClicked="#onMouseClickedBehind" style="-fx-cursor: hand;">
                            <graphic>
-                              <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                              <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
                                  <image>
                                     <Image url="@../../image/right.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Label>
-                        <Label styleClass="labelRobotoBold15" text="Detalle de la Nota de Crédito" textFill="#020203">
+                        <Label styleClass="labelRobotoBold15" text="Detalle de la Cotización" textFill="#020203">
                            <graphic>
-                              <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../image/note.png" />
+                                    <Image url="@../../image/cotizacion.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -74,22 +74,30 @@
                         </Button>
                      </children>
                   </HBox>
-                  <HBox style="-fx-background-color: #e7e6e6; -fx-padding: 0.8333333333333334em;">
+                  <HBox style="-fx-background-color: #e7e6e6; -fx-padding: 0.8333333333333334em;" VBox.vgrow="ALWAYS">
                      <children>
                         <VBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em; -fx-background-color: white; -fx-border-color: #cccccc;" HBox.hgrow="ALWAYS">
                            <children>
-                              <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-spacing: 0.4166666666666667em; -fx-padding: 0em 0.8333333333333334em;">
+                              <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0em 0.8333333333333334em;">
                                  <children>
-                                    <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="Fecha Venta:" />
-                                    <Text fx:id="lblFechaRegistro" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular13" text="00/00/0000" />
+                                    <HBox style="-fx-spacing: 0.6666666666666666em;">
+                                       <children>
+                                          <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="Cotización:" />
+                                          <Text fx:id="lblNumero" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox style="-fx-spacing: 0.6666666666666666em;">
+                                       <children>
+                                          <Text fill="#020203" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="Fecha:" />
+                                          <Text fx:id="lblFechaCotizacion" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRobotoBold13" text="00/00/0000" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" style="-fx-padding: 0em 0.8333333333333334em;">
                                  <children>
-                                    <GridPane style="-fx-hgap: 0.8333333333333334em; -fx-vgap: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+                                    <GridPane style="-fx-hgap: 0.8333333333333334em; -fx-vgap: 0.8333333333333334em;">
                                        <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                                           <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
                                        </columnConstraints>
@@ -98,28 +106,22 @@
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
-                                          <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
                                           <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Cliente:" textFill="#020203" />
-                                          <Text fx:id="lblCliente" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="1" />
+                                          <Text fx:id="lblCliente" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular13" text="-" GridPane.columnIndex="1" />
                                           <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Teléfono y Celular:" textFill="#020203" GridPane.rowIndex="1" />
-                                          <Text fx:id="lblClienteCelulares" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Text fx:id="lblCelularTelefono" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                           <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Correo electrónico:" textFill="#020203" GridPane.rowIndex="2" />
-                                          <Text fx:id="lbCorreoElectronico" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Text fx:id="lbCorreoElectronico" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                           <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Dirección:" textFill="#020203" GridPane.rowIndex="3" />
-                                          <Text fx:id="lbDireccion" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Comprobante" textFill="#020203" GridPane.rowIndex="4" />
-                                          <Text fx:id="lblNotaCredito" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Comprobante de Referencia:" textFill="#020203" GridPane.columnIndex="2" />
-                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Motivo de Anulación:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                          <Text fx:id="lblComprobanteReferencia" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" />
-                                          <Text fx:id="lblMotivoAnulacion" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Serie y Numeración:" textFill="#020203" GridPane.rowIndex="5" />
-                                          <Text fx:id="lblNotaCreditoSerieNumeracion" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Serie y Numeración:" textFill="#020203" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                          <Text fx:id="lblSerieNumeracionReferencia" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelRoboto13" text="-" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                          <Text fx:id="lbDireccion" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Observaciones:" textFill="#020203" GridPane.rowIndex="4" />
+                                          <Text fx:id="lblObservaciones" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Vendedor:" textFill="#020203" GridPane.rowIndex="5" />
+                                          <Text fx:id="lblVendedor" fill="#055bd3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular13" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                        </children>
                                     </GridPane>
                                  </children>
@@ -167,22 +169,22 @@
                                                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
                                              </columnConstraints>
                                              <rowConstraints>
-                                                <RowConstraints vgrow="SOMETIMES" />
-                                                <RowConstraints vgrow="SOMETIMES" />
-                                                <RowConstraints vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em; -fx-text-fill: #020203;" styleClass="labelRoboto13" text="IMPORTE BRUTO:" />
-                                                <Label fx:id="lblValorVenta" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" />
-                                                <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em; -fx-text-fill: #020203;" styleClass="labelRoboto13" text="DESCUENTO:" GridPane.rowIndex="1" />
+                                                <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill: #020203;" styleClass="labelRoboto13" text="IMPORTE BRUTO:" />
+                                                <Label fx:id="lblImporteBruto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" />
+                                                <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill: #020203;" styleClass="labelRoboto13" text="DESCUENTO:" GridPane.rowIndex="1" />
                                                 <Label fx:id="lblDescuento" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em; -fx-text-fill: #020203;" styleClass="labelRoboto13" text="SUB IMPORTE:" GridPane.rowIndex="2" />
+                                                <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill: #020203;" styleClass="labelRoboto13" text="SUB IMPORTE:" GridPane.rowIndex="2" />
                                                 <Label fx:id="lblSubImporteNeto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill: #020203;" styleClass="labelRoboto13" text="IMPORTE NETO:" GridPane.rowIndex="4" />
+                                                <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="IMPORTE NETO:" textFill="#020203" GridPane.rowIndex="4" />
                                                 <Label fx:id="lblImporteNeto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRobotoBold15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <Label maxWidth="1.7976931348623157E308" style="-fx-padding: 0.4166666666666667em 0em  0.4166666666666667em 0em; -fx-text-fill: #020203;" styleClass="labelRoboto13" text="IMPUESTO(%)" GridPane.rowIndex="3" />
+                                                <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="IMPUESTO:" textFill="#020203" GridPane.rowIndex="3" />
                                                 <Label fx:id="lblImpuesto" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" styleClass="labelRoboto15" text="M. 0.00" textFill="#0771d3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                              </children>
                                           </GridPane>

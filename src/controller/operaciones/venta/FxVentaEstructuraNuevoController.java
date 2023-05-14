@@ -184,7 +184,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
 
     private void loadDataComponent() {
         cbComprobante.getItems().clear();
-        TipoDocumentoADO.GetDocumentoCombBoxVentas().forEach(e -> cbComprobante.getItems().add(e));
+        TipoDocumentoADO.obtenerComprobantesParaVenta().forEach(e -> cbComprobante.getItems().add(e));
         if (!cbComprobante.getItems().isEmpty()) {
             for (int i = 0; i < cbComprobante.getItems().size(); i++) {
                 if (cbComprobante.getItems().get(i).isPredeterminado()) {
@@ -202,7 +202,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         }
 
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.GetMonedasComboBox());
+        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
 
         if (!cbMoneda.getItems().isEmpty()) {
             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
@@ -215,7 +215,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         }
 
         cbTipoDocumento.getItems().clear();
-        cbTipoDocumento.getItems().addAll(DetalleADO.GetDetailId("0003"));
+        cbTipoDocumento.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0003"));
 
         idCliente = Session.CLIENTE_ID;
         txtNumeroDocumento.setText(Session.CLIENTE_NUMERO_DOCUMENTO);
@@ -649,79 +649,100 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             if (cbMoneda.getSelectionModel().getSelectedIndex() < 0) {
                 Tools.AlertMessageWarning(vbWindow, "Venta", "Seleccione la moneda ha usar.");
                 cbMoneda.requestFocus();
-            } else if (cbComprobante.getSelectionModel().getSelectedIndex() < 0) {
+                return;
+            }
+
+            if (cbComprobante.getSelectionModel().getSelectedIndex() < 0) {
                 Tools.AlertMessageWarning(vbWindow, "Venta", "Seleccione el tipo de comprobante.");
                 cbComprobante.requestFocus();
-            } else if (cbTipoDocumento.getSelectionModel().getSelectedIndex() < 0) {
+                return;
+            }
+
+            if (cbTipoDocumento.getSelectionModel().getSelectedIndex() < 0) {
                 Tools.AlertMessageWarning(vbWindow, "Ventas", "Seleccione el tipo de documento del cliente.");
                 cbTipoDocumento.requestFocus();
-            } else if (!Tools.isNumeric(txtNumeroDocumento.getText().trim())) {
+                return;
+            }
+
+            if (!Tools.isNumeric(txtNumeroDocumento.getText().trim())) {
                 Tools.AlertMessageWarning(vbWindow, "Ventas", "Ingrese el número del documento del cliente.");
                 txtNumeroDocumento.requestFocus();
-            } else if (cbComprobante.getSelectionModel().getSelectedItem().isCampo() && txtNumeroDocumento.getText()
+                return;
+            }
+
+            if (cbComprobante.getSelectionModel().getSelectedItem().isCampo() && txtNumeroDocumento.getText()
                     .length() != cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo()) {
                 Tools.AlertMessageWarning(vbWindow, "Ventas", "El número de documento tiene que tener "
                         + cbComprobante.getSelectionModel().getSelectedItem().getNumeroCampo() + " caracteres.");
                 txtNumeroDocumento.requestFocus();
-            } else if (Tools.isText(txtDatosCliente.getText())) {
+                return;
+            }
+            if (Tools.isText(txtDatosCliente.getText())) {
                 Tools.AlertMessageWarning(vbWindow, "Ventas", "Ingrese los datos del cliente.");
                 txtDatosCliente.requestFocus();
-            } else if (lvProductoAgregados.getItems().isEmpty()) {
+                return;
+            }
+
+            if (lvProductoAgregados.getItems().isEmpty()) {
                 Tools.AlertMessageWarning(vbWindow, "Venta", "No hay productos en la lista para vender.");
                 txtSearch.requestFocus();
-            } else if (importeNetoTotal <= 0) {
-                Tools.AlertMessageWarning(vbWindow, "Venta", "El total de la venta no puede ser menor que 0.");
-            } else {
-
-                VentaTB ventaTB = new VentaTB();
-                ventaTB.setVendedor(Session.USER_ID);
-                ventaTB.setIdComprobante(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento());
-
-                TipoDocumentoTB tipoDocumentoTB = new TipoDocumentoTB();
-                tipoDocumentoTB.setNombre(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
-                ventaTB.setTipoDocumentoTB(tipoDocumentoTB);
-
-                ventaTB.setSerie(lblSerie.getText());
-                ventaTB.setNumeracion(lblNumeracion.getText());
-                ventaTB.setFechaVenta(Tools.getDate());
-                ventaTB.setHoraVenta(Tools.getTime());
-                ventaTB.setTotal(importeNetoTotal);
-                ventaTB.setIdCotizacion("");
-
-                ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
-                ventaTB.setMonedaTB(cbMoneda.getSelectionModel().getSelectedItem());
-
-                ClienteTB clienteTB = new ClienteTB();
-                clienteTB.setIdCliente(idCliente);
-                clienteTB.setTipoDocumento(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
-                clienteTB.setNumeroDocumento(txtNumeroDocumento.getText().trim().toUpperCase());
-                clienteTB.setInformacion(txtDatosCliente.getText().trim().toUpperCase());
-                clienteTB.setCelular(txtCelularCliente.getText().trim().toUpperCase());
-                clienteTB.setEmail(txtCorreoElectronico.getText().trim().toUpperCase());
-                clienteTB.setDireccion(txtDireccionCliente.getText().trim().toUpperCase());
-                ventaTB.setClienteTB(clienteTB);
-
-                ArrayList<SuministroTB> suministroTBs = new ArrayList<>();
-                lvProductoAgregados.getItems().forEach(e -> suministroTBs.add(e.getSuministroTB()));
-
-                ventaTB.setSuministroTBs(suministroTBs);
-
-                fxPrincipalController.openFondoModal();
-                URL url = getClass().getResource(FilesRouters.FX_VENTA_PROCESO_NUEVO);
-                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                Parent parent = fXMLLoader.load(url.openStream());
-                // Controlller here
-                FxVentaProcesoNuevoController controller = fXMLLoader.getController();
-                controller.setInitVentaEstructuraNuevoController(this);
-                //
-                Stage stage = WindowStage.StageLoaderModal(parent, "Completar la venta",
-                        vbWindow.getScene().getWindow());
-                stage.setResizable(false);
-                stage.sizeToScene();
-                stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-                stage.setOnShowing(w -> controller.setInitComponents(ventaTB, vender_con_cantidades_negativas));
-                stage.show();
+                return;
             }
+
+            if (importeNetoTotal <= 0) {
+                Tools.AlertMessageWarning(vbWindow, "Venta", "El total de la venta no puede ser menor que 0.");
+                return;
+            }
+
+            VentaTB ventaTB = new VentaTB();
+            ventaTB.setVendedor(Session.USER_ID);
+            ventaTB.setIdComprobante(cbComprobante.getSelectionModel().getSelectedItem().getIdTipoDocumento());
+
+            TipoDocumentoTB tipoDocumentoTB = new TipoDocumentoTB();
+            tipoDocumentoTB.setNombre(cbComprobante.getSelectionModel().getSelectedItem().getNombre());
+            ventaTB.setTipoDocumentoTB(tipoDocumentoTB);
+
+            ventaTB.setSerie(lblSerie.getText());
+            ventaTB.setNumeracion(lblNumeracion.getText());
+            ventaTB.setFechaVenta(Tools.getDate());
+            ventaTB.setHoraVenta(Tools.getTime());
+            ventaTB.setTotal(importeNetoTotal);
+            ventaTB.setIdCotizacion("");
+
+            ventaTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
+            ventaTB.setMonedaTB(cbMoneda.getSelectionModel().getSelectedItem());
+
+            ClienteTB clienteTB = new ClienteTB();
+            clienteTB.setIdCliente(idCliente);
+            clienteTB.setTipoDocumento(cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle());
+            clienteTB.setNumeroDocumento(txtNumeroDocumento.getText().trim().toUpperCase());
+            clienteTB.setInformacion(txtDatosCliente.getText().trim().toUpperCase());
+            clienteTB.setCelular(txtCelularCliente.getText().trim().toUpperCase());
+            clienteTB.setEmail(txtCorreoElectronico.getText().trim().toUpperCase());
+            clienteTB.setDireccion(txtDireccionCliente.getText().trim().toUpperCase());
+            ventaTB.setClienteTB(clienteTB);
+
+            ArrayList<SuministroTB> suministroTBs = new ArrayList<>();
+            lvProductoAgregados.getItems().forEach(e -> suministroTBs.add(e.getSuministroTB()));
+
+            ventaTB.setSuministroTBs(suministroTBs);
+
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_VENTA_PROCESO_NUEVO);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            // Controlller here
+            FxVentaProcesoController controller = fXMLLoader.getController();
+            controller.setInitVentaEstructuraNuevoController(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Completar la venta",
+                    vbWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShowing(w -> controller.loadInitComponents(ventaTB, vender_con_cantidades_negativas));
+            stage.show();
+
         } catch (IOException ex) {
             System.out.println("openWindowVentaProceso():" + ex.getLocalizedMessage());
         }

@@ -114,7 +114,7 @@ public class FxTrasladoGuiaController implements Initializable {
         tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         txtPartida.setText(Session.COMPANY_DOMICILIO);
-        cbMotivoTraslado.getItems().addAll(DetalleADO.GetDetailId("0017"));
+        cbMotivoTraslado.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0017"));
         idVenta = "";
     }
 
@@ -294,7 +294,7 @@ public class FxTrasladoGuiaController implements Initializable {
         txtLlegada.clear();
         txtDocumentoAsociado.clear();
         cbMotivoTraslado.getItems().clear();
-        cbMotivoTraslado.getItems().addAll(DetalleADO.GetDetailId("0017"));
+        cbMotivoTraslado.getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0017"));
         idVenta = "";
         txtObservacion.clear();
         txtNumeracion.setText("");

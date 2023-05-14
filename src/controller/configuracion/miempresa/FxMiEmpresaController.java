@@ -99,7 +99,7 @@ public class FxMiEmpresaController implements Initializable {
                 ArrayList<Object> objects = new ArrayList<>();
                 objects.add(DetalleADO.Get_Detail_IdName("3", "0011", ""));
                 objects.add(DetalleADO.Get_Detail_IdName("3", "0003", ""));
-                objects.add(EmpresaADO.GetEmpresa());
+                objects.add(EmpresaADO.obtenerEmpresa());
                 return objects;
             }
         };

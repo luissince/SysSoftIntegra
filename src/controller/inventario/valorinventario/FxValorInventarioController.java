@@ -326,7 +326,7 @@ public class FxValorInventarioController implements Initializable {
 //        
         searchComboBoxCategoria = new SearchComboBox<>(cbCategoria, true);
         searchComboBoxCategoria.setFilter((item, text) -> item.getNombre().toLowerCase().contains(text.toLowerCase()));
-        searchComboBoxCategoria.getComboBox().getItems().addAll(DetalleADO.GetDetailId("0006"));
+        searchComboBoxCategoria.getComboBox().getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0006"));
         searchComboBoxCategoria.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             if (null == t.getCode()) {
                 searchComboBoxCategoria.getSearchComboBoxSkin().getSearchBox().requestFocus();
@@ -377,7 +377,7 @@ public class FxValorInventarioController implements Initializable {
 //        
         searchComboBoxMarca = new SearchComboBox<>(cbMarca, true);
         searchComboBoxMarca.setFilter((item, text) -> item.getNombre().toLowerCase().contains(text.toLowerCase()));
-        searchComboBoxMarca.getComboBox().getItems().addAll(DetalleADO.GetDetailId("0007"));
+        searchComboBoxMarca.getComboBox().getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0007"));
         searchComboBoxMarca.getSearchComboBoxSkin().getItemView().setOnKeyPressed(t -> {
             if (null == t.getCode()) {
                 searchComboBoxMarca.getSearchComboBoxSkin().getSearchBox().requestFocus();
@@ -481,10 +481,10 @@ public class FxValorInventarioController implements Initializable {
         }
 
         searchComboBoxCategoria.getComboBox().getItems().clear();
-        searchComboBoxCategoria.getComboBox().getItems().addAll(DetalleADO.GetDetailId("0006"));
+        searchComboBoxCategoria.getComboBox().getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0006"));
 
         searchComboBoxMarca.getComboBox().getItems().clear();
-        searchComboBoxMarca.getComboBox().getItems().addAll(DetalleADO.GetDetailId("0007"));
+        searchComboBoxMarca.getComboBox().getItems().addAll(DetalleADO.obtenerDetallePorIdMantenimiento("0007"));
         loadInit();
     }
 

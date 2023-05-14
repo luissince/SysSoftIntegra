@@ -141,7 +141,7 @@ public class FxComprasRealizadasController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() {
-                return CompraADO.Listar_Compras_Realizadas(opcion, value, fechaInicial, fechaFinal, comprobante, estadoCompra, (paginacion - 1) * 20, 20);
+                return CompraADO.listaComprasDetalle(opcion, value, fechaInicial, fechaFinal, comprobante, estadoCompra, (paginacion - 1) * 20, 20);
             }
         };
         task.setOnSucceeded(w -> {
@@ -189,7 +189,7 @@ public class FxComprasRealizadasController implements Initializable {
 
             FxComprasDetalleController controller = fXMLPrincipal.getController();
             controller.setInitComptrasController(this, fxPrincipalController);
-            controller.setLoadDetalle(tvList.getSelectionModel().getSelectedItem().getIdCompra());
+            controller.loadInitComponents(tvList.getSelectionModel().getSelectedItem().getIdCompra());
 
             fxPrincipalController.getVbContent().getChildren().clear();
             AnchorPane.setLeftAnchor(node, 0d);

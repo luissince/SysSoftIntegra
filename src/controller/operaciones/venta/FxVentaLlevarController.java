@@ -1,5 +1,6 @@
 package controller.operaciones.venta;
 
+import controller.consultas.venta.FxVentaDetalleController;
 import controller.tools.Tools;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -76,7 +77,7 @@ public class FxVentaLlevarController implements Initializable {
                 case "update":
                     Tools.AlertMessageInformation(apWindow, "Venta detalle", "Se actualizó correctamente el cambio.");
                     Tools.Dispose(apWindow);
-                    ventaDetalleController.setInitComponents(idVenta);
+                    ventaDetalleController.loadInitComponents(idVenta);
                     break;
                 case "noproduct":
                     Tools.AlertMessageWarning(apWindow, "Venta detalle", "No se pudo completar por problemas de id de venta y producto.");
