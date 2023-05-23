@@ -43,7 +43,7 @@
                                              <children>
                                                 <VBox alignment="BOTTOM_LEFT" style="-fx-spacing: 0.5333333333333333em;" HBox.hgrow="ALWAYS">
                                                    <children>
-                                                      <Label alignment="CENTER" styleClass="labelOpenSansRegular13" text="Método de pago" textFill="#020203" />
+                                                      <Label alignment="CENTER" styleClass="labelOpenSansRegular13" text="Método de cobro" textFill="#020203" />
                                                       <HBox>
                                                          <children>
                                                             <ComboBox fx:id="cbMetodoTransaccion" prefHeight="30.0" prefWidth="260.0" promptText="Seleccione" HBox.hgrow="ALWAYS" />
@@ -62,7 +62,7 @@
                                                 </VBox>
                                                 <VBox alignment="BOTTOM_CENTER">
                                                    <children>
-                                                      <Label fx:id="lblVueltoContadoNombre" contentDisplay="TOP" styleClass="labelRoboto17" text="n.v." textFill="#020203" />
+                                                      <Label fx:id="lblVueltoContadoNombre" contentDisplay="TOP" styleClass="labelRoboto15" text="n.v." textFill="#020203" />
                                                       <Label fx:id="lblVueltoContado" alignment="CENTER" contentDisplay="CENTER" styleClass="labelRobotoBold19" text="M. 00.00" textFill="#0754b9" />
                                                    </children>
                                                 </VBox>

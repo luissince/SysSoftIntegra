@@ -149,13 +149,13 @@ public class FxGenerarCobroController implements Initializable {
             ObservableList<BancoTB> bancos = task.getValue();
             cbMetodoTransaccion.getItems().addAll(bancos);
 
-            Optional<BancoTB> bancoConFormaPago = bancos.stream().filter(b -> b.getFormaPago() == 1).findFirst();
-            bancoConFormaPago.ifPresent(this::generarMetodoPago);
+            Optional<BancoTB> bancoConFormaCobro = bancos.stream().filter(b -> b.getFormaPago() == 1).findFirst();
+            bancoConFormaCobro.ifPresent(this::generarMetodoCobro);
 
             totalVenta = Double.parseDouble(Tools.roundingValue(ventaTB.getMontoRestante(), 2));
 
             lblTotal.setText(
-                    "TOTAL A PAGAR: " + ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(totalVenta, 2));
+                    "TOTAL A COBRAR: " + ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(totalVenta, 2));
             lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
             lblMonedaLetras.setText(monedaCadena.Convertir(Tools.roundingValue(totalVenta, 2), true,
                     ventaTB.getMonedaTB().getNombre()));
@@ -173,7 +173,7 @@ public class FxGenerarCobroController implements Initializable {
         double montoActual = 0;
 
         if (vbContenedorMetodoPago.getChildren().isEmpty()) {
-            Tools.AlertMessageWarning(window, "Cobro", "No hay metodos de pago para continuar.");
+            Tools.AlertMessageWarning(window, "Cobro", "No hay metodos de cobro para continuar.");
             cbMetodoTransaccion.requestFocus();
             return;
         }
@@ -229,7 +229,7 @@ public class FxGenerarCobroController implements Initializable {
         if (vbContenedorMetodoPago.getChildren().size() > 1) {
             if (montoActual != totalVenta) {
                 Tools.AlertMessageWarning(window, "Cobro",
-                        "Si se eligen más de dos métodos de pago, no se podrá recibir vuelto o cambio.");
+                        "Si se eligen más de dos métodos de cobro, no se podrá recibir vuelto o cambio.");
                 return;
             }
         }
@@ -440,9 +440,9 @@ public class FxGenerarCobroController implements Initializable {
 
     }
 
-    private void addMetodoPago() {
+    private void addMetodoCobro() {
         if (cbMetodoTransaccion.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(window, "Venta", "Seleccione el método de pago.");
+            Tools.AlertMessageWarning(window, "Venta", "Seleccione el método de cobro.");
             cbMetodoTransaccion.requestFocus();
             return;
         }
@@ -459,10 +459,10 @@ public class FxGenerarCobroController implements Initializable {
             return;
         }
 
-        generarMetodoPago(cbMetodoTransaccion.getSelectionModel().getSelectedItem());
+        generarMetodoCobro(cbMetodoTransaccion.getSelectionModel().getSelectedItem());
     }
 
-    private void generarMetodoPago(BancoTB bancoTB) {
+    private void generarMetodoCobro(BancoTB bancoTB) {
         HBox hBox = new HBox();
         hBox.setId(bancoTB.getIdBanco());
         hBox.setStyle("-fx-spacing: 0.6666666666666666em;");
@@ -576,14 +576,14 @@ public class FxGenerarCobroController implements Initializable {
     @FXML
     private void onKeyPressedAgregarMetodoPago(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            addMetodoPago();
+            addMetodoCobro();
             event.consume();
         }
     }
 
     @FXML
     private void onActionAgregarMetodoPago(ActionEvent event) {
-        addMetodoPago();
+        addMetodoCobro();
     }
 
     @FXML
