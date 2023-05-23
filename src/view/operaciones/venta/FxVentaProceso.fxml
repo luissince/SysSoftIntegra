@@ -113,7 +113,7 @@
                                                             </VBox>
                                                             <VBox alignment="BOTTOM_CENTER">
                                                                <children>
-                                                                  <Label fx:id="lblVueltoContadoNombre" contentDisplay="TOP" styleClass="labelRoboto17" text="n.v." textFill="#020203" />
+                                                                  <Label fx:id="lblVueltoContadoNombre" contentDisplay="TOP" styleClass="labelRoboto13" text="n.v." textFill="#020203" />
                                                                   <Label fx:id="lblVueltoContado" alignment="CENTER" contentDisplay="CENTER" styleClass="labelRobotoBold19" text="M. 00.00" textFill="#0754b9" />
                                                                </children>
                                                             </VBox>
