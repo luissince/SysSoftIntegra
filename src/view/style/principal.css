@@ -1,36 +1,40 @@
 @font-face {
+    font-family: "Roboto";
     src: url('Roboto-Medium.ttf');
 }
 
 @font-face {
+    font-family: "Roboto";
     src: url('Roboto-Bold.ttf');
 }
 
 @font-face {
+    font-family: "Roboto";
     src: url('Roboto-Regular.ttf');
 }
 
 @font-face {
-    -fx-font-family: 'Monospace';
+    font-family: "Monospace";
     src: url('Monospace.ttf');
 }
 
 @font-face {
+    font-family: "Monospace";
     src: url('OpenSans-Regular.ttf');
 }
 
 @font-face {
-    -fx-font-family: 'Qwitcher Grypen';
+    font-family: 'Qwitcher Grypen';
     src: url('QwitcherGrypen-Regular.ttf');
 }
 
 @font-face {
-    -fx-font-family: 'Qwitcher Grypen';
+    font-family: 'Qwitcher Grypen';
     src: url('QwitcherGrypen-Bold.ttf');
 }
 
 @font-face {
-    -fx-font-family: 'Dancing Script';
+    font-family: 'Dancing Script';
     src: url('DancingScript-VariableFont_wght.ttf');
 }
 

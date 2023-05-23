@@ -4424,85 +4424,110 @@ public class VentaADO {
         }
     }
 
-    public static ModeloObject RegistrarAbono(VentaCreditoTB ventaCreditoTB, IngresoTB ingresoTB,
-            MovimientoCajaTB movimientoCajaTB) {
+    public static String[] RegistrarAbono(VentaCreditoTB ventaCreditoTB, List<IngresoTB> ingresoTBs) {
+        // Creamos el objeto encargado de iniciar la consulta a la base de datos.
         DBUtil dbf = new DBUtil();
 
-        ModeloObject result = new ModeloObject();
-        CallableStatement codigo_ingreso = null;
+        // Variables encargadas de realizar consultas a la base de datos
+        CallableStatement codigoIngreso = null;
         PreparedStatement statementValidate = null;
         PreparedStatement statementVenta = null;
         PreparedStatement statementAbono = null;
         PreparedStatement statementIngreso = null;
+        PreparedStatement statementVentaTotal = null;
         CallableStatement statementCodigo = null;
 
         try {
+            // Crear una conexión e iniciar la transacción
             dbf.dbConnect();
             dbf.getConnection().setAutoCommit(false);
 
+            // Valida si la venta ya se encuentra anulada
             statementValidate = dbf.getConnection()
                     .prepareStatement("SELECT * FROM VentaTB WHERE Estado = 3 AND IdVenta = ?");
             statementValidate.setString(1, ventaCreditoTB.getIdVenta());
             if (statementValidate.executeQuery().next()) {
                 dbf.getConnection().rollback();
-
-                result.setId((short) 2);
-                result.setMessage("No se pueden realizar cobrar a una venta anulada.");
-                result.setState("error");
-                return result;
+                return new String[]{"0", "No se pueden realizar cobrar a una venta anulada."};
             }
 
-            codigo_ingreso = dbf.getConnection().prepareCall("{? = call Fc_Ingreso_Codigo_Alfanumerico()}");
-            codigo_ingreso.registerOutParameter(1, java.sql.Types.VARCHAR);
-            codigo_ingreso.execute();
+            // Se obtiene el código de ingreso
+            codigoIngreso = dbf.getConnection().prepareCall("{? = call Fc_Ingreso_Codigo_Alfanumerico()}");
+            codigoIngreso.registerOutParameter(1, java.sql.Types.VARCHAR);
+            codigoIngreso.execute();
+            String idIngreso = codigoIngreso.getString(1);
 
-            String id_ingreso = codigo_ingreso.getString(1);
-
+            // Validamoa si el código enviado corresponde a una venta
             statementValidate.close();
-            statementValidate = dbf.getConnection().prepareStatement("SELECT "
-                    + "SUM(dv.Cantidad*(dv.PrecioVenta - dv.Descuento)) as Total FROM VentaTB AS v "
+            statementValidate = dbf.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ?");
+            statementValidate.setString(1, ventaCreditoTB.getIdVenta());
+            if (!statementValidate.executeQuery().next()) {
+                dbf.getConnection().rollback();
+                return new String[]{"0", "Problemas al encontrar le venta con el id indicado " + ventaCreditoTB.getIdVenta()};
+            }
+
+            // Se obtiene el monto total de la venta
+            statementVentaTotal = dbf.getConnection().prepareStatement("SELECT "
+                    + "SUM(dv.Cantidad*(dv.PrecioVenta - dv.Descuento)) as Total "
+                    + "FROM VentaTB AS v "
                     + "INNER JOIN DetalleVentaTB AS dv ON dv.IdVenta = v.IdVenta "
                     + "WHERE v.IdVenta = ?");
-            statementValidate.setString(1, ventaCreditoTB.getIdVenta());
-            ResultSet resultSet = statementValidate.executeQuery();
-            if (resultSet.next()) {
-                double total = Double.parseDouble(Tools.roundingValue(resultSet.getDouble("Total"), 2));
+            statementVentaTotal.setString(1, ventaCreditoTB.getIdVenta());
+            ResultSet resultSetVentaTotal = statementVentaTotal.executeQuery();
+            resultSetVentaTotal.next();
 
-                statementCodigo = dbf.getConnection()
-                        .prepareCall("{? = call Fc_Venta_Credito_Codigo_Alfanumerico()}");
-                statementCodigo.registerOutParameter(1, java.sql.Types.VARCHAR);
-                statementCodigo.execute();
-                String idVentaCredito = statementCodigo.getString(1);
+            // Asignamos el monto de la consulta ejecutada
+            double total = Double.parseDouble(Tools.roundingValue(resultSetVentaTotal.getDouble("Total"), 2));
 
-                statementAbono = dbf.getConnection().prepareStatement(
-                        "INSERT INTO VentaCreditoTB(IdVenta,IdVentaCredito,Monto,FechaPago,HoraPago,Estado,IdUsuario,Observacion)VALUES(?,?,?,?,?,?,?,?)");
-                statementAbono.setString(1, ventaCreditoTB.getIdVenta());
-                statementAbono.setString(2, idVentaCredito);
-                statementAbono.setDouble(3, ventaCreditoTB.getMonto());
-                statementAbono.setString(4, ventaCreditoTB.getFechaPago());
-                statementAbono.setString(5, ventaCreditoTB.getHoraPago());
-                statementAbono.setShort(6, ventaCreditoTB.getEstado());
-                statementAbono.setString(7, ventaCreditoTB.getIdUsuario());
-                statementAbono.setString(8, ventaCreditoTB.getObservacion());
-                statementAbono.addBatch();
+            // Obtener le código del crédito
+            statementCodigo = dbf.getConnection()
+                    .prepareCall("{? = call Fc_Venta_Credito_Codigo_Alfanumerico()}");
+            statementCodigo.registerOutParameter(1, java.sql.Types.VARCHAR);
+            statementCodigo.execute();
+            String idVentaCredito = statementCodigo.getString(1);
 
-                statementIngreso = dbf.getConnection().prepareStatement("INSERT INTO IngresoTB "
-                        + "(IdIngreso,"
-                        + "IdProcedencia,"
-                        + "IdUsuario,"
-                        + "IdCliente,"
-                        + "IdBanco,"
-                        + "Detalle,"
-                        + "Procedencia,"
-                        + "Fecha,"
-                        + "Hora,"
-                        + "Forma,"
-                        + "Monto,"
-                        + "Vuelto,"
-                        + "Operacion) "
-                        + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            // Creamos y ejecutamos la consulta para el registro de la venta al crédito
+            statementAbono = dbf.getConnection().prepareStatement("INSERT INTO VentaCreditoTB "
+                    + "(IdVenta,"
+                    + "IdVentaCredito,"
+                    + "Monto,"
+                    + "FechaPago,"
+                    + "HoraPago,"
+                    + "Estado,"
+                    + "IdUsuario,"
+                    + "Observacion)"
+                    + "VALUES(?,?,?,GETDATE(),GETDATE(),?,?,?)");
+            statementAbono.setString(1, ventaCreditoTB.getIdVenta());
+            statementAbono.setString(2, idVentaCredito);
+            statementAbono.setDouble(3, ventaCreditoTB.getMonto());
+            statementAbono.setShort(4, ventaCreditoTB.getEstado());
+            statementAbono.setString(5, ventaCreditoTB.getIdUsuario());
+            statementAbono.setString(6, ventaCreditoTB.getObservacion());
+            statementAbono.addBatch();
 
-                statementIngreso.setString(1, id_ingreso);
+            // Creamos la consulta para registrar el ingreso
+            statementIngreso = dbf.getConnection().prepareStatement("INSERT INTO IngresoTB "
+                    + "(IdIngreso,"
+                    + "IdProcedencia,"
+                    + "IdUsuario,"
+                    + "IdCliente,"
+                    + "IdBanco,"
+                    + "Detalle,"
+                    + "Procedencia,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "Forma,"
+                    + "Monto,"
+                    + "Vuelto,"
+                    + "Operacion) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+            /*
+             * Registramos la consulta de ingresos en un bucle porque se puede
+             * procesar mucho tipo de pago
+             */
+            for (IngresoTB ingresoTB : ingresoTBs) {
+                statementIngreso.setString(1, idIngreso);
                 statementIngreso.setString(2, idVentaCredito);
                 statementIngreso.setString(3, ingresoTB.getIdUsuario());
                 statementIngreso.setString(4, "");
@@ -4517,40 +4542,45 @@ public class VentaADO {
                 statementIngreso.setString(13, ingresoTB.getOperacion());
                 statementIngreso.addBatch();
 
-                statementValidate = dbf.getConnection()
-                        .prepareStatement("SELECT Monto FROM VentaCreditoTB WHERE IdVenta = ?");
-                statementValidate.setString(1, ventaCreditoTB.getIdVenta());
-                resultSet = statementValidate.executeQuery();
-                double montoTotal = 0;
-                while (resultSet.next()) {
-                    montoTotal += resultSet.getDouble("Monto");
-                }
+                // Obtener el número de ingreso actual
+                String prefijo = "IN";
+                String numeroIngreso = idIngreso.replace(prefijo, "");
+                int incremental = Integer.parseInt(numeroIngreso) + 1;
 
-                statementVenta = dbf.getConnection()
-                        .prepareStatement("UPDATE VentaTB SET Estado = 1 WHERE IdVenta = ?");
-                if ((montoTotal + ventaCreditoTB.getMonto()) >= total) {
-                    statementVenta.setString(1, ventaCreditoTB.getIdVenta());
-                    statementVenta.addBatch();
-                }
-
-                statementAbono.executeBatch();
-                statementIngreso.executeBatch();
-                statementVenta.executeBatch();
-                dbf.getConnection().commit();
-
-                result.setId((short) 1);
-                result.setIdResult(idVentaCredito);
-                result.setMessage("Se completo correctamente el proceso.");
-                result.setState("inserted");
-                return result;
+                // Generar el nuevo ID de ingreso con ceros delante
+                idIngreso = prefijo + String.format("%04d", incremental);
             }
 
-            dbf.getConnection().rollback();
-            result.setId((short) 2);
-            result.setMessage(
-                    "Problemas al encontrar le venta con el id indicado " + ventaCreditoTB.getIdVenta());
-            result.setState("error");
-            return result;
+            // Se obtiene la lista de los montos cobrados
+            statementValidate = dbf.getConnection().prepareStatement("SELECT Monto " +
+                    "FROM VentaCreditoTB " +
+                    "WHERE IdVenta = ?");
+            statementValidate.setString(1, ventaCreditoTB.getIdVenta());
+            ResultSet resultSetVentaCredito = statementValidate.executeQuery();
+            double montoTotal = 0;
+            while (resultSetVentaCredito.next()) {
+                montoTotal += resultSetVentaCredito.getDouble("Monto");
+            }
+            resultSetVentaCredito.close();
+
+            // Se actualiza el estado de la venta si se cumple la condición
+            // donde el monto cobrado mas el monto a cobrar es mayor o igual al total de la venta
+            statementVenta = dbf.getConnection().prepareStatement("UPDATE VentaTB " +
+                    "SET Estado = 1 " +
+                    "WHERE IdVenta = ?");
+            if ((montoTotal + ventaCreditoTB.getMonto()) >= total) {
+                statementVenta.setString(1, ventaCreditoTB.getIdVenta());
+                statementVenta.addBatch();
+            }
+
+            // Ejecutamos los batch y un commit para completar la transacción
+            statementAbono.executeBatch();
+            statementIngreso.executeBatch();
+            statementVenta.executeBatch();
+            dbf.getConnection().commit();
+
+            // Retornamos si se completo correctamente el proceso
+            return new String[]{"1", "Se completo correctamente el proceso.", idVentaCredito};
 
         } catch (SQLException | NullPointerException | ClassNotFoundException ex) {
             try {
@@ -4558,14 +4588,11 @@ public class VentaADO {
             } catch (SQLException e) {
 
             }
-            result.setId((short) 2);
-            result.setMessage(ex.getLocalizedMessage());
-            result.setState("error");
-            return result;
+            return new String[]{"0", ex.getLocalizedMessage()};
         } finally {
             try {
-                if (codigo_ingreso != null) {
-                    codigo_ingreso.close();
+                if (codigoIngreso != null) {
+                    codigoIngreso.close();
                 }
                 if (statementAbono != null) {
                     statementAbono.close();

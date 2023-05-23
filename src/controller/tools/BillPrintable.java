@@ -958,28 +958,45 @@ public class BillPrintable implements Printable {
                 for (int j = 0; j < box.getChildren().size(); j++) {
                     TextFieldTicket field = (TextFieldTicket) box.getChildren().get(j);
 
-                    Font font = new Font(
-                            field.getFontName().equalsIgnoreCase("Consola")
-                                    ? FontsPersonalize.FONT_CONSOLAS
-                                    : field.getFontName().equalsIgnoreCase("Roboto Regular")
-                                            ? FontsPersonalize.FONT_ROBOTO
-                                            : field.getFontName().equalsIgnoreCase("Qwitcher Grypen")
-                                                    ? FontsPersonalize.FONT_QWITCHER_GRYPEN
-                                                    : field.getFontName().equalsIgnoreCase("Qwitcher Grypen")
-                                                            ? "Qwitcher Grypen"
-                                                            : field.getFontName().equalsIgnoreCase("Dancing Scrip")
-                                                                    ? "Dancing Scrip"
-                                                                    : FontsPersonalize.FONT_ROBOTO,
-                            field.getFontName().equalsIgnoreCase("Consola")
-                                    ? Font.PLAIN
-                                    : field.getFontName().equalsIgnoreCase("Roboto Regular")
-                                            ? Font.PLAIN
-                                            : field.getFontName().equalsIgnoreCase("Qwitcher Grypen")
-                                                    ? Font.PLAIN
-                                                    : field.getFontName().equalsIgnoreCase("Dancing Scrip")
-                                                            ? Font.PLAIN
-                                                            : Font.BOLD,
-                            (int) (field.getFontSize() - 3.5f));
+                    String fontName = FontsPersonalize.FONT_ROBOTO;
+
+                    if (field.getFontName().equalsIgnoreCase("Consola")) {
+                        fontName = FontsPersonalize.FONT_CONSOLAS;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Roboto Regular")) {
+                        fontName = FontsPersonalize.FONT_ROBOTO;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Qwitcher Grypen")) {
+                        fontName = FontsPersonalize.FONT_QWITCHER_GRYPEN;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Dancing Scrip")) {
+                        fontName = "Dancing Scrip";
+                    }
+
+                    int fileStyle = Font.BOLD;
+
+                    if (field.getFontName().equalsIgnoreCase("Consola")) {
+                        fileStyle = Font.PLAIN;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Roboto Regular")) {
+                        fileStyle = Font.PLAIN;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Qwitcher Grypen")) {
+                        fileStyle = Font.PLAIN;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Dancing Scrip")) {
+                        fileStyle = Font.PLAIN;
+                    }
+
+                    int fontSize = (int) (field.getFontSize() - 3.5f);
+
+                    Font font = new Font(fontName, fileStyle, fontSize);
 
                     AttributedString attributedString = new AttributedString(field.getText());
                     attributedString.addAttribute(TextAttribute.FONT, font);
@@ -1015,26 +1032,45 @@ public class BillPrintable implements Printable {
                 if (box.getChildren().get(0) instanceof TextFieldTicket) {
                     TextFieldTicket field = (TextFieldTicket) box.getChildren().get(0);
 
-                    Font font = new Font(
-                            field.getFontName().equalsIgnoreCase("Consola")
-                                    ? FontsPersonalize.FONT_CONSOLAS
-                                    : field.getFontName().equalsIgnoreCase("Roboto Regular")
-                                            ? FontsPersonalize.FONT_ROBOTO
-                                            : field.getFontName().equalsIgnoreCase("Qwitcher Grypen")
-                                                    ? FontsPersonalize.FONT_QWITCHER_GRYPEN
-                                                    : field.getFontName().equalsIgnoreCase("Dancing Scrip")
-                                                            ? FontsPersonalize.FONT_DANCING_SCRIPT
-                                                            : FontsPersonalize.FONT_ROBOTO,
-                            field.getFontName().equalsIgnoreCase("Consola")
-                                    ? Font.PLAIN
-                                    : field.getFontName().equalsIgnoreCase("Roboto Regular")
-                                            ? Font.PLAIN
-                                            : field.getFontName().equalsIgnoreCase("Qwitcher Grypen")
-                                                    ? Font.PLAIN
-                                                    : field.getFontName().equalsIgnoreCase("Dancing Scrip")
-                                                            ? Font.PLAIN
-                                                            : Font.BOLD,
-                            (int) (field.getFontSize() - 3.5f));
+                    String fontName = FontsPersonalize.FONT_ROBOTO;
+
+                    if (field.getFontName().equalsIgnoreCase("Consola")) {
+                        fontName = FontsPersonalize.FONT_CONSOLAS;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Roboto Regular")) {
+                        fontName = FontsPersonalize.FONT_ROBOTO;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Qwitcher Grypen")) {
+                        fontName = FontsPersonalize.FONT_QWITCHER_GRYPEN;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Dancing Scrip")) {
+                        fontName = "Dancing Scrip";
+                    }
+
+                    int fileStyle = Font.BOLD;
+
+                    if (field.getFontName().equalsIgnoreCase("Consola")) {
+                        fileStyle = Font.PLAIN;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Roboto Regular")) {
+                        fileStyle = Font.PLAIN;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Qwitcher Grypen")) {
+                        fileStyle = Font.PLAIN;
+                    }
+
+                    if (field.getFontName().equalsIgnoreCase("Dancing Scrip")) {
+                        fileStyle = Font.PLAIN;
+                    }
+
+                    int fontSize = (int) (field.getFontSize() - 3.5f);
+
+                    Font font = new Font(fontName, fileStyle, fontSize);
 
                     AttributedString attributedString = new AttributedString(field.getText());
                     attributedString.addAttribute(TextAttribute.FONT, font);
@@ -1051,6 +1087,7 @@ public class BillPrintable implements Printable {
                                 : field.getAlignment() == Pos.CENTER
                                         ? (int) (width - layout.getAdvance()) / 2
                                         : (int) (width - layout.getAdvance());
+                                        
                         layout.draw(g2d, x, y);
                         layout.draw(gimage, x, y);
                         y += layout.getDescent() + layout.getLeading();
@@ -1061,21 +1098,20 @@ public class BillPrintable implements Printable {
                         try {
                             BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(new QRCodeWriter()
                                     .encode(ObjectGlobal.QR_PERU_DATA, BarcodeFormat.QR_CODE, 300, 300));
-                            g2d.drawImage(qrImage, box.getAlignment() == Pos.CENTER_LEFT ? 0
-                                    : box.getAlignment() == Pos.CENTER
-                                            ? (int) (width - imageView.getFitWidth()) / 2
-                                            : box.getAlignment() == Pos.CENTER_RIGHT
-                                                    ? (int) (width - imageView.getFitWidth())
-                                                    : 0,
-                                    y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
 
-                            gimage.drawImage(qrImage, box.getAlignment() == Pos.CENTER_LEFT ? 0
+                            int x = box.getAlignment() == Pos.CENTER_LEFT ? 0
                                     : box.getAlignment() == Pos.CENTER
                                             ? (int) (width - imageView.getFitWidth()) / 2
                                             : box.getAlignment() == Pos.CENTER_RIGHT
                                                     ? (int) (width - imageView.getFitWidth())
-                                                    : 0,
-                                    y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
+                                                    : 0;
+
+                            int widthImage = (int) imageView.getFitWidth();
+                            int heightImage = (int) imageView.getFitHeight();
+
+                            g2d.drawImage(qrImage, x, y, widthImage, heightImage, null);
+
+                            gimage.drawImage(qrImage, x, y, widthImage, heightImage, null);
 
                             y += imageView.getFitHeight() + 3;
                         } catch (WriterException ex) {
@@ -1089,21 +1125,19 @@ public class BillPrintable implements Printable {
                                 ByteArrayInputStream bais = new ByteArrayInputStream(imageView.getUrl());
                                 image = ImageIO.read(bais);
                             }
-                            g2d.drawImage(image, box.getAlignment() == Pos.CENTER_LEFT ? 0
-                                    : box.getAlignment() == Pos.CENTER
-                                            ? (int) (width - imageView.getFitWidth()) / 2
-                                            : box.getAlignment() == Pos.CENTER_RIGHT
-                                                    ? (int) (width - imageView.getFitWidth())
-                                                    : 0,
-                                    y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
 
-                            gimage.drawImage(image, box.getAlignment() == Pos.CENTER_LEFT ? 0
+                            int x = box.getAlignment() == Pos.CENTER_LEFT ? 0
                                     : box.getAlignment() == Pos.CENTER
                                             ? (int) (width - imageView.getFitWidth()) / 2
                                             : box.getAlignment() == Pos.CENTER_RIGHT
                                                     ? (int) (width - imageView.getFitWidth())
-                                                    : 0,
-                                    y, (int) imageView.getFitWidth(), (int) imageView.getFitHeight(), null);
+                                                    : 0;
+                            int widthImage = (int) imageView.getFitWidth();
+                            int heightImage = (int) imageView.getFitHeight();
+
+                            g2d.drawImage(image, x, y, widthImage, heightImage, null);
+
+                            gimage.drawImage(image, x, y, widthImage, heightImage, null);
 
                             y += imageView.getFitHeight() + 3;
                         } catch (IOException ex) {

@@ -32,6 +32,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.SuministroTB;
+import model.VentaCreditoTB;
 import model.VentaTB;
 import service.VentaADO;
 
@@ -190,59 +191,52 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
 
     private void fillVentaCreditoTable() {
         for (int i = 0; i < ventaTB.getVentaCreditoTBs().size(); i++) {
-            gpList.add(addElementGridPane("l1" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getId() + "", Pos.CENTER,
-                    null, "#020203"), 0, (i + 1));
-            gpList.add(addElementGridPane("l2" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getIdVentaCredito(),
-                    Pos.CENTER, null, "#020203"), 1, (i + 1));
-            gpList.add(addElementGridPane("l3" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getFechaPago(),
-                    Pos.CENTER, null, "#020203"), 2, (i + 1));
-            gpList.add(
-                    addElementGridPane("l4" + (i + 1),
-                            ventaTB.getVentaCreditoTBs().get(i).getEstado() == 1 ? "COBRADO" : "POR COBRAR", Pos.CENTER,
-                            null, ventaTB.getVentaCreditoTBs().get(i).getEstado() == 1 ? "#0771d3" : "#c62303"),
-                    3, (i + 1));
-            gpList.add(addElementGridPane("l5" + (i + 1),
-                    Tools.roundingValue(ventaTB.getVentaCreditoTBs().get(i).getMonto(), 2), Pos.CENTER, null,
-                    "#020203"), 4, (i + 1));
-            gpList.add(addElementGridPane("l6" + (i + 1), ventaTB.getVentaCreditoTBs().get(i).getObservacion(),
-                    Pos.CENTER, null, "#020203"), 5, (i + 1));
-            gpList.add(addElementGridPane("l7" + (i + 1), "", Pos.CENTER,
-                    ventaTB.getVentaCreditoTBs().get(i).getEstado() == 1 ? new Label("-")
-                            : ventaTB.getVentaCreditoTBs().get(i).getBtnPagar(),
-                    "#020203"), 6, (i + 1));
-            gpList.add(addElementGridPane("l8" + (i + 1), "", Pos.CENTER,
-                    ventaTB.getVentaCreditoTBs().get(i).getEstado() == 0 ? new Label("-")
-                            : ventaTB.getVentaCreditoTBs().get(i).getBtnQuitar(),
-                    "#020203"), 7, (i + 1));
+            VentaCreditoTB ventaCreditoTB = ventaTB.getVentaCreditoTBs().get(i);
+            String id = ventaCreditoTB.getId() + "";
+            String idVentaCredito = ventaCreditoTB.getIdVentaCredito();
+            String fecha = ventaCreditoTB.getFechaPago();
+            String estado = ventaCreditoTB.getEstado() == 1 ? "COBRADO" : "POR COBRAR";
+            String color = ventaCreditoTB.getEstado() == 1 ? "#0771d3" : "#c62303";
+            String monto = Tools.roundingValue(ventaCreditoTB.getMonto(), 2);
+            String observacion = ventaCreditoTB.getObservacion();
+            Node pagar = ventaCreditoTB.getEstado() == 1 ? new Label("-") : ventaCreditoTB.getBtnPagar();
+            Node quitar = ventaCreditoTB.getEstado() == 0 ? new Label("-") : ventaCreditoTB.getBtnQuitar();
+            String fill = "#020203";
+
+            gpList.add(addElementGridPane("l1" + (i + 1), id, Pos.CENTER, null, fill), 0, (i + 1));
+            gpList.add(addElementGridPane("l2" + (i + 1), idVentaCredito, Pos.CENTER, null, fill), 1, (i + 1));
+            gpList.add(addElementGridPane("l3" + (i + 1), fecha, Pos.CENTER, null, fill), 2, (i + 1));
+            gpList.add(addElementGridPane("l4" + (i + 1), estado, Pos.CENTER, null, color), 3, (i + 1));
+            gpList.add(addElementGridPane("l5" + (i + 1), monto, Pos.CENTER, null, fill), 4, (i + 1));
+            gpList.add(addElementGridPane("l6" + (i + 1), observacion, Pos.CENTER, null, fill), 5, (i + 1));
+            gpList.add(addElementGridPane("l7" + (i + 1), "", Pos.CENTER, pagar, fill), 6, (i + 1));
+            gpList.add(addElementGridPane("l8" + (i + 1), "", Pos.CENTER, quitar, fill), 7, (i + 1));
         }
     }
 
     private void fillVentasDetalleTable(ArrayList<SuministroTB> arrList) {
         for (int i = 0; i < arrList.size(); i++) {
-            gpDetalle.add(addElementGridPaneLabel("l1" + (i + 1), arrList.get(i).getId() + "", Pos.CENTER), 0, (i + 1));
-            gpDetalle.add(
-                    addElementGridPaneLabel("l2" + (i + 1),
-                            arrList.get(i).getClave() + "\n" + arrList.get(i).getNombreMarca(), Pos.CENTER_LEFT),
-                    1, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l3" + (i + 1), Tools.roundingValue(arrList.get(i).getCantidad(), 2),
-                    Pos.CENTER_RIGHT), 2, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l4" + (i + 1),
-                    Tools.roundingValue(arrList.get(i).getBonificacion(), 2), Pos.CENTER_RIGHT), 3, (i + 1));
-            gpDetalle.add(
-                    addElementGridPaneLabel("l5" + (i + 1), arrList.get(i).getUnidadCompraName(), Pos.CENTER_LEFT), 4,
-                    (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l6" + (i + 1), arrList.get(i).getImpuestoTB().getNombreImpuesto(),
-                    Pos.CENTER_RIGHT), 5, (i + 1));
-            gpDetalle.add(
-                    addElementGridPaneLabel("l7" + (i + 1),
-                            Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral(), 2), Pos.CENTER_RIGHT),
-                    6, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l8" + (i + 1), Tools.roundingValue(arrList.get(i).getDescuento(), 2),
-                    Pos.CENTER_RIGHT), 7, (i + 1));
-            gpDetalle.add(addElementGridPaneLabel("l9" + (i + 1),
-                    Tools.roundingValue(arrList.get(i).getPrecioVentaGeneral()
-                            * (arrList.get(i).getCantidad() - arrList.get(i).getDescuento()), 2),
-                    Pos.CENTER_RIGHT), 8, (i + 1));
+            SuministroTB suministroTB = arrList.get(i);
+            String descripcion = suministroTB.getClave() + "\n" + suministroTB.getNombreMarca();
+            String cantidad = Tools.roundingValue(suministroTB.getCantidad(), 2);
+            String bonificacion = Tools.roundingValue(suministroTB.getBonificacion(), 2);
+            String unidadCompra = suministroTB.getUnidadCompraName();
+            String impuesto = suministroTB.getImpuestoTB().getNombreImpuesto();
+            String precio = Tools.roundingValue(suministroTB.getPrecioVentaGeneral(), 2);
+            String descuento = Tools.roundingValue(suministroTB.getDescuento(), 2);
+            String total = Tools.roundingValue(
+                    suministroTB.getPrecioVentaGeneral() * (suministroTB.getCantidad() - suministroTB.getDescuento()),
+                    2);
+
+            gpDetalle.add(addElementGridPaneLabel("l1" + (i + 1), suministroTB.getId() + "", Pos.CENTER), 0, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l2" + (i + 1), descripcion, Pos.CENTER_LEFT), 1, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l3" + (i + 1), cantidad, Pos.CENTER_RIGHT), 2, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l4" + (i + 1), bonificacion, Pos.CENTER_RIGHT), 3, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l5" + (i + 1), unidadCompra, Pos.CENTER_LEFT), 4, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l6" + (i + 1), impuesto, Pos.CENTER_RIGHT), 5, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l7" + (i + 1), precio, Pos.CENTER_RIGHT), 6, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l8" + (i + 1), descuento, Pos.CENTER_RIGHT), 7, (i + 1));
+            gpDetalle.add(addElementGridPaneLabel("l9" + (i + 1), total, Pos.CENTER_RIGHT), 8, (i + 1));
         }
     }
 
