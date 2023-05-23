@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" fx:id="window" prefWidth="530.0" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.cobrar.FxGenerarCobroController">
+<AnchorPane id="AnchorPane" fx:id="window" style="-fx-background-color: white;" stylesheets="@../../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.consultas.cobrar.FxGenerarCobroController">
    <children>
       <VBox fx:id="vbContenido" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -39,7 +39,7 @@
                                  <content>
                                     <VBox style="-fx-padding: 0.6666666666666666em; -fx-spacing: 0.6666666666666666em;">
                                        <children>
-                                          <HBox style="-fx-spacing: 0.5em;">
+                                          <HBox style="-fx-spacing: 0.8333333333333334em;">
                                              <children>
                                                 <VBox alignment="BOTTOM_LEFT" style="-fx-spacing: 0.5333333333333333em;" HBox.hgrow="ALWAYS">
                                                    <children>
@@ -60,9 +60,9 @@
                                                       </HBox>
                                                    </children>
                                                 </VBox>
-                                                <VBox alignment="BOTTOM_CENTER">
+                                                <VBox alignment="BOTTOM_CENTER" style="-fx-padding: 0em  0.8333333333333334em 0em  0.8333333333333334em;">
                                                    <children>
-                                                      <Label fx:id="lblVueltoContadoNombre" contentDisplay="TOP" styleClass="labelRoboto15" text="n.v." textFill="#020203" />
+                                                      <Label fx:id="lblVueltoContadoNombre" contentDisplay="TOP" styleClass="labelRoboto13" text="n.v." textFill="#020203" />
                                                       <Label fx:id="lblVueltoContado" alignment="CENTER" contentDisplay="CENTER" styleClass="labelRobotoBold19" text="M. 00.00" textFill="#0754b9" />
                                                    </children>
                                                 </VBox>

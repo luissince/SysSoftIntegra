@@ -21,9 +21,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -33,14 +31,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import model.BancoTB;
-import model.CajaTB;
 import model.IngresoTB;
-import model.ModeloObject;
-import model.MovimientoCajaTB;
 import model.VentaCreditoTB;
 import model.VentaTB;
 import service.BancoADO;
-import service.CajaADO;
 import service.VentaADO;
 
 public class FxGenerarCobroController implements Initializable {
@@ -442,7 +436,7 @@ public class FxGenerarCobroController implements Initializable {
 
     private void addMetodoCobro() {
         if (cbMetodoTransaccion.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(window, "Venta", "Seleccione el método de cobro.");
+            Tools.AlertMessageWarning(window, "Cobro", "Seleccione el método de cobro.");
             cbMetodoTransaccion.requestFocus();
             return;
         }
@@ -454,7 +448,7 @@ public class FxGenerarCobroController implements Initializable {
                 .collect(Collectors.toList());
 
         if (vBoxFiltrados.size() != 0) {
-            Tools.AlertMessageWarning(window, "Venta", "Ya existe en la lista el método de pago.");
+            Tools.AlertMessageWarning(window, "Cobro", "Ya existe en la lista el método de cobro.");
             cbMetodoTransaccion.requestFocus();
             return;
         }
@@ -567,7 +561,7 @@ public class FxGenerarCobroController implements Initializable {
             lblVueltoContadoNombre.setText("SU CAMBIO ES");
         } else {
             vueltoContado = totalVenta - montoActual;
-            lblVueltoContadoNombre.setText("POR PAGAR");
+            lblVueltoContadoNombre.setText("POR COBRAR");
         }
 
         lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
