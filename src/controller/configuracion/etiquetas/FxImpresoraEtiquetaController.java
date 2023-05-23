@@ -70,7 +70,8 @@ public class FxImpresoraEtiquetaController implements Initializable {
         }
     }
 
-    public void loadImpresoraEtiqueta(Printable printable, double widthEtiquetaMM, double heightEtiquetaMM, int orientacionEtiqueta) {
+    public void loadImpresoraEtiqueta(Printable printable, double widthEtiquetaMM, double heightEtiquetaMM,
+            int orientacionEtiqueta) {
         this.printable = printable;
         this.widthEtiquetaMM = widthEtiquetaMM;
         this.heightEtiquetaMM = heightEtiquetaMM;
@@ -78,30 +79,34 @@ public class FxImpresoraEtiquetaController implements Initializable {
     }
 
     private void eventImprimir() {
-        if (cbImpresoras.getSelectionModel().getSelectedIndex() >= 0) {
-            if (Tools.isNumericInteger(txtCopias.getText())) {
-                if (Integer.parseInt(txtCopias.getText()) > 0) {
-                    if (reportViewController != null) {
-                        printReporte();
-                    } else {
-                        printEtiquetas();
-                    }
-                } else {
-                    Tools.AlertMessageWarning(window, "Ventana de impresión", "El número de copias debe ser mayor a 0.");
-                    txtCopias.requestFocus();
-                    txtCopias.setText("1");
-                    txtCopias.selectAll();
-                }
-            } else {
-                Tools.AlertMessageWarning(window, "Ventana de impresión", "Ingrese la cantidad de copias a imprimir.");
-                txtCopias.requestFocus();
-                txtCopias.setText("1");
-                txtCopias.selectAll();
-            }
-        } else {
+        if (cbImpresoras.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(window, "Ventana de impresión", "Seleccione una impresa.");
             cbImpresoras.requestFocus();
+            return;
         }
+
+        if (!Tools.isNumericInteger(txtCopias.getText())) {
+            Tools.AlertMessageWarning(window, "Ventana de impresión", "Ingrese la cantidad de copias a imprimir.");
+            txtCopias.requestFocus();
+            txtCopias.setText("1");
+            txtCopias.selectAll();
+            return;
+        }
+
+        if (Integer.parseInt(txtCopias.getText()) <= 0) {
+            Tools.AlertMessageWarning(window, "Ventana de impresión", "El número de copias debe ser mayor a 0.");
+            txtCopias.requestFocus();
+            txtCopias.setText("1");
+            txtCopias.selectAll();
+            return;
+        }
+
+        if (reportViewController != null) {
+            printReporte();
+        } else {
+            printEtiquetas();
+        }
+
     }
 
     private void printReporte() {
@@ -117,8 +122,10 @@ public class FxImpresoraEtiquetaController implements Initializable {
             JRPrintServiceExporter exporter = new JRPrintServiceExporter();
 
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, reportViewController.getJasperPrint());
-            exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);
-            exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, printServiceAttributeSet);
+            exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET,
+                    printRequestAttributeSet);
+            exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET,
+                    printServiceAttributeSet);
             exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
             exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
             exporter.exportReport();
@@ -149,17 +156,14 @@ public class FxImpresoraEtiquetaController implements Initializable {
         PageFormat pf = pj.defaultPage();
         Paper paper = pf.getPaper();
         paper.setSize(converMmToPoint(widthEtiquetaMM), converMmToPoint(heightEtiquetaMM));
-//        Tools.println("PageFormat setSize:" + converMmToPoint(widthEtiquetaMM) + " - " + converMmToPoint(heightEtiquetaMM));        
-//        Tools.println("PageFormat setImageableArea 1:" + pf.getWidth() + " - " + pf.getHeight());
-        paper.setImageableArea(0, 0, converMmToPoint(widthEtiquetaMM), pf.getHeight());
-//        Tools.println("PageFormat setImageableArea 2:" +paper.getImageableX()+" - "+paper.getImageableY()+" - "+ paper.getWidth() + " - " + paper.getHeight());
+        paper.setImageableArea(0, 0, paper.getWidth(), paper.getHeight());
         pf.setOrientation(orientacionEtiqueta);
         pf.setPaper(paper);
         return pf;
     }
 
     public double converMmToPoint(double mm) {
-        return (mm * 2.83465) / 1;
+        return mm * 2.83465; // 1 mm = 2.83465 puntos
     }
 
     @FXML

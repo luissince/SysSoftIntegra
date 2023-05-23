@@ -1974,7 +1974,6 @@ public class FxTicketController implements Initializable {
             if (hboxReference != null) {
                 moveUpHBox((AnchorPane) hboxReference.getParent());
             }
-
         }
     }
 
