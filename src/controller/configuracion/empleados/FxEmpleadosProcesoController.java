@@ -147,80 +147,92 @@ public class FxEmpleadosProcesoController implements Initializable {
         if (cbTipoDocumento.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(window, "Empleado", "Seleccione el tipo de documento del empleado");
             cbTipoDocumento.requestFocus();
-        } else if (Tools.isText(txtNumeroDocumento.getText())) {
+            return;
+        }
+
+        if (Tools.isText(txtNumeroDocumento.getText())) {
             Tools.AlertMessageWarning(window, "Empleado", "Ingrese el número del documento del empleado");
             txtNumeroDocumento.requestFocus();
-        } else if (Tools.isText(txtApellidos.getText())) {
+            return;
+        }
+
+        if (Tools.isText(txtApellidos.getText())) {
             Tools.AlertMessageWarning(window, "Empleado", "Ingrese los apellidos del empleado");
             txtApellidos.requestFocus();
-        } else if (Tools.isText(txtNombres.getText())) {
+            return;
+        }
+
+        if (Tools.isText(txtNombres.getText())) {
             Tools.AlertMessageWarning(window, "Empleado", "Ingrese los nombres del empleado");
             txtNombres.requestFocus();
+            return;
         }
+
         if (cbEstado.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(window, "Empleado", "Seleccione el estado del empleado");
             cbEstado.requestFocus();
-        } else {
-            short confirmation = Tools.AlertMessageConfirmation(window, "Empleado", "¿Esta seguro de continuar?");
-            if (confirmation == 1) {
-                EmpleadoTB empleadoTB = new EmpleadoTB();
-                empleadoTB.setIdEmpleado(idEmpleado);
-                empleadoTB.setTipoDocumento(cbTipoDocumento.getSelectionModel().getSelectedIndex() >= 0
-                        ? cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle()
-                        : 0);
-                empleadoTB.setNumeroDocumento(txtNumeroDocumento.getText().trim());
-                empleadoTB.setApellidos(txtApellidos.getText().trim().toUpperCase());
-                empleadoTB.setNombres(txtNombres.getText().trim().toUpperCase());
-                empleadoTB.setSexo(cbSexo.getSelectionModel().getSelectedIndex() >= 0
-                        ? cbSexo.getSelectionModel().getSelectedItem().getIdDetalle()
-                        : 0);
+            return;
+        }
 
-                if (dpFechaNacimiento.getValue() != null) {
-                    empleadoTB.setFechaNacimiento(new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse(Tools.getDatePicker(dpFechaNacimiento)).getTime()));
-                } else {
-                    empleadoTB.setFechaNacimiento(null);
+        short confirmation = Tools.AlertMessageConfirmation(window, "Empleado", "¿Esta seguro de continuar?");
+        if (confirmation == 1) {
+            EmpleadoTB empleadoTB = new EmpleadoTB();
+            empleadoTB.setIdEmpleado(idEmpleado);
+            empleadoTB.setTipoDocumento(cbTipoDocumento.getSelectionModel().getSelectedIndex() >= 0
+                    ? cbTipoDocumento.getSelectionModel().getSelectedItem().getIdDetalle()
+                    : 0);
+            empleadoTB.setNumeroDocumento(txtNumeroDocumento.getText().trim());
+            empleadoTB.setApellidos(txtApellidos.getText().trim().toUpperCase());
+            empleadoTB.setNombres(txtNombres.getText().trim().toUpperCase());
+            empleadoTB.setSexo(cbSexo.getSelectionModel().getSelectedIndex() >= 0
+                    ? cbSexo.getSelectionModel().getSelectedItem().getIdDetalle()
+                    : 0);
+
+            if (dpFechaNacimiento.getValue() != null) {
+                empleadoTB.setFechaNacimiento(new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd")
+                        .parse(Tools.getDatePicker(dpFechaNacimiento)).getTime()));
+            } else {
+                empleadoTB.setFechaNacimiento(null);
+            }
+
+            empleadoTB.setPuesto(0);
+            empleadoTB.setEstado(cbEstado.getSelectionModel().getSelectedIndex() >= 0
+                    ? cbEstado.getSelectionModel().getSelectedItem().getIdDetalle()
+                    : 0);
+            empleadoTB.setTelefono(txtTelefono.getText().trim());
+            empleadoTB.setCelular(txtCelular.getText().trim());
+            empleadoTB.setEmail(txtEmail.getText().trim().toUpperCase());
+            empleadoTB.setDireccion(txtDireccion.getText().trim().toUpperCase());
+            empleadoTB.setUsuario(txtUsuario.getText().trim());
+            empleadoTB.setClave(txtClave.getText().trim());
+            empleadoTB.setRol(cbRol.getSelectionModel().getSelectedIndex() >= 0
+                    ? cbRol.getSelectionModel().getSelectedItem().getIdRol()
+                    : 0);
+            empleadoTB.setSistema(false);
+            empleadoTB.setHuella("");
+
+            if (idEmpleado.equalsIgnoreCase("")) {
+                String result = EmpleadoADO.InsertEmpleado(empleadoTB);
+                switch (result) {
+                    case "register":
+                        Tools.AlertMessageInformation(window, "Empleado", "Registrado correctamente el empleado.");
+                        Tools.Dispose(window);
+                        break;
+                    default:
+                        Tools.AlertMessageError(window, "Empleado", result);
+                        break;
                 }
-
-                empleadoTB.setPuesto(0);
-                empleadoTB.setEstado(cbEstado.getSelectionModel().getSelectedIndex() >= 0
-                        ? cbEstado.getSelectionModel().getSelectedItem().getIdDetalle()
-                        : 0);
-                empleadoTB.setTelefono(txtTelefono.getText().trim());
-                empleadoTB.setCelular(txtCelular.getText().trim());
-                empleadoTB.setEmail(txtEmail.getText().trim().toUpperCase());
-                empleadoTB.setDireccion(txtDireccion.getText().trim().toUpperCase());
-                empleadoTB.setUsuario(txtUsuario.getText().trim());
-                empleadoTB.setClave(txtClave.getText().trim());
-                empleadoTB.setRol(cbRol.getSelectionModel().getSelectedIndex() >= 0
-                        ? cbRol.getSelectionModel().getSelectedItem().getIdRol()
-                        : 0);
-                empleadoTB.setSistema(false);
-                empleadoTB.setHuella("");
-                
-                if (idEmpleado.equalsIgnoreCase("")) {
-                    String result = EmpleadoADO.InsertEmpleado(empleadoTB);
-                    switch (result) {
-                        case "register":
-                            Tools.AlertMessageInformation(window, "Empleado", "Registrado correctamente el empleado.");
-                            Tools.Dispose(window);
-                            break;
-                        default:
-                            Tools.AlertMessageError(window, "Empleado", result);
-                            break;
-                    }
-                } else {
-                    String result = EmpleadoADO.UpdateEmpleado(empleadoTB);
-                    switch (result) {
-                        case "update":
-                            Tools.AlertMessageInformation(window, "Empleado", "Actualizado correctamente el empleado.");
-                            Tools.Dispose(window);
-                            break;
-                        default:
-                            Tools.AlertMessageError(window, "Empleado", result);
-                            break;
-                    }
+            } else {
+                String result = EmpleadoADO.UpdateEmpleado(empleadoTB);
+                switch (result) {
+                    case "update":
+                        Tools.AlertMessageInformation(window, "Empleado", "Actualizado correctamente el empleado.");
+                        Tools.Dispose(window);
+                        break;
+                    default:
+                        Tools.AlertMessageError(window, "Empleado", result);
+                        break;
                 }
-
             }
         }
     }
@@ -250,11 +262,13 @@ public class FxEmpleadosProcesoController implements Initializable {
         if (event.getClickCount() == 2) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Importar una imagen");
-            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Elija una imagen", "*.png", "*.jpg", "*.jpeg"));
+            fileChooser.getExtensionFilters()
+                    .addAll(new FileChooser.ExtensionFilter("Elija una imagen", "*.png", "*.jpg", "*.jpeg"));
             File file = fileChooser.showOpenDialog(window.getScene().getWindow());
             if (file != null) {
                 file = new File(file.getAbsolutePath());
-                if (file.getName().endsWith("png") || file.getName().endsWith("jpg") || file.getName().endsWith("jpeg")) {
+                if (file.getName().endsWith("png") || file.getName().endsWith("jpg")
+                        || file.getName().endsWith("jpeg")) {
                     ivPerfil.setImage(new Image(file.toURI().toString()));
 
                 }

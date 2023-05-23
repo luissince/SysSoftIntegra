@@ -80,8 +80,6 @@ public class FxGenerarCobroController implements Initializable {
 
     private VentaTB ventaTB;
 
-    private String idVentaCredito;
-
     private double vueltoContado;
 
     private double totalVenta;
@@ -89,7 +87,6 @@ public class FxGenerarCobroController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(window, KeyEvent.KEY_RELEASED);
-        idVentaCredito = "";
         totalVenta = 0;
         vueltoContado = 0.00;
         monedaCadena = new ConvertMonedaCadena();
@@ -148,28 +145,21 @@ public class FxGenerarCobroController implements Initializable {
         });
 
         task.setOnSucceeded(e -> {
+            this.ventaTB = ventaTB;
             ObservableList<BancoTB> bancos = task.getValue();
             cbMetodoTransaccion.getItems().addAll(bancos);
 
-            Optional<BancoTB> bancoConFormaPago1 = bancos.stream().filter(b -> b.getFormaPago() == 1).findFirst();
-            bancoConFormaPago1.ifPresent(this::generarMetodoPago);
+            Optional<BancoTB> bancoConFormaPago = bancos.stream().filter(b -> b.getFormaPago() == 1).findFirst();
+            bancoConFormaPago.ifPresent(this::generarMetodoPago);
 
-            this.ventaTB = ventaTB;
             totalVenta = Double.parseDouble(Tools.roundingValue(ventaTB.getMontoRestante(), 2));
 
             lblTotal.setText(
-                    "TOTAL A PAGAR: " + ventaTB.getMonedaTB().getSimbolo() + " "
-                            + Tools.roundingValue(totalVenta, 2));
-
-            lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " "
-                    + Tools.roundingValue(vueltoContado, 2));
-
-            lblMonedaLetras.setText(
-                    monedaCadena.Convertir(Tools.roundingValue(totalVenta, 2), true,
-                            ventaTB.getMonedaTB().getNombre()));
-
+                    "TOTAL A PAGAR: " + ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(totalVenta, 2));
+            lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
+            lblMonedaLetras.setText(monedaCadena.Convertir(Tools.roundingValue(totalVenta, 2), true,
+                    ventaTB.getMonedaTB().getNombre()));
             vbContenido.setDisable(false);
-
             hbLoadProcesando.setVisible(false);
         });
 
@@ -183,7 +173,7 @@ public class FxGenerarCobroController implements Initializable {
         double montoActual = 0;
 
         if (vbContenedorMetodoPago.getChildren().isEmpty()) {
-            Tools.AlertMessageWarning(window, "Venta", "No hay metodos de pago para continuar.");
+            Tools.AlertMessageWarning(window, "Cobro", "No hay metodos de pago para continuar.");
             cbMetodoTransaccion.requestFocus();
             return;
         }
@@ -203,7 +193,7 @@ public class FxGenerarCobroController implements Initializable {
             }
 
             if (!Tools.isNumeric(txtMonto.getText().trim())) {
-                Tools.AlertMessageWarning(window, "Venta", "Ingrese el monto a pagar o quítelo.");
+                Tools.AlertMessageWarning(window, "Cobro", "Ingrese el monto a pagar o quítelo.");
                 txtMonto.requestFocus();
                 return;
             }
@@ -211,7 +201,7 @@ public class FxGenerarCobroController implements Initializable {
             double monto = Double.parseDouble(txtMonto.getText().trim());
 
             if (monto <= 0) {
-                Tools.AlertMessageWarning(window, "Venta", "El monto no debe ser menor a cero.");
+                Tools.AlertMessageWarning(window, "Cobro", "El monto no debe ser menor a cero.");
                 txtMonto.requestFocus();
                 return;
             }
@@ -220,7 +210,7 @@ public class FxGenerarCobroController implements Initializable {
         }
 
         if (montoActual < totalVenta) {
-            Tools.AlertMessageWarning(window, "Venta",
+            Tools.AlertMessageWarning(window, "Cobro",
                     "Los montos ingresados deben ser igual o mayor al total de la venta.");
 
             for (Node node : vbContenedorMetodoPago.getChildren()) {
@@ -238,7 +228,7 @@ public class FxGenerarCobroController implements Initializable {
 
         if (vbContenedorMetodoPago.getChildren().size() > 1) {
             if (montoActual != totalVenta) {
-                Tools.AlertMessageWarning(window, "Venta",
+                Tools.AlertMessageWarning(window, "Cobro",
                         "Si se eligen más de dos métodos de pago, no se podrá recibir vuelto o cambio.");
                 return;
             }
@@ -284,7 +274,23 @@ public class FxGenerarCobroController implements Initializable {
             ingresoTBs.add(ingresoTB);
         }
 
-        Tools.println("se completo el registro");
+        VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
+        ventaCreditoTB.setIdVenta(ventaTB.getIdVenta());
+        ventaCreditoTB.setMonto(montoActual);
+        ventaCreditoTB.setEstado((short) 1);
+        ventaCreditoTB.setIdUsuario(Session.USER_ID);
+        ventaCreditoTB.setObservacion(txtObservacion.getText().trim());
+
+        short value = Tools.AlertMessageConfirmation(window, "Cobro", "¿Está seguro de continuar?");
+        if (value == 1) {
+            String[] result = VentaADO.RegistrarAbono(ventaCreditoTB, ingresoTBs);
+            if (result[0] == "1") {
+                Tools.Dispose(window);
+                cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(), result[2]);
+            } else {
+                Tools.AlertMessageWarning(window, "Cobro", result[1]);
+            }
+        }
 
         // if (!Tools.isNumeric(txtMonto.getText().trim())) {
         // Tools.AlertMessageWarning(window, "Abonar", "Ingrese el abono.");
@@ -312,40 +318,41 @@ public class FxGenerarCobroController implements Initializable {
         // ventaCreditoTB.setEstado((short) 1);
         // ventaCreditoTB.setIdUsuario(Session.USER_ID);
         // ventaCreditoTB.setObservacion(txtObservacion.getText().trim());
-        //
+
         // /*
-        // procedencia
-        // 1 = venta
-        // 2 = compra
-        //
-        // 3 = ingreso libre
-        // 4 = salida libre
-        //
-        // 5 = ingreso cuentas por cobrar
-        // 6 = salida cuentas por pagar
+        // * procedencia
+        // * 1 = venta
+        // * 2 = compra
+        // *
+        // * 3 = ingreso libre
+        // * 4 = salida libre
+        // *
+        // * 5 = ingreso cuentas por cobrar
+        // * 6 = salida cuentas por pagar
         // */
-        //
+
         // /*
-        // forma
-        // 1 = efectivo
-        // 2 = tarjeta
-        // 3 = deposito
+        // * forma
+        // * 1 = efectivo
+        // * 2 = tarjeta
+        // * 3 = deposito
         // */
         // IngresoTB ingresoTB = new IngresoTB();
         // ingresoTB.setIdProcedencia("");
         // ingresoTB.setIdUsuario(Session.USER_ID);
         // ingresoTB.setDetalle("INGRESO DE DINERO POR CUENTAS POR COBRAR DEL
-        // COMPROBANTE " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+        // COMPROBANTE "
+        // + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
         // ingresoTB.setProcedencia(5);
         // ingresoTB.setFecha(Tools.getDate());
         // ingresoTB.setHora(Tools.getTime());
         // ingresoTB.setForma(rbEfectivo.isSelected() ? 1 : rbTarjeta.isSelected() ? 2 :
         // 3);
         // ingresoTB.setMonto(Double.parseDouble(txtMonto.getText()));
-        //
-        // ModeloObject result = idVentaCredito.equals("") ?
-        // VentaADO.RegistrarAbono(ventaCreditoTB, ingresoTB, null) :
-        // VentaADO.RegistrarAbonoUpdateById(ventaCreditoTB, ingresoTB, null);
+
+        // ModeloObject result = idVentaCredito.equals("")
+        // ? VentaADO.RegistrarAbono(ventaCreditoTB, ingresoTB, null)
+        // : VentaADO.RegistrarAbonoUpdateById(ventaCreditoTB, ingresoTB, null);
         // if (result.getState().equalsIgnoreCase("inserted")) {
         // Tools.Dispose(window);
         // cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(),
@@ -354,8 +361,8 @@ public class FxGenerarCobroController implements Initializable {
         // } else if (result.getState().equalsIgnoreCase("error")) {
         // Tools.AlertMessageWarning(window, "Abonar", result.getMessage());
         // } else {
-        // Tools.AlertMessageError(window, "Abonar", "No se completo el proceso por
-        // problemas de conexión.");
+        // Tools.AlertMessageError(window, "Abonar",
+        // "No se completo el proceso por problemas de conexión.");
         // btnAceptar.setDisable(false);
         // }
         // }
@@ -368,17 +375,17 @@ public class FxGenerarCobroController implements Initializable {
         // CajaTB cajaTB = (CajaTB) object;
         // if (cajaTB.getId() == 2) {
         // /*
-        // Tipo Movimiento
-        // TipoMovimiento = 1 apertura caja
-        // TipoMovimiento = 2 venta efectivo
-        // TipoMovimiento = 3 venta tarjeta
-        // TipoMovimiento = 4 ingresos efectivo
-        // TipoMovimiento = 5 salidas efectivo
-        // TipoMovimiento = 6 venta deposito
-        // TipoMovimiento = 7 ingresos tarjeta
-        // TipoMovimiento = 8 ingresos deposito
-        // TipoMovimiento = 9 salidas tarjeta
-        // TipoMovimiento = 10 salidas deposito
+        // * Tipo Movimiento
+        // * TipoMovimiento = 1 apertura caja
+        // * TipoMovimiento = 2 venta efectivo
+        // * TipoMovimiento = 3 venta tarjeta
+        // * TipoMovimiento = 4 ingresos efectivo
+        // * TipoMovimiento = 5 salidas efectivo
+        // * TipoMovimiento = 6 venta deposito
+        // * TipoMovimiento = 7 ingresos tarjeta
+        // * TipoMovimiento = 8 ingresos deposito
+        // * TipoMovimiento = 9 salidas tarjeta
+        // * TipoMovimiento = 10 salidas deposito
         // */
         // btnAceptar.setDisable(true);
         // VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
@@ -390,20 +397,22 @@ public class FxGenerarCobroController implements Initializable {
         // ventaCreditoTB.setEstado((short) 1);
         // ventaCreditoTB.setIdUsuario(Session.USER_ID);
         // ventaCreditoTB.setObservacion(txtObservacion.getText().trim());
-        //
+
         // MovimientoCajaTB movimientoCajaTB = new MovimientoCajaTB();
         // movimientoCajaTB.setIdCaja(cajaTB.getIdCaja());
         // movimientoCajaTB.setFechaMovimiento(Tools.getDate());
         // movimientoCajaTB.setHoraMovimiento(Tools.getTime());
         // movimientoCajaTB.setComentario("INGRESO DE DINERO POR CUENTAS POR COBRAR DEL
-        // COMPROBANTE " + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-        // movimientoCajaTB.setTipoMovimiento(rbEfectivo.isSelected() ? 4 :
-        // rbTarjeta.isSelected() ? 7 : 8);
+        // COMPROBANTE "
+        // + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
+        // movimientoCajaTB
+        // .setTipoMovimiento(rbEfectivo.isSelected() ? 4 : rbTarjeta.isSelected() ? 7 :
+        // 8);
         // movimientoCajaTB.setMonto(Double.parseDouble(txtMonto.getText()));
-        //
-        // ModeloObject result = idVentaCredito.equals("") ?
-        // VentaADO.RegistrarAbono(ventaCreditoTB, null, movimientoCajaTB) :
-        // VentaADO.RegistrarAbonoUpdateById(ventaCreditoTB, null, movimientoCajaTB);
+
+        // ModeloObject result = idVentaCredito.equals("")
+        // ? VentaADO.RegistrarAbono(ventaCreditoTB, null, movimientoCajaTB)
+        // : VentaADO.RegistrarAbonoUpdateById(ventaCreditoTB, null, movimientoCajaTB);
         // if (result.getState().equalsIgnoreCase("inserted")) {
         // Tools.Dispose(window);
         // cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(),
@@ -412,21 +421,23 @@ public class FxGenerarCobroController implements Initializable {
         // } else if (result.getState().equalsIgnoreCase("error")) {
         // Tools.AlertMessageWarning(window, "Abonar", result.getMessage());
         // } else {
-        // Tools.AlertMessageError(window, "Abonar", "No se completo el proceso por
-        // problemas de conexión.");
+        // Tools.AlertMessageError(window, "Abonar",
+        // "No se completo el proceso por problemas de conexión.");
         // btnAceptar.setDisable(false);
         // }
         // } else {
-        // Tools.AlertMessageWarning(window, "Abonar", "No tiene ninguna caja aperturada
-        // para continuar con el proceso.");
+        // Tools.AlertMessageWarning(window, "Abonar",
+        // "No tiene ninguna caja aperturada para continuar con el proceso.");
         // }
         // } else {
-        // Tools.AlertMessageError(window, "Abonar", "No se pudo obtener el estado de su
-        // caja por problemas de red, intente nuevamente.");
+        // Tools.AlertMessageError(window, "Abonar",
+        // "No se pudo obtener el estado de su aja por problemas de red, intente
+        // nuevamente.");
         // }
         // }
         // }
         // }
+
     }
 
     private void addMetodoPago() {
@@ -551,16 +562,15 @@ public class FxGenerarCobroController implements Initializable {
 
         }
 
-        // if (montoActual >= totalVenta) {
-        // vueltoContado = montoActual - totalVenta;
-        // lblVueltoContadoNombre.setText("SU CAMBIO ES");
-        // } else {
-        // vueltoContado = totalVenta - montoActual;
-        // lblVueltoContadoNombre.setText("POR PAGAR");
-        // }
+        if (montoActual >= totalVenta) {
+            vueltoContado = montoActual - totalVenta;
+            lblVueltoContadoNombre.setText("SU CAMBIO ES");
+        } else {
+            vueltoContado = totalVenta - montoActual;
+            lblVueltoContadoNombre.setText("POR PAGAR");
+        }
 
-        // lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " "
-        // + Tools.roundingValue(vueltoContado, 2));
+        lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
     }
 
     @FXML
