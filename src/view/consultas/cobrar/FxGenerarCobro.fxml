@@ -31,7 +31,7 @@
             </HBox>
             <HBox alignment="TOP_CENTER">
                <children>
-                  <AnchorPane prefHeight="350.0" HBox.hgrow="ALWAYS">
+                  <AnchorPane prefHeight="320.0" HBox.hgrow="ALWAYS">
                      <children>
                         <VBox fx:id="vbViewEfectivo" alignment="CENTER" layoutX="10.0" layoutY="10.0" style="-fx-padding: 0.6666666666666666em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
@@ -60,12 +60,6 @@
                                                       </HBox>
                                                    </children>
                                                 </VBox>
-                                                <VBox alignment="BOTTOM_CENTER" style="-fx-padding: 0em  0.8333333333333334em 0em  0.8333333333333334em;">
-                                                   <children>
-                                                      <Label fx:id="lblVueltoContadoNombre" contentDisplay="TOP" styleClass="labelRoboto13" text="n.v." textFill="#020203" />
-                                                      <Label fx:id="lblVueltoContado" alignment="CENTER" contentDisplay="CENTER" styleClass="labelRobotoBold19" text="M. 00.00" textFill="#0754b9" />
-                                                   </children>
-                                                </VBox>
                                              </children>
                                           </HBox>
                                           <VBox fx:id="vbContenedorMetodoPago" alignment="CENTER" style="-fx-spacing: 0.6666666666666666em;" />
@@ -79,19 +73,18 @@
                   </AnchorPane>
                </children>
             </HBox>
+            <Separator />
+            <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.5em;">
+               <children>
+                  <Label fx:id="lblVueltoContadoNombre" contentDisplay="TOP" styleClass="labelRoboto17" text="n.v." textFill="#020203" />
+                  <Label fx:id="lblVueltoContado" alignment="CENTER" contentDisplay="CENTER" styleClass="labelRobotoBold19" text="M. 00.00" textFill="#0754b9" />
+               </children>
+            </HBox>
             <HBox alignment="CENTER_LEFT" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.5em;">
                <children>
                   <VBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label maxWidth="1.7976931348623157E308" prefWidth="160.0" styleClass="labelRoboto13" text="Observación:" textFill="#020203">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../image/edit.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Label>
+                        <Label maxWidth="1.7976931348623157E308" styleClass="labelRoboto13" text="Observación:" textFill="#020203" />
                      </children>
                   </VBox>
                   <TextField fx:id="txtObservacion" onAction="#onActionAceptar" prefHeight="30.0" prefWidth="320.0" styleClass="text-field-normal" text="N/D" />
