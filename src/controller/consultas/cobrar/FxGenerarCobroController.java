@@ -84,7 +84,7 @@ public class FxGenerarCobroController implements Initializable {
         totalVenta = 0;
         vueltoContado = 0.00;
         monedaCadena = new ConvertMonedaCadena();
-        lblVueltoContadoNombre.setText("SU CAMBIO");
+        lblVueltoContadoNombre.setText("SU CAMBIO: ");
     }
 
     // private void setInitLoadVentaAbono(VentaTB ventaTB) {
@@ -163,8 +163,144 @@ public class FxGenerarCobroController implements Initializable {
         }
     }
 
-    private void onEventAceptar() {
+    private void addMetodoCobro() {
+        if (cbMetodoTransaccion.getSelectionModel().getSelectedIndex() < 0) {
+            Tools.AlertMessageWarning(window, "Cobro", "Seleccione el método de cobro.");
+            cbMetodoTransaccion.requestFocus();
+            return;
+        }
+
+        List<Node> vBoxFiltrados = vbContenedorMetodoPago.getChildren()
+                .stream()
+                .filter(vBoxFilter -> ((HBox) vBoxFilter).getId() == cbMetodoTransaccion.getSelectionModel()
+                        .getSelectedItem().getIdBanco())
+                .collect(Collectors.toList());
+
+        if (vBoxFiltrados.size() != 0) {
+            Tools.AlertMessageWarning(window, "Cobro", "Ya existe en la lista el método de cobro.");
+            cbMetodoTransaccion.requestFocus();
+            return;
+        }
+
+        generarMetodoCobro(cbMetodoTransaccion.getSelectionModel().getSelectedItem());
+    }
+
+    private void generarMetodoCobro(BancoTB bancoTB) {
+        HBox hBox = new HBox();
+        hBox.setId(bancoTB.getIdBanco());
+        hBox.setStyle("-fx-spacing: 0.6666666666666666em;");
+
+        VBox vbMonto = new VBox();
+        HBox.setHgrow(vbMonto, Priority.ALWAYS);
+        vbMonto.setStyle("-fx-spacing: 0.5333333333333333em;");
+        Label lblMonto = new Label(
+                "Monto - " + bancoTB.getNombreCuenta());
+        lblMonto.getStyleClass().add("labelOpenSansRegular13");
+        TextField txtMonto = new TextField();
+        txtMonto.setPromptText("0.00");
+        txtMonto.getStyleClass().add("text-field-normal");
+        txtMonto.setPrefWidth(260);
+        txtMonto.setPrefHeight(30);
+        txtMonto.setOnAction(event -> onEventAceptar());
+        txtMonto.setOnKeyReleased(event -> {
+            if (txtMonto.getText().isEmpty()) {
+                vueltoContado = totalVenta;
+                generarVuelto();
+                return;
+            }
+            if (Tools.isNumeric(txtMonto.getText())) {
+                generarVuelto();
+            }
+        });
+        txtMonto.setOnKeyTyped(event -> {
+            if (event.getCharacter().isEmpty())
+                return;
+
+            char c = event.getCharacter().charAt(0);
+            if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+                event.consume();
+            }
+            if (c == '.' && txtMonto.getText().contains(".")) {
+                event.consume();
+            }
+        });
+        vbMonto.getChildren().addAll(lblMonto, txtMonto);
+
+        VBox vbOperacion = new VBox();
+        HBox.setHgrow(vbOperacion, Priority.ALWAYS);
+        vbOperacion.setStyle("-fx-spacing: 0.5333333333333333em;");
+        Label lblOperacion = new Label(
+                "N° de Operación - " + bancoTB.getNombreCuenta());
+        lblOperacion.getStyleClass().add("labelOpenSansRegular13");
+
+        HBox hbContendorOperacion = new HBox();
+        TextField txtOperacion = new TextField();
+        txtOperacion.setPromptText(
+                "N° Operación");
+        txtOperacion.getStyleClass().add("text-field-normal");
+        txtOperacion.setPrefWidth(260);
+        txtOperacion.setPrefHeight(30);
+        txtOperacion.setOnAction(event -> onEventAceptar());
+        Button btnQuitar = new Button();
+        btnQuitar.setPrefHeight(30);
+        btnQuitar.setMaxHeight(Double.MAX_VALUE);
+        btnQuitar.getStyleClass().add("buttonLightError");
+        ImageView imageView = new ImageView(new Image("/view/image/remove-gray.png"));
+        imageView.setFitWidth(20);
+        imageView.setFitHeight(20);
+        btnQuitar.setGraphic(imageView);
+        btnQuitar.setOnAction(event -> {
+            vbContenedorMetodoPago.getChildren().remove(hBox);
+            generarVuelto();
+        });
+        btnQuitar.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                vbContenedorMetodoPago.getChildren().remove(hBox);
+                generarVuelto();
+            }
+        });
+        hbContendorOperacion.getChildren().addAll(txtOperacion, btnQuitar);
+        vbOperacion.getChildren().addAll(lblOperacion, hbContendorOperacion);
+
+        hBox.getChildren().addAll(vbMonto, vbOperacion);
+
+        vbContenedorMetodoPago.getChildren().add(hBox);
+        txtMonto.requestFocus();
+    }
+
+    private void generarVuelto() {
         double montoActual = 0;
+
+        for (Node contenedorMetodoPagoNode : vbContenedorMetodoPago.getChildren()) {
+            HBox hbox = (HBox) contenedorMetodoPagoNode;
+
+            VBox contenedorMonto = (VBox) hbox.getChildren().get(0);
+            if (contenedorMonto != null) {
+                for (Node nodo : contenedorMonto.getChildren()) {
+                    if (nodo instanceof TextField) {
+                        TextField txtMonto = (TextField) nodo;
+                        if (Tools.isNumeric(txtMonto.getText().trim())) {
+                            montoActual += Double.parseDouble(txtMonto.getText().trim());
+                        }
+                    }
+                }
+            }
+
+        }
+
+        if (montoActual >= totalVenta) {
+            vueltoContado = montoActual - totalVenta;
+            lblVueltoContadoNombre.setText("SU CAMBIO ES: ");
+        } else {
+            vueltoContado = totalVenta - montoActual;
+            lblVueltoContadoNombre.setText("POR COBRAR: ");
+        }
+
+        lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
+    }
+
+    private void onEventAceptar() {
+        double montoValidar = 0;
 
         if (vbContenedorMetodoPago.getChildren().isEmpty()) {
             Tools.AlertMessageWarning(window, "Cobro", "No hay metodos de cobro para continuar.");
@@ -187,7 +323,7 @@ public class FxGenerarCobroController implements Initializable {
             }
 
             if (!Tools.isNumeric(txtMonto.getText().trim())) {
-                Tools.AlertMessageWarning(window, "Cobro", "Ingrese el monto a pagar o quítelo.");
+                Tools.AlertMessageWarning(window, "Cobro", "Ingrese el monto a cobrar o quítelo.");
                 txtMonto.requestFocus();
                 return;
             }
@@ -200,28 +336,29 @@ public class FxGenerarCobroController implements Initializable {
                 return;
             }
 
-            montoActual += monto;
+            montoValidar += monto;
         }
 
-        if (montoActual < totalVenta) {
-            Tools.AlertMessageWarning(window, "Cobro",
-                    "Los montos ingresados deben ser igual o mayor al total de la venta.");
+        // if (montoValidar < totalVenta) {
+        // Tools.AlertMessageWarning(window, "Cobro", "Los montos ingresados deben ser
+        // igual o mayor al total de la venta.");
 
-            for (Node node : vbContenedorMetodoPago.getChildren()) {
-                HBox hbox = (HBox) node;
-                VBox vbMonto = (VBox) hbox.getChildren().get(0);
-                if (vbMonto != null) {
-                    if (!vbMonto.getChildren().isEmpty()) {
-                        ((TextField) vbMonto.getChildren().get(vbMonto.getChildren().size() - 1)).requestFocus();
-                    }
-                }
-            }
+        // for (Node node : vbContenedorMetodoPago.getChildren()) {
+        // HBox hbox = (HBox) node;
+        // VBox vbMonto = (VBox) hbox.getChildren().get(0);
+        // if (vbMonto != null) {
+        // if (!vbMonto.getChildren().isEmpty()) {
+        // ((TextField) vbMonto.getChildren().get(vbMonto.getChildren().size() -
+        // 1)).requestFocus();
+        // }
+        // }
+        // }
 
-            return;
-        }
+        // return;
+        // }
 
         if (vbContenedorMetodoPago.getChildren().size() > 1) {
-            if (montoActual != totalVenta) {
+            if (montoValidar != totalVenta) {
                 Tools.AlertMessageWarning(window, "Cobro",
                         "Si se eligen más de dos métodos de cobro, no se podrá recibir vuelto o cambio.");
                 return;
@@ -229,6 +366,7 @@ public class FxGenerarCobroController implements Initializable {
         }
 
         List<IngresoTB> ingresoTBs = new ArrayList<>();
+        double montoActual = 0;
 
         for (Node node : vbContenedorMetodoPago.getChildren()) {
             HBox hbox = (HBox) node;
@@ -258,33 +396,56 @@ public class FxGenerarCobroController implements Initializable {
                 }
             }
 
-            double monto = Double.parseDouble(txtMonto.getText().trim());
+            double monto = 0;
+
+            if (txtMonto != null && Tools.isNumeric(txtMonto.getText().trim())) {
+                monto = Double.parseDouble(txtMonto.getText().trim());
+            }
+
+            montoActual += monto;
 
             IngresoTB ingresoTB = new IngresoTB();
             ingresoTB.setIdBanco(hbox.getId());
+            ingresoTB.setIdUsuario(Session.USER_ID);
             ingresoTB.setMonto(monto - vueltoContado);
             ingresoTB.setVuelto(vueltoContado);
             ingresoTB.setOperacion(txtOperacion.getText().trim());
+            ingresoTB.setDetalle("");
+            ingresoTB.setEstado(true);
             ingresoTBs.add(ingresoTB);
         }
 
-        VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
-        ventaCreditoTB.setIdVenta(ventaTB.getIdVenta());
-        ventaCreditoTB.setMonto(montoActual);
-        ventaCreditoTB.setEstado((short) 1);
-        ventaCreditoTB.setIdUsuario(Session.USER_ID);
-        ventaCreditoTB.setObservacion(txtObservacion.getText().trim());
+        Tools.println(montoActual);
+        Tools.println(vueltoContado);
 
-        short value = Tools.AlertMessageConfirmation(window, "Cobro", "¿Está seguro de continuar?");
-        if (value == 1) {
-            String[] result = VentaADO.RegistrarAbono(ventaCreditoTB, ingresoTBs);
-            if (result[0] == "1") {
-                Tools.Dispose(window);
-                cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(), result[2]);
-            } else {
-                Tools.AlertMessageWarning(window, "Cobro", result[1]);
-            }
+        if (montoActual >= totalVenta) {
+            montoActual = montoActual - vueltoContado;
         }
+
+        Tools.println(montoActual);
+        Tools.println(vueltoContado);
+        Tools.println("-----------------");
+
+        // VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
+        // ventaCreditoTB.setVentaTB(ventaTB);
+        // ventaCreditoTB.setIdVenta(ventaTB.getIdVenta());
+        // ventaCreditoTB.setMonto(montoActual);
+        // ventaCreditoTB.setEstado((short) 1);
+        // ventaCreditoTB.setIdUsuario(Session.USER_ID);
+        // ventaCreditoTB.setObservacion(txtObservacion.getText().trim());
+
+        // short value = Tools.AlertMessageConfirmation(window, "Cobro", "¿Está seguro
+        // de continuar?");
+        // if (value == 1) {
+        // String[] result = VentaADO.registrarIngreso(ventaCreditoTB, ingresoTBs);
+        // if (result[0] == "1") {
+        // Tools.Dispose(window);
+        // cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(),
+        // result[2]);
+        // } else {
+        // Tools.AlertMessageWarning(window, "Cobro", result[1]);
+        // }
+        // }
 
         // if (!Tools.isNumeric(txtMonto.getText().trim())) {
         // Tools.AlertMessageWarning(window, "Abonar", "Ingrese el abono.");
@@ -432,139 +593,6 @@ public class FxGenerarCobroController implements Initializable {
         // }
         // }
 
-    }
-
-    private void addMetodoCobro() {
-        if (cbMetodoTransaccion.getSelectionModel().getSelectedIndex() < 0) {
-            Tools.AlertMessageWarning(window, "Cobro", "Seleccione el método de cobro.");
-            cbMetodoTransaccion.requestFocus();
-            return;
-        }
-
-        List<Node> vBoxFiltrados = vbContenedorMetodoPago.getChildren()
-                .stream()
-                .filter(vBoxFilter -> ((HBox) vBoxFilter).getId() == cbMetodoTransaccion.getSelectionModel()
-                        .getSelectedItem().getIdBanco())
-                .collect(Collectors.toList());
-
-        if (vBoxFiltrados.size() != 0) {
-            Tools.AlertMessageWarning(window, "Cobro", "Ya existe en la lista el método de cobro.");
-            cbMetodoTransaccion.requestFocus();
-            return;
-        }
-
-        generarMetodoCobro(cbMetodoTransaccion.getSelectionModel().getSelectedItem());
-    }
-
-    private void generarMetodoCobro(BancoTB bancoTB) {
-        HBox hBox = new HBox();
-        hBox.setId(bancoTB.getIdBanco());
-        hBox.setStyle("-fx-spacing: 0.6666666666666666em;");
-
-        VBox vbMonto = new VBox();
-        HBox.setHgrow(vbMonto, Priority.ALWAYS);
-        vbMonto.setStyle("-fx-spacing: 0.5333333333333333em;");
-        Label lblMonto = new Label(
-                "Monto - " + bancoTB.getNombreCuenta());
-        lblMonto.getStyleClass().add("labelOpenSansRegular13");
-        TextField txtMonto = new TextField();
-        txtMonto.setPromptText("0.00");
-        txtMonto.getStyleClass().add("text-field-normal");
-        txtMonto.setPrefWidth(260);
-        txtMonto.setPrefHeight(30);
-        txtMonto.setOnAction(event -> onEventAceptar());
-        txtMonto.setOnKeyReleased(event -> {
-            if (txtMonto.getText().isEmpty()) {
-                vueltoContado = totalVenta;
-                generarVuelto();
-                return;
-            }
-            if (Tools.isNumeric(txtMonto.getText())) {
-                generarVuelto();
-            }
-        });
-        txtMonto.setOnKeyTyped(event -> {
-            char c = event.getCharacter().charAt(0);
-            if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
-                event.consume();
-            }
-            if (c == '.' && txtMonto.getText().contains(".")) {
-                event.consume();
-            }
-        });
-        vbMonto.getChildren().addAll(lblMonto, txtMonto);
-
-        VBox vbOperacion = new VBox();
-        HBox.setHgrow(vbOperacion, Priority.ALWAYS);
-        vbOperacion.setStyle("-fx-spacing: 0.5333333333333333em;");
-        Label lblOperacion = new Label(
-                "N° de Operación - " + bancoTB.getNombreCuenta());
-        lblOperacion.getStyleClass().add("labelOpenSansRegular13");
-
-        HBox hbContendorOperacion = new HBox();
-        TextField txtOperacion = new TextField();
-        txtOperacion.setPromptText(
-                "N° Operación");
-        txtOperacion.getStyleClass().add("text-field-normal");
-        txtOperacion.setPrefWidth(260);
-        txtOperacion.setPrefHeight(30);
-        txtOperacion.setOnAction(event -> onEventAceptar());
-        Button btnQuitar = new Button();
-        btnQuitar.setPrefHeight(30);
-        btnQuitar.setMaxHeight(Double.MAX_VALUE);
-        btnQuitar.getStyleClass().add("buttonLightError");
-        ImageView imageView = new ImageView(new Image("/view/image/remove-gray.png"));
-        imageView.setFitWidth(20);
-        imageView.setFitHeight(20);
-        btnQuitar.setGraphic(imageView);
-        btnQuitar.setOnAction(event -> {
-            vbContenedorMetodoPago.getChildren().remove(hBox);
-            generarVuelto();
-        });
-        btnQuitar.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                vbContenedorMetodoPago.getChildren().remove(hBox);
-                generarVuelto();
-            }
-        });
-        hbContendorOperacion.getChildren().addAll(txtOperacion, btnQuitar);
-        vbOperacion.getChildren().addAll(lblOperacion, hbContendorOperacion);
-
-        hBox.getChildren().addAll(vbMonto, vbOperacion);
-
-        vbContenedorMetodoPago.getChildren().add(hBox);
-        txtMonto.requestFocus();
-    }
-
-    private void generarVuelto() {
-        double montoActual = 0;
-
-        for (Node contenedorMetodoPagoNode : vbContenedorMetodoPago.getChildren()) {
-            HBox hbox = (HBox) contenedorMetodoPagoNode;
-
-            VBox contenedorMonto = (VBox) hbox.getChildren().get(0);
-            if (contenedorMonto != null) {
-                for (Node nodo : contenedorMonto.getChildren()) {
-                    if (nodo instanceof TextField) {
-                        TextField txtMonto = (TextField) nodo;
-                        if (Tools.isNumeric(txtMonto.getText().trim())) {
-                            montoActual += Double.parseDouble(txtMonto.getText().trim());
-                        }
-                    }
-                }
-            }
-
-        }
-
-        if (montoActual >= totalVenta) {
-            vueltoContado = montoActual - totalVenta;
-            lblVueltoContadoNombre.setText("SU CAMBIO ES");
-        } else {
-            vueltoContado = totalVenta - montoActual;
-            lblVueltoContadoNombre.setText("POR COBRAR");
-        }
-
-        lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
     }
 
     @FXML

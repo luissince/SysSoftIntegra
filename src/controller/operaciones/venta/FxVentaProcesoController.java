@@ -333,6 +333,9 @@ public class FxVentaProcesoController implements Initializable {
             }
         });
         txtMonto.setOnKeyTyped(event -> {
+            if (event.getCharacter().isEmpty())
+                return;
+
             char c = event.getCharacter().charAt(0);
             if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
                 event.consume();
@@ -533,6 +536,7 @@ public class FxVentaProcesoController implements Initializable {
             ingresoTB.setMonto(monto - vueltoContado);
             ingresoTB.setVuelto(vueltoContado);
             ingresoTB.setOperacion(txtOperacion.getText().trim());
+            ingresoTB.setEstado(true);
             ingresoTBs.add(ingresoTB);
         }
 

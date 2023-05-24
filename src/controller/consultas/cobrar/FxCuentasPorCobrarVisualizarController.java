@@ -346,7 +346,7 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
     private void onEventRemove(String idVentaCredito) {
         short value = Tools.AlertMessageConfirmation(apWindow, "Cuentas Por Cobrar", "¿Está seguro de continuar?");
         if (value == 1) {
-            String result = VentaADO.RemoverIngreso(ventaTB.getIdVenta(), idVentaCredito);
+            String result = VentaADO.removerIngreso(ventaTB.getIdVenta(), idVentaCredito);
             if (result.equalsIgnoreCase("removed")) {
                 Tools.AlertMessageInformation(apWindow, "Cuentas Por Cobrar", "Se completo correctamento el proceso.");
                 loadData(ventaTB.getIdVenta());

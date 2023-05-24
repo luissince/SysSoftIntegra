@@ -49,6 +49,7 @@ public class SplashScreen extends Preloader {
     public void start(Stage primaryStage) throws Exception {
         preloaderStage = primaryStage;
         preloaderStage.getIcons().add(new Image(FilesRouters.IMAGE_ICON));
+        preloaderStage.setTitle("SysSoft Integra");
         preloaderStage.initStyle(StageStyle.UNDECORATED);
         preloaderStage.setScene(scene);
         preloaderStage.show();

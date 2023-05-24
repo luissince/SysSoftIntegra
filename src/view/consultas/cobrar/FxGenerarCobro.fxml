@@ -46,7 +46,7 @@
                                                       <Label alignment="CENTER" styleClass="labelOpenSansRegular13" text="Método de cobro" textFill="#020203" />
                                                       <HBox>
                                                          <children>
-                                                            <ComboBox fx:id="cbMetodoTransaccion" prefHeight="30.0" prefWidth="260.0" promptText="Seleccione" HBox.hgrow="ALWAYS" />
+                                                            <ComboBox fx:id="cbMetodoTransaccion" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="260.0" promptText="Seleccione" HBox.hgrow="ALWAYS" />
                                                             <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionAgregarMetodoPago" onKeyPressed="#onKeyPressedAgregarMetodoPago" prefHeight="30.0" styleClass="buttonLight" text="Agregar">
                                                                <graphic>
                                                                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
