@@ -14,6 +14,7 @@ public class IngresoTB {
     private int forma;
     private double monto;
     private double vuelto;
+    private boolean estado;
     private String operacion;
     private EmpleadoTB empleadoTB;
     private String transaccion;
@@ -167,6 +168,14 @@ public class IngresoTB {
 
     public void setBancoTB(BancoTB bancoTB) {
         this.bancoTB = bancoTB;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
     }
 
 }

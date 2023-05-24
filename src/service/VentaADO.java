@@ -283,10 +283,11 @@ public class VentaADO {
                         + "Fecha,"
                         + "Hora,"
                         + "Forma,"
+                        + "Estado,"
                         + "Monto,"
                         + "Vuelto,"
                         + "Operacion) "
-                        + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                        + "VALUES(?,?,?,?,?,?,?,GETDATE(),GETDATE(),?,?,?,?,?)");
 
                 for (IngresoTB ingresoTB : ingresoTBs) {
                     preparedRegistrarIngreso.setString(1, idIngreso);
@@ -296,12 +297,11 @@ public class VentaADO {
                     preparedRegistrarIngreso.setString(5, ingresoTB.getIdBanco());
                     preparedRegistrarIngreso.setString(6, "");
                     preparedRegistrarIngreso.setInt(7, 1);
-                    preparedRegistrarIngreso.setString(8, ventaTB.getFechaVenta());
-                    preparedRegistrarIngreso.setString(9, ventaTB.getHoraVenta());
-                    preparedRegistrarIngreso.setInt(10, 3);
-                    preparedRegistrarIngreso.setDouble(11, ingresoTB.getMonto());
-                    preparedRegistrarIngreso.setDouble(12, ingresoTB.getVuelto());
-                    preparedRegistrarIngreso.setString(13, ingresoTB.getOperacion());
+                    preparedRegistrarIngreso.setInt(8, 3);
+                    preparedRegistrarIngreso.setBoolean(9, ingresoTB.isEstado());
+                    preparedRegistrarIngreso.setDouble(10, ingresoTB.getMonto());
+                    preparedRegistrarIngreso.setDouble(11, ingresoTB.getVuelto());
+                    preparedRegistrarIngreso.setString(12, ingresoTB.getOperacion());
                     preparedRegistrarIngreso.addBatch();
 
                     // Obtener el número de ingreso actual
@@ -4289,6 +4289,7 @@ public class VentaADO {
                 ventaTB.setIdVenta(idVenta);
 
                 ClienteTB clienteTB = new ClienteTB();
+                clienteTB.setIdCliente(resultSet.getString("IdCliente"));
                 clienteTB.setNumeroDocumento(resultSet.getString("NumeroDocumento"));
                 clienteTB.setInformacion(resultSet.getString("Informacion"));
                 clienteTB.setCelular(resultSet.getString("Celular"));
@@ -4424,7 +4425,7 @@ public class VentaADO {
         }
     }
 
-    public static String[] RegistrarAbono(VentaCreditoTB ventaCreditoTB, List<IngresoTB> ingresoTBs) {
+    public static String[] registrarIngreso(VentaCreditoTB ventaCreditoTB, List<IngresoTB> ingresoTBs) {
         // Creamos el objeto encargado de iniciar la consulta a la base de datos.
         DBUtil dbf = new DBUtil();
 
@@ -4517,10 +4518,11 @@ public class VentaADO {
                     + "Fecha,"
                     + "Hora,"
                     + "Forma,"
+                    + "Estado,"
                     + "Monto,"
                     + "Vuelto,"
                     + "Operacion) "
-                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    + "VALUES(?,?,?,?,?,?,?,GETDATE(),GETDATE(),?,?,?,?,?)");
 
             /*
              * Registramos la consulta de ingresos en un bucle porque se puede
@@ -4530,16 +4532,15 @@ public class VentaADO {
                 statementIngreso.setString(1, idIngreso);
                 statementIngreso.setString(2, idVentaCredito);
                 statementIngreso.setString(3, ingresoTB.getIdUsuario());
-                statementIngreso.setString(4, "");
+                statementIngreso.setString(4, ventaCreditoTB.getVentaTB().getClienteTB().getIdCliente());
                 statementIngreso.setString(5, ingresoTB.getIdBanco());
                 statementIngreso.setString(6, ingresoTB.getDetalle());
                 statementIngreso.setInt(7, 1);
-                statementIngreso.setString(8, ingresoTB.getFecha());
-                statementIngreso.setString(9, ingresoTB.getHora());
-                statementIngreso.setInt(10, 3);
-                statementIngreso.setDouble(11, ingresoTB.getMonto());
-                statementIngreso.setDouble(12, ingresoTB.getVuelto());
-                statementIngreso.setString(13, ingresoTB.getOperacion());
+                statementIngreso.setInt(8, 3);
+                statementIngreso.setBoolean(9, ingresoTB.isEstado());
+                statementIngreso.setDouble(10, ingresoTB.getMonto());
+                statementIngreso.setDouble(11, ingresoTB.getVuelto());
+                statementIngreso.setString(12, ingresoTB.getOperacion());
                 statementIngreso.addBatch();
 
                 // Obtener el número de ingreso actual
@@ -4616,7 +4617,7 @@ public class VentaADO {
         }
     }
 
-    public static String RemoverIngreso(String idVenta, String idVentaCredito) {
+    public static String removerIngreso(String idVenta, String idVentaCredito) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementValidate = null;
         PreparedStatement statementVentaCredito = null;
@@ -4701,7 +4702,7 @@ public class VentaADO {
         }
     }
 
-    public static ModeloObject RegistrarAbonoUpdateById(VentaCreditoTB ventaCreditoTB, IngresoTB ingresoTB,
+    public static ModeloObject ActualizarIngresoPorId(VentaCreditoTB ventaCreditoTB, IngresoTB ingresoTB,
             MovimientoCajaTB movimientoCajaTB) {
         DBUtil dbf = new DBUtil();
 
