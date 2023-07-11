@@ -136,12 +136,20 @@ public class FxCotizacionController implements Initializable {
         monedaSimbolo = "M";
         idCotizacion = "";
         idVenta = "";
+        
         Tools.actualDate(Tools.getDate(), dtFechaEmision);
         Tools.actualDate(Tools.getDate(), dtFechaVencimiento);
+        
         loadTableView();
+        
         loadComboBoxCliente();
+        
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
+        Object monedaObject = MonedaADO.ObtenerListaMonedas();
+        if (monedaObject instanceof ObservableList) {
+            cbMoneda.setItems((ObservableList<MonedaTB>) monedaObject);
+        }
+
         if (!cbMoneda.getItems().isEmpty()) {
             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
                 if (cbMoneda.getItems().get(i).isPredeterminado()) {
@@ -584,7 +592,11 @@ public class FxCotizacionController implements Initializable {
         lblProceso.setTextFill(Color.web("#0060e8"));
         lblComprobante.setText("Comprobante Asociado: -");
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
+        Object monedaObject = MonedaADO.ObtenerListaMonedas();
+        if (monedaObject instanceof ObservableList) {
+            cbMoneda.setItems((ObservableList<MonedaTB>) monedaObject);
+        }
+
         for (int i = 0; i < cbMoneda.getItems().size(); i++) {
             if (cbMoneda.getItems().get(i).isPredeterminado()) {
                 cbMoneda.getSelectionModel().select(i);

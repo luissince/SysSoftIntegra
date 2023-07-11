@@ -839,7 +839,7 @@ public class FxProducirAgregarController implements Initializable {
                 txtCostoAdicional.setText(Tools.roundingValue(formulaTB.getCostoAdicional(), 2));
                 txtDescripcion.setText(formulaTB.getInstrucciones());
                 for (SuministroTB suministroTB : formulaTB.getSuministroTBs()) {
-                    ComboBox<SuministroTB> comboBox = new ComboBox();
+                    ComboBox<SuministroTB> comboBox = new ComboBox<>();
                     comboBox.setPromptText("-- Selecionar --");
                     comboBox.setPrefWidth(220);
                     comboBox.setPrefHeight(30);

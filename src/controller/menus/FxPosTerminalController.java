@@ -104,7 +104,7 @@ public class FxPosTerminalController implements Initializable {
             nodeVentaRealizadas = fXMLVentaRealizadas.load();
             ventaRealizadasController = fXMLVentaRealizadas.getController();
         } catch (IOException ex) {
-            System.out.println("Error en Ingresos Controller:" + ex.getLocalizedMessage());
+            System.out.println("Error en Pos Terminal Controller:" + ex.getLocalizedMessage());
         }
     }
 

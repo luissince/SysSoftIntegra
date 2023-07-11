@@ -1,6 +1,7 @@
 package controller.operaciones.venta;
 
 import controller.tools.ConvertMonedaCadena;
+import static controller.tools.ObjectGlobal.ID_CONCEPTO_VENTA;
 import controller.tools.Tools;
 import java.net.URL;
 import java.time.LocalDate;
@@ -20,7 +21,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
@@ -93,10 +93,6 @@ public class FxVentaProcesoController implements Initializable {
     @FXML
     private TableColumn<VentaCreditoTB, TextField> tcMonto;
     @FXML
-    private TableColumn<VentaCreditoTB, CheckBox> tcAdelanto;
-    @FXML
-    private TableColumn<VentaCreditoTB, ComboBox<String>> tcForma;
-    @FXML
     private HBox hbLoadProcesando;
     @FXML
     private Label lblTextoProceso;
@@ -160,8 +156,6 @@ public class FxVentaProcesoController implements Initializable {
         tcQuitar.setCellValueFactory(new PropertyValueFactory<>("btnQuitar"));
         tcFecha.setCellValueFactory(new PropertyValueFactory<>("dpFecha"));
         tcMonto.setCellValueFactory(new PropertyValueFactory<>("tfMonto"));
-        tcAdelanto.setCellValueFactory(new PropertyValueFactory<>("cbMontoInicial"));
-        tcForma.setCellValueFactory(new PropertyValueFactory<>("cbForma"));
         tvListPlazos.setPlaceholder(
                 Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
     }
@@ -259,6 +253,18 @@ public class FxVentaProcesoController implements Initializable {
         DatePicker dpFecha = new DatePicker();
         dpFecha.setPrefWidth(200);
         dpFecha.setPrefHeight(30);
+        dpFecha.setDayCellFactory(picket -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                if (date.isBefore(LocalDate.now())) {
+                    setDisable(true);
+                }
+                if (date.isEqual(LocalDate.now())) {
+                    setDisable(true);
+                }
+            };
+        });
         creditoTB.setDpFecha(dpFecha);
 
         creditoTB.setHoraPago(Tools.getTime());
@@ -268,17 +274,6 @@ public class FxVentaProcesoController implements Initializable {
         txtMonto.setPrefWidth(200);
         txtMonto.setPrefHeight(30);
         creditoTB.setTfMonto(txtMonto);
-
-        CheckBox cbMontoInicial = new CheckBox();
-        cbMontoInicial.getStyleClass().add("check-box-contenido");
-        cbMontoInicial.setPrefHeight(30);
-        creditoTB.setCbMontoInicial(cbMontoInicial);
-
-        ComboBox<String> cbForma = new ComboBox<>();
-        cbForma.prefWidth(200);
-        cbForma.setPrefHeight(30);
-        cbForma.getItems().addAll("EFECTIVO", "TARJETA", "DEPOSITO");
-        creditoTB.setCbForma(cbForma);
 
         tvListPlazos.getItems().add(creditoTB);
     }
@@ -535,6 +530,7 @@ public class FxVentaProcesoController implements Initializable {
             ingresoTB.setIdBanco(hbox.getId());
             ingresoTB.setMonto(monto - vueltoContado);
             ingresoTB.setVuelto(vueltoContado);
+            ingresoTB.setIdConcepto(ID_CONCEPTO_VENTA); 
             ingresoTB.setOperacion(txtOperacion.getText().trim());
             ingresoTB.setEstado(true);
             ingresoTBs.add(ingresoTB);
@@ -550,7 +546,7 @@ public class FxVentaProcesoController implements Initializable {
         ventaTB.setNumeroOperacion("");
         ventaTB.setTipoCredito(0);
 
-        generarResultado(ingresoTBs);
+        registrarProceso(ingresoTBs);
     }
 
     private void onEventCredito() {
@@ -601,7 +597,6 @@ public class FxVentaProcesoController implements Initializable {
             int distint = 0;
             int fechavl = 0;
             int totalvl = 0;
-            int pagoval = 0;
 
             for (int i = 0; i < tvListPlazos.getItems().size(); i++) {
                 if (tvListPlazos.getItems().get(i).getDpFecha().getValue() == null) {
@@ -636,13 +631,6 @@ public class FxVentaProcesoController implements Initializable {
                     totalvl += Double.parseDouble(tvListPlazos.getItems().get(i).getTfMonto().getText());
                 }
 
-                if (tvListPlazos.getItems().get(i).getCbMontoInicial().isSelected()) {
-                    if (tvListPlazos.getItems().get(i).getCbForma().getSelectionModel()
-                            .getSelectedIndex() < 0) {
-                        pagoval++;
-                    }
-                }
-
             }
 
             if (fecha > 0) {
@@ -675,12 +663,6 @@ public class FxVentaProcesoController implements Initializable {
                 return;
             }
 
-            if (pagoval > 0) {
-                Tools.AlertMessageWarning(window, "Venta",
-                        "Hay plazos adelantados que necesitan tener la forma de pago.");
-                return;
-            }
-
             ventaTB.setFechaVencimiento(Tools.getDatePicker(
                     tvListPlazos.getItems().get(tvListPlazos.getItems().size() - 1).getDpFecha()));
             ventaTB.setHoraVencimiento(Tools.getTime());
@@ -689,10 +671,10 @@ public class FxVentaProcesoController implements Initializable {
         }
 
         List<IngresoTB> ingresoTBs = new ArrayList<>();
-        generarResultado(ingresoTBs);
+        registrarProceso(ingresoTBs);
     }
 
-    private void generarResultado(List<IngresoTB> ingresoTBs) {
+    private void registrarProceso(List<IngresoTB> ingresoTBs) {
         short confirmation = Tools.AlertMessageConfirmation(window, "Venta", "¿Está seguro de continuar?");
         if (confirmation == 1) {
             ResultTransaction result = VentaADO.registrarVenta(ventaTB, ingresoTBs,

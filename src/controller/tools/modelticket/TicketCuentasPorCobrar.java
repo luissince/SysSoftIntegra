@@ -104,7 +104,7 @@ public class TicketCuentasPorCobrar {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object object = VentaADO.Listar_Ventas_Detalle_Credito_ById(idVenta);
+                Object object = VentaADO.obtenerVentaDetalleCreditoPorId(idVenta);
                 if (object instanceof VentaTB) {
                     VentaTB ventaTB = (VentaTB) object;
                     try {
@@ -347,7 +347,7 @@ public class TicketCuentasPorCobrar {
         Task<Object> task = new Task<Object>() {
             @Override
             public Object call() throws UnsupportedEncodingException, JRException {
-                Object object = VentaADO.Listar_Ventas_Detalle_Credito_ById(idVenta);
+                Object object = VentaADO.obtenerVentaDetalleCreditoPorId(idVenta);
                 if (object instanceof VentaTB) {
                     VentaTB ventaTB = (VentaTB) object;
 

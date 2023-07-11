@@ -486,7 +486,6 @@ public class FxCajaController implements Initializable {
             primaryStage.show();
             primaryStage.requestFocus();
         } catch (IOException ex) {
-            Tools.println("Login:" + ex.getLocalizedMessage());
         }
     }
 

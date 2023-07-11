@@ -212,7 +212,6 @@ public class EmpresaADO {
                 return "-";
             }
         } catch (SQLException | ClassNotFoundException ex) {
-            Tools.println(ex.getLocalizedMessage());
             return "--";
         } finally {
             try {

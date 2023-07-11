@@ -261,7 +261,7 @@ public class EmpleadoADO {
         return empleadoTB;
     }
 
-    public static Object GetValidateUser(String user, String clave) {
+    public static Object iniciarSesion(String user, String clave) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
         ResultSet rsEmps = null;
@@ -271,8 +271,8 @@ public class EmpleadoADO {
             preparedStatement.setString(1, user);
             preparedStatement.setString(2, clave);
             rsEmps = preparedStatement.executeQuery();
-            EmpleadoTB empleadoTB = new EmpleadoTB();
             if (rsEmps.next()) {
+                EmpleadoTB empleadoTB = new EmpleadoTB();
                 empleadoTB.setIdEmpleado(rsEmps.getString("IdEmpleado"));
                 empleadoTB.setApellidos(rsEmps.getString("Apellidos"));
                 empleadoTB.setNombres(rsEmps.getString("Nombres"));
@@ -280,10 +280,8 @@ public class EmpleadoADO {
                 empleadoTB.setEstado(rsEmps.getInt("Estado"));
                 empleadoTB.setRol(rsEmps.getInt("Rol"));
                 return empleadoTB;
-            } else {
-                throw new Exception("No se encontro al cliente, intente nuevamente.");
             }
-
+            throw new Exception("No se encontro al cliente, intente nuevamente.");
         } catch (SQLException | ClassNotFoundException ex) {
             return ex.getLocalizedMessage();
         } catch (Exception ex) {
@@ -491,7 +489,6 @@ public class EmpleadoADO {
                 arrayList.add(resultSet.getString("IdSuministro"));
             }
         } catch (SQLException | ClassNotFoundException ex) {
-            Tools.println("Error sql: " + ex.getLocalizedMessage());
         } finally {
             try {
                 if (statementValidation != null) {

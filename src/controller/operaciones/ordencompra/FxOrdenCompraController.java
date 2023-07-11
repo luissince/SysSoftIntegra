@@ -129,7 +129,7 @@ public class FxOrdenCompraController implements Initializable {
         tcOpcion.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
         tcProducto.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getSuministroTB().getClave() + "\n"
-                        + cellData.getValue().getSuministroTB().getNombreMarca()));
+                + cellData.getValue().getSuministroTB().getNombreMarca()));
         tcCantidad.setCellValueFactory(
                 cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
         tcCosto.setCellValueFactory(cellData -> Bindings
@@ -149,7 +149,11 @@ public class FxOrdenCompraController implements Initializable {
 
         loadComboBoxProveedor();
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
+        Object monedaObject = MonedaADO.ObtenerListaMonedas();
+        if (monedaObject instanceof ObservableList) {
+            cbMoneda.setItems((ObservableList<MonedaTB>) monedaObject);
+        }
+
         for (int i = 0; i < cbMoneda.getItems().size(); i++) {
             if (cbMoneda.getItems().get(i).isPredeterminado()) {
                 cbMoneda.getSelectionModel().select(i);
@@ -524,8 +528,13 @@ public class FxOrdenCompraController implements Initializable {
         lblProceso.setText("Orden de compra en proceso de registrar");
         lblProceso.setTextFill(Color.web("#0060e8"));
         txtObservacion.clear();
+        
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
+        Object monedaObject = MonedaADO.ObtenerListaMonedas();
+        if (monedaObject instanceof ObservableList) {
+            cbMoneda.setItems((ObservableList<MonedaTB>) monedaObject);
+        }
+
         for (int i = 0; i < cbMoneda.getItems().size(); i++) {
             if (cbMoneda.getItems().get(i).isPredeterminado()) {
                 cbMoneda.getSelectionModel().select(i);
@@ -554,7 +563,6 @@ public class FxOrdenCompraController implements Initializable {
             stage.setOnShown(w -> controller.loadInit());
             stage.show();
         } catch (IOException ex) {
-            Tools.println("Error en la función openWindowOrdenCompra():" + ex.getLocalizedMessage());
         }
     }
 

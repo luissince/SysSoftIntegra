@@ -3,6 +3,11 @@ package controller.banco;
 import controller.tools.Tools;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +22,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import model.BancoTB;
 import model.MonedaTB;
 import service.BancoADO;
@@ -35,55 +41,153 @@ public class FxBancoProcesoController implements Initializable {
     @FXML
     private ComboBox<MonedaTB> cbMoneda;
     @FXML
-    private TextField txtSaldoInicial;
-    @FXML
     private TextField txtDescripcion;
     @FXML
     private Button btnProceso;
-    @FXML
-    private HBox hbCuenta;
     @FXML
     private RadioButton CuentaEfectivo;
     @FXML
     private RadioButton CuentaBancaria;
     @FXML
     private CheckBox cbMostrar;
+    @FXML
+    private HBox hbLoadProcesando;
+    @FXML
+    private Label lblTextoProceso;
+    @FXML
+    private Button btnCancelarProceso;
+    @FXML
+    private VBox vbContent;
 
-    private FxBancosController bancosController;
+    private FxBancoController bancosController;
 
     private String idBanco;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
-        cbMoneda.getItems().add(new MonedaTB(0, "Seleccione..."));
-        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
-        cbMoneda.getSelectionModel().select(0);
-        idBanco = "";
         ToggleGroup group = new ToggleGroup();
         CuentaEfectivo.setToggleGroup(group);
         CuentaBancaria.setToggleGroup(group);
+
+        idBanco = "";
+    }
+
+    public void loadAddBanco() {
+        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<Object[]> task = new Task<Object[]>() {
+            @Override
+            public Object[] call() throws Exception {
+                Object listMonedas = MonedaADO.ObtenerListaMonedas();
+
+                if (listMonedas instanceof ObservableList) {
+                    return new Object[] { listMonedas };
+                }
+                throw new Exception("Se produjo un error, intente nuevamente.");
+            }
+        };
+
+        task.setOnScheduled(e -> {
+            vbContent.setDisable(true);
+            hbLoadProcesando.setVisible(true);
+            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
+            btnCancelarProceso.setText("Cancelar Proceso");
+            if (btnCancelarProceso.getOnAction() != null) {
+                btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
+            }
+            btnCancelarProceso.setOnAction(event -> {
+                if (task.isRunning()) {
+                    task.cancel();
+                }
+                Tools.Dispose(apWindow);
+            });
+        });
+
+        task.setOnFailed(e -> {
+            lblTextoProceso.setText(task.getException().getMessage());
+            btnCancelarProceso.setText("Cerrar Vista");
+        });
+
+        task.setOnSucceeded(e -> {
+            Object[] result = task.getValue();
+            ObservableList<MonedaTB> monedaTBs = (ObservableList<MonedaTB>) result[0];
+            cbMoneda.setItems(monedaTBs);
+
+            hbLoadProcesando.setVisible(false);
+            vbContent.setDisable(false);
+        });
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
+        }
     }
 
     public void loadEditBanco(String idBanco) {
-        this.idBanco = idBanco;
-        lblTitle.setText("Editar cuenta");
-        btnProceso.setText("Editar");
-        btnProceso.getStyleClass().add("buttonLightWarning");
-        BancoTB bancoTB = BancoADO.Obtener_Banco_Por_Id(idBanco);
-        if (bancoTB != null) {
+        ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t;
+        });
+
+        Task<Object[]> task = new Task<Object[]>() {
+            @Override
+            public Object[] call() throws Exception {
+                BancoTB bancoTB = BancoADO.obtenerBancoPorId(idBanco);
+                Object listMonedas = MonedaADO.ObtenerListaMonedas();
+
+                if (listMonedas instanceof ObservableList) {
+                    return new Object[] { bancoTB, listMonedas };
+                }
+                throw new Exception("Se produjo un error, intente nuevamente.");
+            }
+        };
+
+        task.setOnScheduled(e -> {
+            this.idBanco = idBanco;
+            lblTitle.setText("Editar cuenta");
+            btnProceso.setText("Editar");
+            btnProceso.getStyleClass().add("buttonLightWarning");
+
+            vbContent.setDisable(true);
+            hbLoadProcesando.setVisible(true);
+            lblTextoProceso.setText("PROCESANDO INFORMACIÓN...");
+            btnCancelarProceso.setText("Cancelar Proceso");
+            if (btnCancelarProceso.getOnAction() != null) {
+                btnCancelarProceso.removeEventHandler(ActionEvent.ACTION, btnCancelarProceso.getOnAction());
+            }
+            btnCancelarProceso.setOnAction(event -> {
+                if (task.isRunning()) {
+                    task.cancel();
+                }
+                Tools.Dispose(apWindow);
+            });
+        });
+
+        task.setOnFailed(e -> {
+            lblTextoProceso.setText(task.getException().getMessage());
+            btnCancelarProceso.setText("Cerrar Vista");
+        });
+
+        task.setOnSucceeded(e -> {
+            Object[] result = task.getValue();
+            BancoTB bancoTB = (BancoTB) result[0];
+            ObservableList<MonedaTB> monedaTBs = (ObservableList<MonedaTB>) result[1];
+
+            cbMoneda.setItems(monedaTBs);
+
             txtNombreCuenta.setText(bancoTB.getNombreCuenta());
             txtNumeroCuenta.setText(bancoTB.getNumeroCuenta());
-            for (int i = 0; i < cbMoneda.getItems().size(); i++) {
-                if (cbMoneda.getItems().get(i).getIdMoneda() == bancoTB.getIdMoneda()) {
-                    cbMoneda.getSelectionModel().select(i);
+            for (MonedaTB moneda : cbMoneda.getItems()) {
+                if (moneda.getIdMoneda() == bancoTB.getIdMoneda()) {
+                    cbMoneda.getSelectionModel().select(moneda);
                     break;
                 }
             }
-            cbMoneda.setDisable(bancoTB.getSaldoInicial() > 0);
-            txtSaldoInicial.setDisable(bancoTB.getSaldoInicial() > 0);
-            txtSaldoInicial.setText(Tools.roundingValue(bancoTB.getSaldoInicial(), 4));
-            hbCuenta.setDisable(bancoTB.getSaldoInicial() > 0);
             if (bancoTB.getFormaPago() == 1) {
                 CuentaEfectivo.setSelected(true);
             } else {
@@ -91,6 +195,13 @@ public class FxBancoProcesoController implements Initializable {
             }
             txtDescripcion.setText(bancoTB.getDescripcion());
             cbMostrar.setSelected(bancoTB.isMostrar());
+
+            hbLoadProcesando.setVisible(false);
+            vbContent.setDisable(false);
+        });
+        exec.execute(task);
+        if (!exec.isShutdown()) {
+            exec.shutdown();
         }
     }
 
@@ -98,42 +209,64 @@ public class FxBancoProcesoController implements Initializable {
         if (Tools.isText(txtNombreCuenta.getText())) {
             Tools.AlertMessageWarning(apWindow, "Banco", "Ingrese el nombre de la cuenta.");
             txtNombreCuenta.requestFocus();
-        } else if (cbMoneda.getSelectionModel().getSelectedIndex() <= 0) {
+            return;
+        }
+        if (cbMoneda.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(apWindow, "Banco", "Seleccione un moneda.");
             cbMoneda.requestFocus();
-        } else if (!Tools.isNumeric(txtSaldoInicial.getText())) {
-            Tools.AlertMessageWarning(apWindow, "Banco", "Ingrese el saldo inicial.");
-            txtSaldoInicial.requestFocus();
-        } else {
-            BancoTB bancoTB = new BancoTB();
-            bancoTB.setIdBanco(idBanco);
-            bancoTB.setNombreCuenta(txtNombreCuenta.getText());
-            bancoTB.setNumeroCuenta(txtNumeroCuenta.getText());
-            bancoTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedIndex() > 0 ? cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda() : 0);
-            bancoTB.setFecha(Tools.getDate());
-            bancoTB.setHora(Tools.getTime());
-            bancoTB.setSaldoInicial(Double.parseDouble(txtSaldoInicial.getText()));
-            bancoTB.setDescripcion(txtDescripcion.getText().trim());
-            bancoTB.setFormaPago(CuentaEfectivo.isSelected() ? (short) 1 : (short) 2);
-            bancoTB.setMostrar(cbMostrar.isSelected());
-            short option = Tools.AlertMessageConfirmation(apWindow, "Banco", "¿Está seguro de continuar?");
-            if (option == 1) {
-                String result = BancoADO.Proceso_Banco(bancoTB);
-                if (result.equalsIgnoreCase("duplicate")) {
-                    Tools.AlertMessageWarning(apWindow, "Banco", "Existe una cuenta con el mismo nombre.");
-                    txtNombreCuenta.requestFocus();
-                } else if (result.equalsIgnoreCase("inserted")) {
-                    Tools.AlertMessageInformation(apWindow, "Banco", "Se registro correctamente la cuenta.");
-                    bancosController.loadTableViewBanco("");
-                    Tools.Dispose(apWindow);
-                } else if (result.equalsIgnoreCase("updated")) {
-                    Tools.AlertMessageInformation(apWindow, "Banco", "Se actualizo correctamente la cuenta.");
-                    bancosController.loadTableViewBanco("");
-                    Tools.Dispose(apWindow);
-                } else {
-                    Tools.AlertMessageError(apWindow, "Banco", result);
-                }
+            return;
+        }
+
+        BancoTB bancoTB = new BancoTB();
+        bancoTB.setIdBanco(idBanco);
+        bancoTB.setNombreCuenta(txtNombreCuenta.getText());
+        bancoTB.setNumeroCuenta(txtNumeroCuenta.getText());
+        bancoTB.setIdMoneda(cbMoneda.getSelectionModel().getSelectedItem().getIdMoneda());
+        bancoTB.setSaldoInicial(0);
+        bancoTB.setFecha(Tools.getDate());
+        bancoTB.setHora(Tools.getTime());
+        bancoTB.setDescripcion(txtDescripcion.getText().trim());
+        bancoTB.setFormaPago(CuentaEfectivo.isSelected() ? (short) 1 : (short) 2);
+        bancoTB.setMostrar(cbMostrar.isSelected());
+        short option = Tools.AlertMessageConfirmation(apWindow, "Banco", "¿Está seguro de continuar?");
+        if (option == 1) {
+            if (idBanco == "") {
+                onEventAgregar(bancoTB);
+            } else {
+                onEventEditar(bancoTB);
             }
+        }
+    }
+
+    private void onEventAgregar(BancoTB bancoTB) {
+        String result = BancoADO.registrarBanco(bancoTB);
+        if (result.equalsIgnoreCase("duplicate")) {
+            Tools.AlertMessageWarning(apWindow, "Banco", "Existe una cuenta con el mismo nombre.");
+            txtNombreCuenta.requestFocus();
+        } else if (result.equalsIgnoreCase("inserted")) {
+            Tools.AlertMessageInformation(apWindow, "Banco", "Se registro correctamente la cuenta.");
+            bancosController.loadTableViewBanco("");
+            Tools.Dispose(apWindow);
+        } else {
+            Tools.AlertMessageError(apWindow, "Banco", result);
+        }
+    }
+
+    private void onEventEditar(BancoTB bancoTB) {
+        String result = BancoADO.actualizarBanco(bancoTB);
+        if (result.equalsIgnoreCase("duplicate")) {
+            Tools.AlertMessageWarning(apWindow, "Banco", "Existe una cuenta con el mismo nombre.");
+            txtNombreCuenta.requestFocus();
+        }else if(result.equalsIgnoreCase("noid")){
+            Tools.AlertMessageWarning(apWindow, "Banco", "El id envíado no existe.");
+            txtNombreCuenta.requestFocus();
+        } 
+        else if (result.equalsIgnoreCase("updated")) {
+            Tools.AlertMessageInformation(apWindow, "Banco", "Se actualizo correctamente la cuenta.");
+            bancosController.loadTableViewBanco("");
+            Tools.Dispose(apWindow);
+        } else {
+            Tools.AlertMessageError(apWindow, "Banco", result);
         }
     }
 
@@ -161,18 +294,7 @@ public class FxBancoProcesoController implements Initializable {
         Tools.Dispose(apWindow);
     }
 
-    @FXML
-    private void onKeyTypedSaldoInicial(KeyEvent event) {
-        char c = event.getCharacter().charAt(0);
-        if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
-            event.consume();
-        }
-        if (c == '.' && txtSaldoInicial.getText().contains(".")) {
-            event.consume();
-        }
-    }
-
-    public void setInitBancosController(FxBancosController bancosController) {
+    public void setInitBancosController(FxBancoController bancosController) {
         this.bancosController = bancosController;
     }
 

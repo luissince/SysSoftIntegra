@@ -139,7 +139,7 @@ public class FxReportesController implements Initializable {
             nodeIngresosEgresos = fXMLIngresosEgresos.load();
             controllerIngresosEgresos = fXMLIngresosEgresos.getController();
         } catch (IOException ex) {
-            System.out.println("Error en Ingresos Controller:" + ex.getLocalizedMessage());
+            System.out.println("Error en Reportes Controller:" + ex.getLocalizedMessage());
         }
     }
 

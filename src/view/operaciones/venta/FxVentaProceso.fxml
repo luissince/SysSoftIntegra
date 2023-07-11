@@ -173,11 +173,9 @@
                                                          <children>
                                                             <TableView fx:id="tvListPlazos" styleClass="table-view-secundario" VBox.vgrow="ALWAYS">
                                                               <columns>
-                                                                <TableColumn fx:id="tcQuitar" prefWidth="60.0" style="-fx-alignment: center;" text="Quitar" />
-                                                                <TableColumn fx:id="tcFecha" prefWidth="140.0" style="-fx-alignment: center;" text="Fecha de Pago" />
-                                                                  <TableColumn fx:id="tcMonto" prefWidth="140.0" style="-fx-alignment: center;" text="Monto" />
-                                                                  <TableColumn fx:id="tcAdelanto" prefWidth="90.0" style="-fx-alignment: center;" text="Adelanto" />
-                                                                  <TableColumn fx:id="tcForma" prefWidth="120.0" style="-fx-alignment: center;" text="Forma" />
+                                                                <TableColumn fx:id="tcQuitar" prefWidth="100.0" style="-fx-alignment: center;" text="Quitar" />
+                                                                <TableColumn fx:id="tcFecha" prefWidth="200.0" style="-fx-alignment: center;" text="Fecha de Pago" />
+                                                                  <TableColumn fx:id="tcMonto" prefWidth="250.0" style="-fx-alignment: center;" text="Monto" />
                                                               </columns>
                                                                <VBox.margin>
                                                                   <Insets />

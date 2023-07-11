@@ -39,49 +39,59 @@ public class FxConfiguracionController implements Initializable {
 
     }
 
-    private void onEventAceptar() {
+    private void onEventAceptar() throws IOException {
         if (Tools.isText(txtDireccion.getText())) {
             Tools.AlertMessageWarning(apWindow, "Configuración", "Ingrese la dirección del servidor.");
             txtDireccion.requestFocus();
-        } else if (!Tools.isNumericInteger(txtPuerto.getText())) {
+            return;
+        }
+
+        if (!Tools.isNumericInteger(txtPuerto.getText())) {
             Tools.AlertMessageWarning(apWindow, "Configuración", "Ingrese el puerto de conexión.");
             txtPuerto.requestFocus();
-        } else if (Tools.isText(txtUsuario.getText())) {
+            return;
+        }
+
+        if (Tools.isText(txtUsuario.getText())) {
             Tools.AlertMessageWarning(apWindow, "Configuración", "Ingrese el usuario del servidor.");
             txtUsuario.requestFocus();
-        } else if (Tools.isText(txtClave.getText())) {
+            return;
+        }
+
+        if (Tools.isText(txtClave.getText())) {
             Tools.AlertMessageWarning(apWindow, "Configuración", "Ingrese la clave del servidor.");
             txtClave.requestFocus();
-        } else if (Tools.isText(txtBaseDatos.getText())) {
+            return;
+        }
+
+        if (Tools.isText(txtBaseDatos.getText())) {
             Tools.AlertMessageWarning(apWindow, "Configuración", "Ingrese el nombre de la base de datos");
             txtBaseDatos.requestFocus();
-        } else {
-            JSONObject jsonoBody = new JSONObject();
-            JSONObject jsonoContent = new JSONObject();
-            jsonoContent.put("addres", txtDireccion.getText().trim());
-            jsonoContent.put("port", txtPuerto.getText().trim());
-            jsonoContent.put("dbname", txtBaseDatos.getText().trim());
-            jsonoContent.put("user", txtUsuario.getText().trim());
-            jsonoContent.put("password", txtClave.getText().trim());
-            jsonoBody.put("body", jsonoContent);
-            try {
-                String fileName = "./archivos/connection.json";
-                File directory = new File("./archivos");
-                if (!directory.exists()) {
-                    directory.mkdir();
-                }
-                File archivoc = new File(fileName);
-                if (archivoc.exists()) {
-                    archivoc.delete();
-                }
-                Files.write(Paths.get(fileName), jsonoBody.toJSONString().getBytes());
-                Tools.AlertMessageInformation(apWindow, "Configuración",
-                        "Se guardar correctamente el archivo de conexión.");
-                onEventCerrar();
-            } catch (IOException ex) {
-                Tools.println(ex);
-            }
+            return;
         }
+
+        JSONObject jsonoBody = new JSONObject();
+        JSONObject jsonoContent = new JSONObject();
+        jsonoContent.put("addres", txtDireccion.getText().trim());
+        jsonoContent.put("port", txtPuerto.getText().trim());
+        jsonoContent.put("dbname", txtBaseDatos.getText().trim());
+        jsonoContent.put("user", txtUsuario.getText().trim());
+        jsonoContent.put("password", txtClave.getText().trim());
+        jsonoBody.put("body", jsonoContent);
+
+        String fileName = "./archivos/connection.json";
+        File directory = new File("./archivos");
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        File archivoc = new File(fileName);
+        if (archivoc.exists()) {
+            archivoc.delete();
+        }
+        Files.write(Paths.get(fileName), jsonoBody.toJSONString().getBytes());
+        Tools.AlertMessageInformation(apWindow, "Configuración",
+                "Se guardar correctamente el archivo de conexión.");
+        onEventCerrar();
     }
 
     private void onEventProbarConexion() {
@@ -126,14 +136,14 @@ public class FxConfiguracionController implements Initializable {
     }
 
     @FXML
-    private void onKeyPressedAceptar(KeyEvent event) {
+    private void onKeyPressedAceptar(KeyEvent event) throws IOException {
         if (event.getCode() == KeyCode.ENTER) {
             onEventAceptar();
         }
     }
 
     @FXML
-    private void onActionAceptar(ActionEvent event) {
+    private void onActionAceptar(ActionEvent event) throws IOException {
         onEventAceptar();
     }
 

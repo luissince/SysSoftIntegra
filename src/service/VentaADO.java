@@ -1,5 +1,6 @@
 package service;
 
+import static controller.tools.ObjectGlobal.ID_CONCEPTO_VENTA;
 import controller.tools.Session;
 import controller.tools.Tools;
 import java.sql.CallableStatement;
@@ -58,6 +59,7 @@ public class VentaADO {
         PreparedStatement preparedRegistrarVenta = null;
         PreparedStatement preparedActualizarCotizacion = null;
         PreparedStatement preparedRegistrarIngreso = null;
+        PreparedStatement preparedRegistrarBancoDetalle = null;
         PreparedStatement preparedRegistrarVentaDetalle = null;
         PreparedStatement preparedActualizarSuministro = null;
         PreparedStatement preparedRegistrarKardex = null;
@@ -275,34 +277,59 @@ public class VentaADO {
                 preparedRegistrarIngreso = dbf.getConnection().prepareStatement("INSERT INTO IngresoTB "
                         + "(IdIngreso,"
                         + "IdProcedencia,"
+                        + "IdVentaCredito,"
                         + "IdUsuario,"
                         + "IdCliente,"
+                        + "IdConcepto,"
                         + "IdBanco,"
                         + "Detalle,"
-                        + "Procedencia,"
                         + "Fecha,"
                         + "Hora,"
-                        + "Forma,"
                         + "Estado,"
                         + "Monto,"
                         + "Vuelto,"
                         + "Operacion) "
-                        + "VALUES(?,?,?,?,?,?,?,GETDATE(),GETDATE(),?,?,?,?,?)");
+                        + "VALUES(?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?,?,?,?)");
+
+                // Registrar al banco detalle
+                preparedRegistrarBancoDetalle = dbf.getConnection().prepareStatement("INSERT INTO BancoHistorialTB "
+                        + "(IdBanco,"
+                        + "IdProcedencia,"
+                        + "IdEmpleado,"
+                        + "Descripcion,"
+                        + "Fecha,"
+                        + "Hora,"
+                        + "Estado,"
+                        + "Entrada,"
+                        + "Salida)"
+                        + "VALUES(?,?,?,?,GETDATE(),GETDATE(),?,?,?)");
 
                 for (IngresoTB ingresoTB : ingresoTBs) {
                     preparedRegistrarIngreso.setString(1, idIngreso);
                     preparedRegistrarIngreso.setString(2, idVenta);
-                    preparedRegistrarIngreso.setString(3, ventaTB.getVendedor());
-                    preparedRegistrarIngreso.setString(4, ventaTB.getIdCliente());
-                    preparedRegistrarIngreso.setString(5, ingresoTB.getIdBanco());
-                    preparedRegistrarIngreso.setString(6, "");
-                    preparedRegistrarIngreso.setInt(7, 1);
-                    preparedRegistrarIngreso.setInt(8, 3);
+                    preparedRegistrarIngreso.setString(3, "");
+                    preparedRegistrarIngreso.setString(4, ventaTB.getVendedor());
+                    preparedRegistrarIngreso.setString(5, ventaTB.getIdCliente());
+                    preparedRegistrarIngreso.setString(6, ingresoTB.getIdConcepto());
+                    preparedRegistrarIngreso.setString(7, ingresoTB.getIdBanco());
+                    preparedRegistrarIngreso.setString(8,
+                            "INGRESO POR VENTA DEL COMPROBANTE " + serieNumeracion[0] + "-" + serieNumeracion[1]);
+                    
                     preparedRegistrarIngreso.setBoolean(9, ingresoTB.isEstado());
                     preparedRegistrarIngreso.setDouble(10, ingresoTB.getMonto());
                     preparedRegistrarIngreso.setDouble(11, ingresoTB.getVuelto());
                     preparedRegistrarIngreso.setString(12, ingresoTB.getOperacion());
                     preparedRegistrarIngreso.addBatch();
+
+                    preparedRegistrarBancoDetalle.setString(1, ingresoTB.getIdBanco());
+                    preparedRegistrarBancoDetalle.setString(2, idIngreso);
+                    preparedRegistrarBancoDetalle.setString(3, ventaTB.getVendedor());
+                    preparedRegistrarBancoDetalle.setString(4,
+                            "INGRESO POR VENTA DEL COMPROBANTE " + serieNumeracion[0] + "-" + serieNumeracion[1]);
+                    preparedRegistrarBancoDetalle.setBoolean(5, true);
+                    preparedRegistrarBancoDetalle.setDouble(6, ingresoTB.getMonto());
+                    preparedRegistrarBancoDetalle.setDouble(7, 0);
+                    preparedRegistrarBancoDetalle.addBatch();
 
                     // Obtener el número de ingreso actual
                     String prefijo = "IN";
@@ -440,6 +467,7 @@ public class VentaADO {
                 preparedRegistrarVenta.executeBatch();
                 preparedActualizarCotizacion.executeBatch();
                 preparedRegistrarIngreso.executeBatch();
+                preparedRegistrarBancoDetalle.executeBatch();
                 preparedRegistrarVentaDetalle.executeBatch();
                 preparedActualizarSuministro.executeBatch();
                 preparedRegistrarKardex.executeBatch();
@@ -489,6 +517,9 @@ public class VentaADO {
                     }
                     if (preparedRegistrarIngreso != null) {
                         preparedRegistrarIngreso.close();
+                    }
+                    if (preparedRegistrarBancoDetalle != null) {
+                        preparedRegistrarBancoDetalle.close();
                     }
                     if (preparedRegistrarVentaDetalle != null) {
                         preparedRegistrarVentaDetalle.close();
@@ -1209,29 +1240,10 @@ public class VentaADO {
                         venta_credito.setDouble(3, Double.parseDouble(creditoTB.getTfMonto().getText()));
                         venta_credito.setString(4, Tools.getDatePicker(creditoTB.getDpFecha()));
                         venta_credito.setString(5, creditoTB.getHoraPago());
-                        venta_credito.setShort(6, creditoTB.getCbMontoInicial().isSelected() ? (short) 1 : (short) 0);
+                        venta_credito.setShort(6, (short) 0);
                         venta_credito.setString(7, ventaTB.getVendedor());
-                        venta_credito.setString(8,
-                                creditoTB.getCbMontoInicial().isSelected() ? "PAGO ADELANTADO DE LA VENTA AL CRÉDITO"
-                                        : "");
+                        venta_credito.setString(8, "");
                         venta_credito.addBatch();
-
-                        if (creditoTB.getCbMontoInicial().isSelected()) {
-                            ingreso.setString(1, id_ingreso);
-                            ingreso.setString(2, idCodigoCredito);
-                            ingreso.setString(3, ventaTB.getVendedor());
-                            ingreso.setString(4, ventaTB.getIdCliente());
-                            ingreso.setString(5, "PAGO ADELANTADO DE LA VENTA AL CRÉDITO");
-                            ingreso.setInt(6, 5);
-                            ingreso.setString(7, Tools.getDate());
-                            ingreso.setString(8, Tools.getTime());
-                            ingreso.setInt(9,
-                                    creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 0 ? 1
-                                            : creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 1 ? 2
-                                                    : 3);
-                            ingreso.setDouble(10, Double.parseDouble(creditoTB.getTfMonto().getText()));
-                            ingreso.addBatch();
-                        }
                     }
                 }
 
@@ -2378,29 +2390,10 @@ public class VentaADO {
                             venta_credito.setDouble(3, Double.parseDouble(creditoTB.getTfMonto().getText()));
                             venta_credito.setString(4, Tools.getDatePicker(creditoTB.getDpFecha()));
                             venta_credito.setString(5, creditoTB.getHoraPago());
-                            venta_credito.setShort(6,
-                                    creditoTB.getCbMontoInicial().isSelected() ? (short) 1 : (short) 0);
+                            venta_credito.setShort(6, (short) 0);
                             venta_credito.setString(7, ventaTB.getVendedor());
-                            venta_credito.setString(8,
-                                    creditoTB.getCbMontoInicial().isSelected()
-                                            ? "PAGO ADELANTADO DE LA VENTA AL CRÉDITO"
-                                            : "");
+                            venta_credito.setString(8, "");
                             venta_credito.addBatch();
-
-                            if (creditoTB.getCbMontoInicial().isSelected()) {
-                                movimiento_caja.setString(1, Session.CAJA_ID);
-                                movimiento_caja.setString(2, ventaTB.getFechaVenta());
-                                movimiento_caja.setString(3, ventaTB.getHoraVenta());
-                                movimiento_caja.setString(4, "PAGO ADELANTADO DE LA VENTA AL CRÉDITO DEL COMPROBANTE "
-                                        + id_comprabante[0] + "-" + id_comprabante[1]);
-                                movimiento_caja.setInt(5,
-                                        creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 0 ? 2
-                                                : creditoTB.getCbForma().getSelectionModel().getSelectedIndex() == 1 ? 3
-                                                        : 6);
-                                movimiento_caja.setDouble(6, Double.parseDouble(creditoTB.getTfMonto().getText()));
-                                movimiento_caja.setString(7, idCodigoCredito);
-                                movimiento_caja.addBatch();
-                            }
                         }
                     }
 
@@ -2981,7 +2974,7 @@ public class VentaADO {
         }
     }
 
-    public static Object Listar_Ventas_Libres(int opcion, String value, String fechaInicial, String fechaFinal,
+    public static Object listarVentas(int opcion, String value, String fechaInicial, String fechaFinal,
             int comprobante, int estado, String usuario, int posicionPagina, int filasPorPagina) {
         DBUtil dbf = new DBUtil();
         PreparedStatement preparedStatement = null;
@@ -3493,7 +3486,7 @@ public class VentaADO {
         }
     }
 
-    public static Object obtenerVentaById(String idVenta) {
+    public static Object obtenerVentaPorIdVenta(String idVenta) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementVenta = null;
         PreparedStatement statementEmpleado = null;
@@ -3597,8 +3590,7 @@ public class VentaADO {
                 }
 
                 // Obtener la lista de ingresos
-                statementIngresos = dbf.getConnection().prepareStatement(
-                        "SELECT i.Fecha,i.Hora,b.NombreCuenta,i.Detalle,i.Monto,i.Vuelto FROM IngresoTB AS i INNER JOIN Banco AS b ON b.IdBanco = i.IdBanco WHERE i.IdProcedencia = ?");
+                statementIngresos = dbf.getConnection().prepareStatement("{call }");
                 statementIngresos.setString(1, idVenta);
                 ResultSet resultSetIngresos = statementIngresos.executeQuery();
                 ArrayList<IngresoTB> ingresoTBs = new ArrayList<>();
@@ -3715,17 +3707,24 @@ public class VentaADO {
     }
 
     public static String anularVenta(VentaTB ventaTB, String motivo) {
+        // Instancia la clase encargada de trabajar con JDBC
         DBUtil dbf = new DBUtil();
+
+        // Objectos que realizan las peticiones T-SQL
         PreparedStatement statementValidar = null;
         PreparedStatement statementVenta = null;
         PreparedStatement statementSuministro = null;
         PreparedStatement statementKardex = null;
+        PreparedStatement statementBuscarIngreso = null;
         PreparedStatement statementIngreso = null;
+        PreparedStatement statementBancoHistorial = null;
 
         try {
+            // Crea la conexión a la base de datos
             dbf.dbConnect();
             dbf.getConnection().setAutoCommit(false);
 
+            // Valida si la venta ya se cuentra anulada
             statementValidar = dbf.getConnection()
                     .prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ? and Estado = ?");
             statementValidar.setString(1, ventaTB.getIdVenta());
@@ -3735,6 +3734,7 @@ public class VentaADO {
                 return "scrambled";
             }
 
+            // Valida si la venta tiene crédito asociados
             statementValidar.close();
             statementValidar = dbf.getConnection()
                     .prepareStatement("SELECT * FROM VentaCreditoTB WHERE IdVenta = ?");
@@ -3744,28 +3744,63 @@ public class VentaADO {
                 return "ventacredito";
             }
 
+            // Se obtiene los datos de la venta y se almacena el estado
             statementValidar.close();
-            statementValidar = dbf.getConnection().prepareStatement("SELECT * FROM VentaTB WHERE IdVenta = ?");
+            statementValidar = dbf.getConnection()
+                    .prepareStatement("SELECT Serie,Numeracion,Estado FROM VentaTB WHERE IdVenta = ?");
             statementValidar.setString(1, ventaTB.getIdVenta());
             ResultSet resultSet = statementValidar.executeQuery();
             resultSet.next();
+            String serie = resultSet.getString("Serie");
+            String numeracion = resultSet.getString("Numeracion");
+            int estado = resultSet.getInt("Estado");
+            resultSet.close();
 
-            statementVenta = dbf.getConnection()
-                    .prepareStatement("UPDATE VentaTB SET Estado = ?, Observaciones = ? WHERE IdVenta = ?");
+            // Se actualiza el estado a anulado.
+            statementVenta = dbf.getConnection().prepareStatement("UPDATE VentaTB SET "
+                    + "Estado = ?,"
+                    + "Observaciones = ? "
+                    + "WHERE IdVenta = ?");
             statementVenta.setInt(1, 3);
-            statementVenta.setString(2, Session.USER_NAME + " ANULÓ LA VENTA POR EL MOTIVO: " + motivo.toUpperCase());
+            statementVenta.setString(2,
+                    Session.USER_NAME.toUpperCase() + " ANULÓ LA VENTA POR EL MOTIVO: " + motivo.toUpperCase());
             statementVenta.setString(3, ventaTB.getIdVenta());
             statementVenta.addBatch();
             statementVenta.executeBatch();
 
-            statementIngreso = dbf.getConnection()
-                    .prepareStatement("UPDATE IngresoTB SET Estado = 0 WHERE IdProcedencia = ?");
-            statementIngreso.setString(1, ventaTB.getIdVenta());
-            statementIngreso.addBatch();
+            // Se anulara el ingreso y el detalle banco
+            statementIngreso = dbf.getConnection().prepareStatement("UPDATE IngresoTB SET "
+                    + "Detalle=?,"
+                    + "Estado = 0 "
+                    + "WHERE IdIngreso = ?");
+            statementBancoHistorial = dbf.getConnection().prepareStatement("UPDATE BancoHistorialTB SET "
+                    + "Descripcion=?,"
+                    + "Estado = 0 "
+                    + "WHERE IdProcedencia = ?");
 
+            statementBuscarIngreso = dbf.getConnection()
+                    .prepareStatement("SELECT IdIngreso FROM IngresoTB WHERE IdProcedencia = ?");
+            statementBuscarIngreso.setString(1, ventaTB.getIdVenta());
+            ResultSet resultSetBuscarIngreso = statementBuscarIngreso.executeQuery();
+            while (resultSetBuscarIngreso.next()) {
+                String detalle = Session.USER_NAME.toUpperCase() + " ANULÓ LA VENTA " + serie + "-" + numeracion
+                        + " POR EL MOTIVO: " + motivo.toUpperCase();
+
+                statementIngreso.setString(1, detalle);
+                statementIngreso.setString(2, resultSetBuscarIngreso.getString("IdIngreso"));
+                statementIngreso.addBatch();
+
+                statementBancoHistorial.setString(1, detalle);
+                statementBancoHistorial.setString(2, resultSetBuscarIngreso.getString("IdIngreso"));
+                statementBancoHistorial.addBatch();
+            }
+            resultSetBuscarIngreso.close();
+
+            // Se regresa la cantidad al inventario
             statementSuministro = dbf.getConnection()
                     .prepareStatement("UPDATE SuministroTB SET Cantidad = Cantidad + ? WHERE IdSuministro = ?");
 
+            // Se registra el movimiento del suministro
             statementKardex = dbf.getConnection().prepareStatement("INSERT INTO "
                     + "KardexSuministroTB("
                     + "IdSuministro,"
@@ -3781,7 +3816,8 @@ public class VentaADO {
                     + "IdEmpleado) "
                     + "VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 
-            if (resultSet.getInt("Estado") != 4) {
+            // Si es estado es distintio a 4 se quito productos de almacen
+            if (estado != 4) {
                 for (SuministroTB stb : ventaTB.getSuministroTBs()) {
                     if (stb.isInventario() && stb.getValorInventario() == 1) {
                         statementSuministro.setDouble(1, stb.getCantidad() + stb.getBonificacion());
@@ -3822,6 +3858,7 @@ public class VentaADO {
             statementSuministro.executeBatch();
             statementKardex.executeBatch();
             statementIngreso.executeBatch();
+            statementBancoHistorial.executeBatch();
 
             dbf.getConnection().commit();
             return "updated";
@@ -3847,6 +3884,9 @@ public class VentaADO {
                 }
                 if (statementIngreso != null) {
                     statementIngreso.close();
+                }
+                if (statementBancoHistorial != null) {
+                    statementBancoHistorial.close();
                 }
                 dbf.dbDisconnect();
             } catch (SQLException e) {
@@ -3974,7 +4014,7 @@ public class VentaADO {
             dbf.getConnection().commit();
             return "updated";
         } catch (SQLException | ClassNotFoundException ex) {
-            Tools.println(ex.getLocalizedMessage());
+            
             try {
                 dbf.getConnection().rollback();
             } catch (SQLException e) {
@@ -4025,10 +4065,10 @@ public class VentaADO {
             ingreso.setString(2, ingresoTB.getIdProcedencia());
             ingreso.setString(3, ingresoTB.getIdUsuario());
             ingreso.setString(4, ingresoTB.getDetalle());
-            ingreso.setInt(5, ingresoTB.getProcedencia());
+//            ingreso.setInt(5, ingresoTB.getProcedencia());
             ingreso.setString(6, ingresoTB.getFecha());
             ingreso.setString(7, ingresoTB.getHora());
-            ingreso.setInt(8, ingresoTB.getForma());
+//            ingreso.setInt(8, ingresoTB.getForma());
             ingreso.setDouble(9, ingresoTB.getMonto());
             ingreso.addBatch();
 
@@ -4273,7 +4313,7 @@ public class VentaADO {
 
     }
 
-    public static Object Listar_Ventas_Detalle_Credito_ById(String idVenta) {
+    public static Object obtenerVentaDetalleCreditoPorId(String idVenta) {
         DBUtil dbf = new DBUtil();
 
         PreparedStatement preparedStatement = null;
@@ -4425,7 +4465,7 @@ public class VentaADO {
         }
     }
 
-    public static String[] registrarIngreso(VentaCreditoTB ventaCreditoTB, List<IngresoTB> ingresoTBs) {
+    public static String[] registrarVentaCreditoIngreso(VentaCreditoTB ventaCreditoTB, IngresoTB ingresoTB) {
         // Creamos el objeto encargado de iniciar la consulta a la base de datos.
         DBUtil dbf = new DBUtil();
 
@@ -4433,8 +4473,10 @@ public class VentaADO {
         CallableStatement codigoIngreso = null;
         PreparedStatement statementValidate = null;
         PreparedStatement statementVenta = null;
+        PreparedStatement statementVentaActualizar = null;
         PreparedStatement statementAbono = null;
         PreparedStatement statementIngreso = null;
+        PreparedStatement statementBancoHistorial = null;
         PreparedStatement statementVentaTotal = null;
         CallableStatement statementCodigo = null;
 
@@ -4449,7 +4491,7 @@ public class VentaADO {
             statementValidate.setString(1, ventaCreditoTB.getIdVenta());
             if (statementValidate.executeQuery().next()) {
                 dbf.getConnection().rollback();
-                return new String[]{"0", "No se pueden realizar cobrar a una venta anulada."};
+                return new String[] { "0", "No se pueden realizar cobrar a una venta anulada." };
             }
 
             // Se obtiene el código de ingreso
@@ -4464,7 +4506,8 @@ public class VentaADO {
             statementValidate.setString(1, ventaCreditoTB.getIdVenta());
             if (!statementValidate.executeQuery().next()) {
                 dbf.getConnection().rollback();
-                return new String[]{"0", "Problemas al encontrar le venta con el id indicado " + ventaCreditoTB.getIdVenta()};
+                return new String[] { "0",
+                        "Problemas al encontrar le venta con el id indicado " + ventaCreditoTB.getIdVenta() };
             }
 
             // Se obtiene el monto total de la venta
@@ -4506,10 +4549,20 @@ public class VentaADO {
             statementAbono.setString(6, ventaCreditoTB.getObservacion());
             statementAbono.addBatch();
 
-            // Creamos la consulta para registrar el ingreso
+            /*
+             * Registramos la consulta de ingresos en un solo proceso
+             */
+            statementVenta = dbf.getConnection().prepareStatement("SELECT Serie,Numeracion FROM VentaTB WHERE IdVenta = ?");
+            statementVenta.setString(1, ventaCreditoTB.getIdVenta());
+            ResultSet resultSetVenta = statementVenta.executeQuery();
+            resultSetVenta.next();
+            String serie = resultSetVenta.getString("Serie");
+            String numeracion = resultSetVenta.getString("Numeracion");
+
             statementIngreso = dbf.getConnection().prepareStatement("INSERT INTO IngresoTB "
                     + "(IdIngreso,"
                     + "IdProcedencia,"
+                    + "IdVentaCredito,"
                     + "IdUsuario,"
                     + "IdCliente,"
                     + "IdBanco,"
@@ -4522,35 +4575,42 @@ public class VentaADO {
                     + "Monto,"
                     + "Vuelto,"
                     + "Operacion) "
-                    + "VALUES(?,?,?,?,?,?,?,GETDATE(),GETDATE(),?,?,?,?,?)");
+                    + "VALUES(?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?,?,?,?,?)");
+            statementIngreso.setString(1, idIngreso);
+            statementIngreso.setString(2, ingresoTB.getIdProcedencia()); 
+            statementIngreso.setString(3, idVentaCredito);
+            statementIngreso.setString(4, ingresoTB.getIdUsuario());
+            statementIngreso.setString(5, ventaCreditoTB.getVentaTB().getClienteTB().getIdCliente());
+            statementIngreso.setString(6, ingresoTB.getIdBanco());
+            statementIngreso.setString(7, "INGRESO POR VENTA AL CRÉDITO DEL COMPROBANTE " + serie + "-" + numeracion);
+            statementIngreso.setInt(8, 1);
+            statementIngreso.setInt(9, 3);
+            statementIngreso.setBoolean(10, ingresoTB.isEstado());
+            statementIngreso.setDouble(11, ingresoTB.getMonto());
+            statementIngreso.setDouble(12, ingresoTB.getVuelto());
+            statementIngreso.setString(13, ingresoTB.getOperacion());
+            statementIngreso.addBatch();
 
-            /*
-             * Registramos la consulta de ingresos en un bucle porque se puede
-             * procesar mucho tipo de pago
-             */
-            for (IngresoTB ingresoTB : ingresoTBs) {
-                statementIngreso.setString(1, idIngreso);
-                statementIngreso.setString(2, idVentaCredito);
-                statementIngreso.setString(3, ingresoTB.getIdUsuario());
-                statementIngreso.setString(4, ventaCreditoTB.getVentaTB().getClienteTB().getIdCliente());
-                statementIngreso.setString(5, ingresoTB.getIdBanco());
-                statementIngreso.setString(6, ingresoTB.getDetalle());
-                statementIngreso.setInt(7, 1);
-                statementIngreso.setInt(8, 3);
-                statementIngreso.setBoolean(9, ingresoTB.isEstado());
-                statementIngreso.setDouble(10, ingresoTB.getMonto());
-                statementIngreso.setDouble(11, ingresoTB.getVuelto());
-                statementIngreso.setString(12, ingresoTB.getOperacion());
-                statementIngreso.addBatch();
-
-                // Obtener el número de ingreso actual
-                String prefijo = "IN";
-                String numeroIngreso = idIngreso.replace(prefijo, "");
-                int incremental = Integer.parseInt(numeroIngreso) + 1;
-
-                // Generar el nuevo ID de ingreso con ceros delante
-                idIngreso = prefijo + String.format("%04d", incremental);
-            }
+            statementBancoHistorial = dbf.getConnection().prepareStatement("INSERT INTO BancoHistorialTB "
+                    + "(IdBanco,"
+                    + "IdProcedencia,"
+                    + "IdEmpleado,"
+                    + "Descripcion,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "Estado,"
+                    + "Entrada,"
+                    + "Salida)"
+                    + "VALUES(?,?,?,?,GETDATE(),GETDATE(),?,?,?)");
+            statementBancoHistorial.setString(1, ingresoTB.getIdBanco());
+            statementBancoHistorial.setString(2, idIngreso);
+            statementBancoHistorial.setString(3, ingresoTB.getIdUsuario());
+            statementBancoHistorial.setString(4,
+                    "INGRESO POR VENTA AL CRÉDITO DEL COMPROBANTE " + serie + "-" + numeracion);
+            statementBancoHistorial.setBoolean(5, true);
+            statementBancoHistorial.setDouble(6, ingresoTB.getMonto());
+            statementBancoHistorial.setDouble(7, 0);
+            statementBancoHistorial.addBatch();
 
             // Se obtiene la lista de los montos cobrados
             statementValidate = dbf.getConnection().prepareStatement("SELECT Monto " +
@@ -4565,23 +4625,25 @@ public class VentaADO {
             resultSetVentaCredito.close();
 
             // Se actualiza el estado de la venta si se cumple la condición
-            // donde el monto cobrado mas el monto a cobrar es mayor o igual al total de la venta
-            statementVenta = dbf.getConnection().prepareStatement("UPDATE VentaTB " +
+            // donde el monto cobrado mas el monto a cobrar es mayor o igual al total de la
+            // venta
+            statementVentaActualizar = dbf.getConnection().prepareStatement("UPDATE VentaTB " +
                     "SET Estado = 1 " +
                     "WHERE IdVenta = ?");
             if ((montoTotal + ventaCreditoTB.getMonto()) >= total) {
-                statementVenta.setString(1, ventaCreditoTB.getIdVenta());
-                statementVenta.addBatch();
+                statementVentaActualizar.setString(1, ventaCreditoTB.getIdVenta());
+                statementVentaActualizar.addBatch();
             }
 
             // Ejecutamos los batch y un commit para completar la transacción
             statementAbono.executeBatch();
             statementIngreso.executeBatch();
-            statementVenta.executeBatch();
+            statementBancoHistorial.executeBatch();
+            statementVentaActualizar.executeBatch();
             dbf.getConnection().commit();
 
             // Retornamos si se completo correctamente el proceso
-            return new String[]{"1", "Se completo correctamente el proceso.", idVentaCredito};
+            return new String[] { "1", "Se completo correctamente el proceso.", idVentaCredito };
 
         } catch (SQLException | NullPointerException | ClassNotFoundException ex) {
             try {
@@ -4589,7 +4651,7 @@ public class VentaADO {
             } catch (SQLException e) {
 
             }
-            return new String[]{"0", ex.getLocalizedMessage()};
+            return new String[] { "0", ex.getLocalizedMessage() };
         } finally {
             try {
                 if (codigoIngreso != null) {
@@ -4601,14 +4663,17 @@ public class VentaADO {
                 if (statementIngreso != null) {
                     statementIngreso.close();
                 }
+                if (statementBancoHistorial != null) {
+                    statementBancoHistorial.close();
+                }
                 if (statementCodigo != null) {
                     statementCodigo.close();
                 }
                 if (statementValidate != null) {
                     statementValidate.close();
                 }
-                if (statementVenta != null) {
-                    statementVenta.close();
+                if (statementVentaActualizar != null) {
+                    statementVentaActualizar.close();
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
@@ -4618,39 +4683,75 @@ public class VentaADO {
     }
 
     public static String removerIngreso(String idVenta, String idVentaCredito) {
+        // Creamos el objeto encargado de iniciar la consulta a la base de datos.
         DBUtil dbf = new DBUtil();
+
+        // Variables encargadas de realizar consultas a la base de datos
         PreparedStatement statementValidate = null;
         PreparedStatement statementVentaCredito = null;
-        PreparedStatement statementMovientoCaja = null;
+        PreparedStatement statementBuscarIngreso = null;
         PreparedStatement statementIngreso = null;
+        PreparedStatement statementBancoHistorial = null;
+        PreparedStatement statementVentaTotal = null;
         PreparedStatement statementVenta = null;
-        ResultSet resultSet = null;
 
         try {
+            // Crear una conexión e iniciar la transacción
             dbf.dbConnect();
             dbf.getConnection().setAutoCommit(false);
-            statementValidate = dbf.getConnection()
-                    .prepareStatement("SELECT TipoCredito FROM VentaTB WHERE IdVenta = ?");
+
+            // Validamos si la venta esta anulada
+            statementValidate = dbf.getConnection().prepareStatement("SELECT * FROM VentaTB " +
+                    "WHERE IdVenta = ? AND Estado = 3");
             statementValidate.setString(1, idVenta);
-            resultSet = statementValidate.executeQuery();
+            if (statementValidate.executeQuery().next()) {
+                dbf.getConnection().rollback();
+                return "La venta se encuentra anulada, es por ello que no se puede continuar.";
+            }
+
+            // Obtenemos el tipo de crédito
+            statementValidate.close();
+            statementValidate = dbf.getConnection().prepareStatement("SELECT TipoCredito " +
+                    "FROM VentaTB " +
+                    "WHERE IdVenta = ?");
+            statementValidate.setString(1, idVenta);
+            ResultSet resultSet = statementValidate.executeQuery();
             resultSet.next();
+            int tipoCredito = resultSet.getInt("TipoCredito");
+            resultSet.close();
 
-            statementIngreso = dbf.getConnection().prepareStatement("DELETE FROM IngresoTB WHERE IdProcedencia = ?");
-            statementIngreso.setString(1, idVentaCredito);
-            statementIngreso.addBatch();
+            if (tipoCredito == 0) {
+                // Validamos que la venta al crédito exista
+                statementValidate.close();
+                statementValidate = dbf.getConnection()
+                        .prepareStatement("SELECT * FROM VentaCreditoTB WHERE IdVentaCredito = ?");
+                statementValidate.setString(1, idVentaCredito);
+                if (!statementValidate.executeQuery().next()) {
+                    dbf.getConnection().rollback();
+                    return "No se encontró registro del plazo a anular.";
+                }
+            } else {
+                // Validamos que la venta al crédito no este cobrada
+                statementValidate.close();
+                statementValidate = dbf.getConnection()
+                        .prepareStatement("SELECT * FROM VentaCreditoTB WHERE IdVentaCredito = ? AND Estado = 0");
+                statementValidate.setString(1, idVenta);
+                if (statementValidate.executeQuery().next()) {
+                    dbf.getConnection().rollback();
+                    return "El plazo ya se encuentra anulado, actualiza la vista.";
+                }
+            }
 
-            statementMovientoCaja = dbf.getConnection()
-                    .prepareStatement("DELETE FROM MovimientoCajaTB WHERE IdProcedencia = ? ");
-            statementMovientoCaja.setString(1, idVentaCredito);
-            statementMovientoCaja.addBatch();
-
-            if (resultSet.getInt("TipoCredito") == 0) {
+            // Iniciamos el proceso de anulación
+            if (tipoCredito == 0) {
+                // Plazos variables
                 statementVentaCredito = dbf.getConnection()
                         .prepareStatement("DELETE FROM VentaCreditoTB WHERE IdVentaCredito = ? AND IdVenta = ?");
                 statementVentaCredito.setString(1, idVentaCredito);
                 statementVentaCredito.setString(2, idVenta);
                 statementVentaCredito.addBatch();
             } else {
+                // Plazos fijos
                 statementVentaCredito = dbf.getConnection().prepareStatement(
                         "UPDATE VentaCreditoTB SET Estado = 0 WHERE IdVentaCredito = ? AND IdVenta = ?");
                 statementVentaCredito.setString(1, idVentaCredito);
@@ -4658,12 +4759,79 @@ public class VentaADO {
                 statementVentaCredito.addBatch();
             }
 
+            // Anulamos el ingreso y banco historial
+            statementIngreso = dbf.getConnection()
+                    .prepareStatement("UPDATE IngresoTB SET "
+                            + "Detalle=?,"
+                            + "Estado = 0 "
+                            + "WHERE IdProcedencia = ?");
+            statementBancoHistorial = dbf.getConnection().prepareStatement("UPDATE BancoHistorialTB SET "
+                    + "Descripcion=?,"
+                    + "Estado = 0 "
+                    + "WHERE IdProcedencia = ?");
+
+            statementBuscarIngreso = dbf.getConnection().prepareStatement("SELECT IdIngreso FROM IngresoTB "
+                    + "WHERE IdProcedencia = ?");
+            statementBuscarIngreso.setString(1, idVentaCredito);
+            ResultSet resultSetBuscarIngreso = statementBuscarIngreso.executeQuery();
+            while (resultSetBuscarIngreso.next()) {
+                String detalle = Session.USER_NAME.toUpperCase() + " ANULÓ EL COBRO DE LA VENTA LA CRÉDITO N°-"
+                        + idVentaCredito;
+
+                statementIngreso.setString(1, detalle);
+                statementIngreso.setString(2, resultSetBuscarIngreso.getString("IdIngreso"));
+                statementIngreso.addBatch();
+
+                statementBancoHistorial.setString(1, detalle);
+                statementBancoHistorial.setString(2, resultSetBuscarIngreso.getString("IdIngreso"));
+                statementBancoHistorial.addBatch();
+            }
+
+            // Se obtiene el monto total de la venta
+            statementVentaTotal = dbf.getConnection().prepareStatement("SELECT "
+                    + "SUM(dv.Cantidad*(dv.PrecioVenta - dv.Descuento)) as Total "
+                    + "FROM VentaTB AS v "
+                    + "INNER JOIN DetalleVentaTB AS dv ON dv.IdVenta = v.IdVenta "
+                    + "WHERE v.IdVenta = ?");
+            statementVentaTotal.setString(1, idVenta);
+            ResultSet resultSetVentaTotal = statementVentaTotal.executeQuery();
+            resultSetVentaTotal.next();
+            double total = Double.parseDouble(Tools.roundingValue(resultSetVentaTotal.getDouble("Total"), 2));
+            resultSetVentaTotal.close();
+
+            // Se obtiene la lista de los montos cobrados
+            statementValidate.close();
+            statementValidate = dbf.getConnection().prepareStatement("SELECT ISNULL(SUM(Monto),0) AS Monto " +
+                    "FROM VentaCreditoTB " +
+                    "WHERE IdVenta = ?");
+            statementValidate.setString(1, idVenta);
+            ResultSet resultSetVentaCredito = statementValidate.executeQuery();
+            resultSetVentaCredito.next();
+            double montoCobrado = Double.parseDouble(Tools.roundingValue(resultSetVentaCredito.getDouble("Monto"), 2));
+            resultSetVentaCredito.close();
+
+            // Se obtiene el monto de la venta al crédito anulado
+            statementValidate.close();
+            statementValidate = dbf.getConnection().prepareStatement("SELECT ISNULL(SUM(Monto),0) AS Monto " +
+                    "FROM IngresoTB " +
+                    "WHERE IdProcedencia = ?");
+            statementValidate.setString(1, idVentaCredito);
+            ResultSet resultSetIngreso = statementValidate.executeQuery();
+            resultSetIngreso.next();
+            double montoIngreso = Double.parseDouble(Tools.roundingValue(resultSetIngreso.getDouble("Monto"), 2));
+            resultSetIngreso.close();
+
+            // Actualizamos la venta a estado pendiente si el monto
+            // cobrado menos el ingreso es menor que el total
             statementVenta = dbf.getConnection().prepareStatement("UPDATE VentaTB SET Estado = 2 WHERE IdVenta = ?");
-            statementVenta.setString(1, idVenta);
-            statementVenta.addBatch();
+            if ((montoCobrado - montoIngreso) < total) {
+                statementVenta.setString(1, idVenta);
+                statementVenta.addBatch();
+            }
 
             statementIngreso.executeBatch();
-            statementMovientoCaja.executeBatch();
+            statementBancoHistorial.executeBatch();
+            statementBancoHistorial.executeBatch();
             statementVentaCredito.executeBatch();
             statementVenta.executeBatch();
             dbf.getConnection().commit();
@@ -4686,14 +4854,11 @@ public class VentaADO {
                 if (statementVentaCredito != null) {
                     statementVentaCredito.close();
                 }
-                if (statementMovientoCaja != null) {
-                    statementMovientoCaja.close();
-                }
                 if (statementIngreso != null) {
                     statementIngreso.close();
                 }
-                if (resultSet != null) {
-                    resultSet.close();
+                if (statementBancoHistorial != null) {
+                    statementBancoHistorial.close();
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
@@ -4755,10 +4920,10 @@ public class VentaADO {
                     statementIngreso.setString(2, ventaCreditoTB.getIdVentaCredito());
                     statementIngreso.setString(3, ingresoTB.getIdUsuario());
                     statementIngreso.setString(4, ingresoTB.getDetalle());
-                    statementIngreso.setInt(5, ingresoTB.getProcedencia());
+//                    statementIngreso.setInt(5, ingresoTB.getProcedencia());
                     statementIngreso.setString(6, ingresoTB.getFecha());
                     statementIngreso.setString(7, ingresoTB.getHora());
-                    statementIngreso.setInt(8, ingresoTB.getForma());
+//                    statementIngreso.setInt(8, ingresoTB.getForma());
                     statementIngreso.setDouble(9, ingresoTB.getMonto());
                     statementIngreso.addBatch();
                 }

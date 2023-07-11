@@ -1,6 +1,7 @@
 package service;
 
 import controller.tools.Session;
+import controller.tools.Tools;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -313,16 +314,23 @@ public class MonedaADO {
         }
     }
 
-    public static ArrayList<MonedaTB> ObtenerListaMonedas() {
+    public static Object ObtenerListaMonedas() {
         DBUtil dbf = new DBUtil();
-        ArrayList<MonedaTB> list = new ArrayList<>();
+        
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
             dbf.dbConnect();
+            ObservableList<MonedaTB> monedaTBs = FXCollections.observableArrayList();
 
-            statement = dbf.getConnection().prepareStatement(
-                    "SELECT IdMoneda,Nombre,Simbolo,Abreviado,Predeterminado,TipoCambio FROM MonedaTB");
+            statement = dbf.getConnection().prepareStatement("SELECT "
+                    + "IdMoneda,"
+                    + "Nombre,"
+                    + "Simbolo,"
+                    + "Abreviado,"
+                    + "Predeterminado,"
+                    + "TipoCambio "
+                    + "FROM MonedaTB");
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 MonedaTB monedaTB = new MonedaTB();
@@ -332,10 +340,12 @@ public class MonedaADO {
                 monedaTB.setAbreviado(resultSet.getString("Abreviado"));
                 monedaTB.setPredeterminado(resultSet.getBoolean("Predeterminado"));
                 monedaTB.setTipoCambio(resultSet.getDouble("TipoCambio"));
-                list.add(monedaTB);
+                monedaTBs.add(monedaTB);
             }
+
+            return monedaTBs;
         } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println("Error Moneda: " + ex.getLocalizedMessage());
+            return ex.getLocalizedMessage();
         } finally {
             try {
                 if (statement != null) {
@@ -346,10 +356,9 @@ public class MonedaADO {
                 }
                 dbf.dbDisconnect();
             } catch (SQLException ex) {
-                System.out.println("Error Moneda: " + ex.getLocalizedMessage());
+                return ex.getLocalizedMessage();
             }
         }
-        return list;
     }
 
 }

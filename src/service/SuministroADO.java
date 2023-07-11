@@ -125,7 +125,7 @@ public class SuministroADO {
                 return "updated";
 
             } else {
-                
+
                 preparedValidation.close();
                 preparedValidation = dbf.getConnection()
                         .prepareStatement("select Clave from SuministroTB where Clave = ?");
@@ -1203,6 +1203,11 @@ public class SuministroADO {
                 TextField tf = new TextField(Tools.roundingValue(0.00, 0));
                 tf.getStyleClass().add("text-field-normal");
                 tf.setOnKeyTyped(event -> {
+                    String character = event.getCharacter();
+                    if (character.isEmpty()) {
+                        return;
+                    }
+                    
                     char c = event.getCharacter().charAt(0);
                     if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
                         event.consume();

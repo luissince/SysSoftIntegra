@@ -95,18 +95,15 @@ public class FxClienteProcesoController implements Initializable {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<Object[]> task = new Task<Object[]>() {
             @Override
-            public Object call() throws Exception {
+            public Object[] call() throws Exception {
                 Object listTipoDocumento = DetalleADO.obtenerDetallePorIdMantenimiento("0003");
                 Object listMotivoTraslado = DetalleADO.obtenerDetallePorIdMantenimiento("0017");
 
                 if (listTipoDocumento instanceof ObservableList
                         && listMotivoTraslado instanceof ObservableList) {
-                    // && listUbigeo instanceof ObservableList) {
-                    return new Object[] { listTipoDocumento, listMotivoTraslado };// return
-                    // (ObservableList<DetalleTB>)
-                    // listTicket;
+                    return new Object[] { listTipoDocumento, listMotivoTraslado };
                 } else {
                     throw new Exception("Se produjo un error, intente nuevamente.");
                 }
@@ -128,17 +125,13 @@ public class FxClienteProcesoController implements Initializable {
             });
         });
 
-        task.setOnCancelled(e -> {
-
-        });
-
         task.setOnFailed(e -> {
             lblTextoProceso.setText(task.getException().getMessage());
             btnCancelarProceso.setText("Cerrar Vista");
         });
 
         task.setOnSucceeded(e -> {
-            Object[] result = (Object[]) task.getValue();
+            Object[] result = task.getValue();
             ObservableList<DetalleTB> ticketTBs = (ObservableList<DetalleTB>) result[0];
             cbDocumentType.getItems().addAll(ticketTBs);
 

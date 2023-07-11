@@ -356,8 +356,6 @@ public class FxVentaReporteController implements Initializable {
             });
 
             task.setOnFailed(w -> {
-                Tools.println(task.getException().getLocalizedMessage());
-                Tools.println(task.getMessage());
                 Tools.showAlertNotification(
                         "/view/image/warning_large.png",
                         "Generar Vista",

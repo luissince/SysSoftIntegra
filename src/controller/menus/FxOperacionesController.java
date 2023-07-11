@@ -156,7 +156,7 @@ public class FxOperacionesController implements Initializable {
             nodeOrdenCompra = fXMLOrdenCompra.load();
             controllerOrdenCompra = fXMLOrdenCompra.getController();
         } catch (IOException ex) {
-            System.out.println("Error en Ingresos Controller:" + ex.getLocalizedMessage());
+            System.out.println("Error en Operaciones Controller:" + ex.getLocalizedMessage());
         }
     }
 

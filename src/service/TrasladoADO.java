@@ -654,7 +654,6 @@ public class TrasladoADO {
             }
 
         } catch (SQLException | ClassNotFoundException ex) {
-            Tools.println("Error en ObtenerDetalleVenta: " + ex.getLocalizedMessage());
         } finally {
             try {
                 if (preparedDetalle != null) {

@@ -120,6 +120,15 @@ public class BillPrintable implements Printable {
      * @param comprobante_anulado_serie
      * @param comprobante_anulado_numeracion
      * @param nota_credito_motivo_anulacion
+     * @param modalidad_traslado_guia
+     * @param fecha_traslado_guia
+     * @param peso_cargar_guia
+     * @param numero_placa_vehiculo_guia
+     * @param numero_documento_conductor_guia
+     * @param informacion_conductor_guia
+     * @param licencia_conductor_guia
+     * @param comprobante_referencia_guia
+     * @param serie_numeracion_referencia_guia
      * @return
      */
     public int hbEncebezado(HBox box,
@@ -1603,14 +1612,14 @@ public class BillPrintable implements Printable {
                 if (objectObtener.get("text") != null) {
                     JSONObject object = Json.obtenerObjetoJSON(objectObtener.get("text").toString());
                     TextFieldTicket field = addElementTextField("iu", object.get("value").toString(),
-                            Boolean.valueOf(object.get("multiline").toString()),
+                            Boolean.parseBoolean(object.get("multiline").toString()),
                             Short.parseShort(object.get("lines").toString()),
                             Short.parseShort(object.get("width").toString()),
                             getAlignment(object.get("align").toString()),
                             Boolean.parseBoolean(object.get("editable").toString()),
                             String.valueOf(object.get("variable").toString()),
                             String.valueOf(object.get("font").toString()),
-                            Float.valueOf(object.get("size").toString()));
+                            Float.parseFloat(object.get("size").toString()));
                     box.getChildren().add(field);
                 } else if (objectObtener.get("list") != null) {
                     JSONArray array = Json.obtenerArrayJSON(objectObtener.get("list").toString());
@@ -1618,14 +1627,14 @@ public class BillPrintable implements Printable {
                     while (it.hasNext()) {
                         JSONObject object = Json.obtenerObjetoJSON(it.next().toString());
                         TextFieldTicket field = addElementTextField("iu", object.get("value").toString(),
-                                Boolean.valueOf(object.get("multiline").toString()),
+                                Boolean.parseBoolean(object.get("multiline").toString()),
                                 Short.parseShort(object.get("lines").toString()),
                                 Short.parseShort(object.get("width").toString()),
                                 getAlignment(object.get("align").toString()),
                                 Boolean.parseBoolean(object.get("editable").toString()),
                                 String.valueOf(object.get("variable").toString()),
                                 String.valueOf(object.get("font").toString()),
-                                Float.valueOf(object.get("size").toString()));
+                                Float.parseFloat(object.get("size").toString()));
                         box.getChildren().add(field);
                     }
                 } else if (objectObtener.get("image") != null) {
@@ -1700,14 +1709,14 @@ public class BillPrintable implements Printable {
                 if (objectObtener.get("text") != null) {
                     JSONObject object = Json.obtenerObjetoJSON(objectObtener.get("text").toString());
                     TextFieldTicket field = addElementTextField("iu", object.get("value").toString(),
-                            Boolean.valueOf(object.get("multiline").toString()),
+                            Boolean.parseBoolean(object.get("multiline").toString()),
                             Short.parseShort(object.get("lines").toString()),
                             Short.parseShort(object.get("width").toString()),
                             getAlignment(object.get("align").toString()),
                             Boolean.parseBoolean(object.get("editable").toString()),
                             String.valueOf(object.get("variable").toString()),
                             String.valueOf(object.get("font").toString()),
-                            Float.valueOf(object.get("size").toString()));
+                            Float.parseFloat(object.get("size").toString()));
                     box.getChildren().add(field);
                 } else if (objectObtener.get("list") != null) {
                     JSONArray array = Json.obtenerArrayJSON(objectObtener.get("list").toString());
@@ -1715,14 +1724,14 @@ public class BillPrintable implements Printable {
                     while (it.hasNext()) {
                         JSONObject object = Json.obtenerObjetoJSON(it.next().toString());
                         TextFieldTicket field = addElementTextField("iu", object.get("value").toString(),
-                                Boolean.valueOf(object.get("multiline").toString()),
+                                Boolean.parseBoolean(object.get("multiline").toString()),
                                 Short.parseShort(object.get("lines").toString()),
                                 Short.parseShort(object.get("width").toString()),
                                 getAlignment(object.get("align").toString()),
                                 Boolean.parseBoolean(object.get("editable").toString()),
                                 String.valueOf(object.get("variable").toString()),
                                 String.valueOf(object.get("font").toString()),
-                                Float.valueOf(object.get("size").toString()));
+                                Float.parseFloat(object.get("size").toString()));
                         box.getChildren().add(field);
                     }
                 } else if (objectObtener.get("image") != null) {

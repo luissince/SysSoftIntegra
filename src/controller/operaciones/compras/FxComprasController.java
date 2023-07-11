@@ -154,16 +154,20 @@ public class FxComprasController implements Initializable {
 
         cbComprobante.getItems().addAll(DetalleADO.Get_Detail_IdName("2", "0015", ""));
 
-        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
-        if (!cbMoneda.getItems().isEmpty()) {
-            for (int i = 0; i < cbMoneda.getItems().size(); i++) {
-                if (cbMoneda.getItems().get(i).isPredeterminado()) {
-                    cbMoneda.getSelectionModel().select(i);
-                    monedaSimbolo = cbMoneda.getItems().get(i).getSimbolo();
-                    break;
-                }
-            }
-        }
+         Object monedaObject = MonedaADO.ObtenerListaMonedas();
+         if (monedaObject instanceof ObservableList) {
+             cbMoneda.setItems((ObservableList<MonedaTB>) monedaObject);
+         }
+
+         if (!cbMoneda.getItems().isEmpty()) {
+             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
+                 if (cbMoneda.getItems().get(i).isPredeterminado()) {
+                     cbMoneda.getSelectionModel().select(i);
+                     monedaSimbolo = cbMoneda.getItems().get(i).getSimbolo();
+                     break;
+                 }
+             }
+         }
 
         Tools.actualDate(Tools.getDate(), tpFechaCompra);
         initTable();
@@ -211,7 +215,7 @@ public class FxComprasController implements Initializable {
         tcQuitar.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
         tcArticulo.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getSuministroTB().getClave() + "\n"
-                        + cellData.getValue().getSuministroTB().getNombreMarca()));
+                + cellData.getValue().getSuministroTB().getNombreMarca()));
         tcCantidad.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
         tcCosto.setCellValueFactory(cellData -> Bindings.concat(
@@ -346,7 +350,11 @@ public class FxComprasController implements Initializable {
         cbActualizarInventario.setSelected(true);
 
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
+        Object monedaObject = MonedaADO.ObtenerListaMonedas();
+        if (monedaObject instanceof ObservableList) {
+            cbMoneda.setItems((ObservableList<MonedaTB>) monedaObject);
+        }
+
         if (!cbMoneda.getItems().isEmpty()) {
             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
                 if (cbMoneda.getItems().get(i).isPredeterminado()) {

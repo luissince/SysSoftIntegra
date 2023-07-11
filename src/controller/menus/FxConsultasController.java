@@ -1,6 +1,6 @@
 package controller.menus;
 
-import controller.banco.FxBancosController;
+import controller.banco.FxBancoController;
 import controller.consultas.compras.FxComprasRealizadasController;
 import controller.consultas.cobrar.FxCuentasPorCobrarController;
 import controller.consultas.cotizacion.FxCotizacionRealizadasController;

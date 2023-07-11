@@ -1,6 +1,5 @@
 package controller.consultas.venta;
 
-import controller.operaciones.venta.FxVentaMostrarController;
 import controller.tools.Tools;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,8 +35,6 @@ public class FxVentaDevolucionController implements Initializable {
 
     private FxVentaDetalleController ventaDetalleController;
 
-    private FxVentaMostrarController ventaMostrarController;
-
     private VentaTB ventaTB;
 
     private double totalVenta;
@@ -59,55 +56,57 @@ public class FxVentaDevolucionController implements Initializable {
         if (txtObservacion.getText().trim().isEmpty()) {
             Tools.AlertMessageWarning(window, "Detalle de venta", "Ingrese un comentario.");
             txtObservacion.requestFocus();
-        } else {
-            short validate = Tools.AlertMessageConfirmation(window, "Detalle de ventas",
-                    "¿Está seguro de anular la venta?");
-            if (validate == 1) {
+            return;
+        }
 
-                ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
-                    Thread t = new Thread(runnable);
-                    t.setDaemon(true);
-                    return t;
-                });
+        short validate = Tools.AlertMessageConfirmation(window, "Detalle de venta",
+                "¿Está seguro de anular la venta?");
+        if (validate == 1) {
 
-                Task<String> task = new Task<String>() {
-                    @Override
-                    public String call() {
-                        return VentaADO.anularVenta(ventaTB, txtObservacion.getText().trim());
-                    }
-                };
+            ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
+                Thread t = new Thread(runnable);
+                t.setDaemon(true);
+                return t;
+            });
 
-                task.setOnSucceeded(e -> {
-                    String result = task.getValue();
-                    if (result.equalsIgnoreCase("updated")) {
-                        Tools.AlertMessageInformation(window, "Detalle de ventas", "Se anuló correctamente.");
-                        Tools.Dispose(window);
-                    } else if (result.equalsIgnoreCase("scrambled")) {
-                        Tools.AlertMessageWarning(window, "Detalle de venta", "Ya está anulada la venta.");
-                    } else if (result.equalsIgnoreCase("nodate")) {
-                        Tools.AlertMessageWarning(window, "Detalle de venta",
-                                "No se puede anular la venta porque la fecha es distinta a la fecha de emisión.");
-                    } else if (result.equalsIgnoreCase("ventacredito")) {
-                        Tools.AlertMessageWarning(window, "Detalle de venta",
-                                "No se puede anular la venta porque tiene asociados abonos.");
-                    } else {
-                        Tools.AlertMessageError(window, "Detalle de ventas", result);
-                    }
-                    btnEjecutar.setDisable(false);
-                });
-
-                task.setOnFailed(e -> {
-                    btnEjecutar.setDisable(false);
-                });
-
-                task.setOnScheduled(e -> {
-                    btnEjecutar.setDisable(true);
-                });
-
-                exec.execute(task);
-                if (!exec.isShutdown()) {
-                    exec.shutdown();
+            Task<String> task = new Task<String>() {
+                @Override
+                public String call() {
+                    return VentaADO.anularVenta(ventaTB, txtObservacion.getText().trim());
                 }
+            };
+
+            task.setOnScheduled(e -> {
+                btnEjecutar.setDisable(true);
+            });
+
+            task.setOnSucceeded(e -> {
+                String result = task.getValue();
+                if (result.equalsIgnoreCase("updated")) {
+                    Tools.AlertMessageInformation(window, "Detalle de ventas", "Se anuló correctamente.");
+                    Tools.Dispose(window);
+                    ventaDetalleController.loadInitComponents(ventaTB.getIdVenta());
+                } else if (result.equalsIgnoreCase("scrambled")) {
+                    Tools.AlertMessageWarning(window, "Detalle de venta", "Ya está anulada la venta.");
+                } else if (result.equalsIgnoreCase("nodate")) {
+                    Tools.AlertMessageWarning(window, "Detalle de venta",
+                            "No se puede anular la venta porque la fecha es distinta a la fecha de emisión.");
+                } else if (result.equalsIgnoreCase("ventacredito")) {
+                    Tools.AlertMessageWarning(window, "Detalle de venta",
+                            "No se puede anular la venta porque tiene asociados abonos.");
+                } else {
+                    Tools.AlertMessageError(window, "Detalle de ventas", result);
+                }
+                btnEjecutar.setDisable(false);
+            });
+
+            task.setOnFailed(e -> {
+                btnEjecutar.setDisable(false);
+            });
+
+            exec.execute(task);
+            if (!exec.isShutdown()) {
+                exec.shutdown();
             }
         }
     }
@@ -137,10 +136,6 @@ public class FxVentaDevolucionController implements Initializable {
 
     public void setInitVentaDetalle(FxVentaDetalleController ventaDetalleController) {
         this.ventaDetalleController = ventaDetalleController;
-    }
-
-    public void setInitVentaMostrar(FxVentaMostrarController ventaMostrarController) {
-        this.ventaMostrarController = ventaMostrarController;
     }
 
 }

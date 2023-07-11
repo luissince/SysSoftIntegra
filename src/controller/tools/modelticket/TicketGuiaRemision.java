@@ -249,8 +249,6 @@ public class TicketGuiaRemision {
                     Pos.BOTTOM_RIGHT);
         });
         task.setOnFailed(w -> {
-            Tools.println(task.getException().getMessage());
-            Tools.println(task.getMessage());
             Tools.showAlertNotification("/view/image/error_large.png",
                     "Generando reporte",
                     Tools.newLineString("Se produjo un problema al generar."),

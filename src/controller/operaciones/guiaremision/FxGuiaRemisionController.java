@@ -725,7 +725,7 @@ public class FxGuiaRemisionController implements Initializable {
                 ObservableList<DetalleTB> pesoCarga = DetalleADO.obtenerDetallePorIdMantenimiento("0021");
                 List<TipoDocumentoTB> tipoComprobanteVenta = TipoDocumentoADO.obtenerComprobantesParaVenta();
                 EmpresaTB empresaTB = EmpresaADO.obtenerEmpresa();
-                Object venta = VentaADO.obtenerVentaById(idVenta);
+                Object venta = VentaADO.obtenerVentaPorIdVenta(idVenta);
 
                 if (tipoComprobanteGuia instanceof String) {
                     throw new Exception((String) tipoComprobanteGuia);

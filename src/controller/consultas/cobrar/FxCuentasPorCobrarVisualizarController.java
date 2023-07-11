@@ -97,13 +97,18 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<VentaTB> task = new Task<VentaTB>() {
             @Override
-            public Object call() {
-                return VentaADO.Listar_Ventas_Detalle_Credito_ById(idVenta);
+            public VentaTB call() throws Exception {
+                Object result = VentaADO.obtenerVentaDetalleCreditoPorId(idVenta);
+                if (result instanceof VentaTB) {
+                    return (VentaTB) result;
+                }
+                throw new Exception((String) result);
             }
         };
         task.setOnScheduled(w -> {
+            borrarContenido();
             spBody.setDisable(true);
             hbLoad.setVisible(true);
             lblMessageLoad.setText("Cargando datos...");
@@ -113,74 +118,64 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             lblMessageLoad.setText(task.getException().getLocalizedMessage());
             btnAceptarLoad.setVisible(true);
             btnAceptarLoad.setOnAction(event -> {
-                closeView();
+                onEventCloseView();
             });
             btnAceptarLoad.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.ENTER) {
-                    closeView();
+                    onEventCloseView();
                 }
                 event.consume();
             });
         });
         task.setOnSucceeded(w -> {
-            Object object = task.getValue();
-            if (object instanceof VentaTB) {
-                ventaTB = (VentaTB) object;
-                lblCliente.setText(
-                        ventaTB.getClienteTB().getNumeroDocumento() + " - " + ventaTB.getClienteTB().getInformacion());
-                lblTelefonoCelular.setText(ventaTB.getClienteTB().getCelular());
-                lblDireccion.setText(ventaTB.getClienteTB().getDireccion());
-                lblEmail.setText(ventaTB.getClienteTB().getEmail());
-                lblComprobante.setText(ventaTB.getSerie() + " - " + ventaTB.getNumeracion());
-                lblEstado.setText(ventaTB.getEstadoName());
-                lblMontoTotal.setText(Tools.roundingValue(ventaTB.getMontoTotal(), 2));
-                lblMontoPagado.setText(Tools.roundingValue(ventaTB.getMontoCobrado(), 2));
-                lblDiferencia.setText(Tools.roundingValue(ventaTB.getMontoRestante(), 2));
-                lblObservacion.setText(ventaTB.getObservaciones());
+            ventaTB = task.getValue();
+            lblCliente.setText(
+                    ventaTB.getClienteTB().getNumeroDocumento() + " - " + ventaTB.getClienteTB().getInformacion());
+            lblTelefonoCelular.setText(ventaTB.getClienteTB().getCelular());
+            lblDireccion.setText(ventaTB.getClienteTB().getDireccion());
+            lblEmail.setText(ventaTB.getClienteTB().getEmail());
+            lblComprobante.setText(ventaTB.getSerie() + " - " + ventaTB.getNumeracion());
+            lblEstado.setText(ventaTB.getEstadoName());
+            lblMontoTotal.setText(Tools.roundingValue(ventaTB.getMontoTotal(), 2));
+            lblMontoPagado.setText(Tools.roundingValue(ventaTB.getMontoCobrado(), 2));
+            lblDiferencia.setText(Tools.roundingValue(ventaTB.getMontoRestante(), 2));
+            lblObservacion.setText(ventaTB.getObservaciones());
 
-                ventaTB.getVentaCreditoTBs().forEach(vc -> {
-                    vc.getBtnPagar().setOnAction(event -> {
-                        onEventAmortizarUpdate(vc.getIdVentaCredito(), vc.getMonto());
-                    });
-                    vc.getBtnPagar().setOnKeyPressed(event -> {
-                        if (event.getCode() == KeyCode.ENTER) {
-                            onEventAmortizarUpdate(vc.getIdVentaCredito(), vc.getMonto());
-                            event.consume();
-                        }
-                    });
-
-                    vc.getBtnQuitar().setOnAction(event -> {
-                        onEventRemove(vc.getIdVentaCredito());
-                    });
-                    vc.getBtnQuitar().setOnKeyPressed(event -> {
-                        if (event.getCode() == KeyCode.ENTER) {
-                            onEventRemove(vc.getIdVentaCredito());
-                            event.consume();
-                        }
-                    });
+            ventaTB.getVentaCreditoTBs().forEach(vc -> {
+                vc.getBtnPagar().setOnAction(event -> {
+                    onEventActualizarCobro(vc.getIdVentaCredito(), vc.getMonto());
                 });
-
-                if (ventaTB.getTipoCredito() == 1) {
-                    btnCobrar.setDisable(true);
-                }
-
-                fillVentaCreditoTable();
-                fillVentasDetalleTable(ventaTB.getSuministroTBs());
-                spBody.setDisable(false);
-                hbLoad.setVisible(false);
-            } else {
-                lblMessageLoad.setText((String) object);
-                btnAceptarLoad.setVisible(true);
-                btnAceptarLoad.setOnAction(event -> {
-                    closeView();
-                });
-                btnAceptarLoad.setOnKeyPressed(event -> {
+                vc.getBtnPagar().setOnKeyPressed(event -> {
                     if (event.getCode() == KeyCode.ENTER) {
-                        closeView();
+                        onEventActualizarCobro(vc.getIdVentaCredito(), vc.getMonto());
+                        event.consume();
                     }
-                    event.consume();
                 });
+
+                vc.getBtnQuitar().setOnAction(event -> {
+                    onEventAnular(vc.getIdVentaCredito());
+                });
+                vc.getBtnQuitar().setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        onEventAnular(vc.getIdVentaCredito());
+                        event.consume();
+                    }
+                });
+            });
+
+            if (ventaTB.getTipoCredito() == 1) {
+                btnCobrar.setDisable(true);
             }
+
+            gpList.getChildren().clear();
+            createHeadTableCredito();
+            createBodyTableCredito();
+
+            gpDetalle.getChildren().clear();
+            createHeadTableDetalleVenta();
+            createBodyTableDetalleVenta(ventaTB.getSuministroTBs());
+            spBody.setDisable(false);
+            hbLoad.setVisible(false);
 
         });
         exec.execute(task);
@@ -189,7 +184,18 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
         }
     }
 
-    private void fillVentaCreditoTable() {
+    private void createHeadTableCredito() {
+        gpList.add(addHeadGridPane("N°"), 0, 0);
+        gpList.add(addHeadGridPane("Nrm. Transacción"), 1, 0);
+        gpList.add(addHeadGridPane("Fecha de Cobro"), 2, 0);
+        gpList.add(addHeadGridPane("Estado"), 3, 0);
+        gpList.add(addHeadGridPane("Monto"), 4, 0);
+        gpList.add(addHeadGridPane("Observación"), 5, 0);
+        gpList.add(addHeadGridPane("Cobrar"), 6, 0);
+        gpList.add(addHeadGridPane("Remover"), 7, 0);
+    }
+
+    private void createBodyTableCredito() {
         for (int i = 0; i < ventaTB.getVentaCreditoTBs().size(); i++) {
             VentaCreditoTB ventaCreditoTB = ventaTB.getVentaCreditoTBs().get(i);
             String id = ventaCreditoTB.getId() + "";
@@ -214,7 +220,19 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
         }
     }
 
-    private void fillVentasDetalleTable(ArrayList<SuministroTB> arrList) {
+    private void createHeadTableDetalleVenta() {
+        gpDetalle.add(addHeadGridPane("N°"), 0, 0);
+        gpDetalle.add(addHeadGridPane("Descripción"), 1, 0);
+        gpDetalle.add(addHeadGridPane("Cantidad"), 2, 0);
+        gpDetalle.add(addHeadGridPane("Bonificación"), 3, 0);
+        gpDetalle.add(addHeadGridPane("Medida"), 4, 0);
+        gpDetalle.add(addHeadGridPane("Impuesto"), 5, 0);
+        gpDetalle.add(addHeadGridPane("Precio"), 6, 0);
+        gpDetalle.add(addHeadGridPane("Descuento"), 7, 0);
+        gpDetalle.add(addHeadGridPane("Importe"), 8, 0);
+    }
+
+    private void createBodyTableDetalleVenta(ArrayList<SuministroTB> arrList) {
         for (int i = 0; i < arrList.size(); i++) {
             SuministroTB suministroTB = arrList.get(i);
             String descripcion = suministroTB.getClave() + "\n" + suministroTB.getNombreMarca();
@@ -238,6 +256,21 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             gpDetalle.add(addElementGridPaneLabel("l8" + (i + 1), descuento, Pos.CENTER_RIGHT), 7, (i + 1));
             gpDetalle.add(addElementGridPaneLabel("l9" + (i + 1), total, Pos.CENTER_RIGHT), 8, (i + 1));
         }
+    }
+
+    private Label addHeadGridPane(String nombre) {
+        Label label = new Label(nombre);
+        label.setTextFill(Color.web("#FFFFFF"));
+        label.getStyleClass().add("labelRoboto13");
+        label.setStyle(
+                "-fx-background-color:  #020203;-fx-padding:  0.6666666666666666em 0.16666666666666666em 0.6666666666666666em 0.16666666666666666em;-fx-font-weight:100;");
+        label.setAlignment(Pos.CENTER);
+        label.setWrapText(true);
+        label.setPrefWidth(Control.USE_COMPUTED_SIZE);
+        label.setPrefHeight(Control.USE_COMPUTED_SIZE);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxHeight(Double.MAX_VALUE);
+        return label;
     }
 
     private Label addElementGridPane(String id, String nombre, Pos pos, Node node, String color) {
@@ -272,10 +305,24 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
         return label;
     }
 
+    private void borrarContenido() {
+        lblCliente.setText("-");
+        lblTelefonoCelular.setText("-");
+        lblDireccion.setText("-");
+        lblEmail.setText("-");
+        lblComprobante.setText("-");
+        lblEstado.setText("-");
+        lblObservacion.setText("-");
+
+        lblMontoTotal.setText("0.00");
+        lblMontoPagado.setText("0.00");
+        lblDiferencia.setText("0.00");
+    }
+
     /*
      * Modal para registrar un cobro o amortización
      */
-    private void onEventAmortizar() {
+    private void onEventGenerarCobro() {
         try {
             fxPrincipalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_GENERAR_COBRO);
@@ -293,14 +340,14 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             stage.setOnShowing(w -> controller.loadInitComponents(ventaTB));
             stage.show();
         } catch (IOException ex) {
-            System.out.println("Controller banco" + ex.getLocalizedMessage());
+            System.out.println("Controller Cuentas por cobrar" + ex.getLocalizedMessage());
         }
     }
 
     /*
      * Modal para editar un cobro o amortización
      */
-    private void onEventAmortizarUpdate(String idVentaCredito, double monto) {
+    private void onEventActualizarCobro(String idVentaCredito, double monto) {
         try {
             fxPrincipalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_GENERAR_COBRO);
@@ -318,7 +365,7 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             stage.setOnShowing(w -> controller.loadInitComponents(ventaTB));
             stage.show();
         } catch (IOException ex) {
-            System.out.println("Controller banco" + ex.getLocalizedMessage());
+            System.out.println("Controller Cuentas por Cobrar" + ex.getLocalizedMessage());
         }
     }
 
@@ -336,14 +383,17 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
             Stage stage = WindowStage.StageLoaderModal(parent, "Imprimir", apWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
-            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnHiding(w -> {
+                fxPrincipalController.closeFondoModal();
+                loadData(ventaTB.getIdVenta());
+            });
             stage.show();
         } catch (IOException ex) {
-            System.out.println("Controller banco" + ex.getLocalizedMessage());
+            System.out.println("Controller Cuentas por Cobrar" + ex.getLocalizedMessage());
         }
     }
 
-    private void onEventRemove(String idVentaCredito) {
+    private void onEventAnular(String idVentaCredito) {
         short value = Tools.AlertMessageConfirmation(apWindow, "Cuentas Por Cobrar", "¿Está seguro de continuar?");
         if (value == 1) {
             String result = VentaADO.removerIngreso(ventaTB.getIdVenta(), idVentaCredito);
@@ -356,7 +406,7 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
         }
     }
 
-    private void closeView() {
+    private void onEventCloseView() {
         fxPrincipalController.getVbContent().getChildren().remove(apWindow);
         fxPrincipalController.getVbContent().getChildren().clear();
         AnchorPane.setLeftAnchor(cuentasPorCobrarController.getVbWindow(), 0d);
@@ -368,50 +418,42 @@ public class FxCuentasPorCobrarVisualizarController implements Initializable {
 
     @FXML
     private void onMouseClickedBehind(MouseEvent event) {
-        closeView();
+        onEventCloseView();
     }
 
     @FXML
     private void onActionCobrar(ActionEvent event) {
-        onEventAmortizar();
+        onEventGenerarCobro();
     }
 
     @FXML
     private void onKeyPressedCobrar(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            onEventAmortizar();
+            onEventGenerarCobro();
         }
     }
 
     @FXML
     private void onActionReporte(ActionEvent event) {
-        if (ventaTB != null) {
-            fxOpcionesImprimirController.getTicketCuentasPorCobrar().mostrarReporte(ventaTB.getIdVenta());
-        }
+        fxOpcionesImprimirController.getTicketCuentasPorCobrar().mostrarReporte(ventaTB.getIdVenta());
     }
 
     @FXML
     private void onKeyPressedReporte(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            if (ventaTB != null) {
-                fxOpcionesImprimirController.getTicketCuentasPorCobrar().mostrarReporte(ventaTB.getIdVenta());
-            }
+            fxOpcionesImprimirController.getTicketCuentasPorCobrar().mostrarReporte(ventaTB.getIdVenta());
         }
     }
 
     @FXML
     private void onActionTicket(ActionEvent event) {
-        if (ventaTB != null) {
-            fxOpcionesImprimirController.getTicketCuentasPorCobrar().imprimir(ventaTB.getIdVenta());
-        }
+        fxOpcionesImprimirController.getTicketCuentasPorCobrar().imprimir(ventaTB.getIdVenta());
     }
 
     @FXML
     private void onKeyPressedTicket(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            if (ventaTB != null) {
-                fxOpcionesImprimirController.getTicketCuentasPorCobrar().imprimir(ventaTB.getIdVenta());
-            }
+            fxOpcionesImprimirController.getTicketCuentasPorCobrar().imprimir(ventaTB.getIdVenta());
         }
     }
 

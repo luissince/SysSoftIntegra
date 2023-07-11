@@ -222,7 +222,7 @@ public final class FilesRouters {
 
     public static final String FX_VENTA_PROCESO = "/view/operaciones/venta/FxVentaProceso.fxml";
 
-    public static final String FX_VENTA_PROCESO_NUEVO = "/view/operaciones/venta/FxVentaProcesoNuevo.fxml";
+//    public static final String FX_VENTA_PROCESO_NUEVO = "/view/operaciones/venta/FxVentaProcesoNuevo.fxml";
 
     public static final String FX_VENTA_REALIZADAS = "/view/consultas/venta/FxVentaRealizadas.fxml";
 
@@ -308,7 +308,7 @@ public final class FilesRouters {
     public static final String FX_ORDEN_COMPRA_REALZADAS = "/view/operaciones/ordencompra/FxOrdenCompraRealizadas.fxml";
 
     // --------------------------------------------------------------------------------------------------
-    public static final String FX_BANCOS = "/view/banco/FxBancos.fxml";
+    public static final String FX_BANCO = "/view/banco/FxBanco.fxml";
 
     public static final String FX_BANCO_PROCESO = "/view/banco/FxBancoProceso.fxml";
 

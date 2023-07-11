@@ -2,6 +2,7 @@ package controller.operaciones.venta;
 
 import controller.menus.FxPrincipalController;
 import controller.tools.FilesRouters;
+import controller.tools.Tools;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -48,7 +49,7 @@ public class FxVentaController implements Initializable {
     }
 
     public void loadComponents() {
-        if (tipoVenta == 1) {
+        if (tipoVenta == 1) { 
             ventaEstructuraController = (FxVentaEstructuraController) addEstructura(tbVentaUno);
         } else {
             ventaEstructuraNuevoController = (FxVentaEstructuraNuevoController) addEstructura(tbVentaUno);
@@ -70,8 +71,8 @@ public class FxVentaController implements Initializable {
     private Object addEstructura(Tab tab) {
         Object object = null;
         try {
-//            FXMLLoader fXMLSeleccionado = new FXMLLoader(getClass().getResource(FilesRouters.FX_VENTA_ESTRUCTURA_NUEVO));
-            FXMLLoader fXMLSeleccionado = new FXMLLoader(getClass().getResource(tipoVenta == 1 ? FilesRouters.FX_VENTA_ESTRUCTURA : FilesRouters.FX_VENTA_ESTRUCTURA_NUEVO));
+            String pathFile = tipoVenta == 1 ? FilesRouters.FX_VENTA_ESTRUCTURA : FilesRouters.FX_VENTA_ESTRUCTURA_NUEVO;
+            FXMLLoader fXMLSeleccionado = new FXMLLoader(getClass().getResource(pathFile));
             VBox seleccionado = fXMLSeleccionado.load();
             object = fXMLSeleccionado.getController();
             tab.setContent(seleccionado);

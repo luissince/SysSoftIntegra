@@ -125,7 +125,7 @@ public class FxPostVentaDetalleController implements Initializable {
         Task<Object> task = new Task<Object>() {
             @Override
             protected Object call() {
-                return VentaADO.obtenerVentaById(idVenta);
+                return VentaADO.obtenerVentaPorIdVenta(idVenta);
             }
         };
 
@@ -398,7 +398,6 @@ public class FxPostVentaDetalleController implements Initializable {
             stage.show();
 
         } catch (IOException ex) {
-            Tools.println("Venta estructura openWindowLlevar: " + ex.getLocalizedMessage());
         }
     }
 
@@ -420,7 +419,6 @@ public class FxPostVentaDetalleController implements Initializable {
             stage.show();
 
         } catch (IOException ex) {
-            Tools.println("Venta estructura openWindowHistorial: " + ex.getLocalizedMessage());
         }
     }
 

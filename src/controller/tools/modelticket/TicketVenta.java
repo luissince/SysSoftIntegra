@@ -132,7 +132,7 @@ public class TicketVenta {
         Task<String> task = new Task<String>() {
             @Override
             public String call() {
-                Object result = VentaADO.obtenerVentaById(idVenta);
+                Object result = VentaADO.obtenerVentaPorIdVenta(idVenta);
                 try {
                     if (result instanceof VentaTB) {
                         VentaTB ventaTB = (VentaTB) result;
@@ -235,7 +235,7 @@ public class TicketVenta {
         Task<JasperPrint> task = new Task<JasperPrint>() {
             @Override
             public JasperPrint call() throws Exception {
-                Object object = VentaADO.obtenerVentaById(idVenta);
+                Object object = VentaADO.obtenerVentaPorIdVenta(idVenta);
                 if (object instanceof VentaTB) {
                     return reportA4((VentaTB) object);
                 }

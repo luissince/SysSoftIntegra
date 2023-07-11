@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.CheckBox;
 
 public class EmpleadoTB {
-    
+
     private SimpleIntegerProperty id;
 
     private String idEmpleado;
@@ -45,14 +45,16 @@ public class EmpleadoTB {
     private int rol;
 
     private String rolName;
-    
+
     private boolean sistema;
-    
+
     private String huella;
 
     private CheckBox validarEm;
 
     private String informacion;
+
+    private RolTB rolTB;
 
     public EmpleadoTB() {
     }
@@ -95,6 +97,10 @@ public class EmpleadoTB {
 
     public void setId(int id) {
         this.id = new SimpleIntegerProperty(id);
+    }
+
+    public void setId(SimpleIntegerProperty id) {
+        this.id = id;
     }
 
     public String getIdEmpleado() {
@@ -279,6 +285,14 @@ public class EmpleadoTB {
 
     public void setInformacion(String informacion) {
         this.informacion = informacion == null ? "" : informacion;
+    }
+
+    public RolTB getRolTB() {
+        return rolTB;
+    }
+
+    public void setRolTB(RolTB rolTB) {
+        this.rolTB = rolTB;
     }
 
     @Override

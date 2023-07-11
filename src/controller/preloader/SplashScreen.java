@@ -54,7 +54,7 @@ public class SplashScreen extends Preloader {
         preloaderStage.setScene(scene);
         preloaderStage.show();
     }
-
+    
     @Override
     public void handleStateChangeNotification(StateChangeNotification info) {
         StateChangeNotification.Type type = info.getType();
