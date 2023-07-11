@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class BancoTB {
 
     private int id;
@@ -7,7 +9,6 @@ public class BancoTB {
     private String nombreCuenta;
     private String numeroCuenta;
     private int idMoneda;
-    private String simboloMoneda;
     private double saldoInicial;
     private String fecha;
     private String hora;
@@ -17,6 +18,7 @@ public class BancoTB {
     private short formaPago;
     private boolean mostrar;
     private MonedaTB monedaTB;
+    private ArrayList<BancoHistorialTB> bancoHistorialTBs;
 
     public BancoTB() {
     }
@@ -64,14 +66,6 @@ public class BancoTB {
 
     public void setIdMoneda(int idMoneda) {
         this.idMoneda = idMoneda;
-    }
-
-    public String getSimboloMoneda() {
-        return simboloMoneda;
-    }
-
-    public void setSimboloMoneda(String simboloMoneda) {
-        this.simboloMoneda = simboloMoneda;
     }
 
     public double getSaldoInicial() {
@@ -149,6 +143,14 @@ public class BancoTB {
 
     public void setMonedaTB(MonedaTB monedaTB) {
         this.monedaTB = monedaTB;
+    }
+
+    public ArrayList<BancoHistorialTB> getBancoHistorialTBs() {
+        return bancoHistorialTBs;
+    }
+
+    public void setBancoHistorialTBs(ArrayList<BancoHistorialTB> bancoHistorialTBs) {
+        this.bancoHistorialTBs = bancoHistorialTBs;
     }
     
     

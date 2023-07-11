@@ -197,17 +197,6 @@ public class FxPostVentaProcesoController implements Initializable {
         txtMonto.setPrefHeight(30);
         creditoTB.setTfMonto(txtMonto);
 
-        CheckBox cbMontoInicial = new CheckBox();
-        cbMontoInicial.getStyleClass().add("check-box-contenido");
-        cbMontoInicial.setPrefHeight(30);
-        creditoTB.setCbMontoInicial(cbMontoInicial);
-
-        ComboBox<String> cbForma = new ComboBox<>();
-        cbForma.prefWidth(200);
-        cbForma.setPrefHeight(30);
-        cbForma.getItems().addAll("EFECTIVO", "TARJETA", "DEPOSITO");
-        creditoTB.setCbForma(cbForma);
-
         tvListPlazos.getItems().add(creditoTB);
     }
 
@@ -446,7 +435,6 @@ public class FxPostVentaProcesoController implements Initializable {
                         int distint = 0;
                         int fechavl = 0;
                         int totalvl = 0;
-                        int pagoval = 0;
 
                         for (int i = 0; i < tvListPlazos.getItems().size(); i++) {
                             if (tvListPlazos.getItems().get(i).getDpFecha().getValue() == null) {
@@ -480,12 +468,6 @@ public class FxPostVentaProcesoController implements Initializable {
                                 totalvl += Double.parseDouble(tvListPlazos.getItems().get(i).getTfMonto().getText());
                             }
 
-                            if (tvListPlazos.getItems().get(i).getCbMontoInicial().isSelected()) {
-                                if (tvListPlazos.getItems().get(i).getCbForma().getSelectionModel().getSelectedIndex() < 0) {
-                                    pagoval++;
-                                }
-                            }
-
                         }
 
                         if (fecha > 0) {
@@ -513,10 +495,7 @@ public class FxPostVentaProcesoController implements Initializable {
                             return;
                         }
 
-                        if (pagoval > 0) {
-                            Tools.AlertMessageWarning(window, "Venta", "Hay plazos adelantados que necesitan tener la forma de pago.");
-                            return;
-                        }
+        
 
                         ventaTB.setFechaVencimiento(Tools.getDatePicker(tvListPlazos.getItems().get(tvListPlazos.getItems().size() - 1).getDpFecha()));
                         ventaTB.setHoraVencimiento(Tools.getTime());

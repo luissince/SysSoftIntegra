@@ -605,7 +605,6 @@ public class ClienteADO {
                 }
             }
         } catch (SQLException | ClassNotFoundException ex) {
-            Tools.println("Error en ClienteADO: " + ex.getLocalizedMessage());
         } finally {
             try {
                 if (statementLista != null) {
@@ -632,7 +631,6 @@ public class ClienteADO {
                 }
             }
         } catch (SQLException | ClassNotFoundException ex) {
-            Tools.println("Error en ClienteADO: " + ex.getLocalizedMessage());
         } finally {
             try {
                 if (statementLista != null) {

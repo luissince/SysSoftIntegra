@@ -483,8 +483,6 @@ public class TicketOrdenCompra {
                     Pos.BOTTOM_RIGHT);
         });
         task.setOnFailed(w -> {
-            Tools.println(task.getMessage());
-            Tools.println(task.getException().getLocalizedMessage());
             Tools.showAlertNotification("/view/image/warning_large.png",
                     "Generando reporte",
                     Tools.newLineString("Se produjo un problema al generar."),

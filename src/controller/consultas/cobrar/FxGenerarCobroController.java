@@ -4,14 +4,9 @@ import controller.tools.ConvertMonedaCadena;
 import controller.tools.Session;
 import controller.tools.Tools;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -99,6 +94,9 @@ public class FxGenerarCobroController implements Initializable {
     // txtMonto.setDisable(true);
     // }
 
+    /*
+     * Función encargada de obtener los métodos de cobro
+     */
     public void loadInitComponents(VentaTB ventaTB) {
         ExecutorService exec = Executors.newCachedThreadPool((runnable) -> {
             Thread t = new Thread(runnable);
@@ -143,9 +141,6 @@ public class FxGenerarCobroController implements Initializable {
             ObservableList<BancoTB> bancos = task.getValue();
             cbMetodoTransaccion.getItems().addAll(bancos);
 
-            Optional<BancoTB> bancoConFormaCobro = bancos.stream().filter(b -> b.getFormaPago() == 1).findFirst();
-            bancoConFormaCobro.ifPresent(this::generarMetodoCobro);
-
             totalVenta = Double.parseDouble(Tools.roundingValue(ventaTB.getMontoRestante(), 2));
 
             lblTotal.setText(
@@ -163,28 +158,32 @@ public class FxGenerarCobroController implements Initializable {
         }
     }
 
+    /*
+     * Agrega un método de cobro
+     * que no se encuentre en la lista
+     */
     private void addMetodoCobro() {
+        // Se debe seleccionar un método de cobro.
         if (cbMetodoTransaccion.getSelectionModel().getSelectedIndex() < 0) {
             Tools.AlertMessageWarning(window, "Cobro", "Seleccione el método de cobro.");
             cbMetodoTransaccion.requestFocus();
             return;
         }
 
-        List<Node> vBoxFiltrados = vbContenedorMetodoPago.getChildren()
-                .stream()
-                .filter(vBoxFilter -> ((HBox) vBoxFilter).getId() == cbMetodoTransaccion.getSelectionModel()
-                        .getSelectedItem().getIdBanco())
-                .collect(Collectors.toList());
-
-        if (vBoxFiltrados.size() != 0) {
-            Tools.AlertMessageWarning(window, "Cobro", "Ya existe en la lista el método de cobro.");
-            cbMetodoTransaccion.requestFocus();
+        // Solo se puede agregar un método de cobro.
+        if (!vbContenedorMetodoPago.getChildren().isEmpty()) {
+            Tools.AlertMessageWarning(window, "Cobro", "Solo se puede usar un solo método de cobro.");
             return;
         }
 
+        // Se genera el método de cobro si se cumple las 2 condiciones.
         generarMetodoCobro(cbMetodoTransaccion.getSelectionModel().getSelectedItem());
     }
 
+    /*
+     * Función encargada de diseñar el método de cobro
+     * con una sección para ingresar el monto y la operación
+     */
     private void generarMetodoCobro(BancoTB bancoTB) {
         HBox hBox = new HBox();
         hBox.setId(bancoTB.getIdBanco());
@@ -268,6 +267,10 @@ public class FxGenerarCobroController implements Initializable {
         txtMonto.requestFocus();
     }
 
+    /*
+     * Función encargada de calcular
+     * el restante de la deuda
+     */
     private void generarVuelto() {
         double montoActual = 0;
 
@@ -299,300 +302,108 @@ public class FxGenerarCobroController implements Initializable {
         lblVueltoContado.setText(ventaTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(vueltoContado, 2));
     }
 
+    /*
+     * Función encargada de procesar el cobro
+     */
     private void onEventAceptar() {
-        double montoValidar = 0;
-
+        // Valida si existe algún método de cobro para continuar.
         if (vbContenedorMetodoPago.getChildren().isEmpty()) {
             Tools.AlertMessageWarning(window, "Cobro", "No hay metodos de cobro para continuar.");
             cbMetodoTransaccion.requestFocus();
             return;
         }
 
-        for (Node node : vbContenedorMetodoPago.getChildren()) {
-            HBox hbox = (HBox) node;
-
-            TextField txtMonto = null;
-            VBox vbMonto = (VBox) hbox.getChildren().get(0);
-            if (vbMonto != null) {
-                for (Node nodo : vbMonto.getChildren()) {
-                    if (nodo instanceof TextField) {
-                        txtMonto = (TextField) nodo;
-                        break;
-                    }
-                }
-            }
-
-            if (!Tools.isNumeric(txtMonto.getText().trim())) {
-                Tools.AlertMessageWarning(window, "Cobro", "Ingrese el monto a cobrar o quítelo.");
-                txtMonto.requestFocus();
-                return;
-            }
-
-            double monto = Double.parseDouble(txtMonto.getText().trim());
-
-            if (monto <= 0) {
-                Tools.AlertMessageWarning(window, "Cobro", "El monto no debe ser menor a cero.");
-                txtMonto.requestFocus();
-                return;
-            }
-
-            montoValidar += monto;
-        }
-
-        // if (montoValidar < totalVenta) {
-        // Tools.AlertMessageWarning(window, "Cobro", "Los montos ingresados deben ser
-        // igual o mayor al total de la venta.");
-
-        // for (Node node : vbContenedorMetodoPago.getChildren()) {
-        // HBox hbox = (HBox) node;
-        // VBox vbMonto = (VBox) hbox.getChildren().get(0);
-        // if (vbMonto != null) {
-        // if (!vbMonto.getChildren().isEmpty()) {
-        // ((TextField) vbMonto.getChildren().get(vbMonto.getChildren().size() -
-        // 1)).requestFocus();
-        // }
-        // }
-        // }
-
-        // return;
-        // }
-
+        // Valida que no exista mas de 2 método de cobro.
         if (vbContenedorMetodoPago.getChildren().size() > 1) {
-            if (montoValidar != totalVenta) {
-                Tools.AlertMessageWarning(window, "Cobro",
-                        "Si se eligen más de dos métodos de cobro, no se podrá recibir vuelto o cambio.");
-                return;
+            Tools.AlertMessageWarning(window, "Cobro", "No debe haber mas de 2 método de cobro.");
+            cbMetodoTransaccion.requestFocus();
+            return;
+        }
+
+        // Obtenemos el nodo padre
+        HBox hbox = (HBox) vbContenedorMetodoPago.getChildren().get(0);
+
+        // Validar que va tomar el valor de monto
+        TextField txtMonto = null;
+        // Obtenemos el hijo donde se encuentra los textfields
+        VBox vbMonto = (VBox) hbox.getChildren().get(0);
+        // validamos que el resultado no sea nulo
+        if (vbMonto != null) {
+            // Recorremos el hijo vbox para encontrar el textfield de monto
+            for (Node nodo : vbMonto.getChildren()) {
+                if (nodo instanceof TextField) {
+                    txtMonto = (TextField) nodo;
+                    break;
+                }
             }
         }
 
-        List<IngresoTB> ingresoTBs = new ArrayList<>();
-        double montoActual = 0;
+        // El monto ingresado debe ser númerico
+        if (!Tools.isNumeric(txtMonto.getText().trim())) {
+            Tools.AlertMessageWarning(window, "Cobro", "Ingrese el monto a cobrar o quítelo.");
+            txtMonto.requestFocus();
+            return;
+        }
 
-        for (Node node : vbContenedorMetodoPago.getChildren()) {
-            HBox hbox = (HBox) node;
+        // Asignamos el monto
+        double monto = Double.parseDouble(txtMonto.getText().trim());
 
-            TextField txtMonto = null;
-            VBox vbMonto = (VBox) hbox.getChildren().get(0);
-            if (vbMonto != null) {
-                for (Node nodo : vbMonto.getChildren()) {
+        // El monto debe ser mayor a 0
+        if (monto <= 0) {
+            Tools.AlertMessageWarning(window, "Cobro", "El monto no debe ser menor a cero.");
+            txtMonto.requestFocus();
+            return;
+        }
+
+        // TextField encargado de obtener el número de operación
+        TextField txtOperacion = null;
+        // Hijo que contiene el valor de la operación
+        VBox vbOperacion = (VBox) hbox.getChildren().get(1);
+        // Validamos que el resultado no sea nulo
+        if (vbOperacion != null) {
+            HBox hbContenidoOperacion = (HBox) vbOperacion.getChildren().get(1);
+            if (hbContenidoOperacion != null) {
+                for (Node nodo : hbContenidoOperacion.getChildren()) {
                     if (nodo instanceof TextField) {
-                        txtMonto = (TextField) nodo;
+                        txtOperacion = (TextField) nodo;
                         break;
                     }
                 }
             }
-
-            TextField txtOperacion = null;
-            VBox vbOperacion = (VBox) hbox.getChildren().get(1);
-            if (vbOperacion != null) {
-                HBox hbContenidoOperacion = (HBox) vbOperacion.getChildren().get(1);
-                if (hbContenidoOperacion != null) {
-                    for (Node nodo : hbContenidoOperacion.getChildren()) {
-                        if (nodo instanceof TextField) {
-                            txtOperacion = (TextField) nodo;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            double monto = 0;
-
-            if (txtMonto != null && Tools.isNumeric(txtMonto.getText().trim())) {
-                monto = Double.parseDouble(txtMonto.getText().trim());
-            }
-
-            montoActual += monto;
-
-            IngresoTB ingresoTB = new IngresoTB();
-            ingresoTB.setIdBanco(hbox.getId());
-            ingresoTB.setIdUsuario(Session.USER_ID);
-            ingresoTB.setMonto(monto - vueltoContado);
-            ingresoTB.setVuelto(vueltoContado);
-            ingresoTB.setOperacion(txtOperacion.getText().trim());
-            ingresoTB.setDetalle("");
-            ingresoTB.setEstado(true);
-            ingresoTBs.add(ingresoTB);
         }
 
-        Tools.println(montoActual);
-        Tools.println(vueltoContado);
-
-        if (montoActual >= totalVenta) {
-            montoActual = montoActual - vueltoContado;
+        if (monto >= totalVenta) {
+            monto = monto - vueltoContado;
         }
 
-        Tools.println(montoActual);
-        Tools.println(vueltoContado);
-        Tools.println("-----------------");
+        VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
+        ventaCreditoTB.setVentaTB(ventaTB);
+        ventaCreditoTB.setIdVenta(ventaTB.getIdVenta());
+        ventaCreditoTB.setMonto(monto);
+        ventaCreditoTB.setEstado((short) 1);
+        ventaCreditoTB.setIdUsuario(Session.USER_ID);
+        ventaCreditoTB.setObservacion(txtObservacion.getText().trim());
 
-        // VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
-        // ventaCreditoTB.setVentaTB(ventaTB);
-        // ventaCreditoTB.setIdVenta(ventaTB.getIdVenta());
-        // ventaCreditoTB.setMonto(montoActual);
-        // ventaCreditoTB.setEstado((short) 1);
-        // ventaCreditoTB.setIdUsuario(Session.USER_ID);
-        // ventaCreditoTB.setObservacion(txtObservacion.getText().trim());
+        IngresoTB ingresoTB = new IngresoTB();
+        ingresoTB.setIdProcedencia(ventaTB.getIdVenta()); 
+        ingresoTB.setIdBanco(hbox.getId());
+        ingresoTB.setIdUsuario(Session.USER_ID);
+        ingresoTB.setMonto(monto);
+        ingresoTB.setVuelto(0);
+        ingresoTB.setOperacion(txtOperacion.getText().trim());
+        ingresoTB.setEstado(true);
 
-        // short value = Tools.AlertMessageConfirmation(window, "Cobro", "¿Está seguro
-        // de continuar?");
-        // if (value == 1) {
-        // String[] result = VentaADO.registrarIngreso(ventaCreditoTB, ingresoTBs);
-        // if (result[0] == "1") {
-        // Tools.Dispose(window);
-        // cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(),
-        // result[2]);
-        // } else {
-        // Tools.AlertMessageWarning(window, "Cobro", result[1]);
-        // }
-        // }
-
-        // if (!Tools.isNumeric(txtMonto.getText().trim())) {
-        // Tools.AlertMessageWarning(window, "Abonar", "Ingrese el abono.");
-        // txtMonto.requestFocus();
-        // } else if (Double.parseDouble(txtMonto.getText().trim()) <= 0) {
-        // Tools.AlertMessageWarning(window, "Abonar", "El abono no puede ser menor a
-        // 0.");
-        // txtMonto.requestFocus();
-        // } else if (Tools.isText(txtObservacion.getText())) {
-        // Tools.AlertMessageWarning(window, "Abonar", "Ingrese alguna observación del
-        // abono.");
-        // txtObservacion.requestFocus();
-        // } else {
-        // if (rbIngreso.isSelected()) {
-        // short value = Tools.AlertMessageConfirmation(window, "Abonor", "¿Está seguro
-        // de continuar?");
-        // if (value == 1) {
-        // btnAceptar.setDisable(true);
-        // VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
-        // ventaCreditoTB.setIdVenta(ventaTB.getIdVenta());
-        // ventaCreditoTB.setIdVentaCredito(idVentaCredito);
-        // ventaCreditoTB.setMonto(Double.parseDouble(txtMonto.getText()));
-        // ventaCreditoTB.setFechaPago(Tools.getDate());
-        // ventaCreditoTB.setHoraPago(Tools.getTime());
-        // ventaCreditoTB.setEstado((short) 1);
-        // ventaCreditoTB.setIdUsuario(Session.USER_ID);
-        // ventaCreditoTB.setObservacion(txtObservacion.getText().trim());
-
-        // /*
-        // * procedencia
-        // * 1 = venta
-        // * 2 = compra
-        // *
-        // * 3 = ingreso libre
-        // * 4 = salida libre
-        // *
-        // * 5 = ingreso cuentas por cobrar
-        // * 6 = salida cuentas por pagar
-        // */
-
-        // /*
-        // * forma
-        // * 1 = efectivo
-        // * 2 = tarjeta
-        // * 3 = deposito
-        // */
-        // IngresoTB ingresoTB = new IngresoTB();
-        // ingresoTB.setIdProcedencia("");
-        // ingresoTB.setIdUsuario(Session.USER_ID);
-        // ingresoTB.setDetalle("INGRESO DE DINERO POR CUENTAS POR COBRAR DEL
-        // COMPROBANTE "
-        // + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-        // ingresoTB.setProcedencia(5);
-        // ingresoTB.setFecha(Tools.getDate());
-        // ingresoTB.setHora(Tools.getTime());
-        // ingresoTB.setForma(rbEfectivo.isSelected() ? 1 : rbTarjeta.isSelected() ? 2 :
-        // 3);
-        // ingresoTB.setMonto(Double.parseDouble(txtMonto.getText()));
-
-        // ModeloObject result = idVentaCredito.equals("")
-        // ? VentaADO.RegistrarAbono(ventaCreditoTB, ingresoTB, null)
-        // : VentaADO.RegistrarAbonoUpdateById(ventaCreditoTB, ingresoTB, null);
-        // if (result.getState().equalsIgnoreCase("inserted")) {
-        // Tools.Dispose(window);
-        // cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(),
-        // result.getIdResult());
-        // cuentasPorCobrarVisualizarController.loadData(ventaTB.getIdVenta());
-        // } else if (result.getState().equalsIgnoreCase("error")) {
-        // Tools.AlertMessageWarning(window, "Abonar", result.getMessage());
-        // } else {
-        // Tools.AlertMessageError(window, "Abonar",
-        // "No se completo el proceso por problemas de conexión.");
-        // btnAceptar.setDisable(false);
-        // }
-        // }
-        // } else {
-        // short value = Tools.AlertMessageConfirmation(window, "Abonor", "¿Está seguro
-        // de continuar?");
-        // if (value == 1) {
-        // Object object = CajaADO.ValidarCreacionCaja(Session.USER_ID);
-        // if (object instanceof CajaTB) {
-        // CajaTB cajaTB = (CajaTB) object;
-        // if (cajaTB.getId() == 2) {
-        // /*
-        // * Tipo Movimiento
-        // * TipoMovimiento = 1 apertura caja
-        // * TipoMovimiento = 2 venta efectivo
-        // * TipoMovimiento = 3 venta tarjeta
-        // * TipoMovimiento = 4 ingresos efectivo
-        // * TipoMovimiento = 5 salidas efectivo
-        // * TipoMovimiento = 6 venta deposito
-        // * TipoMovimiento = 7 ingresos tarjeta
-        // * TipoMovimiento = 8 ingresos deposito
-        // * TipoMovimiento = 9 salidas tarjeta
-        // * TipoMovimiento = 10 salidas deposito
-        // */
-        // btnAceptar.setDisable(true);
-        // VentaCreditoTB ventaCreditoTB = new VentaCreditoTB();
-        // ventaCreditoTB.setIdVenta(ventaTB.getIdVenta());
-        // ventaCreditoTB.setIdVentaCredito(idVentaCredito);
-        // ventaCreditoTB.setMonto(Double.parseDouble(txtMonto.getText()));
-        // ventaCreditoTB.setFechaPago(Tools.getDate());
-        // ventaCreditoTB.setHoraPago(Tools.getTime());
-        // ventaCreditoTB.setEstado((short) 1);
-        // ventaCreditoTB.setIdUsuario(Session.USER_ID);
-        // ventaCreditoTB.setObservacion(txtObservacion.getText().trim());
-
-        // MovimientoCajaTB movimientoCajaTB = new MovimientoCajaTB();
-        // movimientoCajaTB.setIdCaja(cajaTB.getIdCaja());
-        // movimientoCajaTB.setFechaMovimiento(Tools.getDate());
-        // movimientoCajaTB.setHoraMovimiento(Tools.getTime());
-        // movimientoCajaTB.setComentario("INGRESO DE DINERO POR CUENTAS POR COBRAR DEL
-        // COMPROBANTE "
-        // + ventaTB.getSerie() + "-" + ventaTB.getNumeracion());
-        // movimientoCajaTB
-        // .setTipoMovimiento(rbEfectivo.isSelected() ? 4 : rbTarjeta.isSelected() ? 7 :
-        // 8);
-        // movimientoCajaTB.setMonto(Double.parseDouble(txtMonto.getText()));
-
-        // ModeloObject result = idVentaCredito.equals("")
-        // ? VentaADO.RegistrarAbono(ventaCreditoTB, null, movimientoCajaTB)
-        // : VentaADO.RegistrarAbonoUpdateById(ventaCreditoTB, null, movimientoCajaTB);
-        // if (result.getState().equalsIgnoreCase("inserted")) {
-        // Tools.Dispose(window);
-        // cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(),
-        // result.getIdResult());
-        // cuentasPorCobrarVisualizarController.loadData(ventaTB.getIdVenta());
-        // } else if (result.getState().equalsIgnoreCase("error")) {
-        // Tools.AlertMessageWarning(window, "Abonar", result.getMessage());
-        // } else {
-        // Tools.AlertMessageError(window, "Abonar",
-        // "No se completo el proceso por problemas de conexión.");
-        // btnAceptar.setDisable(false);
-        // }
-        // } else {
-        // Tools.AlertMessageWarning(window, "Abonar",
-        // "No tiene ninguna caja aperturada para continuar con el proceso.");
-        // }
-        // } else {
-        // Tools.AlertMessageError(window, "Abonar",
-        // "No se pudo obtener el estado de su aja por problemas de red, intente
-        // nuevamente.");
-        // }
-        // }
-        // }
-        // }
-
+        short value = Tools.AlertMessageConfirmation(window, "Cobro", "¿Está seguro de continuar?");
+        if (value == 1) {
+            String[] result = VentaADO.registrarVentaCreditoIngreso(ventaCreditoTB, ingresoTB);
+            if (result[0] == "1") {
+                Tools.Dispose(window);
+                cuentasPorCobrarVisualizarController.openModalImpresion(ventaTB.getIdVenta(),
+                        result[2]);
+            } else {
+                Tools.AlertMessageWarning(window, "Cobro", result[1]);
+            }
+        }
     }
 
     @FXML

@@ -209,7 +209,6 @@ public class FxCuentasPorPagarController implements Initializable {
             AnchorPane.setBottomAnchor(node, 0d);
             fxPrincipalController.getVbContent().getChildren().add(node);
         } catch (IOException ex) {
-            Tools.println("Error en la vista Generar pago:" + ex.getLocalizedMessage());
         }
     }
 

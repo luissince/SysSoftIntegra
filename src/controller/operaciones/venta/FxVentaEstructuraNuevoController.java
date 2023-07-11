@@ -202,7 +202,10 @@ public class FxVentaEstructuraNuevoController implements Initializable {
         }
 
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
+        Object monedaObject = MonedaADO.ObtenerListaMonedas();
+        if (monedaObject instanceof ObservableList) {
+            cbMoneda.setItems((ObservableList<MonedaTB>) monedaObject);
+        }
 
         if (!cbMoneda.getItems().isEmpty()) {
             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
@@ -728,7 +731,7 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             ventaTB.setSuministroTBs(suministroTBs);
 
             fxPrincipalController.openFondoModal();
-            URL url = getClass().getResource(FilesRouters.FX_VENTA_PROCESO_NUEVO);
+            URL url = getClass().getResource(FilesRouters.FX_VENTA_PROCESO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
             // Controlller here
@@ -1147,7 +1150,6 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
             stage.show();
         } catch (IOException ex) {
-            Tools.println("Venta estructura nuevo onEventMovimientoCaja:" + ex.getLocalizedMessage());
         }
     }
 
@@ -1168,7 +1170,6 @@ public class FxVentaEstructuraNuevoController implements Initializable {
             stage.show();
 
         } catch (IOException ex) {
-            Tools.println("Venta estructura openWindowMostrarVentas: " + ex.getLocalizedMessage());
         }
     }
 

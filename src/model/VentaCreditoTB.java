@@ -24,7 +24,6 @@ public class VentaCreditoTB {
     
     private TextField tfMonto;
     private DatePicker dpFecha;
-    private CheckBox cbMontoInicial;
     private Button btnPagar;
     private Button btnImprimir;
     private Button btnQuitar;
@@ -128,14 +127,6 @@ public class VentaCreditoTB {
 
     public void setDpFecha(DatePicker dpFecha) {
         this.dpFecha = dpFecha;
-    }
-
-    public CheckBox getCbMontoInicial() {
-        return cbMontoInicial;
-    }
-
-    public void setCbMontoInicial(CheckBox cbMontoInicial) {
-        this.cbMontoInicial = cbMontoInicial;
     }
 
     public Button getBtnPagar() {

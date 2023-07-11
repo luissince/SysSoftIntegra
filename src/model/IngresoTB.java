@@ -5,13 +5,13 @@ public class IngresoTB {
     private int id;
     private String idIngreso;
     private String idProcedencia;
+    private String idVentaCredito;
     private String idUsuario;
+    private String idConcepto;
     private String idBanco;
     private String detalle;
-    private int procedencia;
     private String fecha;
     private String hora;
-    private int forma;
     private double monto;
     private double vuelto;
     private boolean estado;
@@ -50,6 +50,14 @@ public class IngresoTB {
         this.idProcedencia = idProcedencia;
     }
 
+    public String getIdVentaCredito() {
+        return idVentaCredito;
+    }
+
+    public void setIdVentaCredito(String idVentaCredito) {
+        this.idVentaCredito = idVentaCredito;
+    }
+
     public String getIdUsuario() {
         return idUsuario;
     }
@@ -58,20 +66,20 @@ public class IngresoTB {
         this.idUsuario = idUsuario;
     }
 
+    public String getIdConcepto() {
+        return idConcepto;
+    }
+
+    public void setIdConcepto(String idConcepto) {
+        this.idConcepto = idConcepto;
+    }
+
     public String getDetalle() {
         return detalle;
     }
 
     public void setDetalle(String detalle) {
         this.detalle = detalle;
-    }
-
-    public int getProcedencia() {
-        return procedencia;
-    }
-
-    public void setProcedencia(int procedencia) {
-        this.procedencia = procedencia;
     }
 
     public String getFecha() {
@@ -89,15 +97,7 @@ public class IngresoTB {
     public void setHora(String hora) {
         this.hora = hora;
     }
-
-    public int getForma() {
-        return forma;
-    }
-
-    public void setForma(int forma) {
-        this.forma = forma;
-    }
-
+    
     public double getMonto() {
         return monto;
     }

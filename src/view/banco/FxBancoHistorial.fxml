@@ -94,7 +94,7 @@
                               <HBox alignment="CENTER_LEFT" style="-fx-background-color: #d6d5d5; -fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
                                  <children>
                                     <Label styleClass="labelRobotoBold15" text="Saldo Total" textFill="#0777ae" />
-                                    <Label fx:id="lblSaldoTotal" styleClass="labelRoboto15" text="M 0000.0000" textFill="#020203" />
+                                    <Label fx:id="lblSaldoTotal" styleClass="labelRoboto15" text="M 0.00" textFill="#020203" />
                                  </children>
                               </HBox>
                            </children>
@@ -107,6 +107,7 @@
                                     <TableColumn fx:id="tcFecha" prefWidth="127.0" style="-fx-alignment: CENTER-LEFT;" text="Fecha" />
                                     <TableColumn fx:id="tcUsuario" prefWidth="156.0" style="-fx-alignment: CENTER-LEFT;" text="Usuario" />
                                     <TableColumn fx:id="tcDescripcion" prefWidth="203.0" style="-fx-alignment: CENTER-LEFT;" text="Descripción" />
+                                    <TableColumn fx:id="tcEstado" prefWidth="150.0" style="-fx-alignment: CENTER-LEFT;" text="Estado" />
                                     <TableColumn fx:id="tcEntrada" prefWidth="156.0" style="-fx-alignment: CENTER-RIGHT;" text="Entrada" />
                                     <TableColumn fx:id="tcSalida" prefWidth="156.0" style="-fx-alignment: CENTER-RIGHT;" text="Salida" />
                                  </columns>
@@ -115,6 +116,53 @@
                         </HBox>
                      </children>
                   </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" style="-fx-border-width: 1 0 0 0; -fx-border-color: #cccccc; -fx-padding: 0.8333333333333334em;">
+               <children>
+                  <HBox alignment="CENTER" style="-fx-background-color: #cccccc; -fx-spacing: 0.8333333333333334em;">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onActionAnterior" onKeyPressed="#onKeyPressedAnterior" styleClass="buttonLight" text="Anterior">
+                           <font>
+                              <Font name="Calibri" size="14.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/left.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Label fx:id="lblPaginaActual" styleClass="labelBorder" text="0" textFill="#020203">
+                           <font>
+                              <Font name="Calibri" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label styleClass="labelForm" text="de" textFill="#020203">
+                           <font>
+                              <Font name="Calibri" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblPaginaSiguiente" styleClass="labelBorder" text="0" textFill="#020203">
+                           <font>
+                              <Font name="Calibri" size="14.0" />
+                           </font>
+                        </Label>
+                        <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onActionSiguiente" onKeyPressed="#onKeyPressedSiguiente" styleClass="buttonLight" text="Siguiente">
+                           <font>
+                              <Font name="Calibri" size="14.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/right.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
             </HBox>
          </children>

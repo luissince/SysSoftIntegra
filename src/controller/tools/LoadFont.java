@@ -46,7 +46,6 @@ public class LoadFont {
                         ge[9].registerFont(Font.createFont(Font.TRUETYPE_FONT,
                                         rut(FontTTF.FONT_IBM_DACING_SCRIPT)));
                 } catch (FontFormatException | IOException e) {
-                        Tools.println("Error en cargar fuentes: " + e.getLocalizedMessage());
                 }
         }
 

@@ -122,23 +122,40 @@ public class FxVentaRealizadasController implements Initializable {
 
     private void loadTableView() {
         tcId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
-        tcFechaVenta.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getFechaVenta() + "\n"
-                        + cellData.getValue().getHoraVenta()));
-        tcCliente.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getClienteTB().getNumeroDocumento() + "\n"
-                        + cellData.getValue().getClienteTB().getInformacion()));
+        tcFechaVenta.setCellValueFactory(cellData -> {
+            String fecha = cellData.getValue().getFechaVenta();
+            String hora = cellData.getValue().getHoraVenta();
+
+            return Bindings.concat(fecha + "\n" + hora);
+        });
+        tcCliente.setCellValueFactory(cellData -> {
+            String documento = cellData.getValue().getClienteTB().getNumeroDocumento();
+            String informacion = cellData.getValue().getClienteTB().getInformacion();
+
+            return Bindings.concat(documento + "\n" + informacion);
+        });
         tcTipo.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getTipoName()));
         tcEstado.setCellValueFactory(new PropertyValueFactory<>("estadoLabel"));
-        tcSerie.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getTipoDocumentoTB().getNombre() + "\n"
-                        + cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion()
-                        + (cellData.getValue().getNotaCreditoTB() != null
-                                ? " (NOTA CREDITO: " + cellData.getValue().getNotaCreditoTB().getSerie() + "-"
-                                        + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")"
-                                : "")));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " "
-                + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
+        tcSerie.setCellValueFactory(cellData -> {
+
+            String nombre = cellData.getValue().getTipoDocumentoTB().getNombre();
+            String serie = cellData.getValue().getSerie();
+            String numeracion = cellData.getValue().getNumeracion();
+            NotaCreditoTB nc = cellData.getValue().getNotaCreditoTB();
+            String serieNc = nc != null ? cellData.getValue().getNotaCreditoTB().getSerie() : "";
+            String numeracionNc = nc != null ? cellData.getValue().getNotaCreditoTB().getNumeracion() : "";
+            String ncDescripcion = nc != null ? " (NOTA CREDITO: " + serieNc + "-" + numeracionNc + ")" : "";
+
+            String detalle = nombre + "\n" + serie + "-" + numeracion + ncDescripcion;
+
+            return Bindings.concat(detalle);
+        });
+        tcTotal.setCellValueFactory(cellData -> {
+            String simbolo = cellData.getValue().getMonedaTB().getSimbolo();
+            String monto = Tools.roundingValue(cellData.getValue().getTotal(), 2);
+
+            return Bindings.concat(simbolo + " " + monto);
+        });
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcFechaVenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
@@ -199,35 +216,36 @@ public class FxVentaRealizadasController implements Initializable {
             t.setDaemon(true);
             return t;
         });
-        Task<Object> task = new Task<Object>() {
+        Task<Object[]> task = new Task<Object[]>() {
             @Override
-            public Object call() {
-                return VentaADO.Listar_Ventas_Libres(opcion, value, fechaInicial, fechaFinal, comprobante, estado,
+            public Object[] call() throws Exception {
+                Object result = VentaADO.listarVentas(opcion, value, fechaInicial, fechaFinal, comprobante, estado,
                         usuario, (paginacion - 1) * 20, 20);
+
+                if (result instanceof Object[]) {
+                    return (Object[]) result;
+                }
+
+                throw new Exception((String) result);
             }
         };
         task.setOnSucceeded(w -> {
-            Object object = task.getValue();
-            if (object instanceof Object[]) {
-                Object[] objects = (Object[]) object;
-                ObservableList<VentaTB> ventaTBs = (ObservableList<VentaTB>) objects[0];
-                if (!ventaTBs.isEmpty()) {
-                    tvList.setItems(ventaTBs);
-                    totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));
-                    lblPaginaActual.setText(paginacion + "");
-                    lblPaginaSiguiente.setText(totalPaginacion + "");
-                    lblMotonTotal.setText(Tools.roundingValue((double) objects[2], 2));
-                } else {
-                    tvList.setPlaceholder(
-                            Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
-                    lblPaginaActual.setText("0");
-                    lblPaginaSiguiente.setText("0");
-                    lblMotonTotal.setText(Tools.roundingValue(0, 2));
-                }
+            Object[] objects = task.getValue();
+            ObservableList<VentaTB> ventaTBs = (ObservableList<VentaTB>) objects[0];
+            if (!ventaTBs.isEmpty()) {
+                tvList.setItems(ventaTBs);
+                totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));
+                lblPaginaActual.setText(paginacion + "");
+                lblPaginaSiguiente.setText(totalPaginacion + "");
+                lblMotonTotal.setText(Tools.roundingValue((double) objects[2], 2));
             } else {
-                tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
+                tvList.setPlaceholder(
+                        Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                lblPaginaActual.setText("0");
+                lblPaginaSiguiente.setText("0");
                 lblMotonTotal.setText(Tools.roundingValue(0, 2));
             }
+
             lblLoad.setVisible(false);
         });
         task.setOnFailed(w -> {

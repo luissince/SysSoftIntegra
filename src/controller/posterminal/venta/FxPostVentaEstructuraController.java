@@ -263,7 +263,10 @@ public class FxPostVentaEstructuraController implements Initializable {
         }
 
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
+        Object monedaObject = MonedaADO.ObtenerListaMonedas();
+        if (monedaObject instanceof ObservableList) {
+            cbMoneda.setItems((ObservableList<MonedaTB>) monedaObject);
+        }
 
         if (!cbMoneda.getItems().isEmpty()) {
             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
@@ -305,7 +308,7 @@ public class FxPostVentaEstructuraController implements Initializable {
         tcOpcion.setCellValueFactory(new PropertyValueFactory<>("btnRemove"));
         tcArticulo.setCellValueFactory(cellData -> Bindings.concat(
                 cellData.getValue().getClave() + " - " + cellData.getValue().getUnidadCompraName() + "\n"
-                        + cellData.getValue().getNombreMarca()));
+                + cellData.getValue().getNombreMarca()));
         tcCantidad.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(cellData.getValue().getCantidad(), 2)));
         tcPrecio.setCellValueFactory(cellData -> Bindings.concat(
@@ -317,7 +320,7 @@ public class FxPostVentaEstructuraController implements Initializable {
         tcImporte.setCellValueFactory(cellData -> Bindings.concat(
                 Tools.roundingValue(
                         cellData.getValue().getCantidad()
-                                * (cellData.getValue().getPrecioVentaGeneral() - cellData.getValue().getDescuento()),
+                        * (cellData.getValue().getPrecioVentaGeneral() - cellData.getValue().getDescuento()),
                         2)));
     }
 
@@ -375,7 +378,7 @@ public class FxPostVentaEstructuraController implements Initializable {
             tcCantidad.setOnEditCommit(data -> {
                 final Double value = Tools.isNumeric(data.getNewValue())
                         ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.parseDouble(data.getOldValue())
-                                : Double.parseDouble(data.getNewValue()))
+                        : Double.parseDouble(data.getNewValue()))
                         : Double.parseDouble(data.getOldValue());
                 SuministroTB suministroTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
 
@@ -399,7 +402,7 @@ public class FxPostVentaEstructuraController implements Initializable {
             tcPrecio.setOnEditCommit(data -> {
                 final Double value = Tools.isNumeric(data.getNewValue())
                         ? (Double.parseDouble(data.getNewValue()) <= 0 ? Double.parseDouble(data.getOldValue())
-                                : Double.parseDouble(data.getNewValue()))
+                        : Double.parseDouble(data.getNewValue()))
                         : Double.parseDouble(data.getOldValue());
                 SuministroTB suministroTB = data.getTableView().getItems().get(data.getTablePosition().getRow());
 
@@ -576,9 +579,9 @@ public class FxPostVentaEstructuraController implements Initializable {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             if (!unidades_cambio_cantidades && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 1
                     || !valormonetario_cambio_cantidades
-                            && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
+                    && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
                     || !medida_cambio_cantidades
-                            && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
+                    && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
                 Tools.AlertMessageWarning(window.getScene().getRoot(), "Ventas",
                         "No se puede cambiar la cantidad a este producto.");
             } else {
@@ -608,7 +611,6 @@ public class FxPostVentaEstructuraController implements Initializable {
                     });
                     stage.show();
                 } catch (IOException ex) {
-                    Tools.println("Venta estructura openWindowCantidad:" + ex.getLocalizedMessage());
                 }
             }
         } else {
@@ -624,9 +626,9 @@ public class FxPostVentaEstructuraController implements Initializable {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             if (!unidades_cambio_precio && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 1
                     || !valormonetario_cambio_precio
-                            && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
+                    && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
                     || !medida_cambio_precio
-                            && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
+                    && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
                 Tools.AlertMessageWarning(window.getScene().getRoot(), "Ventas",
                         "No se puede cambiar precio a este producto.");
             } else {
@@ -667,9 +669,9 @@ public class FxPostVentaEstructuraController implements Initializable {
             if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
                 if (!unidades_cambio_descuento && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 1
                         || !valormonetario_cambio_decuento
-                                && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
+                        && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 2
                         || !medida_cambio_decuento
-                                && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
+                        && tvList.getSelectionModel().getSelectedItem().getValorInventario() == 3) {
                     Tools.AlertMessageWarning(window, "Ventas", "No se puede aplicar descuento a este producto.");
                 } else {
                     fxPrincipalController.openFondoModal();
@@ -738,7 +740,6 @@ public class FxPostVentaEstructuraController implements Initializable {
             stage.show();
 
         } catch (IOException ex) {
-            Tools.println("Venta estructura openWindowMostrarVentas: " + ex.getLocalizedMessage());
         }
     }
 
@@ -759,7 +760,6 @@ public class FxPostVentaEstructuraController implements Initializable {
             stage.setOnShown(w -> controller.initLoad());
             stage.show();
         } catch (IOException ex) {
-            Tools.println("Error en la funcioón openWindowCotizaciones():" + ex.getLocalizedMessage());
         }
     }
 
@@ -1115,7 +1115,7 @@ public class FxPostVentaEstructuraController implements Initializable {
         Task<VentaTB> task = new Task<VentaTB>() {
             @Override
             public VentaTB call() throws Exception {
-                Object result = VentaADO.obtenerVentaById(idVenta);
+                Object result = VentaADO.obtenerVentaPorIdVenta(idVenta);
                 if (result instanceof VentaTB) {
                     return (VentaTB) result;
                 }
@@ -1233,7 +1233,7 @@ public class FxPostVentaEstructuraController implements Initializable {
         Task<VentaTB> task = new Task<VentaTB>() {
             @Override
             public VentaTB call() throws Exception {
-                Object result = VentaADO.obtenerVentaById(idVenta);
+                Object result = VentaADO.obtenerVentaPorIdVenta(idVenta);
 
                 if (result instanceof VentaTB) {
                     return (VentaTB) result;
@@ -1488,9 +1488,9 @@ public class FxPostVentaEstructuraController implements Initializable {
                     }
 
                     if (resultCliente instanceof ClienteTB) {
-                        return new Object[] { "client-exists", resultCliente };
+                        return new Object[]{"client-exists", resultCliente};
                     } else {
-                        return new Object[] { "client-no-exists", "" };
+                        return new Object[]{"client-no-exists", ""};
                     }
                 }
 
@@ -1619,9 +1619,9 @@ public class FxPostVentaEstructuraController implements Initializable {
                     }
 
                     if (resultCliente instanceof ClienteTB) {
-                        return new Object[] { "client-exists", resultCliente };
+                        return new Object[]{"client-exists", resultCliente};
                     } else {
-                        return new Object[] { "client-no-exists", "" };
+                        return new Object[]{"client-no-exists", ""};
                     }
                 }
 

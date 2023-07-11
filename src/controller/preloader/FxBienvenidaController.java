@@ -34,6 +34,7 @@ import model.MonedaTB;
 import model.ProveedorTB;
 import model.TipoDocumentoTB;
 import model.UbigeoTB;
+import model.ConceptoTB;
 import service.DetalleADO;
 import service.GlobalADO;
 import service.UbigeoADO;
@@ -517,6 +518,20 @@ public class FxBienvenidaController implements Initializable {
             almacenTB.setHora(Tools.getTime());
             almacenTB.setIdUsuario("SUPER");
 
+            ConceptoTB conceptoVentaTB = new ConceptoTB();
+            conceptoVentaTB.setIdConcepto("CP0001");
+            conceptoVentaTB.setNombre("VENTA");
+            conceptoVentaTB.setTipo(1);
+            conceptoVentaTB.setCodigo("");
+            conceptoVentaTB.setEstado(false);
+
+            ConceptoTB conceptoCompraTB = new ConceptoTB();
+            conceptoCompraTB.setIdConcepto("CP0002");
+            conceptoCompraTB.setNombre("COMPRA");
+            conceptoCompraTB.setTipo(2);
+            conceptoCompraTB.setCodigo("");
+            conceptoCompraTB.setEstado(false);
+
             ExecutorService exec = Executors.newCachedThreadPool((Runnable runnable) -> {
                 Thread t = new Thread(runnable);
                 t.setDaemon(true);
@@ -525,7 +540,18 @@ public class FxBienvenidaController implements Initializable {
             Task<String> task = new Task<String>() {
                 @Override
                 public String call() {
-                    return GlobalADO.RegistrarInicioPrograma(empresaTB, monedaTB, empleadoTB, impuestoTB, tipoDocumentoTicket, clienteTB, almacenTB, proveedorTB);
+                    return GlobalADO.registrarInicioPrograma(
+                            empresaTB,
+                            monedaTB,
+                            empleadoTB,
+                            impuestoTB,
+                            tipoDocumentoTicket,
+                            clienteTB,
+                            almacenTB,
+                            proveedorTB,
+                            conceptoVentaTB,
+                            conceptoCompraTB
+                    );
                 }
             };
             task.setOnScheduled(w -> {
@@ -689,6 +715,18 @@ public class FxBienvenidaController implements Initializable {
     }
 
     @FXML
+    private void onKeyPressedAceptarLoad(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+
+        }
+    }
+
+    @FXML
+    private void onActionAceptarLoad(ActionEvent event) {
+
+    }
+
+    @FXML
     private void onKeyTypedTelefono(KeyEvent event) {
         char c = event.getCharacter().charAt(0);
         if ((c < '0' || c > '9') && (c != '\b') && (c != '+') && (c != '(') && (c != ')')) {
@@ -727,14 +765,6 @@ public class FxBienvenidaController implements Initializable {
         if ((c < '0' || c > '9') && (c != '\b')) {
             event.consume();
         }
-    }
-
-    @FXML
-    private void onKeyPressedAceptarLoad(KeyEvent event) {
-    }
-
-    @FXML
-    private void onActionAceptarLoad(ActionEvent event) {
     }
 
 }

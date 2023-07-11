@@ -73,7 +73,7 @@ public class FxLoginController implements Initializable {
         Task<String> task = new Task<String>() {
             @Override
             protected String call() throws Exception {
-                Object object = EmpleadoADO.GetValidateUser(txtUsuario.getText().trim(), txtClave.getText().trim());
+                Object object = EmpleadoADO.iniciarSesion(txtUsuario.getText().trim(), txtClave.getText().trim());
                 if (object instanceof EmpleadoTB) {
                     EmpleadoTB empleadoTB = (EmpleadoTB) object;
                     Session.USER_ROL = empleadoTB.getRol();
@@ -166,7 +166,6 @@ public class FxLoginController implements Initializable {
             Desktop d = Desktop.getDesktop();
             d.browse(new URI("www.syssoftintegra.com"));
         } catch (IOException | URISyntaxException ex) {
-            Tools.println(ex.getMessage());
         }
     }
 
@@ -176,7 +175,6 @@ public class FxLoginController implements Initializable {
             Desktop d = Desktop.getDesktop();
             d.browse(new URI("https://api.whatsapp.com/send?phone=51966750883"));
         } catch (IOException | URISyntaxException ex) {
-            Tools.println(ex.getMessage());
         }
     }
 

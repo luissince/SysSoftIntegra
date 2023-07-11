@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,6 +26,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import model.MonedaTB;
 import model.OrdenCompraDetalleTB;
 import model.OrdenCompraTB;
 import service.MonedaADO;
@@ -101,17 +103,19 @@ public class FxOrdenCompraDetalleController implements Initializable {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<OrdenCompraTB> task = new Task<OrdenCompraTB>() {
             @Override
-            protected Object call() {      
-                Object result = OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
-                if(result instanceof OrdenCompraTB){
-                    OrdenCompraTB ordenCompraTB = (OrdenCompraTB) result;
-                    ordenCompraTB.setMonedaTBs(MonedaADO.ObtenerListaMonedas());
+            protected OrdenCompraTB call() throws Exception {
+                Object ordenCompraObject = OrdenCompraADO.Obtener_Orden_Compra_ById(idOrdenCompra);
+                Object monedaObject = MonedaADO.ObtenerListaMonedas();
+
+                if (ordenCompraObject instanceof OrdenCompraTB && monedaObject instanceof ObservableList) {
+                    OrdenCompraTB ordenCompraTB = (OrdenCompraTB) ordenCompraObject;
+                    ordenCompraTB.setMonedaTBs(new ArrayList<>((ObservableList<MonedaTB>) monedaObject));
                     return ordenCompraTB;
-                }else{
-                    return result;
                 }
+
+                throw new Exception("No se puedo cargar la información requerida.");
             }
         };
         task.setOnScheduled(e -> {
@@ -129,27 +133,21 @@ public class FxOrdenCompraDetalleController implements Initializable {
             btnAceptarLoad.setVisible(true);
         });
         task.setOnSucceeded(e -> {
-            Object object = task.getValue();
-            if (object instanceof OrdenCompraTB) {
-                OrdenCompraTB ordenCompraTB = (OrdenCompraTB) object;
-                lblNumero.setText("N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion()));
-                lblFechaRegistro.setText(ordenCompraTB.getFechaRegistro() + " " + ordenCompraTB.getHoraRegistro());
-                lblProveedor.setText(ordenCompraTB.getProveedorTB().getNumeroDocumento() + " " + ordenCompraTB.getProveedorTB().getRazonSocial());
-                lblCelularTelefono.setText(Tools.textShow("TEL.: ", ordenCompraTB.getProveedorTB().getTelefono()) + " " + Tools.textShow("CEL.: ", ordenCompraTB.getProveedorTB().getCelular()));
-                lbCorreoElectronico.setText(ordenCompraTB.getProveedorTB().getEmail());
-                lbDireccion.setText(ordenCompraTB.getProveedorTB().getDireccion());
-                lblObservaciones.setText(ordenCompraTB.getObservacion());
-                lblVendedor.setText(ordenCompraTB.getEmpleadoTB().getApellidos() + ", " + ordenCompraTB.getEmpleadoTB().getNombres());
+            OrdenCompraTB ordenCompraTB = task.getValue();
+            lblNumero.setText("N° - " + Tools.formatNumber(ordenCompraTB.getNumeracion()));
+            lblFechaRegistro.setText(ordenCompraTB.getFechaRegistro() + " " + ordenCompraTB.getHoraRegistro());
+            lblProveedor.setText(ordenCompraTB.getProveedorTB().getNumeroDocumento() + " " + ordenCompraTB.getProveedorTB().getRazonSocial());
+            lblCelularTelefono.setText(Tools.textShow("TEL.: ", ordenCompraTB.getProveedorTB().getTelefono()) + " " + Tools.textShow("CEL.: ", ordenCompraTB.getProveedorTB().getCelular()));
+            lbCorreoElectronico.setText(ordenCompraTB.getProveedorTB().getEmail());
+            lbDireccion.setText(ordenCompraTB.getProveedorTB().getDireccion());
+            lblObservaciones.setText(ordenCompraTB.getObservacion());
+            lblVendedor.setText(ordenCompraTB.getEmpleadoTB().getApellidos() + ", " + ordenCompraTB.getEmpleadoTB().getNombres());
 
-                fillDetalleTable(ordenCompraTB);
+            fillDetalleTable(ordenCompraTB);
 
-                spBody.setDisable(false);
-                hbLoad.setVisible(false);
-            } else {
-                lblMessageLoad.setText((String) object);
-                lblMessageLoad.setTextFill(Color.web("#ff6d6d"));
-                btnAceptarLoad.setVisible(true);
-            }
+            spBody.setDisable(false);
+            hbLoad.setVisible(false);
+
             lblLoad.setVisible(false);
         });
         executor.execute(task);
@@ -215,7 +213,6 @@ public class FxOrdenCompraDetalleController implements Initializable {
         lblImpuesto.setText(ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(impuestoTotal, 2));
         lblImporteNeto.setText(ordenCompraTB.getMonedaTB().getSimbolo() + " " + Tools.roundingValue(importeNetoTotal, 2));
 
-        
 //         if (cbMoneda.getSelectionModel().getSelectedIndex() >= 0) {
 //            double cambio = cbMoneda.getSelectionModel().getSelectedItem().getTipoCambio();
 //            if (cbMoneda.getSelectionModel().getSelectedItem().isPredeterminado()) {

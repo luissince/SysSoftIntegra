@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import model.ConceptoTB;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -43,8 +44,10 @@ public class GlobalADO {
                 ventasContado += resultSet.getDouble("Total");
             }
             list.add(ventasContado);
+            resultSet.close();
 
             // ventas credito
+            preparedGlobal.close();
             preparedGlobal = dbf.getConnection().prepareStatement(
                     "select COUNT(*) as VentaTB from VentaTB where Tipo = 2 and Estado = 2 and FechaVenta between ? and ? ");
             preparedGlobal.setString(1, fechaInicial);
@@ -227,6 +230,7 @@ public class GlobalADO {
                     + "FROM CompraTB AS c \n"
                     + "INNER JOIN DetalleCompraTB AS d ON d.IdCompra = c.IdCompra\n"
                     + "WHERE c.FechaCompra =  CAST(GETDATE() AS DATE)")) {
+                resultLista.close();
                 resultLista = ptCompras.executeQuery();
                 if (resultLista.next()) {
                     comprasTotales = resultLista.getDouble("Total");
@@ -519,9 +523,9 @@ public class GlobalADO {
         }
     }
 
-    public static String RegistrarInicioPrograma(EmpresaTB empresaTB, MonedaTB monedaTB, EmpleadoTB empleadoTB,
+    public static String registrarInicioPrograma(EmpresaTB empresaTB, MonedaTB monedaTB, EmpleadoTB empleadoTB,
             ImpuestoTB impuestoTB, TipoDocumentoTB tipoDocumentoTicket, ClienteTB clienteTB, AlmacenTB almacenTB,
-            ProveedorTB proveedorTB) {
+            ProveedorTB proveedorTB, ConceptoTB conceptoVentaTB, ConceptoTB conceptoCompraTB) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementEmpresa = null;
         PreparedStatement statementMoneda = null;
@@ -531,6 +535,8 @@ public class GlobalADO {
         PreparedStatement statementCliente = null;
         PreparedStatement statementAlmacen = null;
         PreparedStatement statementProveedor = null;
+        PreparedStatement statementConceptoVenta = null;
+        PreparedStatement statementConceptoCompra = null;
         CallableStatement codigoEmpleado = null;
         CallableStatement codigoCliente = null;
         CallableStatement codigoAlmacen = null;
@@ -644,7 +650,18 @@ public class GlobalADO {
             statementEmpleado.addBatch();
 
             statementImpuesto = dbf.getConnection().prepareStatement(
-                    "INSERT INTO ImpuestoTB(Operacion,Nombre,Valor,Codigo,Numeracion,NombreImpuesto,Letra,Categoria,Predeterminado,Sistema)VALUES(?,?,?,?,?,?,?,?,?,?)");
+                    "INSERT INTO ImpuestoTB("
+                    + "Operacion,"
+                    + "Nombre,"
+                    + "Valor,"
+                    + "Codigo,"
+                    + "Numeracion,"
+                    + "NombreImpuesto,"
+                    + "Letra,"
+                    + "Categoria,"
+                    + "Predeterminado,"
+                    + "Sistema)"
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
             statementImpuesto.setInt(1, impuestoTB.getOperacion());
             statementImpuesto.setString(2, impuestoTB.getNombre());
             statementImpuesto.setDouble(3, impuestoTB.getValor());
@@ -657,8 +674,21 @@ public class GlobalADO {
             statementImpuesto.setBoolean(10, impuestoTB.isSistema());
             statementImpuesto.addBatch();
 
-            statementTipoDocumento = dbf.getConnection().prepareStatement(
-                    "INSERT INTO TipoDocumentoTB(Nombre,Serie,Numeracion,CodigoAlterno,Facturacion,Predeterminado,Sistema,Guia,NotaCredito,Estado,Campo,NumeroCampo,idTicket)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            statementTipoDocumento = dbf.getConnection().prepareStatement("INSERT INTO TipoDocumentoTB("
+                    + "Nombre,"
+                    + "Serie,"
+                    + "Numeracion,"
+                    + "CodigoAlterno,"
+                    + "Facturacion,"
+                    + "Predeterminado,"
+                    + "Sistema,"
+                    + "Guia,"
+                    + "NotaCredito,"
+                    + "Estado,"
+                    + "Campo,"
+                    + "NumeroCampo,"
+                    + "idTicket)"
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
             statementTipoDocumento.setString(1, tipoDocumentoTicket.getNombre());
             statementTipoDocumento.setString(2, tipoDocumentoTicket.getSerie());
             statementTipoDocumento.setInt(3, tipoDocumentoTicket.getNumeracion());
@@ -679,8 +709,22 @@ public class GlobalADO {
             codigoCliente.execute();
             String idCliente = codigoCliente.getString(1);
 
-            statementCliente = dbf.getConnection().prepareStatement(
-                    "INSERT INTO ClienteTB(IdCliente,TipoDocumento,NumeroDocumento,Informacion,Telefono,Celular,Email,Direccion,Representante,Estado,Predeterminado,Sistema,FechaCreacion,HoraCreacion)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,GETDATE(),GETDATE())");
+            statementCliente = dbf.getConnection().prepareStatement("INSERT INTO ClienteTB("
+                    + "IdCliente,"
+                    + "TipoDocumento,"
+                    + "NumeroDocumento,"
+                    + "Informacion,"
+                    + "Telefono,"
+                    + "Celular,"
+                    + "Email,"
+                    + "Direccion,"
+                    + "Representante,"
+                    + "Estado,"
+                    + "Predeterminado,"
+                    + "Sistema,"
+                    + "FechaCreacion,"
+                    + "HoraCreacion)"
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,GETDATE(),GETDATE())");
             statementCliente.setString(1, idCliente);
             statementCliente.setInt(2, clienteTB.getTipoDocumento());
             statementCliente.setString(3, clienteTB.getNumeroDocumento());
@@ -700,8 +744,15 @@ public class GlobalADO {
             codigoAlmacen.execute();
             int idAlmacen = codigoAlmacen.getInt(1);
 
-            statementAlmacen = dbf.getConnection().prepareStatement(
-                    "INSERT INTO AlmacenTB(IdAlmacen,Nombre,IdUbigeo,Direccion,Fecha,Hora,IdUsuario) VALUES(?,?,?,?,?,?,?)");
+            statementAlmacen = dbf.getConnection().prepareStatement("INSERT INTO AlmacenTB("
+                    + "IdAlmacen,"
+                    + "Nombre,"
+                    + "IdUbigeo,"
+                    + "Direccion,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "IdUsuario)"
+                    + "VALUES(?,?,?,?,?,?,?)");
             statementAlmacen.setInt(1, idAlmacen);
             statementAlmacen.setString(2, almacenTB.getNombre());
             statementAlmacen.setInt(3, almacenTB.getIdUbigeo());
@@ -733,7 +784,7 @@ public class GlobalADO {
                     + "UsuarioRegistro,"
                     + "FechaRegistro,"
                     + "Representante)"
-                    + "values(?,?,?,UPPER(?),UPPER(?),?,?,?,?,?,?,?,?,?,?)");
+                    + "VALUES(?,?,?,UPPER(?),UPPER(?),?,?,?,?,?,?,?,?,?,?)");
             statementProveedor.setString(1, idProveedor);
             statementProveedor.setInt(2, proveedorTB.getTipoDocumento());
             statementProveedor.setString(3, proveedorTB.getNumeroDocumento());
@@ -751,6 +802,42 @@ public class GlobalADO {
             statementProveedor.setString(15, proveedorTB.getRepresentante());
             statementProveedor.addBatch();
 
+            statementConceptoVenta = dbf.getConnection().prepareStatement("INSERT INTO ConceptoTB ("
+                    + "IdConcepto,"
+                    + "Nombre,"
+                    + "Tipo,"
+                    + "Codigo,"
+                    + "Estado,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "IdEmpleado)"
+                    + "VALUES(?,?,?,?,?,GETDATE(),GETDATE(),?)");
+            statementConceptoVenta.setString(1, conceptoVentaTB.getIdConcepto());
+            statementConceptoVenta.setString(2, conceptoVentaTB.getNombre());
+            statementConceptoVenta.setInt(3, conceptoVentaTB.getTipo());
+            statementConceptoVenta.setString(4, conceptoVentaTB.getCodigo());
+            statementConceptoVenta.setBoolean(5, conceptoVentaTB.isEstado());
+            statementConceptoVenta.setString(6, idEmpleado);
+            statementConceptoVenta.addBatch();
+
+            statementConceptoCompra = dbf.getConnection().prepareStatement("INSERT INTO ConceptoTB ("
+                    + "IdConcepto,"
+                    + "Nombre,"
+                    + "Tipo,"
+                    + "Codigo,"
+                    + "Estado,"
+                    + "Fecha,"
+                    + "Hora,"
+                    + "IdEmpleado)"
+                    + "VALUES(?,?,?,?,?,GETDATE(),GETDATE(),?)");
+            statementConceptoCompra.setString(1, conceptoCompraTB.getIdConcepto());
+            statementConceptoCompra.setString(2, conceptoCompraTB.getNombre());
+            statementConceptoCompra.setInt(3, conceptoCompraTB.getTipo());
+            statementConceptoCompra.setString(4, conceptoCompraTB.getCodigo());
+            statementConceptoCompra.setBoolean(5, conceptoCompraTB.isEstado());
+            statementConceptoCompra.setString(6, idEmpleado);
+            statementConceptoCompra.addBatch();
+
             statementEmpresa.executeBatch();
             statementMoneda.executeBatch();
             statementEmpleado.executeBatch();
@@ -759,6 +846,8 @@ public class GlobalADO {
             statementAlmacen.executeBatch();
             statementCliente.executeBatch();
             statementProveedor.executeBatch();
+            statementConceptoVenta.executeBatch();
+            statementConceptoCompra.executeBatch();
             dbf.getConnection().commit();
 
             return "inserted";

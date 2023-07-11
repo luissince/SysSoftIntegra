@@ -16,7 +16,7 @@
 
 <AnchorPane id="AnchorPane" fx:id="apWindow" style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.banco.FxBancoProcesoController">
    <children>
-      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox fx:id="vbContent" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER_LEFT" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em; -fx-border-color: #cccccc; -fx-border-width: 0px 0px 1px 0px;">
                <children>
@@ -59,7 +59,7 @@
                <children>
                   <VBox style="-fx-spacing: 0.6666666666666666em;" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Moneda" textFill="#1a2226">
+                        <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Moneda" textFill="#1a2226" VBox.vgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -68,21 +68,7 @@
                               </ImageView>
                            </graphic>
                         </Label>
-                        <ComboBox fx:id="cbMoneda" prefHeight="30.0" prefWidth="220.0" />
-                     </children>
-                  </VBox>
-                  <VBox style="-fx-spacing: 0.6666666666666666em;" HBox.hgrow="ALWAYS">
-                     <children>
-                        <Label contentDisplay="RIGHT" styleClass="labelRoboto13" text="Saldo inicial" textFill="#1a2226">
-                           <graphic>
-                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../image/asterisk.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Label>
-                        <TextField fx:id="txtSaldoInicial" onAction="#onActionGuardar" onKeyTyped="#onKeyTypedSaldoInicial" prefHeight="30.0" prefWidth="220.0" styleClass="text-field-normal" />
+                        <ComboBox fx:id="cbMoneda" maxWidth="1.7976931348623157E308" prefHeight="30.0" VBox.vgrow="ALWAYS" />
                      </children>
                   </VBox>
                </children>
@@ -97,7 +83,7 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox fx:id="hbCuenta" style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
+            <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
                <children>
                   <RadioButton fx:id="CuentaEfectivo" alignment="CENTER_RIGHT" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" selected="true" text="Cuenta en Efectivo" />
                   <RadioButton fx:id="CuentaBancaria" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="Cuenta Bancaria" />
@@ -138,5 +124,23 @@
             </HBox>
          </children>
       </VBox>
+      <HBox fx:id="hbLoadProcesando" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.7);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" style="-fx-spacing: 0.8333333333333334em; -fx-padding: 0.8333333333333334em;" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="lblTextoProceso" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefWidth="100.0" style="-fx-text-fill: white;" styleClass="labelRobotoMedium13" text="PROCESANDO INFORMACIÓN..." textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="btnCancelarProceso" mnemonicParsing="false" styleClass="buttonLightError" text="Cancelar Proceso">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../image/load.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

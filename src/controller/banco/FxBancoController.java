@@ -30,7 +30,7 @@ import javafx.stage.Stage;
 import model.BancoTB;
 import service.BancoADO;
 
-public class FxBancosController implements Initializable {
+public class FxBancoController implements Initializable {
 
     @FXML
     private HBox hbWindow;
@@ -68,12 +68,17 @@ public class FxBancosController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
-        tcNombreCuenta.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getNombreCuenta().toUpperCase()));
+        tcNombreCuenta
+                .setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getNombreCuenta().toUpperCase()));
         tcNumeroCuenta.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getNumeroCuenta()));
-        tcDescripcion.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getDescripcion().toUpperCase()));
-        tcSaldo.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getSimboloMoneda() + " " + Tools.roundingValue(cellData.getValue().getSaldoInicial(), 2)));
-        tcForma.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getFormaPago() == (short) 1 ? "Efectivo".toUpperCase() : "Banco".toUpperCase()));
-        tcMostrar.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().isMostrar() ? "EN REPORTES	" : "NO"));
+        tcDescripcion
+                .setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getDescripcion().toUpperCase()));
+        tcSaldo.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " "
+                + Tools.roundingValue(cellData.getValue().getSaldoInicial(), 2)));
+        tcForma.setCellValueFactory(cellData -> Bindings.concat(
+                cellData.getValue().getFormaPago() == (short) 1 ? "Efectivo".toUpperCase() : "Banco".toUpperCase()));
+        tcMostrar.setCellValueFactory(
+                cellData -> Bindings.concat(cellData.getValue().isMostrar() ? "EN REPORTES	" : "NO"));
 
         tcNumero.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcNombreCuenta.prefWidthProperty().bind(tvList.widthProperty().multiply(0.18));
@@ -82,7 +87,8 @@ public class FxBancosController implements Initializable {
         tcForma.prefWidthProperty().bind(tvList.widthProperty().multiply(0.12));
         tcMostrar.prefWidthProperty().bind(tvList.widthProperty().multiply(0.11));
         tcSaldo.prefWidthProperty().bind(tvList.widthProperty().multiply(0.15));
-        tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+        tvList.setPlaceholder(
+                Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
 
         paginacion = 1;
         opcion = 0;
@@ -95,45 +101,49 @@ public class FxBancosController implements Initializable {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<Object[]> task = new Task<Object[]>() {
             @Override
-            public Object call() {
-                return BancoADO.Listar_Bancos(buscar, (paginacion - 1) * 20, 20);
+            public Object[] call() throws Exception {
+                Object result = BancoADO.listarBancos(buscar, (paginacion - 1) * 20, 20);
+                if (result instanceof Object[]) {
+                    return (Object[]) result;
+                }
+                throw new Exception((String) result);
             }
         };
-
-        task.setOnSucceeded((WorkerStateEvent e) -> {
-            Object object = task.getValue();
-            if (object instanceof Object[]) {
-                Object[] objects = (Object[]) object;
-                ObservableList<BancoTB> bancoTBs = (ObservableList<BancoTB>) objects[0];
-                if (!bancoTBs.isEmpty()) {
-                    tvList.setItems(bancoTBs);
-                    totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));
-                    lblPaginaActual.setText(paginacion + "");
-                    lblPaginaSiguiente.setText(totalPaginacion + "");
-                } else {
-                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
-                    lblPaginaActual.setText("0");
-                    lblPaginaSiguiente.setText("0");
-                }
-            } else {
-                tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
-            }
-            lblLoad.setVisible(false);
-        });
-        
-        task.setOnFailed((WorkerStateEvent event) -> {
-            lblLoad.setVisible(false);
-            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(), "-fx-text-fill:#a70820;", false));
-        });
 
         task.setOnScheduled((WorkerStateEvent event) -> {
             lblLoad.setVisible(true);
             tvList.getItems().clear();
-            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            tvList.setPlaceholder(
+                    Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
             totalPaginacion = 0;
         });
+
+        task.setOnFailed((WorkerStateEvent event) -> {
+            lblLoad.setVisible(false);
+            tvList.setPlaceholder(Tools.placeHolderTableView(task.getException().getLocalizedMessage(),
+                    "-fx-text-fill:#a70820;", false));
+        });
+
+        task.setOnSucceeded((WorkerStateEvent e) -> {
+            Object[] objects = (Object[]) task.getValue();
+            ObservableList<BancoTB> bancoTBs = (ObservableList<BancoTB>) objects[0];
+            if (!bancoTBs.isEmpty()) {
+                tvList.setItems(bancoTBs);
+                totalPaginacion = (int) (Math.ceil(((Integer) objects[1]) / 20.00));
+                lblPaginaActual.setText(paginacion + "");
+                lblPaginaSiguiente.setText(totalPaginacion + "");
+            } else {
+                tvList.setPlaceholder(
+                        Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                lblPaginaActual.setText("0");
+                lblPaginaSiguiente.setText("0");
+            }
+
+            lblLoad.setVisible(false);
+        });
+
         exec.execute(task);
 
         if (!exec.isShutdown()) {
@@ -141,7 +151,50 @@ public class FxBancosController implements Initializable {
         }
     }
 
-    private void eventViewBanco() {
+    private void onEventRemoverBanco() {
+        BancoTB bancoTB = tvList.getSelectionModel().getSelectedItem();
+        if (bancoTB == null) {
+            tvList.requestFocus();
+            if (!tvList.getItems().isEmpty()) {
+                tvList.getSelectionModel().select(0);
+            }
+            return;
+        }
+
+        short option = Tools.AlertMessageConfirmation(hbWindow, "Banco", "¿Está seguro de continuar?");
+        if (option == 1) {
+            String result = BancoADO.removerBanco(bancoTB.getIdBanco());
+            if (result.equalsIgnoreCase("deleted")) {
+                Tools.AlertMessageInformation(hbWindow, "Banco", "Se eliminó la cuenta correctamente.");
+                loadTableViewBanco("");
+            } else if (result.equalsIgnoreCase("sistema")) {
+                Tools.AlertMessageWarning(hbWindow, "Banco",
+                        "La cuenta no se puede eliminar es propio del sistema.");
+            } else if (result.equalsIgnoreCase("historial")) {
+                Tools.AlertMessageWarning(hbWindow, "Banco",
+                        "La cuenta no se puede eliminar porque tiene asociado un historial.");
+            } else {
+                Tools.AlertMessageError(hbWindow, "Banco", result);
+            }
+        }
+
+    }
+
+    private void onEventPaginacion() {
+        switch (opcion) {
+            case 0:
+                loadTableViewBanco("");
+                break;
+        }
+    }
+
+    private void onEventRecargarBanco() {
+        if (!lblLoad.isVisible()) {
+            loadTableViewBanco("");
+        }
+    }
+
+    private void onEventDetalleBanco() {
         try {
             FXMLLoader fXMLPrincipal = new FXMLLoader(getClass().getResource(FilesRouters.FX_BANCO_HISTORIAL));
             HBox node = fXMLPrincipal.load();
@@ -162,20 +215,22 @@ public class FxBancosController implements Initializable {
         }
     }
 
-    private void eventNewBanco() {
+    private void onEventAgregarBanco() {
         try {
             fxPrincipalController.openFondoModal();
             URL url = getClass().getResource(FilesRouters.FX_BANCO_PROCESO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxBancoProcesoController controller = fXMLLoader.getController();
             controller.setInitBancosController(this);
             //
-            Stage stage = WindowStage.StageLoaderModal(parent, "Registre una nueva cuenta", hbWindow.getScene().getWindow());
+            Stage stage = WindowStage.StageLoaderModal(parent, "Registre una nueva cuenta",
+                    hbWindow.getScene().getWindow());
             stage.setResizable(false);
             stage.sizeToScene();
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShowing(w -> controller.loadAddBanco());
             stage.show();
 
         } catch (IOException ex) {
@@ -183,69 +238,34 @@ public class FxBancosController implements Initializable {
         }
     }
 
-    private void eventEditBanco() {
+    private void onEventEditarBanco() {
         try {
             if (tvList.getSelectionModel().getSelectedIndex() < 0) {
                 tvList.requestFocus();
                 if (!tvList.getItems().isEmpty()) {
                     tvList.getSelectionModel().select(0);
                 }
-            } else {
-                fxPrincipalController.openFondoModal();
-                URL url = getClass().getResource(FilesRouters.FX_BANCO_PROCESO);
-                FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
-                Parent parent = fXMLLoader.load(url.openStream());
-                //Controlller here
-                FxBancoProcesoController controller = fXMLLoader.getController();
-                controller.setInitBancosController(this);
-                //
-                Stage stage = WindowStage.StageLoaderModal(parent, "Editar cuenta", hbWindow.getScene().getWindow());
-                stage.setResizable(false);
-                stage.sizeToScene();
-                stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
-                stage.show();
-                controller.loadEditBanco(tvList.getSelectionModel().getSelectedItem().getIdBanco());
+                return;
             }
+
+            fxPrincipalController.openFondoModal();
+            URL url = getClass().getResource(FilesRouters.FX_BANCO_PROCESO);
+            FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
+            Parent parent = fXMLLoader.load(url.openStream());
+            // Controlller here
+            FxBancoProcesoController controller = fXMLLoader.getController();
+            controller.setInitBancosController(this);
+            //
+            Stage stage = WindowStage.StageLoaderModal(parent, "Editar cuenta", hbWindow.getScene().getWindow());
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
+            stage.setOnShowing(
+                    w -> controller.loadEditBanco(tvList.getSelectionModel().getSelectedItem().getIdBanco()));
+            stage.show();
+
         } catch (IOException ex) {
             System.out.println("Controller banco" + ex.getLocalizedMessage());
-        }
-    }
-
-    private void eventRemoveBanco() {
-        if (tvList.getSelectionModel().getSelectedIndex() < 0) {
-            tvList.requestFocus();
-            if (!tvList.getItems().isEmpty()) {
-                tvList.getSelectionModel().select(0);
-            }
-        } else {
-            short option = Tools.AlertMessageConfirmation(hbWindow, "Banco", "¿Está seguro de continuar?");
-            if (option == 1) {
-                String result = BancoADO.Deleted_Banco(tvList.getSelectionModel().getSelectedItem().getIdBanco());
-                if (result.equalsIgnoreCase("deleted")) {
-                    Tools.AlertMessageInformation(hbWindow, "Banco", "Se eliminó la cuenta correctamente.");
-                    loadTableViewBanco("");
-                } else if (result.equalsIgnoreCase("sistema")) {
-                    Tools.AlertMessageWarning(hbWindow, "Banco", "La cuenta no se puede eliminar es propio del sistema.");
-                } else if (result.equalsIgnoreCase("historial")) {
-                    Tools.AlertMessageWarning(hbWindow, "Banco", "La cuenta no se puede eliminar porque tiene asociado un historial.");
-                } else {
-                    Tools.AlertMessageError(hbWindow, "Banco", result);
-                }
-            }
-        }
-    }
-
-    private void onEventPaginacion() {
-        switch (opcion) {
-            case 0:
-                loadTableViewBanco("");
-                break;
-        }
-    }
-
-    private void onEventReloadBanco() {
-        if (!lblLoad.isVisible()) {
-            loadTableViewBanco("");
         }
     }
 
@@ -253,7 +273,7 @@ public class FxBancosController implements Initializable {
     private void onMouseClickedList(MouseEvent event) {
         if (event.getClickCount() == 2) {
             if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-                eventViewBanco();
+                onEventDetalleBanco();
             }
         }
     }
@@ -267,7 +287,7 @@ public class FxBancosController implements Initializable {
                     tvList.getSelectionModel().select(0);
                 }
             } else {
-                eventViewBanco();
+                onEventDetalleBanco();
             }
         }
     }
@@ -280,56 +300,56 @@ public class FxBancosController implements Initializable {
                 tvList.getSelectionModel().select(0);
             }
         } else {
-            eventViewBanco();
+            onEventDetalleBanco();
         }
     }
 
     @FXML
     private void onKeyPressedNew(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            eventNewBanco();
+            onEventAgregarBanco();
         }
     }
 
     @FXML
     private void onActionNew(ActionEvent event) {
-        eventNewBanco();
+        onEventAgregarBanco();
     }
 
     @FXML
     private void onKeyPressedEdit(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            eventEditBanco();
+            onEventEditarBanco();
         }
     }
 
     @FXML
     private void onActionEdit(ActionEvent event) {
-        eventEditBanco();
+        onEventEditarBanco();
     }
 
     @FXML
     private void onActionRemove(ActionEvent event) {
-        eventRemoveBanco();
+        onEventRemoverBanco();
     }
 
     @FXML
     private void onKeyPressedRemove(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            eventRemoveBanco();
+            onEventRemoverBanco();
         }
     }
 
     @FXML
     private void onKeyPressedReload(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            onEventReloadBanco();
+            onEventRecargarBanco();
         }
     }
 
     @FXML
     private void onActionReload(ActionEvent event) {
-        onEventReloadBanco();
+        onEventRecargarBanco();
     }
 
     @FXML

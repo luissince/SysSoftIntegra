@@ -10,6 +10,7 @@ public class BancoHistorialTB {
     private String descripcion;
     private String fecha;
     private String hora;
+    private boolean estado;
     private double entrada;
     private double salida;
     private EmpleadoTB empleadoTB;
@@ -104,6 +105,14 @@ public class BancoHistorialTB {
 
     public void setEmpleadoTB(EmpleadoTB empleadoTB) {
         this.empleadoTB = empleadoTB;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
     }
     
 }

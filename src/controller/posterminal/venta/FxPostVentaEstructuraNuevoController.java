@@ -204,7 +204,10 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
         }
 
         cbMoneda.getItems().clear();
-        cbMoneda.getItems().addAll(MonedaADO.ObtenerListaMonedas());
+        Object monedaObject = MonedaADO.ObtenerListaMonedas();
+        if (monedaObject instanceof ObservableList) {
+            cbMoneda.setItems((ObservableList<MonedaTB>) monedaObject);
+        }
 
         if (!cbMoneda.getItems().isEmpty()) {
             for (int i = 0; i < cbMoneda.getItems().size(); i++) {
@@ -848,9 +851,9 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
                     }
 
                     if (resultCliente instanceof ClienteTB) {
-                        return new Object[] { "client-exists", resultCliente };
+                        return new Object[]{"client-exists", resultCliente};
                     } else {
-                        return new Object[] { "client-no-exists", "" };
+                        return new Object[]{"client-no-exists", ""};
                     }
                 }
 
@@ -975,9 +978,9 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
                     }
 
                     if (resultCliente instanceof ClienteTB) {
-                        return new Object[] { "client-exists", resultCliente };
+                        return new Object[]{"client-exists", resultCliente};
                     } else {
-                        return new Object[] { "client-no-exists", "" };
+                        return new Object[]{"client-no-exists", ""};
                     }
                 }
 
@@ -1129,7 +1132,6 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
             stage.setOnHiding(w -> fxPrincipalController.closeFondoModal());
             stage.show();
         } catch (IOException ex) {
-            Tools.println("Venta estructura nuevo onEventMovimientoCaja:" + ex.getLocalizedMessage());
         }
     }
 
@@ -1150,7 +1152,6 @@ public class FxPostVentaEstructuraNuevoController implements Initializable {
             stage.show();
 
         } catch (IOException ex) {
-            Tools.println("Venta estructura openWindowMostrarVentas: " + ex.getLocalizedMessage());
         }
     }
 

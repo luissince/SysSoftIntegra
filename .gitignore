@@ -26,3 +26,4 @@ hs_err_pid*
 dist
 build
 archivos/connection.json
+/nbproject/private/

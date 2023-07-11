@@ -1,6 +1,6 @@
 package controller.menus;
 
-import controller.banco.FxBancosController;
+import controller.banco.FxBancoController;
 import controller.configuracion.almacen.FxAlmacenController;
 import controller.configuracion.comprobante.FxTipoDocumentoController;
 import controller.configuracion.empleados.FxEmpleadosController;
@@ -167,7 +167,7 @@ public class FxConfiguracionController implements Initializable {
 
     private HBox nodeBancos;
 
-    private FxBancosController bancosController;
+    private FxBancoController bancosController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -216,7 +216,7 @@ public class FxConfiguracionController implements Initializable {
             nodeAlmacen = fXMLAlmacen.load();
             controllerAlmacen = fXMLAlmacen.getController();
 
-            fXMLBancos = new FXMLLoader(getClass().getResource(FilesRouters.FX_BANCOS));
+            fXMLBancos = new FXMLLoader(getClass().getResource(FilesRouters.FX_BANCO));
             nodeBancos = fXMLBancos.load();
             bancosController = fXMLBancos.getController();
         } catch (IOException ex) {
@@ -225,13 +225,6 @@ public class FxConfiguracionController implements Initializable {
     }
 
     public void loadSubMenus(ObservableList<SubMenusTB> subMenusTBs) {
-        Tools.println("configuración:");
-        int count = 0;
-        for (SubMenusTB sb : subMenusTBs) {
-            count++;
-            Tools.println(count + "-" + sb.getNombre());
-        }
-
         if (subMenusTBs.get(0).getIdSubMenu() != 0 && !subMenusTBs.get(0).isEstado()) {
             hbOperacionesUno.getChildren().remove(btnEmpresa);
         } else {
@@ -401,7 +394,7 @@ public class FxConfiguracionController implements Initializable {
         fxPrincipalController.getVbContent().getChildren().add(nodeAlmacen);
     }
 
-    private void openWindowBancos() {
+    private void openWindowBanco() {
         bancosController.setContent(fxPrincipalController);
         fxPrincipalController.getVbContent().getChildren().clear();
         AnchorPane.setLeftAnchor(nodeBancos, 0d);
@@ -547,13 +540,13 @@ public class FxConfiguracionController implements Initializable {
     @FXML
     private void onKeyPressedBanco(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            openWindowBancos();
+            openWindowBanco();
         }
     }
 
     @FXML
     private void onActionBanco(ActionEvent event) {
-        openWindowBancos();
+        openWindowBanco();
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

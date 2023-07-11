@@ -435,7 +435,6 @@ public class FxInicioController implements Initializable {
                 .hideAfter(Duration.seconds(5))
                 .position(pos)
                 .onAction(n -> {
-                    Tools.println(n);
                 });
         notifications.darkStyle();
         notifications.show();
