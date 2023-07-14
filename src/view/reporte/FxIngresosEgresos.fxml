@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="vbWindow" style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.reporte.FxIngresosEgresosController">
+<VBox fx:id="vbWindow" style="-fx-background-color: white;" stylesheets="@../style/principal.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.reporte.FxIngresosEgresosController">
    <children>
       <VBox>
          <children>
@@ -149,48 +149,6 @@
                                                             </Button>
                                                          </children>
                                                       </HBox>
-                                                   </children>
-                                                </GridPane>
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </HBox>
-                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                                       <children>
-                                          <VBox>
-                                             <children>
-                                                <GridPane style="-fx-hgap: 0.4166666666666667em; -fx-vgap: 1em;">
-                                                   <columnConstraints>
-                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <children>
-                                                      <CheckBox fx:id="cbTransacciones" mnemonicParsing="false" selected="true" styleClass="check-box-contenido" text="Todos las transacciones" textFill="#1a2226" />
-                                                   </children>
-                                                </GridPane>
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </HBox>
-                                    <HBox style="-fx-padding: 0.8333333333333334em; -fx-spacing: 0.8333333333333334em;">
-                                       <children>
-                                          <VBox>
-                                             <children>
-                                                <GridPane style="-fx-hgap: 0.4166666666666667em; -fx-vgap: 1em;">
-                                                   <columnConstraints>
-                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <children>
-                                                      <CheckBox fx:id="cbMovientoCaja" mnemonicParsing="false" selected="true" styleClass="check-box-contenido" text="Todos los movimientos de caja" textFill="#1a2226" />
                                                    </children>
                                                 </GridPane>
                                              </children>

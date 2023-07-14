@@ -167,12 +167,13 @@
                                     </HBox>
                                     <TableView fx:id="tvList" editable="true" fixedCellSize="-0.0" onKeyReleased="#onKeyReleasedList" prefHeight="300.0" prefWidth="850.0" styleClass="table-view-principal" VBox.vgrow="ALWAYS">
                                        <columns>
-                                          <TableColumn fx:id="tcOpcion" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Quitar" />
+                                          <TableColumn fx:id="tcId" prefWidth="70.0" style="-fx-alignment: CENTER;" text="#" />
+                                          <TableColumn fx:id="tcOpcion" prefWidth="90.0" style="-fx-alignment: CENTER;" text="Quitar" />
                                           <TableColumn fx:id="tcCantidad" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Cantidad" />
-                                          <TableColumn fx:id="tcArticulo" prefWidth="176.0" style="-fx-alignment: CENTER-LEFT;" text="Descripción" />
-                                          <TableColumn fx:id="tcImpuesto" prefWidth="118.0" style="-fx-alignment: CENTER;" text="Impuesto" />
+                                          <TableColumn fx:id="tcDescripcion" prefWidth="176.0" style="-fx-alignment: CENTER-LEFT;" text="Descripción" />
+                                          <TableColumn fx:id="tcImpuesto" prefWidth="110.0" style="-fx-alignment: CENTER;" text="Impuesto" />
                                           <TableColumn fx:id="tcPrecio" prefWidth="121.0" style="-fx-alignment: CENTER;" text="Precio" />
-                                          <TableColumn fx:id="tcDescuento" prefWidth="113.0" style="-fx-alignment: CENTER;" text="Descuento" />
+                                          <TableColumn fx:id="tcDescuento" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Descuento" />
                                           <TableColumn fx:id="tcImporte" prefWidth="100.0" style="-fx-alignment: CENTER-RIGHT;" text="Importe" />
                                        </columns>
                                     </TableView>

@@ -161,13 +161,18 @@ public class FxSuministrosListaController implements Initializable {
         });
 
         tcId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
-        tcNombre.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClave() + "\n" + cellData.getValue().getNombreMarca()));
+        tcNombre.setCellValueFactory(cellData -> Bindings
+                .concat(cellData.getValue().getClave() + "\n" + cellData.getValue().getNombreMarca()));
         tcCantidad.setCellValueFactory(new PropertyValueFactory<>("lblCantidad"));
-        tcCategoriaMarca.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getCategoriaName() + "\n" + cellData.getValue().getMarcaName()));
+        tcCategoriaMarca.setCellValueFactory(cellData -> Bindings
+                .concat(cellData.getValue().getCategoriaName() + "\n" + cellData.getValue().getMarcaName()));
         tcTipoProducto.setCellValueFactory(new PropertyValueFactory<>("imageValorInventario"));
-        tcImpuesto.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getNombreImpuesto()));
-        tcPrecio.setCellValueFactory(cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getPrecioVentaGeneral(), 2)));
-        tvList.setPlaceholder(Tools.placeHolderTableView("Ingrese datos para iniciar la busqueda.", "-fx-text-fill:#020203;", false));
+        tcImpuesto.setCellValueFactory(
+                cellData -> Bindings.concat(cellData.getValue().getImpuestoTB().getNombreImpuesto()));
+        tcPrecio.setCellValueFactory(
+                cellData -> Bindings.concat(Tools.roundingValue(cellData.getValue().getPrecioVentaGeneral(), 2)));
+        tvList.setPlaceholder(
+                Tools.placeHolderTableView("Ingrese datos para iniciar la busqueda.", "-fx-text-fill:#020203;", false));
 
         tcId.prefWidthProperty().bind(tvList.widthProperty().multiply(0.06));
         tcNombre.prefWidthProperty().bind(tvList.widthProperty().multiply(0.27));
@@ -276,47 +281,52 @@ public class FxSuministrosListaController implements Initializable {
             return t;
         });
 
-        Task<Object> task = new Task<Object>() {
+        Task<Object[]> task = new Task<Object[]>() {
             @Override
-            public Object call() {
-                return SuministroADO.Listar_Suministros_Lista_View(tipo, value, (paginacion - 1) * 10, 10);
+            public Object[] call() throws Exception {
+                Object resultado = SuministroADO.Listar_Suministros_Lista_View(tipo, value, (paginacion - 1) * 10, 10);
+                if (resultado instanceof Object[]) {
+                    return (Object[]) resultado;
+                }
+                throw new Exception((String) resultado);
             }
         };
 
-        task.setOnSucceeded(w -> {
-            Object object = task.getValue();
-            if (object instanceof Object[]) {
-                Object[] objects = (Object[]) object;
-                ObservableList<SuministroTB> suministroTBs = (ObservableList<SuministroTB>) objects[0];
-                if (!suministroTBs.isEmpty()) {
-                    tvList.setItems(suministroTBs);
-                    if (!tvList.getItems().isEmpty()) {
-                        tvList.getSelectionModel().select(0);
-                    }
-                    int integer = (int) (Math.ceil(((Integer) objects[1]) / 10.00));
-                    totalPaginacion = integer;
-                    lblPaginaActual.setText(paginacion + "");
-                    lblPaginaSiguiente.setText(totalPaginacion + "");
-                } else {
-                    tvList.setPlaceholder(Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
-                    lblPaginaActual.setText("0");
-                    lblPaginaSiguiente.setText("0");
-                }
-            } else {
-                tvList.setPlaceholder(Tools.placeHolderTableView((String) object, "-fx-text-fill:#a70820;", false));
-            }
-            status = false;
-        });
-        task.setOnFailed(w -> {
-            status = false;
-            tvList.setPlaceholder(Tools.placeHolderTableView(task.getMessage(), "-fx-text-fill:#a70820;", false));
-        });
         task.setOnScheduled(w -> {
             status = true;
             tvList.getItems().clear();
-            tvList.setPlaceholder(Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
+            tvList.setPlaceholder(
+                    Tools.placeHolderTableView("Cargando información...", "-fx-text-fill:#020203;", true));
             totalPaginacion = 0;
         });
+
+        task.setOnFailed(w -> {
+            status = false;
+            tvList.setPlaceholder(
+                    Tools.placeHolderTableView(task.getException().getMessage(), "-fx-text-fill:#a70820;", false));
+        });
+
+        task.setOnSucceeded(w -> {
+            Object[] objects = task.getValue();
+            ObservableList<SuministroTB> suministroTBs = (ObservableList<SuministroTB>) objects[0];
+            if (!suministroTBs.isEmpty()) {
+                tvList.setItems(suministroTBs);
+                if (!tvList.getItems().isEmpty()) {
+                    tvList.getSelectionModel().select(0);
+                }
+                int integer = (int) (Math.ceil(((Integer) objects[1]) / 10.00));
+                totalPaginacion = integer;
+                lblPaginaActual.setText(paginacion + "");
+                lblPaginaSiguiente.setText(totalPaginacion + "");
+            } else {
+                tvList.setPlaceholder(
+                        Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                lblPaginaActual.setText("0");
+                lblPaginaSiguiente.setText("0");
+            }
+            status = false;
+        });
+
         exec.execute(task);
         if (!exec.isShutdown()) {
             exec.shutdown();
@@ -348,8 +358,10 @@ public class FxSuministrosListaController implements Initializable {
 
     private void addVentaToList() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            if (ventaEstructuraController.isVender_con_cantidades_negativas() && tvList.getSelectionModel().getSelectedItem().getCantidad() <= 0) {
-                Tools.AlertMessageWarning(apWindow, "Venta", "No puede agregar el producto ya que tiene la cantidad <= 0.");
+            if (ventaEstructuraController.isVender_con_cantidades_negativas()
+                    && tvList.getSelectionModel().getSelectedItem().getCantidad() <= 0) {
+                Tools.AlertMessageWarning(apWindow, "Venta",
+                        "No puede agregar el producto ya que tiene la cantidad <= 0.");
                 return;
             }
             SuministroTB suministroTB = new SuministroTB();
@@ -367,8 +379,10 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setDescuentoSumado(0);
 
             suministroTB.setPrecioVentaGeneral(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
-            suministroTB.setPrecioVentaGeneralUnico(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
-            suministroTB.setPrecioVentaGeneralReal(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
+            suministroTB
+                    .setPrecioVentaGeneralUnico(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
+            suministroTB
+                    .setPrecioVentaGeneralReal(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
 
             suministroTB.setIdImpuesto(tvList.getSelectionModel().getSelectedItem().getIdImpuesto());
             suministroTB.setImpuestoTB(tvList.getSelectionModel().getSelectedItem().getImpuestoTB());
@@ -381,11 +395,13 @@ public class FxSuministrosListaController implements Initializable {
             button.getStyleClass().add("buttonDark");
             button.setOnAction(e -> {
                 ventaEstructuraController.getTvList().getItems().remove(suministroTB);
+                ventaEstructuraController.generarId();
                 ventaEstructuraController.calculateTotales();
             });
             button.setOnKeyPressed(e -> {
                 if (e.getCode() == KeyCode.ENTER) {
                     ventaEstructuraController.getTvList().getItems().remove(suministroTB);
+                    ventaEstructuraController.generarId();
                     ventaEstructuraController.calculateTotales();
                 }
             });
@@ -393,7 +409,8 @@ public class FxSuministrosListaController implements Initializable {
 
             if (ventaEstructuraController.isCerar_modal_agregar_item_lista()) {
                 Tools.Dispose(apWindow);
-                ventaEstructuraController.getAddSuministro(suministroTB, ventaEstructuraController.getWindow().getScene().getWindow());
+                ventaEstructuraController.getAddSuministro(suministroTB,
+                        ventaEstructuraController.getWindow().getScene().getWindow());
             } else {
                 txtSearch.selectAll();
                 txtSearch.requestFocus();
@@ -404,8 +421,10 @@ public class FxSuministrosListaController implements Initializable {
 
     private void addPostVentaToList() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            if (postVentaEstructuraController.isVender_con_cantidades_negativas() && tvList.getSelectionModel().getSelectedItem().getCantidad() <= 0) {
-                Tools.AlertMessageWarning(apWindow, "Venta", "No puede agregar el producto ya que tiene la cantidad <= 0.");
+            if (postVentaEstructuraController.isVender_con_cantidades_negativas()
+                    && tvList.getSelectionModel().getSelectedItem().getCantidad() <= 0) {
+                Tools.AlertMessageWarning(apWindow, "Venta",
+                        "No puede agregar el producto ya que tiene la cantidad <= 0.");
                 return;
             }
             SuministroTB suministroTB = new SuministroTB();
@@ -423,8 +442,10 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setDescuentoSumado(0);
 
             suministroTB.setPrecioVentaGeneral(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
-            suministroTB.setPrecioVentaGeneralUnico(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
-            suministroTB.setPrecioVentaGeneralReal(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
+            suministroTB
+                    .setPrecioVentaGeneralUnico(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
+            suministroTB
+                    .setPrecioVentaGeneralReal(tvList.getSelectionModel().getSelectedItem().getPrecioVentaGeneral());
 
             suministroTB.setIdImpuesto(tvList.getSelectionModel().getSelectedItem().getIdImpuesto());
             suministroTB.setImpuestoTB(tvList.getSelectionModel().getSelectedItem().getImpuestoTB());
@@ -448,7 +469,8 @@ public class FxSuministrosListaController implements Initializable {
             suministroTB.setBtnRemove(button);
             if (postVentaEstructuraController.isCerar_modal_agregar_item_lista()) {
                 Tools.Dispose(apWindow);
-                postVentaEstructuraController.getAddSuministro(suministroTB, postVentaEstructuraController.getWindow().getScene().getWindow());
+                postVentaEstructuraController.getAddSuministro(suministroTB,
+                        postVentaEstructuraController.getWindow().getScene().getWindow());
             } else {
                 txtSearch.selectAll();
                 txtSearch.requestFocus();
@@ -459,7 +481,8 @@ public class FxSuministrosListaController implements Initializable {
 
     private void addCotizacion() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            if (cotizacionController.validateDuplicate(tvList.getSelectionModel().getSelectedItem().getIdSuministro())) {
+            if (cotizacionController
+                    .validateDuplicate(tvList.getSelectionModel().getSelectedItem().getIdSuministro())) {
                 Tools.AlertMessageWarning(apWindow, "Cotización", "Hay en la lista un producto con los mismos datos.");
             } else {
                 openWindowCotizacion(tvList.getSelectionModel().getSelectedItem());
@@ -480,7 +503,8 @@ public class FxSuministrosListaController implements Initializable {
 
     private void addMovimiento() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            movimientosProcesoController.addSuministroLista(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
+            movimientosProcesoController
+                    .addSuministroLista(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
             txtSearch.requestFocus();
         }
     }
@@ -488,8 +512,11 @@ public class FxSuministrosListaController implements Initializable {
     private void addSuministroKardex() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             if (suministrosKardexController.getCbAlmacen().getSelectionModel().getSelectedIndex() >= 0) {
-                suministrosKardexController.setLoadProducto(tvList.getSelectionModel().getSelectedItem().getClave() + " " + tvList.getSelectionModel().getSelectedItem().getNombreMarca());
-                suministrosKardexController.fillKardexTable(0, tvList.getSelectionModel().getSelectedItem().getIdSuministro(), suministrosKardexController.getCbAlmacen().getSelectionModel().getSelectedItem().getIdAlmacen());
+                suministrosKardexController.setLoadProducto(tvList.getSelectionModel().getSelectedItem().getClave()
+                        + " " + tvList.getSelectionModel().getSelectedItem().getNombreMarca());
+                suministrosKardexController.fillKardexTable(0,
+                        tvList.getSelectionModel().getSelectedItem().getIdSuministro(), suministrosKardexController
+                                .getCbAlmacen().getSelectionModel().getSelectedItem().getIdAlmacen());
                 Tools.Dispose(apWindow);
             } else {
                 Tools.AlertMessageWarning(apWindow, "Kardex", "Seleccione un almacen para continuar.");
@@ -500,7 +527,8 @@ public class FxSuministrosListaController implements Initializable {
     private void addVentaUtilidad() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             ventaUtilidadesController.setIdSuministro(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
-            ventaUtilidadesController.getTxtProducto().setText(tvList.getSelectionModel().getSelectedItem().getNombreMarca());
+            ventaUtilidadesController.getTxtProducto()
+                    .setText(tvList.getSelectionModel().getSelectedItem().getNombreMarca());
             Tools.Dispose(apWindow);
         }
     }
@@ -513,17 +541,20 @@ public class FxSuministrosListaController implements Initializable {
 
     private void addTrasladoInventario() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            trasladoInventarioController.addSuministroLista(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
+            trasladoInventarioController
+                    .addSuministroLista(tvList.getSelectionModel().getSelectedItem().getIdSuministro());
             txtSearch.requestFocus();
         }
     }
 
     private void addOrdenCompra() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
-            if (!ordenCompraController.validateDuplicate(tvList.getSelectionModel().getSelectedItem().getIdSuministro())) {
+            if (!ordenCompraController
+                    .validateDuplicate(tvList.getSelectionModel().getSelectedItem().getIdSuministro())) {
                 openWindowOrdenCompraSuministro(tvList.getSelectionModel().getSelectedItem());
             } else {
-                Tools.AlertMessageWarning(apWindow, "Orden de Compra", "Hay en la lista un producto con los mismos datos.");
+                Tools.AlertMessageWarning(apWindow, "Orden de Compra",
+                        "Hay en la lista un producto con los mismos datos.");
             }
         }
     }
@@ -554,7 +585,9 @@ public class FxSuministrosListaController implements Initializable {
         } else if (trasladoInventarioController != null) {
             addTrasladoInventario();
         } else if (produccionReporteController != null) {
-            produccionReporteController.setLoadDataProductoMerma(tvList.getSelectionModel().getSelectedItem().getIdSuministro(), tvList.getSelectionModel().getSelectedItem().getNombreMarca());
+            produccionReporteController.setLoadDataProductoMerma(
+                    tvList.getSelectionModel().getSelectedItem().getIdSuministro(),
+                    tvList.getSelectionModel().getSelectedItem().getNombreMarca());
             Tools.Dispose(apWindow);
         } else if (ordenCompraController != null) {
             addOrdenCompra();
@@ -565,15 +598,17 @@ public class FxSuministrosListaController implements Initializable {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             if (tvList.getSelectionModel().getSelectedItem().isInventario()) {
                 try {
-                    URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_SUMINISTROS_COMPRA);
+                    URL url = WindowStage.class.getClassLoader().getClass()
+                            .getResource(FilesRouters.FX_SUMINISTROS_COMPRA);
                     FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
                     Parent parent = fXMLLoader.load(url.openStream());
-                    //Controlller here
+                    // Controlller here
                     FxSuministrosCompraController controller = fXMLLoader.getController();
                     controller.setInitComprasController(comprasController);
                     controller.setLoadData(tvList.getSelectionModel().getSelectedItem().getIdSuministro(), false);
                     //
-                    Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
+                    Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto",
+                            apWindow.getScene().getWindow());
                     stage.setResizable(false);
                     stage.setOnShown(e -> controller.getTxtCantidad().requestFocus());
                     stage.sizeToScene();
@@ -592,7 +627,7 @@ public class FxSuministrosListaController implements Initializable {
             URL url = WindowStage.class.getClassLoader().getClass().getResource(FilesRouters.FX_COTIZACION_PRODUCTO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxCotizacionProductoController controller = fXMLLoader.getController();
             controller.setInitCotizacionController(cotizacionController);
             controller.initComponents(suministroTB, false, 0);
@@ -612,7 +647,7 @@ public class FxSuministrosListaController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_SUMINISTROS_PROCESO_MODAL);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxSuministrosProcesoModalController controller = fXMLLoader.getController();
             //
             Stage stage = WindowStage.StageLoaderModal(parent, "Agregar Producto", apWindow.getScene().getWindow());
@@ -630,7 +665,7 @@ public class FxSuministrosListaController implements Initializable {
             URL url = getClass().getResource(FilesRouters.FX_ORDEN_COMPRA_PRODUCTO);
             FXMLLoader fXMLLoader = WindowStage.LoaderWindow(url);
             Parent parent = fXMLLoader.load(url.openStream());
-            //Controlller here
+            // Controlller here
             FxOrdenCompraProductoController controller = fXMLLoader.getController();
             controller.setInitOrdenCompraController(ordenCompraController);
             //
@@ -662,10 +697,12 @@ public class FxSuministrosListaController implements Initializable {
     private void selectImage() {
         if (tvList.getSelectionModel().getSelectedIndex() >= 0) {
             if (tvList.getSelectionModel().getSelectedItem().getNuevaImagen() == null) {
-                // File fileImage = new File(tvList.getSelectionModel().getSelectedItem().getImagenTB());
+                // File fileImage = new
+                // File(tvList.getSelectionModel().getSelectedItem().getImagenTB());
                 ivPrincipal.setImage(new Image("/view/image/no-image.png"));
             } else {
-                ivPrincipal.setImage(new Image(new ByteArrayInputStream(tvList.getSelectionModel().getSelectedItem().getNuevaImagen())));
+                ivPrincipal.setImage(new Image(
+                        new ByteArrayInputStream(tvList.getSelectionModel().getSelectedItem().getNuevaImagen())));
             }
         }
     }

@@ -56,6 +56,8 @@ public class FxVentaMostrarController implements Initializable {
     @FXML
     private Label lblPaginaSiguiente;
 
+    private final int FILA_POR_PAGINA = 10;
+
     private String idEmpleado;
 
     private FxVentaEstructuraController ventaEstructuraController;
@@ -73,25 +75,43 @@ public class FxVentaMostrarController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Tools.DisposeWindow(apWindow, KeyEvent.KEY_RELEASED);
+
         tcNumero.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getId()));
-        tcCliente
-                .setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getClienteTB().getNumeroDocumento()
-                        + "\n" + cellData.getValue().getClienteTB().getInformacion()));
-        tcFechaHora.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getFechaVenta() + "\n"
-                        + cellData.getValue().getHoraVenta()));
-        tcDocumento.setCellValueFactory(cellData -> Bindings.concat(
-                cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion() + "\n"
-                        + (cellData.getValue().getNotaCreditoTB() != null
-                                ? " Modificado(" + cellData.getValue().getNotaCreditoTB().getSerie() + "-"
-                                        + cellData.getValue().getNotaCreditoTB().getNumeracion() + ")"
-                                : "")));
-        tcTotal.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getMonedaTB().getSimbolo() + " "
-                + Tools.roundingValue(cellData.getValue().getTotal(), 2)));
+
+        tcCliente.setCellValueFactory(cellData -> {
+            String numeroDocumento = cellData.getValue().getClienteTB().getNumeroDocumento();
+            String informacion = cellData.getValue().getClienteTB().getInformacion();
+            return Bindings.concat(numeroDocumento, "\n", informacion);
+        });
+
+        tcFechaHora.setCellValueFactory(cellData -> {
+            String fechaVenta = cellData.getValue().getFechaVenta();
+            String horaVenta = cellData.getValue().getHoraVenta();
+            return Bindings.concat(fechaVenta, "\n", horaVenta);
+        });
+
+        tcDocumento.setCellValueFactory(cellData -> {
+            String serieNumeracion = cellData.getValue().getSerie() + "-" + cellData.getValue().getNumeracion();
+            String notaCredito = "";
+            if (cellData.getValue().getNotaCreditoTB() != null) {
+                String serieNt = cellData.getValue().getNotaCreditoTB().getSerie();
+                String numeracionNt = cellData.getValue().getNotaCreditoTB().getNumeracion();
+                String serieNumeracioNt = serieNt + "-" + numeracionNt;
+                notaCredito = " Modificado(" + serieNumeracioNt + ")";
+            }
+            return Bindings.concat(serieNumeracion, "\n", notaCredito);
+        });
+
+        tcTotal.setCellValueFactory(cellData -> {
+            String simbolo = cellData.getValue().getMonedaTB().getSimbolo();
+            String total = Tools.roundingValue(cellData.getValue().getTotal(), 2);
+            return Bindings.concat(simbolo, " ", total);
+        });
 
         tcImprimir.setCellValueFactory(new PropertyValueFactory<>("btnImprimir"));
         tcAgregarVenta.setCellValueFactory(new PropertyValueFactory<>("btnAgregar"));
         tcSumarVenta.setCellValueFactory(new PropertyValueFactory<>("btnSumar"));
+
         tvList.setPlaceholder(
                 Tools.placeHolderTableView("Ingrese la información a buscar.", "-fx-text-fill:#020203;", false));
 
@@ -110,10 +130,17 @@ public class FxVentaMostrarController implements Initializable {
             t.setDaemon(true);
             return t;
         });
-        Task<Object> task = new Task<Object>() {
+        
+        Task<Object[]> task = new Task<Object[]>() {
             @Override
-            public Object call() {
-                return VentaADO.ListVentasMostrarLibres(mostrarUltimasVentas, opcion, value, idEmpleado,(paginacion - 1) * 10, 10);
+            public Object[] call() throws Exception {
+                Object resultado = VentaADO.ListVentasMostrarLibres(mostrarUltimasVentas, opcion, value, idEmpleado, (paginacion - 1) * FILA_POR_PAGINA, FILA_POR_PAGINA);
+
+                if (resultado instanceof Object[]) {
+                    return (Object[]) resultado;
+                }
+
+                throw new Exception((String) resultado);
             }
         };
 
@@ -132,52 +159,47 @@ public class FxVentaMostrarController implements Initializable {
         });
 
         task.setOnSucceeded(e -> {
-            Object result = task.getValue();
-            if (result instanceof Object[]) {
-                Object[] object = (Object[]) result;
-                ObservableList<VentaTB> ventaTBs = (ObservableList<VentaTB>) object[0];
-                if (!ventaTBs.isEmpty()) {
-                    ventaTBs.forEach(f -> {
-                        f.getBtnImprimir().setOnAction(event -> {
-                            imprimirVenta(f.getIdVenta());
-                        });
-                        f.getBtnImprimir().setOnKeyPressed(event -> {
-                            if (event.getCode() == KeyCode.ENTER) {
-                                imprimirVenta(f.getIdVenta());
-                            }
-                            event.consume();
-                        });
-                        f.getBtnAgregar().setOnAction(event -> {
-                            addVenta(f.getIdVenta());
-                        });
-                        f.getBtnAgregar().setOnKeyPressed(event -> {
-                            if (event.getCode() == KeyCode.ENTER) {
-                                addVenta(f.getIdVenta());
-                            }
-                            event.consume();
-                        });
-
-                        f.getBtnSumar().setOnAction(event -> {
-                            plusVenta(f.getIdVenta());
-                        });
-                        f.getBtnSumar().setOnKeyPressed(event -> {
-                            if (event.getCode() == KeyCode.ENTER) {
-                                plusVenta(f.getIdVenta());
-                            }
-                        });
+            Object[] object = task.getValue();
+            ObservableList<VentaTB> ventaTBs = (ObservableList<VentaTB>) object[0];
+            if (!ventaTBs.isEmpty()) {
+                ventaTBs.forEach(f -> {
+                    f.getBtnImprimir().setOnAction(event -> {
+                        imprimirVenta(f.getIdVenta());
                     });
-                    tvList.setItems(ventaTBs);
-                    totalPaginacion = (int) (Math.ceil(((Integer) object[1]) / 10.00));
-                    lblPaginaActual.setText(paginacion + "");
-                    lblPaginaSiguiente.setText(totalPaginacion + "");
-                } else {
-                    tvList.setPlaceholder(
-                            Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
-                    lblPaginaActual.setText("0");
-                    lblPaginaSiguiente.setText("0");
-                }
+                    f.getBtnImprimir().setOnKeyPressed(event -> {
+                        if (event.getCode() == KeyCode.ENTER) {
+                            imprimirVenta(f.getIdVenta());
+                        }
+                        event.consume();
+                    });
+                    f.getBtnAgregar().setOnAction(event -> {
+                        addVenta(f.getIdVenta());
+                    });
+                    f.getBtnAgregar().setOnKeyPressed(event -> {
+                        if (event.getCode() == KeyCode.ENTER) {
+                            addVenta(f.getIdVenta());
+                        }
+                        event.consume();
+                    });
+
+                    f.getBtnSumar().setOnAction(event -> {
+                        plusVenta(f.getIdVenta());
+                    });
+                    f.getBtnSumar().setOnKeyPressed(event -> {
+                        if (event.getCode() == KeyCode.ENTER) {
+                            plusVenta(f.getIdVenta());
+                        }
+                    });
+                });
+                tvList.setItems(ventaTBs);
+                totalPaginacion = (int) (Math.ceil(((Integer) object[1]) / 10.00));
+                lblPaginaActual.setText(paginacion + "");
+                lblPaginaSiguiente.setText(totalPaginacion + "");
             } else {
-                tvList.setPlaceholder(Tools.placeHolderTableView((String) result, "-fx-text-fill:#a70820;", false));
+                tvList.setPlaceholder(
+                        Tools.placeHolderTableView("No hay datos para mostrar.", "-fx-text-fill:#020203;", false));
+                lblPaginaActual.setText("0");
+                lblPaginaSiguiente.setText("0");
             }
             lblLoad.setVisible(false);
         });
@@ -241,8 +263,9 @@ public class FxVentaMostrarController implements Initializable {
 
     @FXML
     private void onKeyReleasedSearch(KeyEvent event) {
-        if (!mostrarUltimasVentas)
+        if (!mostrarUltimasVentas) {
             return;
+        }
 
         if (event.getCode() != KeyCode.ESCAPE
                 && event.getCode() != KeyCode.F1

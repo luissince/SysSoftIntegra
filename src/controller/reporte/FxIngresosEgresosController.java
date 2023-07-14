@@ -11,20 +11,16 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,31 +38,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.IngresoTB;
-import model.SuministroTB;
-import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JsonDataSource;
-import service.CajaADO;
-import service.IngresoADO;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import service.ConsultasADO;
 
 public class FxIngresosEgresosController implements Initializable {
 
@@ -82,10 +60,6 @@ public class FxIngresosEgresosController implements Initializable {
     private TextField txtVendedores;
     @FXML
     private Button btnVendedor;
-    @FXML
-    private CheckBox cbTransacciones;
-    @FXML
-    private CheckBox cbMovientoCaja;
 
     private FxPrincipalController fxPrincipalController;
 
@@ -99,16 +73,22 @@ public class FxIngresosEgresosController implements Initializable {
 
     private Object reportGenerateIngresos() {
         try {
+            String fechaInicio = Tools.getDatePicker(dpFechaInicial);
+            String fechaFinal = Tools.getDatePicker(dpFechaFinal);
+            Object validar = ConsultasADO.reporteIngresosEgresos(0, fechaInicio, fechaFinal, idVendedor);
+            if (validar instanceof String) {
+                return validar;
+            }
+
+            Object[] respuesta = (Object[]) validar;
+            JSONArray array = (JSONArray) respuesta[0];
+            if (array.isEmpty()) {
+                return "No hay información para mostrar en el reporte.";
+            }
+
             File archivoc = new File("./report/Ingresos.jasper");
             InputStream dir = new FileInputStream(archivoc.getPath());
 
-            JSONArray array = new JSONArray();
-            for (int i = 0; i < 10; i++) {
-                JSONObject jsono = new JSONObject();
-                jsono.put("id", i);
-
-                array.add(jsono);
-            }
             String json = new String(array.toJSONString().getBytes(), "UTF-8");
             ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(json.getBytes());
 
@@ -118,15 +98,21 @@ public class FxIngresosEgresosController implements Initializable {
                 imgInputStream = new ByteArrayInputStream(Session.COMPANY_IMAGE);
             }
 
+            String formatoFI = Tools.formatDate(fechaInicio);
+            String formatoFF = Tools.formatDate(fechaFinal);
+
             Map<String, Object> map = new HashMap<>();
             map.put("LOGO", imgInputStream);
             map.put("ICON", imgInputStreamIcon);
             map.put("EMPRESA", Session.COMPANY_RAZON_SOCIAL);
             map.put("DOCUMENTOEMPRESA", Tools.textShow("R.U.C: ", Session.COMPANY_NUMERO_DOCUMENTO));
             map.put("DIRECCION", Session.COMPANY_DOMICILIO);
-            map.put("TELEFONOCELULAR",
-                    "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
+            map.put("CONTACTO", "TELÉFONO: " + Session.COMPANY_TELEFONO + " CELULAR: " + Session.COMPANY_CELULAR);
             map.put("EMAIL", "EMAIL: " + Session.COMPANY_EMAIL);
+            map.put("FECHAS", formatoFI + " - " + formatoFF);
+            map.put("TOTAL_INGRESO", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue((double) respuesta[1], 2));
+            map.put("TOTAL_SALIDA", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue((double) respuesta[2], 2));
+            map.put("TOTAL", Session.MONEDA_SIMBOLO + " " + Tools.roundingValue((double) respuesta[3], 2));
 
             return JasperFillManager.fillReport(dir, map, new JsonDataSource(jsonDataStream));
         } catch (JRException ex) {
@@ -140,7 +126,7 @@ public class FxIngresosEgresosController implements Initializable {
 
     private void openViewVisualizarIngresos() {
         if (!cbVendedorSelect.isSelected() && idVendedor.equalsIgnoreCase("") && txtVendedores.getText().isEmpty()) {
-            Tools.AlertMessageWarning(vbWindow, "Reporte General de Movimientos",
+            Tools.AlertMessageWarning(vbWindow, "Reporte Financiero",
                     "Ingrese un vendedor para generar el reporte.");
             btnVendedor.requestFocus();
             return;

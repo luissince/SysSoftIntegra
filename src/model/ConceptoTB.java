@@ -11,6 +11,7 @@ public class ConceptoTB {
     private boolean estado;
     private String fecha;
     private String hora;
+    private boolean sistema;
     private String idEmpleado;
 
     public ConceptoTB() {
@@ -70,6 +71,14 @@ public class ConceptoTB {
 
     public void setHora(String hora) {
         this.hora = hora;
+    }
+
+    public boolean isSistema() {
+        return sistema;
+    }
+
+    public void setSistema(boolean sistema) {
+        this.sistema = sistema;
     }
 
     public String getIdEmpleado() {

@@ -222,7 +222,8 @@ public final class FilesRouters {
 
     public static final String FX_VENTA_PROCESO = "/view/operaciones/venta/FxVentaProceso.fxml";
 
-//    public static final String FX_VENTA_PROCESO_NUEVO = "/view/operaciones/venta/FxVentaProcesoNuevo.fxml";
+    // public static final String FX_VENTA_PROCESO_NUEVO =
+    // "/view/operaciones/venta/FxVentaProcesoNuevo.fxml";
 
     public static final String FX_VENTA_REALIZADAS = "/view/consultas/venta/FxVentaRealizadas.fxml";
 
@@ -392,9 +393,32 @@ public final class FilesRouters {
     // --------------------------------------------------------------------------------------------------
     public static final String FX_NOTA_CREDITO = "/view/operaciones/notacredito/FxNotaCredito.fxml";
 
-    public static final String FX_NOTA_CREDITO_REALIZADOS = "/view/consultas/notacredito/FxNotaCreditoRealizadas.fxml";
+    public static final String FX_NOTA_CREDITO_REALIZADO = "/view/consultas/notacredito/FxNotaCreditoRealizado.fxml";
 
     public static final String FX_NOTA_CREDITO_DETALLE = "/view/consultas/notacredito/FxNotaCreditoDetalle.fxml";
+
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO CONCEPTO
+    // --------------------------------------------------------------------------------------------------
+    public static final String FX_CONCEPTO = "/view/configuracion/concepto/FxConcepto.fxml";
+
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO INGRESO
+    // --------------------------------------------------------------------------------------------------
+    public static final String FX_INGRESO = "/view/operaciones/ingreso/FxIngreso.fxml";
+
+    public static final String FX_INGRESO_DETALLE = "/view/consultas/ingreso/FxIngresoDetalle.fxml";
+
+    public static final String FX_INGRESO_REALIZADO = "/view/consultas/ingreso/FxIngresoRealizado.fxml";
+
+    // --------------------------------------------------------------------------------------------------
+    // PROCESO EGRESO
+    // --------------------------------------------------------------------------------------------------
+    public static final String FX_EGRESO = "/view/operaciones/egreso/FxEgreso.fxml";
+
+    public static final String FX_EGRESO_DETALLE = "/view/consultas/egreso/FxEgresoDetalle.fxml";
+
+    public static final String FX_EGRESO_REALIZADO = "/view/consultas/egreso/FxEgresoRealizado.fxml";
 
     // --------------------------------------------------------------------------------------------------
     // OTROS PROCESO

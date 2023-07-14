@@ -314,7 +314,7 @@ public class VentaADO {
                     preparedRegistrarIngreso.setString(7, ingresoTB.getIdBanco());
                     preparedRegistrarIngreso.setString(8,
                             "INGRESO POR VENTA DEL COMPROBANTE " + serieNumeracion[0] + "-" + serieNumeracion[1]);
-                    
+
                     preparedRegistrarIngreso.setBoolean(9, ingresoTB.isEstado());
                     preparedRegistrarIngreso.setDouble(10, ingresoTB.getMonto());
                     preparedRegistrarIngreso.setDouble(11, ingresoTB.getVuelto());
@@ -577,7 +577,7 @@ public class VentaADO {
                 if (resultValidate.next()) {
                     double ca = ventaTB.getSuministroTBs().get(i).getValorInventario() == 1
                             ? ventaTB.getSuministroTBs().get(i).getCantidad()
-                                    + ventaTB.getSuministroTBs().get(i).getBonificacion()
+                            + ventaTB.getSuministroTBs().get(i).getBonificacion()
                             : ventaTB.getSuministroTBs().get(i).getCantidad();
                     double cb = resultValidate.getDouble("Cantidad");
                     if (ca > cb) {
@@ -803,9 +803,9 @@ public class VentaADO {
                     double cantidadKardex = sm.getValorInventario() == 1
                             ? sm.getCantidad() + sm.getBonificacion()
                             : sm.getValorInventario() == 2
-                                    // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
-                                    ? sm.getCantidad()
-                                    : sm.getCantidad();
+                            // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            ? sm.getCantidad()
+                            : sm.getCantidad();
 
                     suministro_kardex.setString(1, sm.getIdSuministro());
                     suministro_kardex.setString(2, ventaTB.getFechaVenta());
@@ -832,17 +832,17 @@ public class VentaADO {
 
                 ingreso = dbf.getConnection().prepareStatement(
                         "INSERT INTO IngresoTB( "
-                                + "IdIngreso, "
-                                + "IdProcedencia, "
-                                + "IdUsuario, "
-                                + "IdCliente, "
-                                + "Detalle, "
-                                + "Procedencia, "
-                                + "Fecha, "
-                                + "Hora, "
-                                + "Forma, "
-                                + "Monto) "
-                                + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                        + "IdIngreso, "
+                        + "IdProcedencia, "
+                        + "IdUsuario, "
+                        + "IdCliente, "
+                        + "Detalle, "
+                        + "Procedencia, "
+                        + "Fecha, "
+                        + "Hora, "
+                        + "Forma, "
+                        + "Monto) "
+                        + "VALUES(?,?,?,?,?,?,?,?,?,?)");
 
                 if (ventaTB.getDeposito() > 0) {
                     ingreso.setString(1, id_ingreso);
@@ -1001,7 +1001,7 @@ public class VentaADO {
                 if (resultValidate.next()) {
                     double ca = ventaTB.getSuministroTBs().get(i).getValorInventario() == 1
                             ? ventaTB.getSuministroTBs().get(i).getCantidad()
-                                    + ventaTB.getSuministroTBs().get(i).getBonificacion()
+                            + ventaTB.getSuministroTBs().get(i).getBonificacion()
                             : ventaTB.getSuministroTBs().get(i).getCantidad();
                     double cb = resultValidate.getDouble("Cantidad");
                     if (ca > cb) {
@@ -1187,17 +1187,17 @@ public class VentaADO {
 
                 ingreso = dbf.getConnection().prepareStatement(
                         "INSERT INTO IngresoTB( "
-                                + "IdIngreso, "
-                                + "IdProcedencia, "
-                                + "IdUsuario, "
-                                + "IdCliente, "
-                                + "Detalle, "
-                                + "Procedencia, "
-                                + "Fecha, "
-                                + "Hora, "
-                                + "Forma, "
-                                + "Monto) "
-                                + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                        + "IdIngreso, "
+                        + "IdProcedencia, "
+                        + "IdUsuario, "
+                        + "IdCliente, "
+                        + "Detalle, "
+                        + "Procedencia, "
+                        + "Fecha, "
+                        + "Hora, "
+                        + "Forma, "
+                        + "Monto) "
+                        + "VALUES(?,?,?,?,?,?,?,?,?,?)");
 
                 if (ventaTB.getVentaCreditoTBs() != null) {
                     venta_credito_codigo = dbf.getConnection()
@@ -1291,9 +1291,9 @@ public class VentaADO {
                     double cantidadKardex = sm.getValorInventario() == 1
                             ? sm.getCantidad() + sm.getBonificacion()
                             : sm.getValorInventario() == 2
-                                    // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
-                                    ? sm.getCantidad()
-                                    : sm.getCantidad();
+                            // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                            ? sm.getCantidad()
+                            : sm.getCantidad();
 
                     suministro_kardex.setString(1, sm.getIdSuministro());
                     suministro_kardex.setString(2, ventaTB.getFechaVenta());
@@ -1598,17 +1598,17 @@ public class VentaADO {
 
             ingreso = dbf.getConnection().prepareStatement(
                     "INSERT INTO IngresoTB( "
-                            + "IdIngreso, "
-                            + "IdProcedencia, "
-                            + "IdUsuario, "
-                            + "IdCliente, "
-                            + "Detalle, "
-                            + "Procedencia, "
-                            + "Fecha, "
-                            + "Hora, "
-                            + "Forma, "
-                            + "Monto) "
-                            + "VALUES(?,?,?,?,?,?,?,?,?,?)");
+                    + "IdIngreso, "
+                    + "IdProcedencia, "
+                    + "IdUsuario, "
+                    + "IdCliente, "
+                    + "Detalle, "
+                    + "Procedencia, "
+                    + "Fecha, "
+                    + "Hora, "
+                    + "Forma, "
+                    + "Monto) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?)");
 
             if (ventaTB.getDeposito() > 0) {
                 ingreso.setString(1, id_ingreso);
@@ -1752,7 +1752,7 @@ public class VentaADO {
                 if (resultValidate.next()) {
                     double ca = ventaTB.getSuministroTBs().get(i).getValorInventario() == 1
                             ? ventaTB.getSuministroTBs().get(i).getCantidad()
-                                    + ventaTB.getSuministroTBs().get(i).getBonificacion()
+                            + ventaTB.getSuministroTBs().get(i).getBonificacion()
                             : ventaTB.getSuministroTBs().get(i).getCantidad();
                     double cb = resultValidate.getDouble("Cantidad");
                     if (ca > cb) {
@@ -1981,9 +1981,9 @@ public class VentaADO {
                         double cantidadKardex = sm.getValorInventario() == 1
                                 ? sm.getCantidad() + sm.getBonificacion()
                                 : sm.getValorInventario() == 2
-                                        // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
-                                        ? sm.getCantidad()
-                                        : sm.getCantidad();
+                                // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                                ? sm.getCantidad()
+                                : sm.getCantidad();
 
                         suministro_kardex.setString(1, sm.getIdSuministro());
                         suministro_kardex.setString(2, ventaTB.getFechaVenta());
@@ -2160,7 +2160,7 @@ public class VentaADO {
                 if (resultValidate.next()) {
                     double ca = ventaTB.getSuministroTBs().get(i).getValorInventario() == 1
                             ? ventaTB.getSuministroTBs().get(i).getCantidad()
-                                    + ventaTB.getSuministroTBs().get(i).getBonificacion()
+                            + ventaTB.getSuministroTBs().get(i).getBonificacion()
                             : ventaTB.getSuministroTBs().get(i).getCantidad();
                     double cb = resultValidate.getDouble("Cantidad");
                     if (ca > cb) {
@@ -2439,9 +2439,9 @@ public class VentaADO {
                         double cantidadKardex = sm.getValorInventario() == 1
                                 ? sm.getCantidad() + sm.getBonificacion()
                                 : sm.getValorInventario() == 2
-                                        // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
-                                        ? sm.getCantidad()
-                                        : sm.getCantidad();
+                                // ? sm.getImporteNeto() / sm.getPrecioVentaGeneralAuxiliar()
+                                ? sm.getCantidad()
+                                : sm.getCantidad();
 
                         suministro_kardex.setString(1, sm.getIdSuministro());
                         suministro_kardex.setString(2, ventaTB.getFechaVenta());
@@ -3488,14 +3488,14 @@ public class VentaADO {
 
     public static Object obtenerVentaPorIdVenta(String idVenta) {
         DBUtil dbf = new DBUtil();
-        PreparedStatement statementVenta = null;
+        CallableStatement statementVenta = null;
         PreparedStatement statementEmpleado = null;
         PreparedStatement statementEmpresa = null;
         PreparedStatement statementVentaDetalle = null;
         PreparedStatement statementIngresos = null;
         try {
             dbf.dbConnect();
-            statementVenta = dbf.getConnection().prepareStatement("{call Sp_Obtener_Venta_ById(?)}");
+            statementVenta = dbf.getConnection().prepareCall("{call Sp_Obtener_Venta_ById(?)}");
             statementVenta.setString(1, idVenta);
             ResultSet resultSetVenta = statementVenta.executeQuery();
             if (resultSetVenta.next()) {
@@ -3590,7 +3590,16 @@ public class VentaADO {
                 }
 
                 // Obtener la lista de ingresos
-                statementIngresos = dbf.getConnection().prepareStatement("{call }");
+                statementIngresos = dbf.getConnection().prepareStatement("select \n"
+                        + "i.Fecha,\n"
+                        + "i.Hora,\n"
+                        + "i.Detalle,\n"
+                        + "i.Monto,\n"
+                        + "i.Vuelto,\n"
+                        + "b.NombreCuenta\n"
+                        + "from IngresoTB as i\n"
+                        + "inner join Banco as b on b.IdBanco = i.IdBanco\n"
+                        + "where i.IdProcedencia = ?");
                 statementIngresos.setString(1, idVenta);
                 ResultSet resultSetIngresos = statementIngresos.executeQuery();
                 ArrayList<IngresoTB> ingresoTBs = new ArrayList<>();
@@ -3601,9 +3610,11 @@ public class VentaADO {
                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                     ingresoTB.setHora(resultSetIngresos.getTime("Hora").toLocalTime()
                             .format(DateTimeFormatter.ofPattern("hh:mm:ss a")));
+
                     BancoTB bancoTB = new BancoTB();
                     bancoTB.setNombreCuenta(resultSetIngresos.getString("NombreCuenta"));
                     ingresoTB.setBancoTB(bancoTB);
+
                     ingresoTB.setDetalle(resultSetIngresos.getString("Detalle"));
                     ingresoTB.setMonto(resultSetIngresos.getDouble("Monto"));
                     ingresoTB.setVuelto(resultSetIngresos.getDouble("Vuelto"));
@@ -3836,8 +3847,8 @@ public class VentaADO {
                     double cantidadTotal = stb.getValorInventario() == 1
                             ? stb.getCantidad() + stb.getBonificacion()
                             : stb.getValorInventario() == 2
-                                    ? stb.getCantidad()
-                                    : stb.getCantidad();
+                            ? stb.getCantidad()
+                            : stb.getCantidad();
 
                     statementKardex.setString(1, stb.getIdSuministro());
                     statementKardex.setString(2, Tools.getDate());
@@ -3983,8 +3994,8 @@ public class VentaADO {
                     double cantidadTotal = stb.getValorInventario() == 1
                             ? stb.getCantidad() + stb.getBonificacion()
                             : stb.getValorInventario() == 2
-                                    ? stb.getCantidad()
-                                    : stb.getCantidad();
+                            ? stb.getCantidad()
+                            : stb.getCantidad();
 
                     statementKardex.setString(1, stb.getIdSuministro());
                     statementKardex.setString(2, Tools.getDate());
@@ -4014,7 +4025,7 @@ public class VentaADO {
             dbf.getConnection().commit();
             return "updated";
         } catch (SQLException | ClassNotFoundException ex) {
-            
+
             try {
                 dbf.getConnection().rollback();
             } catch (SQLException e) {
@@ -4491,7 +4502,7 @@ public class VentaADO {
             statementValidate.setString(1, ventaCreditoTB.getIdVenta());
             if (statementValidate.executeQuery().next()) {
                 dbf.getConnection().rollback();
-                return new String[] { "0", "No se pueden realizar cobrar a una venta anulada." };
+                return new String[]{"0", "No se pueden realizar cobrar a una venta anulada."};
             }
 
             // Se obtiene el código de ingreso
@@ -4506,8 +4517,8 @@ public class VentaADO {
             statementValidate.setString(1, ventaCreditoTB.getIdVenta());
             if (!statementValidate.executeQuery().next()) {
                 dbf.getConnection().rollback();
-                return new String[] { "0",
-                        "Problemas al encontrar le venta con el id indicado " + ventaCreditoTB.getIdVenta() };
+                return new String[]{"0",
+                    "Problemas al encontrar le venta con el id indicado " + ventaCreditoTB.getIdVenta()};
             }
 
             // Se obtiene el monto total de la venta
@@ -4577,7 +4588,7 @@ public class VentaADO {
                     + "Operacion) "
                     + "VALUES(?,?,?,?,?,?,?,?,GETDATE(),GETDATE(),?,?,?,?,?)");
             statementIngreso.setString(1, idIngreso);
-            statementIngreso.setString(2, ingresoTB.getIdProcedencia()); 
+            statementIngreso.setString(2, ingresoTB.getIdProcedencia());
             statementIngreso.setString(3, idVentaCredito);
             statementIngreso.setString(4, ingresoTB.getIdUsuario());
             statementIngreso.setString(5, ventaCreditoTB.getVentaTB().getClienteTB().getIdCliente());
@@ -4613,9 +4624,9 @@ public class VentaADO {
             statementBancoHistorial.addBatch();
 
             // Se obtiene la lista de los montos cobrados
-            statementValidate = dbf.getConnection().prepareStatement("SELECT Monto " +
-                    "FROM VentaCreditoTB " +
-                    "WHERE IdVenta = ?");
+            statementValidate = dbf.getConnection().prepareStatement("SELECT Monto "
+                    + "FROM VentaCreditoTB "
+                    + "WHERE IdVenta = ?");
             statementValidate.setString(1, ventaCreditoTB.getIdVenta());
             ResultSet resultSetVentaCredito = statementValidate.executeQuery();
             double montoTotal = 0;
@@ -4627,9 +4638,9 @@ public class VentaADO {
             // Se actualiza el estado de la venta si se cumple la condición
             // donde el monto cobrado mas el monto a cobrar es mayor o igual al total de la
             // venta
-            statementVentaActualizar = dbf.getConnection().prepareStatement("UPDATE VentaTB " +
-                    "SET Estado = 1 " +
-                    "WHERE IdVenta = ?");
+            statementVentaActualizar = dbf.getConnection().prepareStatement("UPDATE VentaTB "
+                    + "SET Estado = 1 "
+                    + "WHERE IdVenta = ?");
             if ((montoTotal + ventaCreditoTB.getMonto()) >= total) {
                 statementVentaActualizar.setString(1, ventaCreditoTB.getIdVenta());
                 statementVentaActualizar.addBatch();
@@ -4643,7 +4654,7 @@ public class VentaADO {
             dbf.getConnection().commit();
 
             // Retornamos si se completo correctamente el proceso
-            return new String[] { "1", "Se completo correctamente el proceso.", idVentaCredito };
+            return new String[]{"1", "Se completo correctamente el proceso.", idVentaCredito};
 
         } catch (SQLException | NullPointerException | ClassNotFoundException ex) {
             try {
@@ -4651,7 +4662,7 @@ public class VentaADO {
             } catch (SQLException e) {
 
             }
-            return new String[] { "0", ex.getLocalizedMessage() };
+            return new String[]{"0", ex.getLocalizedMessage()};
         } finally {
             try {
                 if (codigoIngreso != null) {
@@ -4701,8 +4712,8 @@ public class VentaADO {
             dbf.getConnection().setAutoCommit(false);
 
             // Validamos si la venta esta anulada
-            statementValidate = dbf.getConnection().prepareStatement("SELECT * FROM VentaTB " +
-                    "WHERE IdVenta = ? AND Estado = 3");
+            statementValidate = dbf.getConnection().prepareStatement("SELECT * FROM VentaTB "
+                    + "WHERE IdVenta = ? AND Estado = 3");
             statementValidate.setString(1, idVenta);
             if (statementValidate.executeQuery().next()) {
                 dbf.getConnection().rollback();
@@ -4711,9 +4722,9 @@ public class VentaADO {
 
             // Obtenemos el tipo de crédito
             statementValidate.close();
-            statementValidate = dbf.getConnection().prepareStatement("SELECT TipoCredito " +
-                    "FROM VentaTB " +
-                    "WHERE IdVenta = ?");
+            statementValidate = dbf.getConnection().prepareStatement("SELECT TipoCredito "
+                    + "FROM VentaTB "
+                    + "WHERE IdVenta = ?");
             statementValidate.setString(1, idVenta);
             ResultSet resultSet = statementValidate.executeQuery();
             resultSet.next();
@@ -4801,9 +4812,9 @@ public class VentaADO {
 
             // Se obtiene la lista de los montos cobrados
             statementValidate.close();
-            statementValidate = dbf.getConnection().prepareStatement("SELECT ISNULL(SUM(Monto),0) AS Monto " +
-                    "FROM VentaCreditoTB " +
-                    "WHERE IdVenta = ?");
+            statementValidate = dbf.getConnection().prepareStatement("SELECT ISNULL(SUM(Monto),0) AS Monto "
+                    + "FROM VentaCreditoTB "
+                    + "WHERE IdVenta = ?");
             statementValidate.setString(1, idVenta);
             ResultSet resultSetVentaCredito = statementValidate.executeQuery();
             resultSetVentaCredito.next();
@@ -4812,9 +4823,9 @@ public class VentaADO {
 
             // Se obtiene el monto de la venta al crédito anulado
             statementValidate.close();
-            statementValidate = dbf.getConnection().prepareStatement("SELECT ISNULL(SUM(Monto),0) AS Monto " +
-                    "FROM IngresoTB " +
-                    "WHERE IdProcedencia = ?");
+            statementValidate = dbf.getConnection().prepareStatement("SELECT ISNULL(SUM(Monto),0) AS Monto "
+                    + "FROM IngresoTB "
+                    + "WHERE IdProcedencia = ?");
             statementValidate.setString(1, idVentaCredito);
             ResultSet resultSetIngreso = statementValidate.executeQuery();
             resultSetIngreso.next();

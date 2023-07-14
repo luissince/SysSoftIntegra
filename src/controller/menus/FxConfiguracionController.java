@@ -3,6 +3,7 @@ package controller.menus;
 import controller.banco.FxBancoController;
 import controller.configuracion.almacen.FxAlmacenController;
 import controller.configuracion.comprobante.FxTipoDocumentoController;
+import controller.configuracion.concepto.FxConceptoController;
 import controller.configuracion.empleados.FxEmpleadosController;
 import controller.configuracion.etiquetas.FxEtiquetasController;
 import controller.configuracion.impresoras.FxImpresoraController;
@@ -63,6 +64,9 @@ public class FxConfiguracionController implements Initializable {
     private VBox btnAlmacen;
     @FXML
     private VBox btnBancos;
+    @FXML
+    private VBox btConceptos;
+
     /*
      * Objectos de la ventana principal y venta que agrega al os hijos
      */
@@ -167,7 +171,16 @@ public class FxConfiguracionController implements Initializable {
 
     private HBox nodeBancos;
 
-    private FxBancoController bancosController;
+    private FxBancoController controllerBanco;
+
+    /*
+     * Controller concepto consultas
+     */
+    private FXMLLoader fXMLConcepto;
+
+    private VBox nodeConcepto;
+
+    private FxConceptoController controllerConcepto;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -218,7 +231,11 @@ public class FxConfiguracionController implements Initializable {
 
             fXMLBancos = new FXMLLoader(getClass().getResource(FilesRouters.FX_BANCO));
             nodeBancos = fXMLBancos.load();
-            bancosController = fXMLBancos.getController();
+            controllerBanco = fXMLBancos.getController();
+
+            fXMLConcepto = new FXMLLoader(getClass().getResource(FilesRouters.FX_CONCEPTO));
+            nodeConcepto = fXMLConcepto.load();
+            controllerConcepto = fXMLConcepto.getController();
         } catch (IOException ex) {
             System.out.println("Error en Configuración Controller:" + ex.getLocalizedMessage());
         }
@@ -395,14 +412,24 @@ public class FxConfiguracionController implements Initializable {
     }
 
     private void openWindowBanco() {
-        bancosController.setContent(fxPrincipalController);
+        controllerBanco.setContent(fxPrincipalController);
         fxPrincipalController.getVbContent().getChildren().clear();
         AnchorPane.setLeftAnchor(nodeBancos, 0d);
         AnchorPane.setTopAnchor(nodeBancos, 0d);
         AnchorPane.setRightAnchor(nodeBancos, 0d);
         AnchorPane.setBottomAnchor(nodeBancos, 0d);
         fxPrincipalController.getVbContent().getChildren().add(nodeBancos);
-        bancosController.loadTableViewBanco("");
+        controllerBanco.loadTableViewBanco("");
+    }
+
+    private void openWindowConcepto() {
+        controllerConcepto.setContent(fxPrincipalController);
+        fxPrincipalController.getVbContent().getChildren().clear();
+        AnchorPane.setLeftAnchor(nodeConcepto, 0d);
+        AnchorPane.setTopAnchor(nodeConcepto, 0d);
+        AnchorPane.setRightAnchor(nodeConcepto, 0d);
+        AnchorPane.setBottomAnchor(nodeConcepto, 0d);
+        fxPrincipalController.getVbContent().getChildren().add(nodeConcepto);
     }
 
     @FXML
@@ -547,6 +574,18 @@ public class FxConfiguracionController implements Initializable {
     @FXML
     private void onActionBanco(ActionEvent event) {
         openWindowBanco();
+    }
+
+    @FXML
+    private void onKeyPressedConcepto(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            openWindowConcepto();
+        }
+    }
+
+    @FXML
+    private void onActionConcepto(ActionEvent event) {
+        openWindowConcepto();
     }
 
     public void setContent(FxPrincipalController fxPrincipalController) {

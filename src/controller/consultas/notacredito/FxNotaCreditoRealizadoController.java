@@ -28,7 +28,7 @@ import javafx.scene.layout.VBox;
 import model.NotaCreditoTB;
 import service.NotaCreditoADO;
 
-public class FxNotaCreditoRealizadasController implements Initializable {
+public class FxNotaCreditoRealizadoController implements Initializable {
 
     @FXML
     private VBox vbWindow;

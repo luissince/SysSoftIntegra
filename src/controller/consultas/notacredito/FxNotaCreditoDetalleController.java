@@ -76,7 +76,7 @@ public class FxNotaCreditoDetalleController implements Initializable {
     @FXML
     private Button btnAceptarLoad;
 
-    private FxNotaCreditoRealizadasController creditoRealizadasController;
+    private FxNotaCreditoRealizadoController creditoRealizadasController;
 
     private FxPrincipalController fxPrincipalController;
 
@@ -290,7 +290,7 @@ public class FxNotaCreditoDetalleController implements Initializable {
         closeWindow();
     }
 
-    public void setInitNotaCreditoRealizadasController(FxNotaCreditoRealizadasController creditoRealizadasController,
+    public void setInitNotaCreditoRealizadasController(FxNotaCreditoRealizadoController creditoRealizadasController,
             FxPrincipalController fxPrincipalController) {
         this.creditoRealizadasController = creditoRealizadasController;
         this.fxPrincipalController = fxPrincipalController;

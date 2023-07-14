@@ -5,7 +5,8 @@ import controller.consultas.compras.FxComprasRealizadasController;
 import controller.consultas.cobrar.FxCuentasPorCobrarController;
 import controller.consultas.cotizacion.FxCotizacionRealizadasController;
 import controller.consultas.guiaremision.FxGuiaRemisionRealizadasController;
-import controller.consultas.notacredito.FxNotaCreditoRealizadasController;
+import controller.consultas.ingreso.FxIngresoRealizadoController;
+import controller.consultas.notacredito.FxNotaCreditoRealizadoController;
 import controller.consultas.pagar.FxCuentasPorPagarController;
 import controller.consultas.venta.FxVentaRealizadasController;
 import controller.operaciones.cortecaja.FxCajaConsultasController;
@@ -132,22 +133,13 @@ public class FxConsultasController implements Initializable {
     private FxCuentasPorPagarController controlleCuentasPorPagar;
 
     /*
-     * Controller banco consultas
-     */
-    // private FXMLLoader fXMLBancos;
-
-    // private HBox nodeBancos;
-
-    // private FxBancosController bancosController;
-
-    /*
      * Controller notacredito consultas
      */
     private FXMLLoader fXMLNotaCredito;
 
     private VBox nodeNotaCredito;
 
-    private FxNotaCreditoRealizadasController notaCreditoController;
+    private FxNotaCreditoRealizadoController notaCreditoController;
 
     /*
      * Controller orden de compra
@@ -157,6 +149,15 @@ public class FxConsultasController implements Initializable {
     private VBox nodeOrdenCompra;
 
     private FxOrdenCompraRealizadasController ordenCompraController;
+
+    /*
+     * Controller ingreso
+     */
+    private FXMLLoader fXMLIngreso;
+
+    private VBox nodeIngreso;
+
+    private FxIngresoRealizadoController ingresoRealizadoController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -193,13 +194,17 @@ public class FxConsultasController implements Initializable {
             // nodeBancos = fXMLBancos.load();
             // bancosController = fXMLBancos.getController();
 
-            fXMLNotaCredito = new FXMLLoader(getClass().getResource(FilesRouters.FX_NOTA_CREDITO_REALIZADOS));
+            fXMLNotaCredito = new FXMLLoader(getClass().getResource(FilesRouters.FX_NOTA_CREDITO_REALIZADO));
             nodeNotaCredito = fXMLNotaCredito.load();
             notaCreditoController = fXMLNotaCredito.getController();
 
             fXMLOrdenCompra = new FXMLLoader(getClass().getResource(FilesRouters.FX_ORDEN_COMPRA_REALZADAS));
             nodeOrdenCompra = fXMLOrdenCompra.load();
             ordenCompraController = fXMLOrdenCompra.getController();
+
+            fXMLIngreso = new FXMLLoader(getClass().getResource(FilesRouters.FX_INGRESO_REALIZADO));
+            nodeIngreso = fXMLIngreso.load();
+            ingresoRealizadoController = fXMLIngreso.getController();
 
         } catch (IOException ex) {
             System.out.println("Error en Inventario Controller:" + ex.getLocalizedMessage());
@@ -364,6 +369,16 @@ public class FxConsultasController implements Initializable {
         fxPrincipalController.getVbContent().getChildren().add(nodeOrdenCompra);
     }
 
+    private void openWindowIngreso() {
+        ingresoRealizadoController.setContent(fxPrincipalController);
+        fxPrincipalController.getVbContent().getChildren().clear();
+        AnchorPane.setLeftAnchor(nodeIngreso, 0d);
+        AnchorPane.setTopAnchor(nodeIngreso, 0d);
+        AnchorPane.setRightAnchor(nodeIngreso, 0d);
+        AnchorPane.setBottomAnchor(nodeIngreso, 0d);
+        fxPrincipalController.getVbContent().getChildren().add(nodeIngreso);
+    }
+
     @FXML
     private void onKeyPressedCuentasCobrar(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
@@ -489,13 +504,13 @@ public class FxConsultasController implements Initializable {
     @FXML
     private void onKeyPressedIngreso(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-
+            openWindowIngreso();
         }
     }
 
     @FXML
     private void onActionIngreso(ActionEvent event) {
-
+        openWindowIngreso();
     }
 
     @FXML

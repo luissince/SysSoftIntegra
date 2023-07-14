@@ -18,7 +18,6 @@ public class IngresoTB {
     private String operacion;
     private EmpleadoTB empleadoTB;
     private String transaccion;
-    private int cantidad;
     private String formaIngreso;
     private BancoTB bancoTB;
 
@@ -120,14 +119,6 @@ public class IngresoTB {
 
     public void setTransaccion(String transaccion) {
         this.transaccion = transaccion;
-    }
-
-    public int getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
     }
 
     public String getFormaIngreso() {

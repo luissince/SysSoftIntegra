@@ -1097,7 +1097,8 @@ public class CajaADO {
         return result;
     }
 
-    public static Object ReporteGeneralMovimientoCaja(String fechaInicio, String fechaFinal, int usuario,
+    @Deprecated
+    private static Object ReporteGeneralMovimientoCaja(String fechaInicio, String fechaFinal, int usuario,
             String idUusuario) {
         DBUtil dbf = new DBUtil();
         PreparedStatement statementMovimiento = null;
@@ -1117,7 +1118,6 @@ public class CajaADO {
                 IngresoTB ingresoTB = new IngresoTB();
                 ingresoTB.setId(resultSet.getRow());
                 ingresoTB.setTransaccion(resultSet.getString("Transaccion"));
-                ingresoTB.setCantidad(resultSet.getInt("Cantidad"));
                 ingresoTB.setFormaIngreso(resultSet.getString("FormaIngreso"));
                 // ingresoTB.setEfectivo(resultSet.getDouble("Efectivo"));
                 // ingresoTB.setTarjeta(resultSet.getDouble("Tarjeta"));

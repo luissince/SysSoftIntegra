@@ -164,7 +164,7 @@
                                  </image></ImageView>
                            </graphic>
                         </Button>
-                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Árticulos">
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Productos">
                            <font>
                               <Font name="Roboto" size="14.0" />
                            </font>
@@ -253,6 +253,24 @@
                            </graphic>
                         </Button>
                         <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Financiero">
+                           <font>
+                              <Font name="Roboto" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="btConceptos" alignment="CENTER">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActionConcepto" onKeyPressed="#onKeyPressedConcepto" styleClass="buttonTransparent" text="Conceptos" textFill="#020203">
+                           <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/concepto.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text fill="#01469a" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labelOpenSansRegular14" text="Ajuste">
                            <font>
                               <Font name="Roboto" size="14.0" />
                            </font>
